@@ -37,6 +37,7 @@
             const caja = el.querySelector('.tp-sitio-caja'), cajaTxt = caja.querySelector('span');
             const items = [...el.querySelectorAll('[data-parada]')];
             const paradas = items.map(li => { const [x, y, w, h] = li.dataset.caja.split(',').map(Number); return { li, x, y, w, h, nota: li.dataset.nota }; });
+            const contador = el.querySelector('[data-sitio-n]');
             const U = paradas.length + FINAL;
             let e = 1, vis = 0, actual = -2;
             const medir = () => {
@@ -64,7 +65,7 @@
                     el.dataset.parada = act;
                     items.forEach((li, k) => { li.classList.toggle('actual', k === act); li.classList.toggle('ya', k < (act < 0 ? i : act)); });
                     caja.classList.toggle('on', act >= 0);
-                    if (act >= 0) cajaTxt.textContent = paradas[act].nota;
+                    if (act >= 0) { cajaTxt.textContent = paradas[act].nota; contador.textContent = `${String(act + 6).padStart(2, '0')} / 10`; }
                 }
                 if (act >= 0) {
                     const d = paradas[act];
@@ -112,15 +113,27 @@
     window.addEventListener('scroll', pedir, { passive: true });
     window.addEventListener('resize', () => { vh = window.innerHeight; escenas.forEach(s => (s.p = -1)); pedir(); });
 
-    /* --- 3. BARRA QUE SE ESCONDE AL BAJAR --- */
-    const nav = document.querySelector('[data-barra]');
+    /* --- 3. BARRA QUE SE ESCONDE AL BAJAR Y TOMA EL COLOR DEL MÓDULO DE ABAJO --- */
+    /* Sin mezcla por diferencia (sobre morado se volvía verde): tinta sobre lo claro, blanco sobre lo demás.
+       En el hero, cuando el navegador ya llenó la pantalla, lo de abajo es el sitio claro */
+    const nav = document.querySelector('[data-barra]'), modulos = [...document.querySelector('main').children];
     let ultimoY = window.scrollY;
     const barra = () => {
         const y = window.scrollY;
+        const m = modulos.find(el => { const r = el.getBoundingClientRect(); return r.top <= 32 && r.bottom > 32; });
+        const hero = escenas[0];
+        nav.classList.toggle('sobre-claro', !!m && (m.classList.contains('tp-claro') || (m === hero.el && hero.p > 0.62)));
         if (Math.abs(y - ultimoY) < 6) return;
         nav.classList.toggle('oculta', y > ultimoY && y > 120);
         ultimoY = y;
     };
+    /* El índice de capítulos lleva a cada uno con un desplazamiento suave */
+    document.querySelectorAll('.tp-indice a').forEach(a => a.addEventListener('click', e => {
+        const destino = document.querySelector(a.getAttribute('href'));
+        if (!destino) return;
+        e.preventDefault();
+        window.scrollTo({ top: destino.getBoundingClientRect().top + window.scrollY, behavior: quieto ? 'auto' : 'smooth' });
+    }));
 
     /* --- 4. TEXTO QUE SE ENCIENDE PALABRA POR PALABRA --- */
     const textos = [...document.querySelectorAll('[data-luz]')].map(el => {
@@ -146,10 +159,10 @@
     /* --- 5. APARICIONES Y CIFRAS QUE CUENTAN --- */
     const formato = n => n.toLocaleString('es-CL');
     const contar = el => {
-        const fin = +el.dataset.cuenta, pre = el.dataset.pre || '';
-        if (quieto) { el.textContent = pre + formato(fin); return; }
+        const fin = +el.dataset.cuenta, pre = el.dataset.pre ? `<small>${el.dataset.pre}</small>` : '';
+        if (quieto) { el.innerHTML = pre + formato(fin); return; }
         const t0 = performance.now(), dur = fin > 100 ? 1600 : 900;
-        const paso = ahora => { const t = fijar((ahora - t0) / dur); el.textContent = pre + formato(Math.round(fin * (1 - Math.pow(1 - t, 4)))); if (t < 1) requestAnimationFrame(paso); };
+        const paso = ahora => { const t = fijar((ahora - t0) / dur); el.innerHTML = pre + formato(Math.round(fin * (1 - Math.pow(1 - t, 4)))); if (t < 1) requestAnimationFrame(paso); };
         requestAnimationFrame(paso);
     };
     const io = new IntersectionObserver(es => es.forEach(e => {
@@ -223,7 +236,7 @@
         hueco.outerHTML = window.CASO_SIGUIENTE(C);
         (window.CASO_INICIOS || []).forEach(f => f(C, { quieto }));
     }
-    pintar(); luces();
+    pintar(); luces(); barra();
 })();
 /* =======================================================
    FIN JS · CASO TAP IN EDITORIAL (.tp-)
