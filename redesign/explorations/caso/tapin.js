@@ -13,6 +13,8 @@
 
     /* --- 1. LÓGICA PROPIA DE CADA ESCENA --- */
     const propias = {
+        /* Hero: el zoom del sitio con una curva suave, más rápido que el recorrido de la pista */
+        hero: el => p => el.style.setProperty('--h', curva(Math.min(p * 1.25, 1)).toFixed(4)),
         /* Capítulo 03: la dirección se escribe con el scroll y la página empieza a cargar */
         url: el => {
             const caja = el.querySelector('[data-url]'), txt = caja.dataset.url;
@@ -184,8 +186,6 @@
         const m = e.target, f = document.createElement('iframe');
         f.title = 'Mockup animado de tapin.cl'; f.setAttribute('tabindex', '-1'); f.setAttribute('aria-hidden', 'true');
         f.onload = () => {
-            /* En el hero el mockup flota sin tarjeta: el documento embebido queda transparente */
-            if (m.hasAttribute('data-transparente')) try { const st = f.contentDocument.createElement('style'); st.textContent = 'html,body{background:transparent!important}'; f.contentDocument.head.appendChild(st); } catch (err) { /* sin acceso */ }
             m.classList.add('listo'); if (m._ve && !quieto) msj(f, 'mockup-start'); };
         f.src = m.dataset.mk + '?frameless';
         m.appendChild(f); escalar(m); if (ro) ro.observe(m);
