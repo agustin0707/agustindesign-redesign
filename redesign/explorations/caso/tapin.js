@@ -225,8 +225,35 @@
         setInterval(() => { citas[k].classList.remove('on'); k = (k + 1) % citas.length; citas[k].classList.add('on'); }, 7000);
     });
 
-    /* --- 9. HERO Y SIGUIENTE PROYECTO --- */
-    requestAnimationFrame(() => document.querySelector('.tp-hero').classList.add('entra'));
+    /* --- 9. HERO VIVO CON EL MOUSE --- */
+    /* Como el home, pero en clave Tap In: el sitio recostado se inclina hacia el cursor con inercia, la luz del
+       fondo lo sigue, las letras del wordmark cercanas suben y el punto de la i hace "tap" al pasar sobre él */
+    const heroEl = document.querySelector('.tp-hero');
+    requestAnimationFrame(() => heroEl.classList.add('entra'));
+    const wm = heroEl.querySelector('.tp-wm-vivo');
+    if (!quieto && window.matchMedia('(hover: hover)').matches) {
+        const letras = [...wm.querySelectorAll('[data-letra]')];
+        let tx = 0, ty = 0, x = 0, y = 0, cx = -9999, cy = -9999, corre = false, centros = [];
+        const medir = () => { centros = letras.map(l => { const r = l.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }); };
+        const ola = () => {
+            if (!centros.length) medir();
+            letras.forEach((l, i) => { const c = centros[i], d = Math.hypot(cx - c.x, (cy - c.y) * 0.6); l.style.translate = `0 ${(-Math.exp(-(d * d) / (2 * 110 * 110)) * 16).toFixed(2)}px`; });
+        };
+        const paso = () => {
+            x += (tx - x) * 0.07; y += (ty - y) * 0.07;
+            heroEl.style.setProperty('--mx', x.toFixed(4)); heroEl.style.setProperty('--my', y.toFixed(4));
+            if (Math.abs(tx - x) + Math.abs(ty - y) > 0.0008) requestAnimationFrame(paso); else corre = false;
+        };
+        const ir = (a, b) => { tx = a; ty = b; if (!corre) { corre = true; requestAnimationFrame(paso); } };
+        heroEl.addEventListener('pointermove', e => { const r = heroEl.querySelector('.tp-fijo').getBoundingClientRect(); cx = e.clientX; cy = e.clientY; ir((e.clientX - r.left) / r.width - 0.5, (e.clientY - r.top) / r.height - 0.5); ola(); });
+        heroEl.addEventListener('pointerleave', () => { cx = cy = -9999; ir(0, 0); ola(); });
+        window.addEventListener('scroll', () => { centros = []; }, { passive: true });
+        window.addEventListener('resize', () => { centros = []; });
+        wm.addEventListener('pointerenter', () => { if (!wm.classList.contains('tap')) wm.classList.add('tap'); });
+        wm.addEventListener('animationend', e => { if (e.target.classList.contains('tp-wm-onda')) wm.classList.remove('tap'); });
+    }
+
+    /* --- 10. SIGUIENTE PROYECTO --- */
     const C = window.CASO = {
         nombre: 'Tap In',
         siguiente: { id: 'mend', nombre: 'Mend', numero: '03', disciplinas: ['Investigación', 'Marca', 'Web app', '2026'], bajada: 'Salud articular para Atención Primaria, de la investigación al producto.', tinte: '#0D2024', url: '../works/w3-pila.html' }
