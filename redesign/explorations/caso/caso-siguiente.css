@@ -1,0 +1,87 @@
+/* =======================================================
+   INVITACIÓN AL SIGUIENTE PROYECTO (COMÚN A TODOS LOS CASOS)
+   ======================================================= */
+/* Requiere los tokens de works-base.css (--sans, --mono, --margen, --hover-lento). La lógica está en caso-siguiente.js */
+/* Una pista de scroll de dos pantallas con el panel fijo: al entrar, la escena del siguiente proyecto se
+   expande desde una lámina (--e); al seguir bajando, la barra se llena (--p) y al completarse se abre.
+   El panel habla con la identidad del próximo proyecto; la tipografía del nombre es la de Agustín Design */
+.sig { position: relative; background: var(--c-fondo); }
+.sig-pista { height: 210svh; }
+.sig-panel { --e: 0; --p: 0; position: sticky; top: 0; height: 100svh; display: block; overflow: hidden; color: #FFFFFF; font-family: var(--sans); }
+.sig-escena { position: absolute; inset: 0; overflow: hidden; background: var(--sig-tinte); clip-path: inset(calc((1 - var(--e)) * 16%) calc((1 - var(--e)) * 10%) calc((1 - var(--e)) * 16%) round calc(28px * (1 - var(--p) * 0.6))); }
+.sig-escena > * { transform: scale(calc(1.08 - var(--p) * 0.08)); }
+.sig-txt { position: absolute; left: var(--margen); right: var(--margen); bottom: clamp(88px, 12svh, 140px); z-index: 3; display: flex; flex-direction: column; gap: 14px; pointer-events: none; }
+.sig-fila { display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.28); font: 12px var(--mono); opacity: calc(0.4 + var(--e) * 0.6); }
+.sig-nombre { font-family: var(--sig-f, var(--sans)); font-size: clamp(96px, 19vw, 340px); font-weight: 500; letter-spacing: -0.075em; line-height: 0.78; margin-left: -0.05em; transform: translateY(calc((1 - var(--e)) * 30%)); transition: transform 700ms var(--hover-lento), opacity 500ms; }
+.sig-bajada { max-width: 34ch; font-size: clamp(16px, 1.3vw, 19px); opacity: 0.8; }
+.sig-info { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.sig-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.sig-chips i { padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.35); font: 12px var(--mono); font-style: normal; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+/* Avance: un anillo que se llena; al completarse la flecha gira y el caso se abre */
+.sig-progreso { position: absolute; right: var(--margen); top: 92px; z-index: 3; display: flex; align-items: center; gap: 14px; font: 12px var(--mono); }
+.sig-anillo { position: relative; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: rgba(0, 0, 0, 0.22); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.sig-anillo svg { position: absolute; inset: 0; rotate: -90deg; }
+.sig-anillo circle { fill: none; stroke: rgba(255, 255, 255, 0.25); stroke-width: 2; }
+.sig-anillo .lleno { stroke: #FFFFFF; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--p)); }
+.sig-flecha { font-size: 18px; transition: transform 500ms var(--hover-lento); }
+.sig-panel.abriendo .sig-flecha { transform: rotate(-90deg); }
+.sig-panel.abriendo .sig-nombre { transform: translateY(-12%); opacity: 0; }
+.sig-panel.abriendo .sig-escena { clip-path: inset(0); }
+.sig-panel.abriendo .sig-splash { opacity: 1; }
+@media (hover: hover) { .sig-panel:hover .sig-anillo { background: rgba(0, 0, 0, 0.36); } }
+
+/* --- 1. ESCENA MEND --- */
+.sig-e-mend .sig-campo { position: absolute; inset: 0; background:
+    radial-gradient(52% 72% at 90% 0%, rgba(201, 233, 232, 0.95) 0%, rgba(190, 220, 219, 0.6) 38%, rgba(190, 220, 219, 0) 76%),
+    radial-gradient(40% 60% at 60% 0%, rgba(168, 186, 182, 0.6) 0%, rgba(168, 186, 182, 0) 72%),
+    radial-gradient(60% 65% at 0% 100%, rgba(30, 77, 87, 0.95) 0%, rgba(30, 77, 87, 0) 72%),
+    linear-gradient(90deg, #2A5960 0%, #3A6970 22%, #5E8C91 46%, #84AEB2 70%, #8EB8BB 100%); }
+.sig-e-mend .sig-campo::after { content: ''; position: absolute; inset: 0; opacity: 0.7; mix-blend-mode: soft-light; background-size: 200px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); }
+.sig-mend-logo { position: absolute; left: var(--margen); top: 14svh; width: clamp(220px, 28vw, 460px); overflow: visible; fill: #FFFFFF; }
+.sig-panel:not(.dentro) .sig-mend-logo { opacity: 0; }
+.sig-mend-logo .ej-pair { opacity: 0; }
+.sig-mend-logo .trazo { stroke: #FFFFFF; stroke-width: 0.7; stroke-dasharray: 1; stroke-opacity: 0; }
+.sig-panel.dentro .sig-mend-logo .trazo { animation: sigTrazo 2s cubic-bezier(0.6, 0.1, 0.3, 1) 0.2s both, sigRelleno 0.7s ease 1.5s both; }
+.sig-panel.dentro .sig-mend-logo .ej-full { transform-box: fill-box; transform-origin: 50% 50%; animation: sigEjFull 2.4s linear 1.9s both; }
+.sig-panel.dentro .sig-mend-logo .ej-pair { animation: sigEjPair 2.4s linear 1.9s both; }
+.sig-panel.dentro .sig-mend-logo .ej-a { animation: sigGlideA 2.4s linear 1.9s both, sigCloseA 2.4s linear 1.9s both; }
+.sig-panel.dentro .sig-mend-logo .ej-b { animation: sigGlideB 2.4s linear 1.9s both, sigCloseB 2.4s linear 1.9s both; }
+@keyframes sigTrazo { 0% { stroke-dashoffset: 1; stroke-opacity: 1; } 88% { stroke-dashoffset: 0; stroke-opacity: 1; } 100% { stroke-dashoffset: 0; stroke-opacity: 0; } }
+@keyframes sigRelleno { from { fill-opacity: 0; } to { fill-opacity: 1; } }
+@keyframes sigGlideA { 0% { translate: 13.57px -3.46px; animation-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1); } 80%, 100% { translate: 0 0; } }
+@keyframes sigGlideB { 0% { translate: -13.57px 3.46px; animation-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1); } 80%, 100% { translate: 0 0; } }
+@keyframes sigCloseA { 0%, 50% { transform: translate(-0.99px, -3.88px); animation-timing-function: cubic-bezier(0.9, 0, 1, 1); } 80%, 100% { transform: none; } }
+@keyframes sigCloseB { 0%, 50% { transform: translate(0.99px, 3.88px); animation-timing-function: cubic-bezier(0.9, 0, 1, 1); } 80%, 100% { transform: none; } }
+@keyframes sigEjPair { 0% { opacity: 0; } 18% { opacity: 0.45; } 62% { opacity: 1; } 79.9% { opacity: 1; } 80%, 100% { opacity: 0; } }
+@keyframes sigEjFull { 0%, 79.9% { opacity: 0; transform: none; } 80% { opacity: 1; transform: none; animation-timing-function: cubic-bezier(0.3, 0, 0.3, 1); } 87% { transform: scale(0.982); animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1); } 100% { opacity: 1; transform: none; } }
+/* El teléfono con la app sube a medida que se avanza hacia el caso */
+.sig-e-mend .sig-tel { position: absolute; right: 12%; top: 9svh; width: clamp(180px, 16vw, 280px); aspect-ratio: 390 / 844; border: 6px solid #0B0B0B; border-radius: 40px; overflow: hidden; background: #0B0B0B; box-shadow: 0 50px 120px -30px rgba(0, 0, 0, 0.55); translate: 0 calc((1 - var(--p)) * 38svh); }
+.sig-e-mend .sig-tel img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.sig-e-mend .sig-tel .sig-splash { position: absolute; inset: 0; opacity: 0; transition: opacity 500ms ease; }
+/* Una luz suave que sigue el avance: el campo de Mend se ilumina hacia el caso */
+.sig-e-mend .sig-luz { position: absolute; inset: 0; background: radial-gradient(40% 50% at 78% 40%, rgba(201, 233, 232, 0.55), transparent 70%); opacity: var(--p); }
+/* El nombre de Mend en su tipografía (Neue Haas Grotesk; en el Mac, Helvetica Neue como respaldo) */
+.sig:has(.sig-e-mend) { --sig-f: "Neue Haas Grotesk Display Pro", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+/* --- 2. ESCENA TAP IN --- */
+.sig-e-tapin { background: radial-gradient(120% 90% at 70% 0%, #6B5CE7 0%, #4A3CAE 38%, #2D2560 100%); }
+.sig-tiras { position: absolute; right: -6%; top: -30%; bottom: -30%; width: 60%; display: flex; gap: clamp(14px, 1.6vw, 26px); transform: rotate(-22deg); }
+.sig-tiras i { flex: 1; border-radius: 999px; background: linear-gradient(180deg, color-mix(in srgb, var(--tono) 82%, #fff), var(--tono)); translate: 0 calc((1 - var(--p)) * (10% + var(--i) * 8%)); box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.5); }
+.sig-tp-wm { position: absolute; left: var(--margen); top: 14svh; width: clamp(200px, 26vw, 420px); aspect-ratio: 389.87 / 150.6; background: #FFFFFF; -webkit-mask: url("media/tp-wordmark.svg") center / contain no-repeat; mask: url("media/tp-wordmark.svg") center / contain no-repeat; }
+
+/* --- 3. ESCENA LLEGÓ FARMA --- */
+.sig-e-llego > img:first-child { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.sig-e-llego::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 20, 21, 0.2), rgba(10, 20, 21, 0.75)); }
+.sig-reticula { position: absolute; inset: 0 var(--margen); z-index: 1; border-right: 1px solid rgba(255, 255, 255, 0.2); background: linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px) 0 0 / 25% 100% repeat-x; }
+.sig-lf-iso { position: absolute; z-index: 2; left: var(--margen); top: 14svh; width: clamp(64px, 6vw, 96px); }
+@media (max-width: 768px) {
+    .sig-e-mend .sig-tel { right: 50%; translate: 50% calc((1 - var(--p)) * 30svh); top: 22svh; width: 46vw; }
+    .sig-mend-logo { top: 9svh; width: 62vw; }
+    .sig-progreso { top: auto; bottom: 24px; }
+    .sig-info { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sig-escena { clip-path: none; }
+    .sig-escena > *, .sig-nombre, .sig-tiras i, .sig-e-mend .sig-tel { transform: none; translate: none; }
+}
+

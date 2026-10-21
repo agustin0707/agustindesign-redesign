@@ -1,0 +1,426 @@
+/* =======================================================
+   CASO TAP IN EDITORIAL (.tp-)
+   ======================================================= */
+/* Módulos a todo el ancho que se tocan, como un proyecto de Behance, y escenas fijas que avanzan con el
+   scroll (--p de 0 a 1, lo publica tapin.js). El marco es de Agustín Design (Geist, Geist Mono, la barra);
+   la voz y las piezas son de Tap In (Poppins y su familia morada) */
+
+/* --- 1. TOKENS --- */
+.tp {
+    --tp-empresa: #2D2560; --tp-campus: #4A3CAE; --tp-connect: #6B5CE7; --tp-health: #9B8EF0; --tp-soft: #C8C0F8; --tp-tint: #EEEDFE;
+    --tp-noche: #100D20; --tp-papel: #F4F3FA; --tp-tinta: #1C1A2E;
+    --tp-f: 'Poppins', sans-serif;
+    --tp-t1: clamp(64px, 12vw, 210px);
+    --tp-t2: clamp(40px, 5vw, 84px);
+    --tp-t3: clamp(26px, 2.2vw, 36px);
+    --tp-t4: clamp(16px, 1.15vw, 18px);
+    --tp-curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+    --tp-radio: 22px;
+    /* Hero: de dónde parte el navegador antes de llenar la pantalla */
+    --hx: 17vw; --hy: 9svh; --hs: 0.56;
+    --c-fondo: var(--tp-papel);
+    background: var(--tp-noche);
+}
+.tp .barra { transition: transform 400ms var(--ease); }
+.tp .barra.oculta { transform: translateY(-110%); }
+
+/* --- 2. FONDOS DE CADA MÓDULO --- */
+.tp-claro { --fondo: var(--tp-papel); --texto: var(--tp-tinta); --texto-2: #5E5C72; --texto-3: #A3A1B5; --linea: rgba(45, 37, 96, 0.12); --acento: var(--tp-campus); background: var(--fondo); color: var(--texto); }
+.tp-oscuro { --fondo: var(--tp-noche); --texto: #F4F3FB; --texto-2: rgba(238, 237, 254, 0.66); --texto-3: rgba(238, 237, 254, 0.34); --linea: rgba(155, 142, 240, 0.2); --acento: var(--tp-health); background: var(--fondo); color: var(--texto); }
+.tp-morado { --texto: #FFFFFF; --texto-2: rgba(255, 255, 255, 0.78); --texto-3: rgba(255, 255, 255, 0.45); --linea: rgba(255, 255, 255, 0.22); --acento: #FFFFFF; background: radial-gradient(120% 90% at 80% 0%, var(--tp-connect), var(--tp-campus) 45%, var(--tp-empresa)); color: var(--texto); }
+.tp-connect { --texto: #FFFFFF; --texto-2: rgba(255, 255, 255, 0.8); --texto-3: rgba(255, 255, 255, 0.5); --linea: rgba(255, 255, 255, 0.24); --acento: #FFFFFF; color: var(--texto); background-color: var(--tp-connect); background-image: linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px), radial-gradient(70% 70% at 60% 45%, #8174F2, #5546D6); background-size: 48px 48px, 48px 48px, 100% 100%; background-position: center; }
+
+/* --- 3. ESTRUCTURA COMÚN --- */
+/* Grilla de 12, módulo con aire y panel fijo de las escenas */
+.tp-grilla { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); }
+.tp-mod { padding: clamp(96px, 11vw, 176px) var(--margen); }
+.tp-fijo { position: sticky; top: 0; height: 100svh; overflow: clip; }
+.tp-fijo.tp-grilla { align-items: center; padding: 0 var(--margen); }
+.tp-etq { grid-column: 1 / span 3; color: var(--texto-2); padding-top: 0.9em; }
+.tp-marca { display: block; width: 100%; aspect-ratio: 1; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+.tp-wm { aspect-ratio: 389.87 / 150.6; }
+.tp-pendiente { display: block; width: 100%; aspect-ratio: 1; border: 2px dashed currentColor; border-radius: 50%; opacity: 0.6; }
+.tp-enunciado { grid-column: 4 / -1; font: 600 clamp(30px, 3.6vw, 60px) / 1.08 var(--tp-f); letter-spacing: -0.035em; }
+.tp-enunciado em { font-style: normal; color: var(--acento); }
+.tp-pal { opacity: 0.16; transition: opacity 260ms linear; }
+.tp-pal.on { opacity: 1; }
+.tp-titulo { grid-column: 4 / -1; font: 600 var(--tp-t2) / 1 var(--tp-f); letter-spacing: -0.045em; }
+.tp-pie { display: flex; justify-content: space-between; gap: 16px; }
+
+/* --- 4. DECISIÓN (TEXTO BREVE, MEDIO O CON DETALLE) --- */
+/* Número, título, qué y por qué; "Más contexto" se despliega solo donde aporta */
+.tp-dec { display: flex; flex-direction: column; gap: 16px; max-width: 36ch; }
+.tp-dec-n { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); }
+.tp-dec-n::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.tp-dec h3 { font: 600 var(--tp-t3) / 1.04 var(--tp-f); letter-spacing: -0.035em; }
+.tp-dec p { font-size: var(--tp-t4); line-height: 1.5; color: var(--texto-2); }
+.tp-dec .tp-porque { display: flex; flex-direction: column; gap: 6px; padding-top: 14px; border-top: 1px solid var(--linea); color: var(--texto); }
+.tp-porque .mono { color: var(--texto-3); }
+.tp-mas summary { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); cursor: pointer; list-style: none; }
+.tp-mas summary::-webkit-details-marker { display: none; }
+.tp-mas summary::before { content: '+'; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--linea); transition: transform 300ms var(--ease); }
+.tp-mas[open] summary::before { transform: rotate(45deg); }
+.tp-mas p { margin-top: 12px; font-size: 15px; }
+@media (hover: hover) { .tp-mas summary:hover { color: var(--texto); } }
+
+/* =======================================================
+   HERO
+   ======================================================= */
+/* El resultado en la primera pantalla: el sitio bajando solo y el comedor funcionando. Al bajar, el
+   navegador crece hasta llenar la pantalla: se entra al proyecto por su resultado */
+.tp-hero { --h: clamp(0, var(--p, 0) * 1.3, 1); height: 220svh; color: #FFFFFF; }
+.tp-hero-fondo { position: absolute; inset: 0; background: radial-gradient(70% 60% at 78% 18%, #8E81F5, transparent 70%), radial-gradient(120% 100% at 50% 0%, var(--tp-connect), var(--tp-campus) 50%, var(--tp-empresa)); }
+.tp-hero-arriba { position: absolute; top: 64px; left: var(--margen); right: var(--margen); z-index: 3; display: flex; justify-content: space-between; gap: 16px; opacity: calc(0.8 - var(--h)); }
+.tp-hero-nav { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; overflow: hidden; background: #FFFFFF; transform-origin: 50% 50%; transform: translate(calc((1 - var(--h)) * var(--hx)), calc((1 - var(--h)) * var(--hy))) scale(calc(var(--hs) + var(--h) * (1 - var(--hs)))); border-radius: calc(18px * (1 - var(--h)) / var(--hs)); box-shadow: 0 60px 120px -40px rgba(17, 12, 60, 0.7); will-change: transform; }
+.tp-nav-barra { display: flex; align-items: center; gap: 7px; height: 38px; flex: none; padding: 0 16px; background: #F2F1F8; border-bottom: 1px solid rgba(45, 37, 96, 0.08); }
+.tp-nav-barra i { width: 11px; height: 11px; border-radius: 50%; background: #D9D6EA; }
+.tp-nav-barra span { margin: 0 auto; padding: 4px 48px; border-radius: 8px; background: #FFFFFF; font: 12px var(--mono); color: #5E5C72; }
+.tp-hero-pantalla { position: relative; flex: 1; overflow: hidden; }
+.tp-hero-pantalla img { animation: tpRecorre 70s cubic-bezier(0.45, 0, 0.55, 1) 1.2s infinite alternate; }
+@keyframes tpRecorre { to { transform: translateY(calc(-100% + 100svh - 38px)); } }
+.tp-hero-mk { position: absolute; z-index: 2; left: 66vw; top: 54svh; width: clamp(280px, 28vw, 480px); transform: translateY(calc(var(--h) * 40svh)); opacity: calc(1 - var(--h) * 1.8); filter: drop-shadow(0 30px 50px rgba(17, 12, 60, 0.45)); }
+.tp-hero-txt { position: absolute; z-index: 3; left: var(--margen); bottom: 9svh; display: flex; flex-direction: column; gap: 22px; width: min(24vw, 380px); opacity: calc(1 - var(--h) * 2.2); transform: translateY(calc(var(--h) * -12svh)); }
+.tp-hero-txt .tp-wm { width: 100%; }
+.tp-hero-txt p { font: 500 clamp(18px, 1.5vw, 24px) / 1.3 var(--tp-f); letter-spacing: -0.02em; max-width: 22ch; }
+.tp-hero-pista { position: absolute; z-index: 3; left: 50%; bottom: 4svh; translate: -50% 0; display: flex; align-items: center; gap: 12px; opacity: calc(0.8 - var(--h) * 2); }
+.tp-hero-pista::after { content: ''; width: 1px; height: 40px; background: currentColor; transform-origin: top; animation: tpPista 2s var(--ease) infinite; }
+@keyframes tpPista { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+/* Entrada: cada pieza aparece con translate (no con transform, que lo usa el scroll) */
+.tp-hero.entra .tp-hero-nav { animation: tpEntra 1100ms var(--ease) 100ms both; }
+.tp-hero.entra .tp-hero-mk > * { animation: tpEntra 1100ms var(--ease) 450ms both; }
+.tp-hero.entra .tp-hero-txt > *, .tp-hero.entra .tp-hero-arriba { animation: tpEntra 900ms var(--ease) both; }
+.tp-hero.entra .tp-hero-txt p { animation-delay: 150ms; }
+@keyframes tpEntra { from { opacity: 0; translate: 0 48px; } }
+
+/* --- MOCKUP EN VIVO (PÓSTER HASTA QUE CARGA) --- */
+.tp-mk { position: relative; aspect-ratio: 3 / 2; }
+.tp-mk img { width: 100%; height: 100%; object-fit: contain; transition: opacity 400ms 300ms; }
+.tp-mk iframe { position: absolute; top: 0; left: 0; width: 900px; height: 600px; border: 0; background: transparent; color-scheme: light; transform-origin: 0 0; transform: scale(var(--escala, 0.5)); opacity: 0; pointer-events: none; transition: opacity 500ms; }
+.tp-mk.listo iframe { opacity: 1; }
+.tp-mk.listo img { opacity: 0; }
+
+/* =======================================================
+   RESUMEN
+   ======================================================= */
+.tp-tres { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--medianil); margin-top: clamp(56px, 6vw, 96px); }
+.tp-tres > div { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--linea); }
+.tp-tres .mono { color: var(--texto-3); }
+.tp-tres p { font-size: var(--tp-t4); line-height: 1.45; max-width: 28ch; }
+.tp-ficha { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--medianil); margin-top: clamp(72px, 8vw, 128px); }
+.tp-ficha > div { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--linea); }
+.tp-ficha dt { color: var(--texto-3); }
+.tp-ficha dd { font-size: 14px; }
+.tp-ficha a { border-bottom: 1px solid var(--linea); }
+
+/* =======================================================
+   APERTURAS DE CAPÍTULO
+   ======================================================= */
+/* Pantalla oscura con el número, el nombre y una escena propia que avanza con el scroll */
+.tp-cap { height: 200svh; }
+.tp-cap .tp-fijo, .tp-rebirth .tp-fijo { padding: 0 var(--margen); }
+.tp-cap-txt { position: absolute; left: var(--margen); right: var(--margen); bottom: 9svh; z-index: 2; display: flex; flex-direction: column; gap: 18px; }
+.tp-cap-n { color: var(--texto-2); }
+.tp-cap-txt h2 { font: 600 var(--tp-t1) / 0.86 var(--tp-f); letter-spacing: -0.055em; margin-left: -0.04em; }
+.tp-cap-txt p { max-width: 34ch; font-size: clamp(17px, 1.4vw, 22px); line-height: 1.4; color: var(--texto-2); }
+.tp-cap-txt > * { opacity: 0; translate: 0 40px; transition: opacity 900ms var(--ease), translate 900ms var(--ease); }
+.tp-cap-txt.visto > * { opacity: 1; translate: 0 0; }
+.tp-cap-txt.visto h2 { transition-delay: 80ms; }
+.tp-cap-txt.visto p { transition-delay: 200ms; }
+
+/* --- CAPÍTULO 01: FORKY CRUZA CORRIENDO --- */
+.tp-pista-forky { position: absolute; left: 0; right: 0; top: 14svh; height: 36svh; border-bottom: 1px dashed var(--linea); }
+.tp-forky-corre { position: absolute; bottom: 0; width: 36svh; color: var(--tp-campus); transform: translateX(calc(-40svh + var(--p, 0) * (100vw + 80svh))); animation: tpCorre 420ms ease-in-out infinite alternate; }
+@keyframes tpCorre { from { translate: 0 0; rotate: -3deg; } to { translate: 0 -10px; rotate: 3deg; } }
+
+/* --- CAPÍTULO 03: LA DIRECCIÓN SE ESCRIBE --- */
+.tp-url { position: absolute; left: 50%; top: 34svh; z-index: 2; display: flex; align-items: center; gap: 14px; min-width: min(560px, 80vw); padding: 18px 30px; border-radius: 999px; border: 1px solid var(--linea); background: rgba(238, 237, 254, 0.05); font: 500 clamp(28px, 3.6vw, 60px) / 1 var(--tp-f); letter-spacing: -0.03em; transform: translateX(-50%); overflow: hidden; transition: border-color 400ms; }
+.tp-url-candado { width: 0.42em; height: 0.36em; margin-top: 0.2em; border-radius: 3px; background: var(--texto-3); position: relative; flex: none; }
+.tp-url-candado::before { content: ''; position: absolute; left: 50%; bottom: 80%; width: 60%; height: 70%; border: 2px solid var(--texto-3); border-bottom: 0; border-radius: 99px 99px 0 0; transform: translateX(-50%); }
+.tp-url-txt span { display: none; }
+.tp-url-txt span.on { display: inline; }
+.tp-url-cursor { width: 2px; height: 1em; background: var(--acento); animation: tpCursor 1s steps(1) infinite; }
+@keyframes tpCursor { 50% { opacity: 0; } }
+.tp-url-carga { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--acento); transform-origin: 0 50%; transform: scaleX(clamp(0, (var(--p, 0) - 0.62) / 0.3, 1)); }
+.tp-cap-3.escrito .tp-url { border-color: var(--acento); }
+
+/* =======================================================
+   DECISIÓN 01 · FORKY, PASO A PASO
+   ======================================================= */
+.tp-forky { height: 360svh; }
+.tp-forky .tp-dec { grid-column: 1 / span 4; }
+.tp-fk-escenario { grid-column: 6 / -1; justify-self: center; position: relative; width: min(100%, 62svh); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, #FFFFFF, var(--tp-tint) 70%, transparent 71%); }
+.tp-fk-capa { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; color: var(--tp-campus); opacity: 0; transform: scale(0.86); transition: opacity 450ms var(--ease), transform 700ms var(--tp-curva); }
+.tp-fk-capa .tp-marca { width: 56%; }
+.tp-fk-capa.on { opacity: 1; transform: scale(1); }
+.tp-fk-capa.ya { transform: scale(1.1); }
+.tp-fk-final .tp-marca { width: 50%; }
+.tp-fk-final b { font: 600 clamp(24px, 2.2vw, 34px) var(--tp-f); letter-spacing: -0.03em; }
+.tp-fk-regla { position: absolute; left: var(--margen); right: var(--margen); bottom: 6svh; display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--medianil); list-style: none; }
+.tp-fk-regla li { padding-top: 12px; border-top: 2px solid var(--linea); color: var(--texto-3); transition: color 300ms, border-color 300ms; }
+.tp-fk-regla li.ya { border-color: var(--tp-soft); }
+.tp-fk-regla li.on { border-color: var(--acento); color: var(--texto); }
+
+/* =======================================================
+   LA MARCA EN EL CAMPUS
+   ======================================================= */
+/* Fotos a todo el ancho con un parallax interno leve; el par de fotos se destapa al entrar */
+.tp-plena { position: relative; height: min(100svh, 66vw); overflow: hidden; background: var(--tp-empresa); }
+.tp-plena img { height: 116%; object-fit: cover; transform: translateY(calc(var(--v, 0) * -6% - 7%)); will-change: transform; }
+.tp-plena .tp-pie { position: absolute; left: var(--margen); right: var(--margen); bottom: 22px; color: #FFFFFF; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35); }
+.tp-par-fotos { display: grid; grid-template-columns: 1fr 1fr; background: var(--tp-empresa); }
+.tp-par-fotos figure { aspect-ratio: 1; overflow: hidden; clip-path: inset(14% 0 0 0); transition: clip-path 1100ms var(--ease); }
+.tp-par-fotos figure img { height: 100%; object-fit: cover; transform: scale(1.14); transition: transform 1400ms var(--ease); }
+.tp-par-fotos figure:last-child img { object-position: 30% 50%; }
+.tp-par-fotos figure.visto { clip-path: inset(0); }
+.tp-par-fotos figure.visto img { transform: scale(1); }
+.tp-par-fotos figure:last-child { transition-delay: 120ms; }
+
+.tp-campus .tp-grilla { align-items: center; }
+.tp-campus .tp-dec { grid-column: 1 / span 4; }
+.tp-datos { display: flex; gap: 40px; list-style: none; margin-top: 12px; }
+.tp-datos li { display: flex; flex-direction: column; gap: 4px; }
+.tp-datos b { font: 600 clamp(48px, 4.4vw, 72px) / 1 var(--tp-f); letter-spacing: -0.05em; color: #FFFFFF; }
+.tp-datos span { font-size: 14px; color: var(--texto-2); }
+.tp-tels { grid-column: 6 / -1; display: flex; justify-content: center; gap: clamp(20px, 4vw, 64px); padding: 60px 0; }
+.tp-tel { display: flex; flex-direction: column; gap: 14px; width: clamp(190px, 18vw, 290px); transform: translateY(calc(var(--v, 0) * var(--vel) * 1px)); }
+.tp-tel > :not(.mono) { background: #FFFFFF; }
+.tp-tel-app { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-radius: 34px 34px 0 0; border: 9px solid #0E0B1C; border-bottom: 0; color: var(--tp-campus); font: 600 12px var(--tp-f); }
+.tp-tel-app .tp-wm { width: 52px; }
+.tp-tel img { aspect-ratio: 9 / 15; object-fit: cover; border: 9px solid #0E0B1C; border-top: 0; border-radius: 0 0 34px 34px; box-shadow: 0 50px 80px -30px rgba(14, 11, 28, 0.6); }
+.tp-tel .mono { color: var(--texto-2); text-align: center; }
+
+/* =======================================================
+   CAPÍTULO 02 · EL REBIRTH Y LA PALETA
+   ======================================================= */
+/* Las cuatro tiras suben una tras otra con el scroll; al completarse, cada una dice quién es */
+.tp-rebirth { height: 280svh; }
+.tp-rb-arriba { position: absolute; left: var(--margen); right: var(--margen); top: 0; height: 36svh; display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; padding-bottom: 3svh; }
+.tp-rb-arriba .tp-cap-txt { position: static; gap: 12px; }
+.tp-rb-arriba .tp-cap-txt h2 { font-size: clamp(56px, 8.4vw, 148px); }
+.tp-rb-arriba .tp-cap-txt p { font-size: clamp(15px, 1.15vw, 18px); }
+.tp-dec-rb { gap: 10px; opacity: 0; translate: 0 24px; transition: opacity 600ms var(--ease), translate 600ms var(--ease); }
+.tp-dec-rb.on { opacity: 1; translate: 0 0; }
+.tp-tiras { position: absolute; left: var(--margen); right: var(--margen); bottom: 0; height: 62svh; display: flex; gap: 8px; }
+.tp-tira { --k: clamp(0, (var(--p, 0) - 0.04 - var(--i) * 0.1) / 0.22, 1); position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 22px; border-radius: var(--tp-radio) var(--tp-radio) 0 0; background: linear-gradient(180deg, color-mix(in srgb, var(--tono) 84%, #FFFFFF), var(--tono) 55%); color: #FFFFFF; transform: translateY(calc((1 - var(--k)) * 104%)); transition: flex-grow 700ms var(--tp-curva); }
+.tp-tira b { font: 600 clamp(18px, 1.7vw, 28px) var(--tp-f); letter-spacing: -0.03em; }
+.tp-tira .mono { font-size: 11px; color: rgba(255, 255, 255, 0.8); }
+.tp-tira-iso { position: absolute; top: 24px; left: 22px; width: clamp(44px, 4.4vw, 72px); }
+.tp-tira:first-child .tp-tira-iso { width: clamp(64px, 6.6vw, 110px); }
+.tp-tira > * { opacity: 0; translate: 0 14px; transition: opacity 500ms var(--ease), translate 500ms var(--ease); }
+.tp-tiras.on .tp-tira > * { opacity: 1; translate: 0 0; transition-delay: calc(var(--i) * 70ms); }
+.tp-principal::after { content: 'Producto principal'; position: absolute; top: 24px; right: 18px; padding: 5px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.2); font: 600 10px var(--tp-f); letter-spacing: 0.06em; text-transform: uppercase; opacity: 0; transition: opacity 500ms; }
+.tp-tiras.on .tp-principal::after { opacity: 1; }
+@media (hover: hover) and (min-width: 769px) {
+    .tp-tiras.on:hover .tp-tira { flex-grow: 0.7; }
+    .tp-tiras.on .tp-tira:hover { flex-grow: 2.2; }
+}
+
+/* =======================================================
+   DECISIÓN 03 · ARQUITECTURA
+   ======================================================= */
+/* La madre arriba; las líneas se dibujan y los productos cuelgan uno a uno con el scroll */
+.tp-arq { height: 240svh; }
+.tp-arq-escenario { grid-column: 1 / span 7; display: flex; flex-direction: column; }
+.tp-arq .tp-dec { grid-column: 9 / -1; }
+.tp-arq-madre { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: clamp(24px, 3vw, 44px); border-radius: 28px; color: #FFFFFF; background: radial-gradient(80% 120% at 50% 0%, var(--tp-campus), var(--tp-empresa) 70%); box-shadow: 0 30px 70px -30px rgba(45, 37, 96, 0.8); }
+.tp-arq-madre .tp-wm { width: min(260px, 46%); }
+.tp-arq-madre .mono { color: rgba(255, 255, 255, 0.7); }
+.tp-arq-lineas { width: 100%; height: 56px; overflow: visible; }
+.tp-arq-lineas path { fill: none; stroke: var(--tp-soft); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: calc(1 - clamp(0, (var(--p, 0) - 0.04 - var(--i) * 0.05) / 0.2, 1)); vector-effect: non-scaling-stroke; }
+.tp-arq-hijos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; list-style: none; }
+.tp-arq-hijos li { --k: clamp(0, (var(--p, 0) - 0.16 - var(--i) * 0.11) / 0.18, 1); display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px 12px 20px; border-radius: 22px; color: #FFFFFF; text-align: center; background: linear-gradient(180deg, color-mix(in srgb, var(--tono) 82%, #FFFFFF), var(--tono) 60%); box-shadow: 0 20px 40px -20px color-mix(in srgb, var(--tono) 80%, transparent); opacity: var(--k); transform: translateY(calc((1 - var(--k)) * 48px)) scale(calc(0.92 + var(--k) * 0.08)); transition: translate 500ms var(--tp-curva); }
+.tp-arq-iso { width: 52px; }
+.tp-lockup { display: flex; align-items: baseline; gap: 6px; }
+.tp-lockup .tp-wm { width: 58px; }
+.tp-lockup b { font: 600 15px var(--tp-f); letter-spacing: -0.02em; }
+.tp-arq-uso { font-size: 12px; line-height: 1.35; opacity: 0.85; }
+.tp-arq-hijos li.tp-arq-nuevo { color: var(--texto-3); background: transparent; border: 1.5px dashed var(--linea); box-shadow: none; }
+@media (hover: hover) { .tp-arq-hijos li:hover { translate: 0 -8px; } }
+
+/* =======================================================
+   DECISIÓN 05 · EL CEREBRO
+   ======================================================= */
+/* Entero, en piezas numeradas, de vuelta entero y probado en tres tamaños, todo con el scroll */
+.tp-cer { --sep: calc(clamp(0, (var(--p, 0) - 0.26) / 0.14, 1) - clamp(0, (var(--p, 0) - 0.66) / 0.1, 1)); --fin: clamp(0, (var(--p, 0) - 0.7) / 0.12, 1); height: 320svh; }
+.tp-cer .tp-dec { grid-column: 1 / span 4; }
+.tp-cer-escenario { grid-column: 6 / -1; display: flex; flex-direction: column; align-items: center; gap: 4svh; }
+.tp-cer-lema { position: relative; width: 100%; height: 1.4em; overflow: hidden; text-align: center; font: 500 clamp(20px, 1.8vw, 28px) var(--tp-f); letter-spacing: -0.02em; }
+.tp-cer-lema span { position: absolute; inset: 0; opacity: 0; transform: translateY(100%); transition: opacity 400ms, transform 600ms var(--tp-curva); }
+.tp-cer-lema span.on { opacity: 1; transform: translateY(0); }
+.tp-cer-svg { width: min(36vw, 44svh); transform: scale(calc(1 - var(--fin) * 0.22)); transform-origin: 50% 30%; }
+.tp-cer-svg svg { display: block; width: 100%; height: auto; overflow: visible; }
+.tp-pieza { fill: #FFFFFF; transform-box: fill-box; translate: calc(var(--dx) * var(--sep)) calc(var(--dy) * var(--sep)); }
+.tp-num { opacity: var(--sep); translate: calc(var(--dx) * var(--sep)) calc(var(--dy) * var(--sep)); }
+.tp-num circle { fill: var(--tp-empresa); }
+.tp-num text { fill: #FFFFFF; font: 600 34px var(--tp-f); text-anchor: middle; }
+.tp-cer-escala { display: flex; gap: 10px; margin-top: -6svh; opacity: 0; translate: 0 20px; transition: opacity 500ms var(--ease), translate 500ms var(--ease); }
+.tp-cer-escala.on { opacity: 1; translate: 0 0; }
+.tp-cer-escala > div { display: flex; align-items: center; gap: 12px; padding: 10px 14px 10px 10px; border-radius: 18px; background: rgba(255, 255, 255, 0.12); border: 1px solid var(--linea); }
+.tp-cer-mini { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 14px; background: #FFFFFF; color: var(--tp-connect); }
+.tp-cer-mini .tp-marca { width: var(--px); }
+.tp-cer-escala .riesgo .mono { color: #FFE2B8; }
+
+/* =======================================================
+   EL MANUAL EN HORIZONTAL
+   ======================================================= */
+.tp-manual { --n: 6; --ancho: 62vw; --gap: 2vw; height: 340svh; }
+.tp-manual .tp-fijo { display: flex; flex-direction: column; justify-content: center; }
+.tp-manual-cab { position: absolute; top: 84px; left: var(--margen); right: var(--margen); display: flex; justify-content: space-between; color: var(--texto-2); }
+.tp-manual-cab b { font-weight: 400; color: var(--texto); }
+.tp-manual-riel { display: flex; gap: var(--gap); width: max-content; padding: 0 var(--margen); transform: translateX(calc(var(--p, 0) * -1 * (var(--n) * var(--ancho) + (var(--n) - 1) * var(--gap) + 2 * var(--margen) - 100vw))); will-change: transform; }
+.tp-manual-riel figure { width: var(--ancho); display: flex; flex-direction: column; gap: 14px; }
+.tp-manual-riel img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: 14px; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.7); }
+.tp-manual-riel figcaption { color: var(--texto-2); }
+
+/* =======================================================
+   DECISIONES 06 A 10 · EL SITIO CON EL SCROLL
+   ======================================================= */
+/* tapin.cl baja con el scroll y se detiene en cada decisión; fuera del foco, el sitio se apaga */
+.tp-sitio { height: 700svh; background: radial-gradient(60% 50% at 30% 30%, rgba(155, 142, 240, 0.22), transparent 70%), var(--tp-papel); }
+.tp-sitio .tp-fijo { padding-top: 76px; padding-bottom: 40px; }
+.tp-sitio-nav { grid-column: 1 / span 8; height: calc(100svh - 116px); display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; background: #FFFFFF; box-shadow: 0 40px 90px -40px rgba(45, 37, 96, 0.45), 0 0 0 1px rgba(45, 37, 96, 0.08); }
+.tp-sitio-pantalla { position: relative; flex: 1; overflow: hidden; }
+.tp-sitio-lienzo { position: absolute; top: 0; left: 0; width: 100%; will-change: transform; }
+.tp-sitio-dd { position: absolute; left: calc(106px * var(--e, 1)); top: calc(80px * var(--e, 1)); width: calc(149px * var(--e, 1)); border-radius: calc(12px * var(--e, 1)); box-shadow: 0 12px 30px -8px rgba(17, 12, 60, 0.45); opacity: 0; transform: translateY(-8px); transition: opacity 400ms var(--ease), transform 500ms var(--tp-curva); }
+.tp-sitio[data-parada="0"] .tp-sitio-dd { opacity: 1; transform: none; transition-delay: 250ms; }
+.tp-sitio-caja { position: absolute; top: 0; left: 0; width: var(--w); height: var(--h); transform: translate(var(--x), var(--y)); border: 1.5px solid var(--tp-connect); border-radius: 12px; box-shadow: 0 0 0 200vmax rgba(28, 26, 46, 0.34); opacity: 0; transition: opacity 350ms var(--ease); pointer-events: none; }
+.tp-sitio-caja.on { opacity: 1; }
+.tp-sitio-caja span { position: absolute; bottom: 100%; left: -1.5px; margin-bottom: 8px; padding: 5px 11px; border-radius: 999px; background: var(--tp-connect); color: #FFFFFF; white-space: nowrap; font-size: 11px; }
+.tp-sitio-caja.abajo span { bottom: auto; top: 100%; margin: 8px 0 0; }
+.tp-sitio-indice { grid-column: 10 / -1; list-style: none; align-self: center; }
+.tp-sitio-indice li { padding: 16px 0; border-top: 1px solid var(--linea); }
+.tp-sitio-indice li:last-child { border-bottom: 1px solid var(--linea); }
+.tp-sitio-indice button { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; text-align: left; }
+.tp-sitio-indice b { font: 600 clamp(18px, 1.5vw, 23px) / 1.1 var(--tp-f); letter-spacing: -0.03em; color: var(--texto-3); transition: color 300ms; }
+.tp-sitio-indice p { max-height: 0; overflow: hidden; opacity: 0; font-size: 15px; line-height: 1.5; color: var(--texto-2); transition: max-height 600ms var(--ease), opacity 400ms, margin 600ms var(--ease); }
+.tp-sitio-indice li.actual b { color: var(--texto); }
+.tp-sitio-indice li.actual p { max-height: 140px; opacity: 1; margin-top: 10px; }
+.tp-sitio-indice li:not(.actual):not(.ya) .tp-dec-n::before { background: var(--texto-3); }
+@media (hover: hover) { .tp-sitio-indice li:not(.actual) button:hover b { color: var(--texto-2); } }
+
+/* =======================================================
+   DECISIÓN 11 · MÓDULOS EN VIVO
+   ======================================================= */
+.tp-vivo .tp-grilla { align-items: start; }
+.tp-vivo .tp-dec { grid-column: 1 / span 4; position: sticky; top: 22svh; }
+.tp-vivo-grilla { grid-column: 5 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tp-vivo-c { position: relative; display: flex; flex-direction: column; gap: 14px; padding: 14px 14px 18px; border-radius: var(--tp-radio); background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea), 0 30px 60px -40px rgba(45, 37, 96, 0.4); opacity: 0; translate: 0 40px; transition: opacity 800ms var(--ease), translate 800ms var(--ease); }
+.tp-vivo-c:nth-child(2) { transition-delay: 90ms; } .tp-vivo-c:nth-child(3) { transition-delay: 180ms; } .tp-vivo-c:nth-child(4) { transition-delay: 270ms; }
+.tp-vivo-c.visto { opacity: 1; translate: 0 0; }
+.tp-vivo-c .tp-mk { border-radius: 14px; overflow: hidden; background: radial-gradient(80% 80% at 50% 30%, #FFFFFF, var(--tp-tint)); }
+.tp-vivo-c figcaption { display: flex; flex-direction: column; gap: 4px; padding: 0 6px; }
+.tp-vivo-c b { font: 600 16px var(--tp-f); letter-spacing: -0.02em; }
+.tp-vivo-c span { font-size: 14px; color: var(--texto-2); }
+.tp-destacado { box-shadow: 0 0 0 2px var(--tp-connect), 0 30px 60px -40px rgba(45, 37, 96, 0.5); }
+.tp-destacado::before { content: 'Decisión 11'; position: absolute; top: 24px; left: 24px; z-index: 2; padding: 5px 10px; border-radius: 999px; background: var(--tp-connect); color: #FFFFFF; font: 11px var(--mono); }
+
+/* =======================================================
+   EN EL TELÉFONO
+   ======================================================= */
+.tp-movil { overflow: hidden; }
+.tp-movil-tels { display: flex; justify-content: center; align-items: center; gap: clamp(16px, 4vw, 72px); padding: 80px 0; }
+.tp-cel { width: clamp(150px, 20vw, 310px); border: 10px solid #0E0B1C; border-radius: 46px; overflow: hidden; background: #0E0B1C; box-shadow: 0 60px 100px -40px rgba(14, 11, 28, 0.7); transform: translateY(calc(var(--v, 0) * var(--vel) * 1px)); }
+.tp-cel img { aspect-ratio: 1170 / 2532; border-radius: 36px; }
+.tp-movil .tp-pie { color: var(--texto-2); max-width: 1440px; margin: 24px auto 0; }
+
+/* =======================================================
+   RESULTADO
+   ======================================================= */
+.tp-cifras { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--medianil); list-style: none; margin-top: clamp(64px, 7vw, 112px); }
+.tp-cifras li { display: flex; flex-direction: column; gap: 12px; padding-top: 18px; border-top: 1px solid var(--linea); }
+.tp-cifras b { font: 600 clamp(52px, 6vw, 108px) / 0.9 var(--tp-f); letter-spacing: -0.055em; color: var(--texto); font-variant-numeric: tabular-nums; }
+.tp-cifras span { max-width: 24ch; color: var(--texto-2); }
+.tp-contexto { grid-column: 4 / span 7; margin-top: 56px; font-size: var(--tp-t4); line-height: 1.5; color: var(--texto-2); }
+.tp-verificar { display: inline-block; margin-top: 10px; padding: 3px 9px; border-radius: 6px; border: 1px dashed #F5C26B; color: #F5C26B; font-size: 11px; }
+.tp-citas { grid-column: 4 / -1; display: grid; margin-top: clamp(72px, 8vw, 120px); }
+.tp-citas blockquote { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 18px; opacity: 0; translate: 0 16px; transition: opacity 700ms var(--ease), translate 700ms var(--ease); }
+.tp-citas blockquote.on { opacity: 1; translate: 0 0; }
+.tp-citas p { font: 500 clamp(26px, 2.6vw, 44px) / 1.15 var(--tp-f); letter-spacing: -0.03em; max-width: 30ch; }
+.tp-citas p::before { content: '“'; } .tp-citas p::after { content: '”'; }
+.tp-citas cite { font-style: normal; color: var(--texto-2); }
+.tp-citas .tp-verificar { grid-area: 2 / 1; justify-self: start; margin-top: 24px; }
+.tp-vivo-link { grid-column: 4 / -1; justify-self: start; display: inline-flex; align-items: center; gap: 10px; margin-top: 64px; padding: 12px 20px; border-radius: 999px; border: 1px solid var(--linea); font-weight: 500; transition: background-color 300ms var(--ease), border-color 300ms; }
+.tp-punto { width: 8px; height: 8px; border-radius: 50%; background: var(--acento); }
+@media (hover: hover) { .tp-vivo-link:hover { background: rgba(238, 237, 254, 0.08); border-color: var(--acento); } }
+
+/* =======================================================
+   APRENDIZAJE Y CRÉDITOS
+   ======================================================= */
+.tp-giro { grid-column: 4 / -1; display: flex; align-items: center; gap: 24px; margin-top: clamp(56px, 6vw, 96px); }
+.tp-giro-iso { display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--texto-2); }
+.tp-giro-c { display: grid; place-items: center; width: clamp(88px, 8vw, 128px); aspect-ratio: 1; border-radius: 50%; background: var(--tono); color: #FFFFFF; }
+.tp-giro-c .tp-marca { width: 56%; }
+.tp-giro-linea { flex: 0 1 220px; height: 2px; background: linear-gradient(90deg, var(--tp-campus), var(--tp-connect)); transform: scaleX(0); transform-origin: 0 50%; transition: transform 1200ms var(--ease) 300ms; }
+.tp-giro.visto .tp-giro-linea { transform: scaleX(1); }
+.tp-giro b { font-weight: 400; }
+.tp-creditos { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--medianil); margin-top: clamp(72px, 8vw, 120px); }
+.tp-creditos > div { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--linea); }
+.tp-creditos dt { color: var(--texto-3); }
+
+/* =======================================================
+   VISTA MÓVIL
+   ======================================================= */
+@media (max-width: 768px) {
+    .tp { --hx: 0vw; --hy: 20svh; --hs: 0.76; }
+    .tp-grilla { grid-template-columns: 1fr; row-gap: 28px; }
+    .tp-grilla > * { grid-column: 1 / -1 !important; }
+    .tp-hero-arriba { top: 60px; font-size: 11px; }
+    .tp-hero-arriba span:nth-child(2) { display: none; }
+    .tp-hero-txt { top: 92px; bottom: auto; width: 44vw; gap: 10px; }
+    .tp-hero-txt p { font-size: 15px; }
+    .tp-hero-mk { left: auto; right: 2vw; top: auto; bottom: 8svh; width: 70vw; }
+    .tp-hero-pista { display: none; }
+    .tp-etq { padding-top: 0; }
+    .tp-tres, .tp-creditos { grid-template-columns: 1fr; }
+    .tp-ficha { grid-template-columns: 1fr 1fr; }
+    .tp-pista-forky { top: 16svh; height: 26svh; }
+    .tp-forky-corre { width: 26svh; }
+    .tp-fijo.tp-grilla { align-content: center; padding-top: 64px; }
+    .tp-dec { gap: 10px; }
+    .tp-forky .tp-dec p:not(.tp-porque), .tp-cer .tp-dec p, .tp-arq .tp-dec p:not(.tp-porque), .tp-arq .tp-mas { display: none; }
+    .tp-fk-escenario { width: min(78vw, 40svh); }
+    .tp-fk-regla { font-size: 10px; bottom: 4svh; }
+    .tp-par-fotos { grid-template-columns: 1fr; }
+    .tp-par-fotos figure { aspect-ratio: 4 / 3; }
+    .tp-tels { padding: 24px 0 0; }
+    .tp-tel { width: 40vw; }
+    .tp-rb-arriba { flex-direction: column; align-items: flex-start; justify-content: flex-end; height: 40svh; gap: 14px; }
+    .tp-rb-arriba .tp-cap-txt p, .tp-dec-rb p { display: none; }
+    .tp-dec-rb h3 { font-size: 20px; }
+    .tp-tiras { height: 56svh; gap: 5px; }
+    .tp-tira { padding: 12px 10px; }
+    .tp-tira .mono { font-size: 9px; }
+    .tp-tira-iso { left: 10px; top: 14px; width: 34px; }
+    .tp-tira:first-child .tp-tira-iso { width: 52px; }
+    .tp-principal::after { display: none; }
+    .tp-arq .tp-dec { order: -1; }
+    .tp-arq-hijos { grid-template-columns: 1fr 1fr; margin-top: 10px; }
+    .tp-arq-lineas { display: none; }
+    .tp-arq-hijos li { padding: 16px 10px; gap: 10px; }
+    .tp-cer-svg { width: 58vw; }
+    .tp-cer-escala { margin-top: -2svh; }
+    .tp-cer-escala > div { flex-direction: column; padding: 8px; gap: 6px; }
+    .tp-cer-mini { width: 52px; height: 52px; }
+    .tp-manual { --ancho: 84vw; --gap: 4vw; }
+    .tp-url { top: 28svh; padding: 14px 22px; }
+    .tp-sitio .tp-fijo { display: flex; flex-direction: column; justify-content: center; gap: 18px; padding-top: 64px; }
+    .tp-sitio-nav { height: 56svh; width: 100%; flex: none; }
+    .tp-sitio-indice li { display: none; border: 0 !important; padding: 0; }
+    .tp-sitio-indice li.actual { display: block; }
+    .tp-vivo .tp-dec { position: static; }
+    .tp-vivo-grilla { grid-template-columns: 1fr; }
+    .tp-movil-tels { padding: 32px 0; }
+    .tp-cel { width: 30vw; border-width: 6px; border-radius: 28px; }
+    .tp-cel img { border-radius: 22px; }
+    .tp-pie { flex-direction: column; gap: 4px; }
+    .tp-cifras { grid-template-columns: 1fr 1fr; row-gap: 40px; }
+    .tp-giro { gap: 14px; }
+}
+
+/* =======================================================
+   MOVIMIENTO REDUCIDO
+   ======================================================= */
+@media (prefers-reduced-motion: reduce) {
+    .tp-hero-pantalla img, .tp-forky-corre, .tp-hero-pista::after, .tp-url-cursor { animation: none; }
+    .tp-hero.entra * { animation: none !important; }
+}

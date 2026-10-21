@@ -6,20 +6,328 @@
     <title>Tap In · Caso · agustín.design</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../works/works-base.css">
-    <link rel="stylesheet" href="caso-base.css">
-    <link rel="stylesheet" href="tema-tapin.css">
+    <link rel="stylesheet" href="caso-siguiente.css">
+    <link rel="stylesheet" href="tapin.css">
 </head>
-<body class="tema-tp">
-    <header class="barra"><a href="#" class="logo">agustín<span>.</span>design</a><ul><li><a href="#">About</a></li><li><a href="#">Works</a></li><li><a href="#">Contact</a></li></ul><a class="der mono" href="../works/w3-pila.html">← Índice</a></header>
-    <main data-caso></main>
-    <script src="datos-tapin.js"></script>
-    <script src="caso-piezas.js"></script>
-    <script src="tema-tapin.js"></script>
+<body class="tp">
+    <header class="barra" data-barra><a href="#" class="logo">agustín<span>.</span>design</a><ul><li><a href="#">About</a></li><li><a href="#">Works</a></li><li><a href="#">Contact</a></li></ul><a class="der mono" href="../works/w3-pila.html">← Índice</a></header>
+
+    <main>
+        <!-- =======================================================
+             HERO: EL RESULTADO, Y AL BAJAR SE ENTRA AL SITIO
+             ======================================================= -->
+        <section class="tp-hero" data-escena="hero">
+            <div class="tp-fijo">
+                <div class="tp-hero-fondo" aria-hidden="true"></div>
+                <div class="tp-hero-arriba mono"><span>02 · Tap In</span><span>Marca · Producto · Web</span><a href="https://tapin.cl" target="_blank" rel="noopener">2025–26 · tapin.cl ↗</a></div>
+                <div class="tp-hero-nav" aria-hidden="true">
+                    <div class="tp-nav-barra"><i></i><i></i><i></i><span>tapin.cl</span></div>
+                    <div class="tp-hero-pantalla"><img src="media/tp-larga.jpg" alt="" decoding="async"></div>
+                </div>
+                <div class="tp-hero-mk" aria-hidden="true"><div class="tp-mk" data-transparente data-mk="../works/sitios/tapin/mockups/mockup-comedor-modulo.html"><img src="media/tp-mk-comedor.png" alt=""></div></div>
+                <div class="tp-hero-txt">
+                    <h1 aria-label="Tap In"><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span></h1>
+                    <p>De la cafetería del campus a la plataforma del colegio.</p>
+                </div>
+                <span class="tp-hero-pista mono" aria-hidden="true">Baja para entrar</span>
+            </div>
+        </section>
+
+        <!-- =======================================================
+             RESUMEN
+             ======================================================= -->
+        <section class="tp-mod tp-claro tp-intro">
+            <div class="tp-grilla">
+                <span class="tp-etq mono">Resumen</span>
+                <p class="tp-enunciado" data-luz>Diseñé la marca de Tap In desde el día uno. Cuando la empresa se reinventó, <em>rehice la marca y programé su web.</em></p>
+                <div class="tp-tres">
+                    <div><span class="mono">El encargo</span><p>Una marca que sobreviviera al pivote, de la comida a los colegios.</p></div>
+                    <div><span class="mono">Lo que hice</span><p>Marca, sistema de productos y la web, de punta a punta.</p></div>
+                    <div><span class="mono">El resultado</span><p>tapin.cl en producción y una sola marca para todo el ecosistema.</p></div>
+                </div>
+                <dl class="tp-ficha">
+                    <div><dt class="mono">Cliente</dt><dd>Tap In · Chile y Perú</dd></div>
+                    <div><dt class="mono">Rol</dt><dd>Diseñador fundador</dd></div>
+                    <div><dt class="mono">Período</dt><dd>Ene 2025 a hoy</dd></div>
+                    <div><dt class="mono">Equipo</dt><dd>Cofundadores y su equipo de desarrollo</dd></div>
+                    <div><dt class="mono">Stack</dt><dd>HTML, CSS y JS vanilla</dd></div>
+                    <div><dt class="mono">En vivo</dt><dd><a href="https://tapin.cl" target="_blank" rel="noopener">tapin.cl ↗</a></dd></div>
+                </dl>
+            </div>
+        </section>
+
+        <!-- =======================================================
+             CAPÍTULO 01 · EL ORIGEN
+             ======================================================= -->
+        <section class="tp-cap tp-oscuro tp-cap-1" data-escena="cap">
+            <div class="tp-fijo">
+                <div class="tp-cap-txt">
+                    <span class="tp-cap-n mono">Capítulo 01 · 2025</span>
+                    <h2>El origen</h2>
+                    <p>Una app para pedir comida sin filas en la universidad.</p>
+                </div>
+                <div class="tp-pista-forky" aria-hidden="true"><span class="tp-marca tp-forky-corre" style="--svg:url('media/tp-forky.svg')"></span></div>
+            </div>
+        </section>
+
+        <!-- --- DECISIÓN 01 · FORKY, PASO A PASO --- -->
+        <section class="tp-forky tp-claro" data-escena="forky" data-pasos="5">
+            <div class="tp-fijo tp-grilla">
+                <aside class="tp-dec">
+                    <span class="tp-dec-n mono">Decisión 01</span>
+                    <h3>Unos cubiertos que corren</h3>
+                    <p>Un tenedor y un cuchillo que, con patas, se vuelven un personaje en movimiento.</p>
+                    <p class="tp-porque"><span class="mono">Por qué</span>Una doble lectura se recuerda. Forky quedó como el ADN de todo el ecosistema.</p>
+                </aside>
+                <div class="tp-fk-escenario" aria-label="De cubiertos a personaje, en cinco pasos" role="img">
+                    <span class="tp-fk-capa" data-paso="0"><span class="tp-marca" style="--svg:url('media/tp-forky-paso1.png')"></span></span>
+                    <span class="tp-fk-capa" data-paso="1"><span class="tp-marca" style="--svg:url('media/tp-forky-paso2.png')"></span></span>
+                    <span class="tp-fk-capa" data-paso="2"><span class="tp-marca" style="--svg:url('media/tp-forky-paso3.png')"></span></span>
+                    <span class="tp-fk-capa" data-paso="3"><span class="tp-marca" style="--svg:url('media/tp-forky-paso4.png')"></span></span>
+                    <span class="tp-fk-capa tp-fk-final" data-paso="4"><span class="tp-marca" style="--svg:url('media/tp-forky.svg')"></span><b>Forky</b></span>
+                </div>
+                <ol class="tp-fk-regla mono">
+                    <li data-paso="0">01 · Cubiertos</li><li data-paso="1">02 · En movimiento</li><li data-paso="2">03 · El cuerpo</li><li data-paso="3">04 · Casi</li><li data-paso="4">05 · Forky</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- --- LA MARCA EN EL CAMPUS --- -->
+        <figure class="tp-plena" data-par>
+            <img src="media/ed-foto8.webp" alt="Estudiante con la app de Tap In y una lata de Red Bull en el campus" loading="lazy" decoding="async">
+            <figcaption class="tp-pie mono"><span>Campus UC · 2025</span><span>La marca, en la calle</span></figcaption>
+        </figure>
+        <div class="tp-par-fotos">
+            <figure data-revela><img src="media/ed-foto3.webp" alt="Estudiante mostrando la app en el teléfono" loading="lazy" decoding="async"></figure>
+            <figure data-revela><img src="media/ed-foto4.webp" alt="Promotora con tarjetas de Tap In frente al pendón" loading="lazy" decoding="async"></figure>
+        </div>
+
+        <!-- --- DECISIÓN 02 · UN QR QUE SE ENTIENDE DE PIE --- -->
+        <section class="tp-mod tp-morado tp-campus">
+            <div class="tp-grilla">
+                <aside class="tp-dec" data-revela>
+                    <span class="tp-dec-n mono">Decisión 02</span>
+                    <h3>La marca salió al campus</h3>
+                    <p>60 QR en los locales de la UC y promociones con Red Bull y Banco de Chile dentro de la app.</p>
+                    <p class="tp-porque"><span class="mono">Por qué</span>La entrada era un QR: tenía que entenderse de pie, con hambre y frente al mesón.</p>
+                    <ul class="tp-datos">
+                        <li><b data-cuenta="60">60</b><span>QR en locales de la UC</span></li>
+                        <li><b data-cuenta="2">2</b><span>alianzas con marcas</span></li>
+                    </ul>
+                </aside>
+                <div class="tp-tels">
+                    <div class="tp-tel" data-par style="--vel: -50"><div class="tp-tel-app"><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span><span>Promos</span></div><img src="media/tp-redbull-v.jpg" alt="Promoción de Red Bull dentro de la app" loading="lazy"><span class="mono">Red Bull</span></div>
+                    <div class="tp-tel" data-par style="--vel: 40"><div class="tp-tel-app"><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span><span>Promos</span></div><img src="media/tp-bancochile.jpg" alt="Promoción de Banco de Chile dentro de la app" loading="lazy"><span class="mono">Banco de Chile</span></div>
+                </div>
+            </div>
+        </section>
+        <figure class="tp-plena" data-par>
+            <img src="media/ed-foto6.webp" alt="Stand de Tap In en la UC con estudiantes" loading="lazy" decoding="async">
+            <figcaption class="tp-pie mono"><span>Stand en la UC</span><span>Pide antes de llegar, retira sin esperas</span></figcaption>
+        </figure>
+
+        <!-- =======================================================
+             CAPÍTULO 02 · EL REBIRTH (Y DECISIÓN 04 · LA PALETA)
+             ======================================================= -->
+        <section class="tp-rebirth tp-oscuro" data-escena="rebirth">
+            <div class="tp-fijo">
+                <div class="tp-rb-arriba">
+                    <div class="tp-cap-txt">
+                        <span class="tp-cap-n mono">Capítulo 02 · Feb a abr 2026</span>
+                        <h2>El Rebirth</h2>
+                        <p>De app de comida a sistema para colegios. Antes de diseñar, un cuestionario a los socios.</p>
+                    </div>
+                    <aside class="tp-dec tp-dec-rb" data-rango="0.55-1.01">
+                        <span class="tp-dec-n mono">Decisión 04</span>
+                        <h3>Un tono por producto</h3>
+                        <p>Una sola familia morada. Connect, el principal, no lleva el más oscuro: su público es escolar.</p>
+                    </aside>
+                </div>
+                <div class="tp-tiras" data-rango="0.55-1.01">
+                    <div class="tp-tira" style="--tono:#2D2560; --i:0"><span class="tp-tira-iso"><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span></span><b>Empresa</b><span class="mono">#2D2560 · Corporativo y fondos</span></div>
+                    <div class="tp-tira" style="--tono:#4A3CAE; --i:1"><span class="tp-tira-iso"><span class="tp-marca" style="--svg:url('media/tp-forky.svg')"></span></span><b>Campus</b><span class="mono">#4A3CAE · Comida sin filas</span></div>
+                    <div class="tp-tira tp-principal" style="--tono:#6B5CE7; --i:2"><span class="tp-tira-iso"><span class="tp-marca" style="--svg:url('media/tp-cerebro.svg')"></span></span><b>Connect</b><span class="mono">#6B5CE7 · El sistema del colegio</span></div>
+                    <div class="tp-tira" style="--tono:#9B8EF0; --i:3"><span class="tp-tira-iso"><i class="tp-pendiente"></i></span><b>Health</b><span class="mono">#9B8EF0 · En camino</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- DECISIÓN 03 · UNA MADRE QUE LIDERA --- -->
+        <section class="tp-arq tp-claro" data-escena="arq">
+            <div class="tp-fijo tp-grilla">
+                <div class="tp-arq-escenario">
+                    <div class="tp-arq-madre"><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span><span class="mono">Marca madre · lidera siempre</span></div>
+                    <svg class="tp-arq-lineas" viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true">
+                        <path d="M200 0 C200 34 50 26 50 60" pathLength="1" style="--i:0"/><path d="M200 0 C200 34 150 26 150 60" pathLength="1" style="--i:1"/><path d="M200 0 C200 34 250 26 250 60" pathLength="1" style="--i:2"/><path d="M200 0 C200 34 350 26 350 60" pathLength="1" style="--i:3"/>
+                    </svg>
+                    <ul class="tp-arq-hijos">
+                        <li style="--tono:#4A3CAE; --i:0"><span class="tp-arq-iso"><span class="tp-marca" style="--svg:url('media/tp-forky.svg')"></span></span><span class="tp-lockup"><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span><b>Campus</b></span><span class="tp-arq-uso">Pedir comida sin filas en la universidad</span></li>
+                        <li style="--tono:#6B5CE7; --i:1"><span class="tp-arq-iso"><span class="tp-marca" style="--svg:url('media/tp-cerebro.svg')"></span></span><span class="tp-lockup"><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span><b>Connect</b></span><span class="tp-arq-uso">El sistema del colegio, producto principal</span></li>
+                        <li style="--tono:#9B8EF0; --i:2"><span class="tp-arq-iso"><i class="tp-pendiente"></i></span><span class="tp-lockup"><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span><b>Health</b></span><span class="tp-arq-uso">Servicios internos de salud, en camino</span></li>
+                        <li class="tp-arq-nuevo" style="--i:3"><span class="tp-arq-iso"><i class="tp-pendiente"></i></span><span class="tp-lockup"><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span><b>+1</b></span><span class="tp-arq-uso">El próximo producto, cuando llegue</span></li>
+                    </ul>
+                </div>
+                <aside class="tp-dec">
+                    <span class="tp-dec-n mono">Decisión 03</span>
+                    <h3>Una madre que lidera</h3>
+                    <p>tap in arriba; Campus, Connect y Health cuelgan de ella con su nombre y su tono.</p>
+                    <p class="tp-porque"><span class="mono">Por qué</span>Si mañana hay un cuarto producto, entra solo.</p>
+                    <details class="tp-mas"><summary class="mono">Más contexto</summary><p>El wordmark nunca cambia: lo que distingue a cada producto es su isotipo, su nombre y su tono. Así la marca madre se lee primero en cualquier pieza, del QR del casino al sitio institucional.</p></details>
+                </aside>
+            </div>
+        </section>
+
+        <!-- --- DECISIÓN 05 · UN CEREBRO HECHO DE PIEZAS --- -->
+        <section class="tp-cer tp-connect" data-escena="cerebro">
+            <div class="tp-fijo tp-grilla">
+                <aside class="tp-dec">
+                    <span class="tp-dec-n mono">Decisión 05</span>
+                    <h3>Un cerebro hecho de piezas</h3>
+                    <p>La silueta habla de inteligencia; el interior, de conexión. Connect une los servicios del colegio.</p>
+                    <p class="tp-porque"><span class="mono">Aprobado</span>El 24 de marzo de 2026, con la paleta.</p>
+                </aside>
+                <div class="tp-cer-escenario">
+                    <div class="tp-cer-lema"><span data-rango="0-0.3">A la rápida: <b>un cerebro.</b></span><span data-rango="0.3-0.74">Si te fijas: <b>cuatro piezas.</b></span><span data-rango="0.74-1.01">Y a 24 px, <b>se sigue leyendo.</b></span></div>
+                    <div class="tp-cer-svg" data-cerebro role="img" aria-label="Isotipo de Tap In Connect: un cerebro formado por cuatro piezas de puzzle"></div>
+                    <div class="tp-cer-escala" data-rango="0.74-1.01">
+                        <div><span class="tp-cer-mini" style="--px:60px"><span class="tp-marca" style="--svg:url('media/tp-cerebro.svg')"></span></span><span class="mono">60 px · Pasa</span></div>
+                        <div><span class="tp-cer-mini" style="--px:32px"><span class="tp-marca" style="--svg:url('media/tp-cerebro.svg')"></span></span><span class="mono">32 px · Mínimo</span></div>
+                        <div class="riesgo"><span class="tp-cer-mini" style="--px:24px"><span class="tp-marca" style="--svg:url('media/tp-cerebro.svg')"></span></span><span class="mono">24 px · Riesgo</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- EL MANUAL, EN HORIZONTAL --- -->
+        <section class="tp-manual tp-oscuro" data-escena="manual">
+            <div class="tp-fijo">
+                <div class="tp-manual-cab"><span class="mono">El manual · Sistema de identidad 2026</span><span class="mono"><b data-manual-n>01</b> / 06</span></div>
+                <div class="tp-manual-riel">
+                    <figure><img src="media/connect-portada.jpg" alt="Portada del manual de identidad de Tap In" loading="lazy"><figcaption class="mono">Portada</figcaption></figure>
+                    <figure><img src="media/connect-sistema.jpg" alt="Lámina del sistema de productos" loading="lazy"><figcaption class="mono">El sistema</figcaption></figure>
+                    <figure><img src="media/connect-adn.jpg" alt="Lámina del ADN del sistema" loading="lazy"><figcaption class="mono">El ADN</figcaption></figure>
+                    <figure><img src="media/connect-paleta.jpg" alt="Lámina de la paleta" loading="lazy"><figcaption class="mono">La paleta</figcaption></figure>
+                    <figure><img src="media/connect-tipografia.jpg" alt="Lámina de tipografía, Poppins" loading="lazy"><figcaption class="mono">Una familia, siempre</figcaption></figure>
+                    <figure><img src="media/connect-cerebro.jpg" alt="Lámina del isotipo de Connect" loading="lazy"><figcaption class="mono">El cerebro</figcaption></figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- =======================================================
+             CAPÍTULO 03 · LA WEB
+             ======================================================= -->
+        <section class="tp-cap tp-oscuro tp-cap-3" data-escena="url">
+            <div class="tp-fijo">
+                <div class="tp-cap-txt">
+                    <span class="tp-cap-n mono">Capítulo 03 · Abr a sep 2026</span>
+                    <h2>La web</h2>
+                    <p>Diseñada y programada por mí, para que un director entienda en segundos.</p>
+                </div>
+                <div class="tp-url" aria-hidden="true"><span class="tp-url-candado"></span><span class="tp-url-txt" data-url="tapin.cl"></span><i class="tp-url-cursor"></i><span class="tp-url-carga"></span></div>
+            </div>
+        </section>
+
+        <!-- --- DECISIONES 06 A 10 · EL SITIO, BAJANDO CON EL SCROLL --- -->
+        <section class="tp-sitio tp-claro" data-escena="sitio">
+            <div class="tp-fijo tp-grilla">
+                <div class="tp-sitio-nav">
+                    <div class="tp-nav-barra"><i></i><i></i><i></i><span>tapin.cl</span></div>
+                    <div class="tp-sitio-pantalla">
+                        <div class="tp-sitio-lienzo">
+                            <img src="media/tp-larga.jpg" alt="El sitio tapin.cl completo" loading="lazy" decoding="async">
+                            <img class="tp-sitio-dd" src="media/tp-dd-panel.jpg" alt="" aria-hidden="true">
+                        </div>
+                        <div class="tp-sitio-caja"><span class="mono"></span></div>
+                    </div>
+                </div>
+                <ol class="tp-sitio-indice">
+                    <li data-parada data-caja="90,18,1280,200" data-nota="Menú · Soluciones"><button type="button"><span class="tp-dec-n mono">Decisión 06</span><b>Un menú, cuatro preguntas</b></button><p>Qué hace, si funciona en mi colegio, quiénes son y cómo los contacto. "Soluciones" y no "Productos": nadie quiere comprar un catálogo.</p></li>
+                    <li data-parada data-caja="200,930,1100,170" data-nota="Los colegios que ya lo usan"><button type="button"><span class="tp-dec-n mono">Decisión 07</span><b>Primero, confianza</b></button><p>El producto funcionando en el hero y, justo debajo, los colegios que ya lo usan. El director ve a sus pares antes de dudar.</p></li>
+                    <li data-parada data-caja="180,2075,1080,590" data-nota="Pestañas de módulos"><button type="button"><span class="tp-dec-n mono">Decisión 08</span><b>Módulos, no pasos</b></button><p>Sin números: pestañas para elegir qué resolver primero, porque cada módulo se contrata por separado.</p></li>
+                    <li data-parada data-caja="150,2790,1140,380" data-nota="Todo conectado, en claro"><button type="button"><span class="tp-dec-n mono">Decisión 09</span><b>De oscuro a claro</b></button><p>Cuando llegó el producto real, la web se reestructuró y pasó a fondo claro: institucional antes que tecnológico.</p></li>
+                    <li data-parada data-caja="120,3400,1200,600" data-nota="Las dudas, a la vista"><button type="button"><span class="tp-dec-n mono">Decisión 10</span><b>Las objeciones, sin acordeón</b></button><p>Las dudas del directivo con la respuesta abierta al lado: nada que tenga que adivinar ni desplegar.</p></li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- --- DECISIÓN 11 · LOS MÓDULOS EN VIVO --- -->
+        <section class="tp-mod tp-claro tp-vivo">
+            <div class="tp-grilla">
+                <aside class="tp-dec" data-revela>
+                    <span class="tp-dec-n mono">Decisión 11</span>
+                    <h3>Un mockup con empatía</h3>
+                    <p>En el comedor cambié un "acceso denegado" por pago, validación y aviso de saldo.</p>
+                    <p class="tp-porque"><span class="mono">Por qué</span>Que un niño no almuerce es duro para una familia.</p>
+                    <details class="tp-mas"><summary class="mono">Más contexto</summary><p>Los ocho mockups del sitio están programados con datos verosímiles y se animan solos: muestran el producto sin capturas que envejecen ni datos reales de colegios.</p></details>
+                </aside>
+                <div class="tp-vivo-grilla">
+                    <figure class="tp-vivo-c tp-destacado" data-revela><div class="tp-mk" data-mk="../works/sitios/tapin/mockups/mockup-comedor-modulo.html"><img src="media/tp-mk-comedor.png" alt=""></div><figcaption><b>Comedor Escolar</b><span>Pago, validación y aviso al apoderado</span></figcaption></figure>
+                    <figure class="tp-vivo-c" data-revela><div class="tp-mk" data-mk="../works/sitios/tapin/mockups/mockup-cpa-cartola.html"><img src="media/tp-mk-cpa.png" alt=""></div><figcaption><b>Centro de Padres</b><span>La cartola bancaria se clasifica sola</span></figcaption></figure>
+                    <figure class="tp-vivo-c" data-revela><div class="tp-mk" data-mk="../works/sitios/tapin/mockups/mockup-gestion-tarea.html"><img src="media/tp-mk-gestion.png" alt=""></div><figcaption><b>Gestión Interna</b><span>Una tarea que llega por WhatsApp</span></figcaption></figure>
+                    <figure class="tp-vivo-c" data-revela><div class="tp-mk" data-mk="../works/sitios/tapin/mockups/mockup-talleres-modulo.html"><img src="media/tp-mk-talleres.png" alt=""></div><figcaption><b>Talleres y Ligas</b><span>Los cupos se llenan y se cierran solos</span></figcaption></figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- EN EL TELÉFONO --- -->
+        <section class="tp-mod tp-morado tp-movil">
+            <div class="tp-movil-tels">
+                <div class="tp-cel" data-par style="--vel: 70"><img src="media/tp-cel-inicio.jpg" alt="Inicio de tapin.cl en el teléfono" loading="lazy"></div>
+                <div class="tp-cel" data-par style="--vel: -40"><img src="media/tp-cel-comedor.jpg" alt="Módulo de comedor en el teléfono" loading="lazy"></div>
+                <div class="tp-cel" data-par style="--vel: 90"><img src="media/tp-cel-gestion.jpg" alt="Módulo de gestión interna en el teléfono" loading="lazy"></div>
+            </div>
+            <p class="tp-pie mono"><span>tapin.cl en el teléfono</span><span>La misma web, diseñada y programada a la par</span></p>
+        </section>
+
+        <!-- =======================================================
+             RESULTADO
+             ======================================================= -->
+        <section class="tp-mod tp-oscuro tp-resultado">
+            <div class="tp-grilla">
+                <span class="tp-etq mono">Resultado</span>
+                <h2 class="tp-titulo">Lo que quedó andando</h2>
+                <ul class="tp-cifras">
+                    <li data-revela><b data-cuenta="9">9</b><span>páginas en producción, diseñadas y programadas</span></li>
+                    <li data-revela><b data-cuenta="40000" data-pre="≈">≈40.000</b><span>líneas de código propio, sin frameworks</span></li>
+                    <li data-revela><b data-cuenta="8">8</b><span>mockups animados con datos verosímiles</span></li>
+                    <li data-revela><b data-cuenta="3">3</b><span>productos en una sola familia de marca</span></li>
+                </ul>
+                <p class="tp-contexto">Según la empresa, Campus llegó a más de 27.000 estudiantes en dos campus de la UC, y Connect a más de 15.000 familias en Chile y Perú. <span class="tp-verificar mono">Cifras de la empresa, por confirmar</span></p>
+                <div class="tp-citas" data-citas>
+                    <blockquote class="on"><p>En una sola imagen se entiende cómo funciona. Eso es lo que teníamos que lograr.</p><cite class="mono">Cofundador de Tap In</cite></blockquote>
+                    <blockquote><p>Está súper profesional, parece una empresa real. Es lo más clave para generar confianza.</p><cite class="mono">Cofundador de Tap In</cite></blockquote>
+                    <span class="tp-verificar mono">Citas suavizadas: publicar solo con aprobación</span>
+                </div>
+                <a class="tp-vivo-link" href="https://tapin.cl" target="_blank" rel="noopener"><span class="tp-punto"></span>Ver tapin.cl en vivo ↗</a>
+            </div>
+        </section>
+
+        <!-- =======================================================
+             APRENDIZAJE Y CRÉDITOS
+             ======================================================= -->
+        <section class="tp-mod tp-claro tp-aprendizaje">
+            <div class="tp-grilla">
+                <span class="tp-etq mono">Aprendizaje</span>
+                <p class="tp-enunciado" data-luz>Diseñar con información que cambia. A mitad del camino llegó la realidad del producto: <em>cambiaron la estructura y el contenido, el lenguaje visual se sostuvo.</em></p>
+                <div class="tp-giro" data-revela>
+                    <span class="tp-giro-iso"><span class="tp-giro-c" style="--tono:#4A3CAE"><span class="tp-marca" style="--svg:url('media/tp-forky.svg')"></span></span><b class="mono">2025 · Campus</b></span>
+                    <span class="tp-giro-linea" aria-hidden="true"></span>
+                    <span class="tp-giro-iso"><span class="tp-giro-c" style="--tono:#6B5CE7"><span class="tp-marca" style="--svg:url('media/tp-cerebro.svg')"></span></span><b class="mono">2026 · Connect</b></span>
+                </div>
+                <dl class="tp-creditos">
+                    <div><dt class="mono">Marca, UX/UI y front end</dt><dd>Agustín Avendaño</dd></div>
+                    <div><dt class="mono">Producto y deploy</dt><dd>Equipo de desarrollo de Tap In</dd></div>
+                    <div><dt class="mono">Con</dt><dd>Los cofundadores de Tap In</dd></div>
+                </dl>
+            </div>
+        </section>
+
+        <div data-siguiente></div>
+    </main>
+
     <script src="caso-siguiente.js"></script>
-    <script src="caso-fondos.js"></script>
-    <script src="caso-plantilla.js"></script>
-    <script src="caso-evidencia.js"></script>
+    <script src="tapin.js"></script>
 </body>
 </html>
