@@ -1,0 +1,90 @@
+/* =======================================================
+   BASE COMÚN DE LOS HEROS · DIRECCIÓN C AJUSTADA
+   ======================================================= */
+
+/* --- 1. TOKENS --- */
+/* Paleta solo en negro, grises y blanco (sin verde) y Geist con tracking cerrado */
+:root {
+    --negro: #0B0B0B;
+    --grafito: #262625;
+    --gris-medio: #8E8E8B;
+    --gris-claro: #D9D9D6;
+    --blanco: #F5F5F3;
+    --sans: 'Geist', system-ui, sans-serif;
+    --mono: 'Geist Mono', ui-monospace, monospace;
+    --tracking-display: -0.065em;
+    --tracking-titulo: -0.045em;
+    --margen: clamp(16px, 2.2vw, 32px);
+    --medianil: 16px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --rapido: 160ms;
+}
+
+/* --- 2. BASE --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--blanco); color: var(--negro); font: 15px/1.5 var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+img { display: block; width: 100%; height: auto; }
+.mono { font-family: var(--mono); font-size: 12px; letter-spacing: 0; }
+.display { font-weight: 500; letter-spacing: var(--tracking-display); line-height: 0.8; }
+
+/* =======================================================
+   HERO
+   ======================================================= */
+.hero { position: relative; height: 100svh; min-height: 620px; overflow: hidden; isolation: isolate; }
+
+/* --- 1. NAVEGACIÓN --- */
+.nav { position: absolute; top: 0; left: 0; right: 0; z-index: 10; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-items: center; padding: 18px var(--margen); }
+.logo { grid-column: 1 / span 3; font-weight: 500; font-size: 16px; letter-spacing: -0.035em; display: inline-flex; align-items: center; white-space: nowrap; }
+.logo .punto { opacity: 0.45; }
+.logo .cursor { width: 1.5px; height: 1em; background: currentColor; margin-left: 2px; animation: parpadeo 1.1s steps(1) infinite; }
+.links { grid-column: 5 / span 4; display: flex; gap: 22px; list-style: none; }
+.der { grid-column: 10 / -1; justify-self: end; display: flex; gap: 16px; align-items: center; }
+
+/* --- 2. ESTADO DISPONIBLE (SIN COLOR) --- */
+/* Punto que late en el color del texto: el estado se lee por movimiento, no por color */
+.disponible { display: inline-flex; align-items: center; gap: 8px; }
+.disponible::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: latido 2s ease-in-out infinite; }
+
+/* --- 3. SUBRAYADO --- */
+.subraya { background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px; transition: background-size 260ms var(--ease); padding-bottom: 1px; }
+@media (hover: hover) { .subraya:hover, .links a:hover { background-size: 100% 1px; } }
+.links a { background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px; transition: background-size 260ms var(--ease); padding-bottom: 1px; }
+
+/* --- 4. LETRAS QUE SUBEN --- */
+/* El JS envuelve cada letra; entran desde su línea base en cascada */
+[data-letras] .l { display: inline-block; transform: translateY(130%); animation: subeLetra 1000ms var(--ease) forwards; }
+[data-letras] .palabra { display: inline-block; overflow: hidden; vertical-align: top; padding: 0.18em 0 0.22em; margin: -0.18em 0 -0.22em; }
+.dos { animation: parpadeo 2s steps(1) infinite; }
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+[data-capa] { will-change: transform; }
+
+@keyframes parpadeo { 50% { opacity: 0; } }
+@keyframes latido { 50% { opacity: 0.25; } }
+@keyframes subeLetra { to { transform: translateY(0); } }
+@keyframes entraRetrato { from { opacity: 0; transform: translateY(4%) scale(1.03); } to { opacity: 1; transform: none; } }
+
+/* =======================================================
+   NOTA DE EXPLORACIÓN (DEBAJO DEL HERO)
+   ======================================================= */
+.nota-exploracion { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: 40px var(--margen) 64px; border-top: 1px solid #E2E2DF; }
+.nota-exploracion p:first-child { grid-column: 1 / span 3; color: var(--gris-medio); }
+.nota-exploracion p:nth-child(2) { grid-column: 4 / span 6; font-size: 20px; letter-spacing: -0.02em; line-height: 1.35; }
+.nota-exploracion p:last-child { grid-column: 4 / span 6; margin-top: 20px; color: var(--gris-medio); }
+
+/* =======================================================
+   VISTA MÓVIL Y MOVIMIENTO REDUCIDO
+   ======================================================= */
+@media (max-width: 768px) {
+    .nav, .nota-exploracion { grid-template-columns: repeat(4, 1fr); }
+    .logo { grid-column: 1 / span 3; }
+    .links { display: none; }
+    .der { grid-column: 4 / -1; }
+    .der .reloj { display: none; }
+    .nota-exploracion p:first-child, .nota-exploracion p:nth-child(2), .nota-exploracion p:last-child { grid-column: 1 / -1; }
+    .nota-exploracion p:first-child { margin-bottom: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; }
+    [data-capa] { translate: none !important; }
+}

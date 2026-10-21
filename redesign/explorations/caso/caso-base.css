@@ -1,0 +1,621 @@
+/* =======================================================
+   PLANTILLA DE CASO (S3) · ESTRUCTURA Y EVIDENCIA
+   ======================================================= */
+/* Se carga después de works-base.css (barra y base) y antes del tema del proyecto (tema-*.css).
+   Reparto: la estructura del caso, la grilla, la barra y la mecánica de evidencia son de Agustín Design;
+   la piel (tipografía, color, fondos, formas, texturas y gesto de movimiento) es del proyecto.
+   Todo lo que un tema puede cambiar está en las variables --c-* de abajo */
+
+/* --- 1. CONTRATO DEL TEMA (valores neutros por defecto) --- */
+:root {
+    --c-fondo: #0B0B0B;
+    --c-texto: #F5F5F3;
+    --c-texto-2: rgba(245, 245, 243, 0.6);
+    --c-texto-3: rgba(245, 245, 243, 0.36);
+    --c-linea: rgba(245, 245, 243, 0.14);
+    --c-superficie: rgba(245, 245, 243, 0.05);
+    --c-acento: #F5F5F3;
+    --c-sobre-acento: #0B0B0B;
+    --c-f-display: var(--sans);
+    --c-f-texto: var(--sans);
+    --c-f-etiqueta: var(--mono);
+    --c-display-peso: 500;
+    --c-display-track: -0.07em;
+    --c-display-lh: 0.8;
+    --c-titulo-peso: 500;
+    --c-titulo-track: -0.05em;
+    --c-etiqueta-tam: 12px;
+    --c-etiqueta-track: 0;
+    --c-etiqueta-caja: none;
+    --c-radio: 8px;
+    --c-radio-pieza: 8px;
+    --c-sombra: 0 40px 100px -24px rgba(0, 0, 0, 0.6);
+    --c-curva: var(--hover-lento);
+    --c-velo: rgba(0, 0, 0, 0.18);
+    --c-seccion: clamp(96px, 11vw, 184px);
+}
+body { background: var(--c-fondo); color: var(--c-texto); font-family: var(--c-f-texto); }
+.grilla { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: 0 var(--margen); }
+.etiqueta { font-family: var(--c-f-etiqueta); font-size: var(--c-etiqueta-tam); letter-spacing: var(--c-etiqueta-track); text-transform: var(--c-etiqueta-caja); color: var(--c-texto-2); }
+
+/* --- 2. RITMO DE FONDOS --- */
+/* Cada sección declara su fondo (oscuro, claro o marca) y el tema define qué significa cada uno */
+.seccion { position: relative; background: var(--c-fondo); color: var(--c-texto); padding-bottom: var(--c-seccion); }
+:is(.seccion, .flujo) + .seccion { padding-top: var(--c-seccion); }
+
+/* =======================================================
+   1. LETRAS QUE SUBEN Y APARICIONES
+   ======================================================= */
+[data-letras] .palabra { display: inline-block; vertical-align: top; clip-path: inset(-0.6em -0.35em -0.36em -0.35em); }
+[data-letras] .l { display: inline-block; transform: translateY(1.9em); }
+[data-letras].entra .l { animation: subeLetra 1000ms var(--ease) forwards; }
+@keyframes subeLetra { to { transform: translateY(0); } }
+[data-aparece] { opacity: 0; transform: translateY(28px); transition: opacity 900ms var(--ease), transform 1100ms var(--ease); transition-delay: var(--retraso, 0ms); }
+[data-aparece].visto { opacity: 1; transform: none; }
+
+/* =======================================================
+   2. FRANJA DE SECCIÓN
+   ======================================================= */
+/* Abre cada bloque: número, nombre y un dato a la derecha. El tema decide si lleva nodo, línea o píldora */
+.franja { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-items: center; padding-bottom: 14px; margin-bottom: clamp(28px, 3vw, 48px); border-bottom: 1px solid var(--c-linea); }
+.franja .f-num { grid-column: 1 / span 3; }
+.franja .f-nom { grid-column: 4 / span 5; display: inline-flex; align-items: center; gap: 8px; color: var(--c-texto); }
+.franja .f-der { grid-column: 9 / -1; justify-self: end; }
+.franja .nodo { display: none; }
+
+/* --- 1. TÍTULO DE BLOQUE --- */
+.titulo-bloque { grid-column: 4 / span 8; margin-bottom: clamp(36px, 4vw, 64px); font-family: var(--c-f-display); font-size: clamp(40px, 5.2vw, 88px); font-weight: var(--c-titulo-peso); letter-spacing: var(--c-titulo-track); line-height: 0.95; }
+.titulo-bloque .clave { font-weight: var(--c-clave-peso, inherit); }
+
+/* =======================================================
+   3. PORTADA
+   ======================================================= */
+.portada { padding-top: 72px; }
+.portada-titulo { grid-column: 1 / span 9; margin: clamp(28px, 4vw, 64px) 0 clamp(20px, 2.4vw, 36px) -0.05em; font-family: var(--c-f-display); font-size: var(--c-portada-tam, clamp(96px, 21vw, 360px)); font-weight: var(--c-display-peso); letter-spacing: var(--c-display-track); line-height: var(--c-display-lh); }
+.portada-titulo .linea { display: block; white-space: nowrap; }
+.portada-bajada { grid-column: 9 / -1; align-self: end; justify-self: end; max-width: 24ch; margin-bottom: clamp(24px, 2.6vw, 40px); text-align: right; font-size: clamp(18px, 1.6vw, 24px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; }
+
+/* --- 1. ESCENA (LA MISMA DEL ÍNDICE: CONTINÚA EL VIAJE) --- */
+.portada-escena { grid-column: 1 / -1; position: relative; height: min(82svh, 56vw); border-radius: var(--c-radio); overflow: hidden; container-type: size; background: var(--c-escena, #222); }
+.portada-escena > img.fondo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.portada-escena .navegador { position: absolute; left: 15%; right: 15%; top: 12%; bottom: -3%; border-radius: max(6px, 0.7cqw) max(6px, 0.7cqw) 0 0; background: #fff; overflow: hidden; box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6); }
+.barra-nav { position: relative; display: flex; align-items: center; gap: 6px; padding: 0 12px; background: #F1F1EF; border-bottom: 1px solid #E2E2DF; }
+.barra-nav i { width: 9px; height: 9px; border-radius: 50%; background: #CFCFCB; }
+.barra-nav .url { position: absolute; left: 50%; translate: -50% 0; font: 11px var(--mono); color: #77736B; background: #fff; padding: 2px 18px; border-radius: 999px; }
+.portada-escena .barra-nav { height: clamp(14px, 2.3cqw, 34px); }
+.portada-escena .navegador > img { width: 100%; height: auto; }
+
+/* --- 2. FICHA --- */
+.ficha { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); column-gap: var(--medianil); margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--c-linea); }
+.ficha div { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.ficha a { align-self: start; border-bottom: 1px solid var(--c-texto-3); }
+
+/* =======================================================
+   4. RESUMEN
+   ======================================================= */
+.resumen-intro { grid-column: 4 / span 8; font-family: var(--c-f-display); font-size: clamp(26px, 2.7vw, 44px); font-weight: var(--c-intro-peso, 500); letter-spacing: var(--c-intro-track, -0.035em); line-height: 1.16; }
+.resumen-cols { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--medianil); margin-top: clamp(48px, 5vw, 80px); }
+.resumen-cols div { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--c-linea); }
+.resumen-cols p { max-width: 30ch; font-size: 15px; }
+
+/* =======================================================
+   5. EVIDENCIA: DECISIONES CON EL SITIO REAL AL LADO
+   ======================================================= */
+/* A la izquierda el relato; a la derecha un escenario fijo con el sitio en vivo, que se desplaza a la parte
+   de la que habla cada decisión y la señala. Las decisiones de marca cambian el escenario a sus piezas */
+.evidencia { align-items: start; }
+.relato { grid-column: 1 / span 5; }
+.escenario { grid-column: 6 / -1; position: sticky; top: 72px; height: calc(100svh - 96px); display: grid; grid-template-rows: auto 1fr auto; gap: 16px; transition: top 450ms var(--hover-lento), height 450ms var(--hover-lento); }
+/* Sin barra, el escenario aprovecha el alto completo */
+body.sin-barra .escenario { top: 24px; height: calc(100svh - 48px); }
+
+/* --- 1. BLOQUES DEL RELATO --- */
+.bloque { min-height: 76svh; display: flex; flex-direction: column; justify-content: center; gap: 18px; padding: 40px 0; opacity: 0.38; transition: opacity 600ms var(--c-curva); }
+.bloque.actual { opacity: 1; }
+.bloque:first-child { min-height: 60svh; justify-content: flex-start; padding-top: 8px; }
+.bloque .num { display: flex; align-items: center; gap: 8px; }
+.bloque .num .de { color: var(--c-texto-3); }
+.bloque h3 { max-width: 16ch; font-family: var(--c-f-display); font-size: clamp(28px, 2.7vw, 44px); font-weight: var(--c-titulo-peso); letter-spacing: var(--c-titulo-track); line-height: 1.02; }
+.bloque p { max-width: 42ch; font-size: 16px; line-height: 1.55; }
+.bloque .porque { display: flex; flex-direction: column; gap: 6px; padding-top: 14px; border-top: 1px solid var(--c-linea); color: var(--c-texto-2); font-size: 15px; }
+.bloque .ver-vivo { align-self: start; border-bottom: 1px solid var(--c-texto-3); font-size: 14px; }
+.bloque .pz-solo { display: none; }
+
+/* --- 2. RIEL DE AVANCE DEL ESCENARIO --- */
+/* Una marca por decisión: las pasadas quedan llenas y la actual destacada. Se puede presionar o usar J y K */
+.riel-ev { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.riel-ev ol { display: flex; gap: 6px; list-style: none; }
+.riel-ev button { display: inline-grid; place-items: center; min-width: 30px; height: 26px; padding: 0 8px; border: 1px solid var(--c-linea); border-radius: 999px; font: var(--c-etiqueta-tam) var(--c-f-etiqueta); color: var(--c-texto-3); transition: color 300ms var(--c-curva), background-color 300ms var(--c-curva), border-color 300ms var(--c-curva); }
+.riel-ev button.ya { color: var(--c-texto-2); border-color: var(--c-texto-3); }
+.riel-ev button.actual { color: var(--c-sobre-acento); background: var(--c-acento); border-color: var(--c-acento); }
+@media (hover: hover) { .riel-ev button:hover { color: var(--c-texto); border-color: var(--c-texto-2); } .riel-ev button.actual:hover { color: var(--c-sobre-acento); } }
+.riel-ev .atajos { display: inline-flex; align-items: center; gap: 6px; }
+.riel-ev kbd { display: inline-grid; place-items: center; min-width: 20px; height: 20px; border: 1px solid var(--c-linea); border-radius: 5px; font: 10px var(--mono); color: var(--c-texto-2); transition: background-color 150ms, color 150ms; }
+.riel-ev kbd.on { background: var(--c-texto); color: var(--c-fondo); }
+
+/* --- 3. TABLERO: CAPAS DE MARCA Y VITRINA --- */
+.tablero { position: relative; min-height: 0; }
+.tablero > * { position: absolute; inset: 0; transition: opacity 600ms var(--c-curva), scale 900ms var(--c-curva); }
+.tablero .capa { display: flex; align-items: center; justify-content: center; opacity: 0; scale: 0.97; pointer-events: none; }
+.tablero .capa.on { opacity: 1; scale: 1; pointer-events: auto; }
+.tablero .capa .pz { width: 100%; max-height: 100%; }
+
+/* La vitrina tiene la proporción de una pantalla real (16:10) y se centra en el tablero */
+.vitrina { display: flex; align-items: center; justify-content: center; opacity: 0; scale: 0.97; }
+.vitrina.on { opacity: 1; scale: 1; }
+.vitrina .marco-nav { position: relative; display: flex; flex-direction: column; width: 100%; max-height: 100%; aspect-ratio: 1440 / 932; border-radius: var(--c-radio); overflow: hidden; background: #fff; box-shadow: var(--c-sombra); }
+.vitrina .barra-nav { flex: 0 0 30px; }
+.vitrina .pantalla { position: relative; flex: 1; overflow: hidden; background: #fff; }
+.vitrina .pantalla > img { position: absolute; inset: 0 0 auto 0; width: 100%; transition: opacity 500ms ease; }
+.vitrina iframe { position: absolute; top: 0; left: 0; width: 1440px; border: 0; transform-origin: 0 0; transform: scale(var(--escala, 0.5)); pointer-events: none; opacity: 0; transition: opacity 400ms ease; }
+.vitrina.cargado iframe { opacity: 1; }
+.vitrina.cargado .pantalla > img { opacity: 0; }
+
+/* --- 4. FOCO SOBRE LA PARTE DEL SITIO --- */
+/* Cuatro paneles cubren todo menos la parte marcada: afuera el sitio se desenfoca y se apaga, adentro queda
+   nítido. Esquinas que se dibujan y una etiqueta pegada por fuera. Todo viaja entre decisiones con --x --y --w --h */
+.resalte { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.resalte .rv { position: absolute; background: var(--c-velo); backdrop-filter: blur(2.5px) saturate(0.85); -webkit-backdrop-filter: blur(2.5px) saturate(0.85); opacity: 0; transition: opacity 500ms var(--c-curva), top 700ms var(--c-curva), left 700ms var(--c-curva), width 700ms var(--c-curva), height 700ms var(--c-curva); }
+.resalte .rv-t { left: 0; right: 0; top: 0; height: var(--y, 0); }
+.resalte .rv-b { left: 0; right: 0; top: calc(var(--y, 0) + var(--h, 0)); bottom: 0; }
+.resalte .rv-l { left: 0; top: var(--y, 0); width: var(--x, 0); height: var(--h, 0); }
+.resalte .rv-r { left: calc(var(--x, 0) + var(--w, 0)); right: 0; top: var(--y, 0); height: var(--h, 0); }
+.resalte .r-caja { position: absolute; left: var(--x, 0); top: var(--y, 0); width: var(--w, 0); height: var(--h, 0); border-radius: var(--c-radio-resalte, 10px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-acento) 40%, transparent); opacity: 0; transition: opacity 400ms var(--c-curva), top 700ms var(--c-curva), left 700ms var(--c-curva), width 700ms var(--c-curva), height 700ms var(--c-curva); }
+.resalte.on .rv, .resalte.on .r-caja { opacity: 1; }
+/* Esquinas en L que se dibujan desde afuera */
+.resalte .esq { position: absolute; width: 16px; height: 16px; border: 0 solid var(--c-acento); transform: scale(0.4); opacity: 0; transition: transform 600ms var(--c-curva) 200ms, opacity 300ms 200ms; }
+.resalte .e1 { left: -5px; top: -5px; border-left-width: 2px; border-top-width: 2px; border-top-left-radius: 8px; transform-origin: 100% 100%; }
+.resalte .e2 { right: -5px; top: -5px; border-right-width: 2px; border-top-width: 2px; border-top-right-radius: 8px; transform-origin: 0 100%; }
+.resalte .e3 { left: -5px; bottom: -5px; border-left-width: 2px; border-bottom-width: 2px; border-bottom-left-radius: 8px; transform-origin: 100% 0; }
+.resalte .e4 { right: -5px; bottom: -5px; border-right-width: 2px; border-bottom-width: 2px; border-bottom-right-radius: 8px; transform-origin: 0 0; }
+.resalte.on .esq { transform: none; opacity: 1; }
+.resalte .r-txt { position: absolute; left: -5px; bottom: calc(100% + 10px); padding: 6px 11px; border-radius: 999px; background: var(--c-acento); color: var(--c-sobre-acento); font: var(--c-etiqueta-tam) var(--c-f-etiqueta); font-weight: 600; letter-spacing: var(--c-etiqueta-track); text-transform: var(--c-etiqueta-caja); white-space: nowrap; box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.35); transform: translateY(6px); opacity: 0; transition: transform 500ms var(--c-curva) 250ms, opacity 300ms 250ms; }
+.resalte.etq-abajo .r-txt { bottom: auto; top: calc(100% + 10px); }
+.resalte.on .r-txt { transform: none; opacity: 1; }
+
+/* --- 5. PIE DEL ESCENARIO --- */
+.pie-ev { display: flex; justify-content: space-between; gap: 16px; min-height: 18px; }
+.pie-ev .nota { color: var(--c-texto); transition: opacity 300ms; }
+
+/* =======================================================
+   6. PROCESO
+   ======================================================= */
+/* Cada hito dibuja su tramo de línea al aparecer, en orden: la línea crece de izquierda a derecha.
+   Con más de 6 hitos se arma en dos filas de cuatro */
+.linea-tiempo { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(var(--hitos, 6), 1fr); column-gap: var(--medianil); row-gap: 56px; list-style: none; }
+.linea-tiempo li { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 28px 8px 0 0; }
+.linea-tiempo li::after { content: ''; position: absolute; left: 0; right: calc(var(--medianil) * -1); top: 3px; height: 1px; background: var(--c-texto-3); transform: scaleX(0); transform-origin: 0 50%; transition: transform 900ms var(--ease) var(--retraso, 0ms); }
+.linea-tiempo li.visto::after { transform: scaleX(1); }
+.linea-tiempo li::before { content: ''; position: absolute; top: 0; left: 0; z-index: 1; width: 7px; height: 7px; border-radius: 50%; background: var(--c-fondo); border: 1px solid var(--c-texto); }
+.linea-tiempo li:last-child::before { background: var(--c-texto); }
+.linea-tiempo strong { font-family: var(--c-f-display); font-size: clamp(17px, 1.4vw, 21px); font-weight: var(--c-titulo-peso); letter-spacing: -0.02em; line-height: 1.2; }
+
+/* =======================================================
+   7. RESULTADO
+   ======================================================= */
+.cifras { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--medianil); border-top: 1px solid var(--c-linea); }
+.cifras div { display: flex; flex-direction: column; gap: 10px; padding: 18px 16px 0 0; }
+.cifras b { font-family: var(--c-f-cifra, var(--c-f-display)); font-size: clamp(56px, 7vw, 120px); font-weight: var(--c-cifra-peso, var(--c-display-peso)); letter-spacing: var(--c-cifra-track, -0.06em); line-height: 0.9; font-variant-numeric: tabular-nums; }
+.cifras p { max-width: 24ch; color: var(--c-texto-2); font-size: 14px; }
+.cifras .verificar { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font: 11px var(--mono); color: #C9A227; }
+.cifras .verificar::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.galeria { grid-column: 1 / -1; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.4fr; gap: var(--medianil); margin-top: clamp(64px, 7vw, 112px); }
+.galeria figure { overflow: hidden; border-radius: var(--c-radio-pieza); aspect-ratio: 4 / 5; }
+.galeria figure:first-child, .galeria figure:last-child { aspect-ratio: 5 / 4; align-self: end; }
+.galeria img { width: 100%; height: 100%; object-fit: cover; }
+.galeria .etiqueta { grid-column: 1 / -1; }
+
+/* =======================================================
+   8. APRENDIZAJE Y SIGUIENTE PROYECTO
+   ======================================================= */
+.aprendizaje blockquote { grid-column: 4 / span 8; font-family: var(--c-f-display); font-size: clamp(28px, 3.2vw, 52px); font-weight: var(--c-intro-peso, 500); letter-spacing: var(--c-intro-track, -0.04em); line-height: 1.12; }
+.creditos { grid-column: 4 / span 8; margin-top: 40px; max-width: 60ch; color: var(--c-texto-2); font-size: 14px; }
+
+/* El siguiente proyecto ya viste su tinte: es la puerta al próximo caso, con la marca de Agustín Design */
+.siguiente { display: block; padding: 24px var(--margen) clamp(40px, 5vw, 72px); background: var(--sig, #0D2024); color: #F5F5F3; border-radius: 18px 18px 0 0; font-family: var(--sans); }
+.siguiente .fila { display: flex; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid rgba(245, 245, 243, 0.14); font: 12px var(--mono); color: rgba(245, 245, 243, 0.6); }
+.siguiente .nombre-sig { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-top: clamp(40px, 6vw, 96px); }
+.siguiente .nombre-sig b { font-size: clamp(88px, 17vw, 300px); font-weight: 500; letter-spacing: -0.07em; line-height: 0.78; margin-left: -0.05em; }
+.siguiente .nombre-sig > span { max-width: 26ch; color: rgba(245, 245, 243, 0.6); text-align: right; padding-bottom: 0.6em; }
+.siguiente .flecha { display: inline-block; transition: transform 700ms var(--hover-lento); }
+@media (hover: hover) { .siguiente:hover .flecha { transform: translate(6px, -6px); } }
+
+/* =======================================================
+   9. PIEZAS DE LAS DECISIONES
+   ======================================================= */
+.pz { position: relative; }
+.pz img { border-radius: var(--c-radio-pieza); }
+.pz figcaption { margin-top: 12px; }
+.pz figcaption b { font-weight: inherit; color: var(--c-texto); }
+.isos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.isos img { width: 100%; aspect-ratio: 559 / 346; object-fit: cover; border-radius: calc(var(--c-radio-pieza) / 2); opacity: 0.55; transition: opacity 400ms var(--c-curva); }
+.isos img.final, .isos img.paso { opacity: 1; }
+.isos img.final { outline: 1.5px solid var(--c-acento); outline-offset: 3px; }
+.pz-img img { width: 100%; }
+.pz-img.con-extra { display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px; align-items: end; }
+.pz-par { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pz-par div { display: flex; flex-direction: column; gap: 10px; }
+.pz-movil { display: grid; grid-template-columns: auto 1fr; gap: clamp(24px, 3vw, 48px); align-items: center; }
+.telefono-caso { width: clamp(170px, 15vw, 240px); aspect-ratio: 390 / 844; border: 5px solid #0B0B0B; border-radius: 34px; overflow: hidden; background: #0B0B0B; box-shadow: var(--c-sombra); }
+.telefono-caso img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 0; }
+.chequeo { list-style: none; display: flex; flex-direction: column; border-top: 1px solid var(--c-linea); }
+.chequeo li { display: flex; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--c-linea); }
+.chequeo li::before { content: '✓'; color: var(--c-texto-2); }
+/* Tres caminos de un símbolo, el elegido marcado */
+.pz-caminos .caminos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pz-caminos .camino { display: flex; flex-direction: column; gap: 10px; }
+.pz-caminos .camino .cuadro { display: grid; place-items: center; aspect-ratio: 1; background: var(--c-cuadro, #178181); border-radius: var(--c-radio-pieza); }
+.pz-caminos .camino .cuadro img { width: 34%; border-radius: 0; }
+.pz-caminos .camino.elegido .cuadro { outline: 1.5px solid var(--c-acento); outline-offset: 3px; }
+.pz-caminos .tabla { margin-top: 14px; }
+
+/* =======================================================
+   VISTA MÓVIL
+   ======================================================= */
+@media (max-width: 900px) {
+    .relato { grid-column: 1 / -1; }
+    .escenario { display: none; }
+    .bloque, .bloque:first-child { min-height: 0; opacity: 1; padding: 48px 0 0; }
+    .bloque .pz-solo { display: block; margin-top: 12px; }
+}
+@media (max-width: 768px) {
+    .grilla, .franja { grid-template-columns: repeat(4, 1fr); }
+    .franja .f-num { grid-column: 1 / span 2; }
+    .franja .f-nom { grid-column: 1 / -1; grid-row: 2; margin-top: 8px; }
+    .franja .f-der { grid-column: 3 / -1; }
+    .titulo-bloque, .resumen-intro, .resumen-cols, .aprendizaje blockquote, .creditos { grid-column: 1 / -1; }
+    .portada-titulo { grid-column: 1 / -1; font-size: var(--c-portada-tam-movil, 26vw); }
+    .portada-bajada { grid-column: 1 / -1; justify-self: start; text-align: left; }
+    .portada-escena { height: 60svh; }
+    .portada-escena .navegador { left: 6%; right: 6%; top: 14%; }
+    .ficha { grid-template-columns: 1fr 1fr; row-gap: 18px; }
+    .resumen-cols { grid-template-columns: 1fr; row-gap: 24px; }
+    .linea-tiempo { grid-template-columns: 1fr; row-gap: 32px; }
+    .linea-tiempo li::after { display: none; }
+    .cifras { grid-template-columns: 1fr 1fr; row-gap: 28px; }
+    .galeria { grid-template-columns: 1fr 1fr; }
+    .isos { grid-template-columns: repeat(3, 1fr); }
+    .pz-movil { grid-template-columns: 1fr; justify-items: center; }
+    .chequeo { width: 100%; }
+    .siguiente .nombre-sig { flex-direction: column; align-items: flex-start; }
+    .siguiente .nombre-sig > span { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+    [data-letras] .l { transform: none; }
+    [data-aparece] { opacity: 1; transform: none; }
+    .linea-tiempo li::after { transform: none; }
+}
+
+/* --- 10. SECUENCIAS DE LAS PIEZAS EN EL ESCENARIO --- */
+/* Al aparecer la capa, la exploración se recorre en orden y termina en lo elegido: el proceso contado con movimiento */
+.tablero .capa.on .isos img { animation: recorreIso 520ms var(--ease) both; animation-delay: calc(var(--i) * 70ms); }
+@keyframes recorreIso { from { opacity: 0; transform: translateY(8px); } }
+.tablero .capa.on .camino { animation: recorreIso 700ms var(--ease) both; animation-delay: calc(var(--i) * 140ms); }
+@media (prefers-reduced-motion: reduce) { .tablero .capa.on .isos img, .tablero .capa.on .camino { animation: none; } }
+
+
+/* =======================================================
+   11. CAPÍTULOS DEL RELATO
+   ======================================================= */
+/* Un caso largo se divide en capítulos: el relato los marca y el riel deja un espacio entre ellos */
+.capitulo { display: flex; flex-direction: column; gap: 14px; padding: 18vh 0 4vh; }
+.capitulo:first-child { padding-top: 0; }
+.capitulo h3 { max-width: 14ch; font-family: var(--c-f-display); font-size: clamp(36px, 4vw, 64px); font-weight: var(--c-titulo-peso); letter-spacing: var(--c-titulo-track); line-height: 0.98; }
+.capitulo p { max-width: 40ch; color: var(--c-texto-2); font-size: 16px; }
+.riel-ev .sep { width: 14px; }
+
+/* =======================================================
+   12. CONTEXTO, CITAS Y VERIFICACIÓN
+   ======================================================= */
+.contexto-cifras { grid-column: 1 / span 8; display: flex; flex-direction: column; gap: 8px; margin-top: 36px; max-width: 70ch; color: var(--c-texto-2); font-size: 15px; }
+/* Una cita grande a la vez, que se alterna: se lee como testimonio, no como dos cajas */
+.citas { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 18px; margin-top: clamp(56px, 6vw, 96px); }
+.citas-pista { display: grid; }
+.cita { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 22px; opacity: 0; transform: translateY(12px); transition: opacity 700ms var(--c-curva), transform 900ms var(--c-curva); pointer-events: none; }
+.cita.on { opacity: 1; transform: none; pointer-events: auto; }
+.cita blockquote { max-width: 26ch; font-family: var(--c-f-display); font-size: clamp(30px, 3.6vw, 60px); font-weight: var(--c-intro-peso, 500); letter-spacing: -0.035em; line-height: 1.08; }
+.cita blockquote::before { content: '“'; display: block; height: 0.42em; font-size: 1.8em; line-height: 1; color: var(--c-acento-2, var(--c-acento)); }
+.citas-puntos { display: flex; gap: 8px; }
+.citas-puntos button { width: 28px; height: 4px; border-radius: 4px; background: var(--c-linea); transition: background-color 300ms, width 400ms var(--c-curva); }
+.citas-puntos button.on { width: 44px; background: var(--c-texto); }
+.verificar { display: inline-flex; align-items: center; gap: 6px; font: 11px var(--mono); color: #B8901C; }
+.verificar::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* =======================================================
+   13. PIEZAS: EVOLUCIÓN, GRILLA Y MOCKUP
+   ======================================================= */
+/* --- 1. EVOLUCIÓN --- */
+.pz-evolucion { display: flex; flex-direction: column; gap: 10px; }
+.evo-escena { position: relative; aspect-ratio: 16 / 9; }
+.evo-cuadro { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 10px; opacity: 0; scale: 0.98; transition: opacity 600ms var(--c-curva), scale 800ms var(--c-curva); }
+.evo-cuadro.on { opacity: 1; scale: 1; }
+.evo-cuadro img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.evo-cuadro .etiqueta { color: var(--c-texto); }
+.evo-tira { display: grid; grid-template-columns: repeat(var(--n, 5), 1fr); gap: 6px; margin-top: 30px; }
+.evo-tira button { position: relative; overflow: hidden; border-radius: calc(var(--c-radio-pieza) / 2); opacity: 0.45; transition: opacity 400ms var(--c-curva); }
+.evo-tira button img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0; }
+.evo-tira button i { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--c-acento); transform: scaleX(0); transform-origin: 0 50%; }
+.evo-tira button.ya, .evo-tira button.on { opacity: 1; }
+.evo-tira button.ya i { transform: scaleX(1); }
+.evo-tira button.on i { animation: evoAvanza 1800ms linear forwards; }
+@keyframes evoAvanza { to { transform: scaleX(1); } }
+@media (hover: hover) { .evo-tira button:hover { opacity: 1; } }
+
+/* --- 2. GRILLA DE PIEZAS (BENTO) --- */
+/* Proporción fija para caber en el escenario; cada pieza llena su celda y su etiqueta va encima */
+.pz-grilla { display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: 1fr 1fr; gap: 8px; aspect-ratio: 16 / 11; }
+.pz-grilla .g-cuadro { position: relative; overflow: hidden; border-radius: var(--c-radio-pieza); }
+.pz-grilla .g-cuadro img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; transition: scale 900ms var(--c-curva); }
+.pz-grilla .g-cuadro .etiqueta { position: absolute; left: 8px; bottom: 8px; padding: 4px 8px; border-radius: 999px; background: rgba(17, 14, 34, 0.62); color: #FFFFFF; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.pz-grilla .g1 { grid-column: 1 / span 3; grid-row: 1; }
+.pz-grilla .g2 { grid-column: 4 / span 2; grid-row: 1 / span 2; }
+.pz-grilla .g3 { grid-column: 6; grid-row: 1 / span 2; }
+.pz-grilla .g4 { grid-column: 1 / span 2; grid-row: 2; }
+.pz-grilla .g5 { grid-column: 3; grid-row: 2; }
+.pz-grilla figcaption { display: none; }
+@media (hover: hover) { .pz-grilla .g-cuadro:hover img { scale: 1.04; } }
+.tablero .capa.on .g-cuadro { animation: recorreIso 700ms var(--ease) both; animation-delay: calc(var(--i) * 90ms); }
+
+/* --- 3. MOCKUP EMBEBIDO --- */
+.pz-mockup { display: flex; flex-direction: column; gap: 14px; }
+.mk-marco { position: relative; aspect-ratio: 900 / 600; overflow: hidden; border-radius: var(--c-radio-pieza); background: var(--c-superficie); }
+.mk-marco iframe { position: absolute; top: 0; left: 0; width: 900px; height: 600px; border: 0; transform-origin: 0 0; transform: scale(var(--escala, 0.6)); pointer-events: none; opacity: 0; transition: opacity 500ms ease; }
+.mk-marco.listo iframe { opacity: 1; }
+.mk-pasos { display: flex; gap: 8px; list-style: none; counter-reset: paso; }
+.mk-pasos li { flex: 1; padding-top: 10px; border-top: 1px solid var(--c-linea); color: var(--c-texto); counter-increment: paso; }
+.mk-pasos li::before { content: '0' counter(paso) ' · '; color: var(--c-texto-3); }
+@media (max-width: 768px) {
+    .pz-grilla { aspect-ratio: 3 / 4; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); }
+    .pz-grilla .g1 { grid-column: 1 / -1; grid-row: 1; } .pz-grilla .g2 { grid-column: 1; grid-row: 2; } .pz-grilla .g3 { grid-column: 2; grid-row: 2 / span 2; } .pz-grilla .g4 { grid-column: 1; grid-row: 3; } .pz-grilla .g5 { display: none; }
+    .citas { grid-template-columns: 1fr; }
+    .contexto-cifras { grid-column: 1 / -1; }
+}
+
+/* =======================================================
+   14. INVITACIÓN AL SIGUIENTE PROYECTO
+   ======================================================= */
+/* Una pista de scroll de dos pantallas con el panel fijo: al entrar, la escena del siguiente proyecto se
+   expande desde una lámina (--e); al seguir bajando, la barra se llena (--p) y al completarse se abre.
+   El panel habla con la identidad del próximo proyecto; la tipografía del nombre es la de Agustín Design */
+.sig { position: relative; background: var(--c-fondo); }
+.sig-pista { height: 210svh; }
+.sig-panel { --e: 0; --p: 0; position: sticky; top: 0; height: 100svh; display: block; overflow: hidden; color: #FFFFFF; font-family: var(--sans); }
+.sig-escena { position: absolute; inset: 0; overflow: hidden; background: var(--sig-tinte); clip-path: inset(calc((1 - var(--e)) * 16%) calc((1 - var(--e)) * 10%) calc((1 - var(--e)) * 16%) round calc(28px * (1 - var(--p) * 0.6))); }
+.sig-escena > * { transform: scale(calc(1.08 - var(--p) * 0.08)); }
+.sig-txt { position: absolute; left: var(--margen); right: var(--margen); bottom: clamp(88px, 12svh, 140px); z-index: 3; display: flex; flex-direction: column; gap: 14px; pointer-events: none; }
+.sig-fila { display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.28); font: 12px var(--mono); opacity: calc(0.4 + var(--e) * 0.6); }
+.sig-nombre { font-family: var(--sig-f, var(--sans)); font-size: clamp(96px, 19vw, 340px); font-weight: 500; letter-spacing: -0.075em; line-height: 0.78; margin-left: -0.05em; transform: translateY(calc((1 - var(--e)) * 30%)); transition: transform 700ms var(--hover-lento), opacity 500ms; }
+.sig-bajada { max-width: 34ch; font-size: clamp(16px, 1.3vw, 19px); opacity: 0.8; }
+.sig-info { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.sig-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.sig-chips i { padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.35); font: 12px var(--mono); font-style: normal; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+/* Avance: un anillo que se llena; al completarse la flecha gira y el caso se abre */
+.sig-progreso { position: absolute; right: var(--margen); top: 92px; z-index: 3; display: flex; align-items: center; gap: 14px; font: 12px var(--mono); }
+.sig-anillo { position: relative; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: rgba(0, 0, 0, 0.22); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.sig-anillo svg { position: absolute; inset: 0; rotate: -90deg; }
+.sig-anillo circle { fill: none; stroke: rgba(255, 255, 255, 0.25); stroke-width: 2; }
+.sig-anillo .lleno { stroke: #FFFFFF; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--p)); }
+.sig-flecha { font-size: 18px; transition: transform 500ms var(--hover-lento); }
+.sig-panel.abriendo .sig-flecha { transform: rotate(-90deg); }
+.sig-panel.abriendo .sig-nombre { transform: translateY(-12%); opacity: 0; }
+.sig-panel.abriendo .sig-escena { clip-path: inset(0); }
+.sig-panel.abriendo .sig-splash { opacity: 1; }
+@media (hover: hover) { .sig-panel:hover .sig-anillo { background: rgba(0, 0, 0, 0.36); } }
+
+/* --- 1. ESCENA MEND --- */
+.sig-e-mend .sig-campo { position: absolute; inset: 0; background:
+    radial-gradient(52% 72% at 90% 0%, rgba(201, 233, 232, 0.95) 0%, rgba(190, 220, 219, 0.6) 38%, rgba(190, 220, 219, 0) 76%),
+    radial-gradient(40% 60% at 60% 0%, rgba(168, 186, 182, 0.6) 0%, rgba(168, 186, 182, 0) 72%),
+    radial-gradient(60% 65% at 0% 100%, rgba(30, 77, 87, 0.95) 0%, rgba(30, 77, 87, 0) 72%),
+    linear-gradient(90deg, #2A5960 0%, #3A6970 22%, #5E8C91 46%, #84AEB2 70%, #8EB8BB 100%); }
+.sig-e-mend .sig-campo::after { content: ''; position: absolute; inset: 0; opacity: 0.7; mix-blend-mode: soft-light; background-size: 200px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); }
+.sig-mend-logo { position: absolute; left: var(--margen); top: 14svh; width: clamp(220px, 28vw, 460px); overflow: visible; fill: #FFFFFF; }
+.sig-panel:not(.dentro) .sig-mend-logo { opacity: 0; }
+.sig-mend-logo .ej-pair { opacity: 0; }
+.sig-mend-logo .trazo { stroke: #FFFFFF; stroke-width: 0.7; stroke-dasharray: 1; stroke-opacity: 0; }
+.sig-panel.dentro .sig-mend-logo .trazo { animation: sigTrazo 2s cubic-bezier(0.6, 0.1, 0.3, 1) 0.2s both, sigRelleno 0.7s ease 1.5s both; }
+.sig-panel.dentro .sig-mend-logo .ej-full { transform-box: fill-box; transform-origin: 50% 50%; animation: sigEjFull 2.4s linear 1.9s both; }
+.sig-panel.dentro .sig-mend-logo .ej-pair { animation: sigEjPair 2.4s linear 1.9s both; }
+.sig-panel.dentro .sig-mend-logo .ej-a { animation: sigGlideA 2.4s linear 1.9s both, sigCloseA 2.4s linear 1.9s both; }
+.sig-panel.dentro .sig-mend-logo .ej-b { animation: sigGlideB 2.4s linear 1.9s both, sigCloseB 2.4s linear 1.9s both; }
+@keyframes sigTrazo { 0% { stroke-dashoffset: 1; stroke-opacity: 1; } 88% { stroke-dashoffset: 0; stroke-opacity: 1; } 100% { stroke-dashoffset: 0; stroke-opacity: 0; } }
+@keyframes sigRelleno { from { fill-opacity: 0; } to { fill-opacity: 1; } }
+@keyframes sigGlideA { 0% { translate: 13.57px -3.46px; animation-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1); } 80%, 100% { translate: 0 0; } }
+@keyframes sigGlideB { 0% { translate: -13.57px 3.46px; animation-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1); } 80%, 100% { translate: 0 0; } }
+@keyframes sigCloseA { 0%, 50% { transform: translate(-0.99px, -3.88px); animation-timing-function: cubic-bezier(0.9, 0, 1, 1); } 80%, 100% { transform: none; } }
+@keyframes sigCloseB { 0%, 50% { transform: translate(0.99px, 3.88px); animation-timing-function: cubic-bezier(0.9, 0, 1, 1); } 80%, 100% { transform: none; } }
+@keyframes sigEjPair { 0% { opacity: 0; } 18% { opacity: 0.45; } 62% { opacity: 1; } 79.9% { opacity: 1; } 80%, 100% { opacity: 0; } }
+@keyframes sigEjFull { 0%, 79.9% { opacity: 0; transform: none; } 80% { opacity: 1; transform: none; animation-timing-function: cubic-bezier(0.3, 0, 0.3, 1); } 87% { transform: scale(0.982); animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1); } 100% { opacity: 1; transform: none; } }
+/* El teléfono con la app sube a medida que se avanza hacia el caso */
+.sig-e-mend .sig-tel { position: absolute; right: 12%; top: 9svh; width: clamp(180px, 16vw, 280px); aspect-ratio: 390 / 844; border: 6px solid #0B0B0B; border-radius: 40px; overflow: hidden; background: #0B0B0B; box-shadow: 0 50px 120px -30px rgba(0, 0, 0, 0.55); translate: 0 calc((1 - var(--p)) * 38svh); }
+.sig-e-mend .sig-tel img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.sig-e-mend .sig-tel .sig-splash { position: absolute; inset: 0; opacity: 0; transition: opacity 500ms ease; }
+/* Una luz suave que sigue el avance: el campo de Mend se ilumina hacia el caso */
+.sig-e-mend .sig-luz { position: absolute; inset: 0; background: radial-gradient(40% 50% at 78% 40%, rgba(201, 233, 232, 0.55), transparent 70%); opacity: var(--p); }
+/* El nombre de Mend en su tipografía (Neue Haas Grotesk; en el Mac, Helvetica Neue como respaldo) */
+.sig:has(.sig-e-mend) { --sig-f: "Neue Haas Grotesk Display Pro", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+/* --- 2. ESCENA TAP IN --- */
+.sig-e-tapin { background: radial-gradient(120% 90% at 70% 0%, #6B5CE7 0%, #4A3CAE 38%, #2D2560 100%); }
+.sig-tiras { position: absolute; right: -6%; top: -30%; bottom: -30%; width: 60%; display: flex; gap: clamp(14px, 1.6vw, 26px); transform: rotate(-22deg); }
+.sig-tiras i { flex: 1; border-radius: 999px; background: linear-gradient(180deg, color-mix(in srgb, var(--tono) 82%, #fff), var(--tono)); translate: 0 calc((1 - var(--p)) * (10% + var(--i) * 8%)); box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.5); }
+.sig-tp-wm { position: absolute; left: var(--margen); top: 14svh; width: clamp(200px, 26vw, 420px); aspect-ratio: 389.87 / 150.6; background: #FFFFFF; -webkit-mask: url("media/tp-wordmark.svg") center / contain no-repeat; mask: url("media/tp-wordmark.svg") center / contain no-repeat; }
+
+/* --- 3. ESCENA LLEGÓ FARMA --- */
+.sig-e-llego > img:first-child { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.sig-e-llego::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 20, 21, 0.2), rgba(10, 20, 21, 0.75)); }
+.sig-reticula { position: absolute; inset: 0 var(--margen); z-index: 1; border-right: 1px solid rgba(255, 255, 255, 0.2); background: linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px) 0 0 / 25% 100% repeat-x; }
+.sig-lf-iso { position: absolute; z-index: 2; left: var(--margen); top: 14svh; width: clamp(64px, 6vw, 96px); }
+@media (max-width: 768px) {
+    .sig-e-mend .sig-tel { right: 50%; translate: 50% calc((1 - var(--p)) * 30svh); top: 22svh; width: 46vw; }
+    .sig-mend-logo { top: 9svh; width: 62vw; }
+    .sig-progreso { top: auto; bottom: 24px; }
+    .sig-info { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sig-escena { clip-path: none; }
+    .sig-escena > *, .sig-nombre, .sig-tiras i, .sig-e-mend .sig-tel { transform: none; translate: none; }
+}
+
+/* =======================================================
+   15. BARRA SEGÚN LA SECCIÓN DE ABAJO
+   ======================================================= */
+/* En los casos la barra no usa difference (sobre colores de marca da tonos ajenos, como verde sobre morado):
+   toma el color que corresponde a la sección que tiene debajo, como la navbar de tapin.cl */
+.barra { mix-blend-mode: normal; color: #FFFFFF; transition: color 300ms ease, transform 450ms var(--hover-lento), background-color 300ms ease, padding 300ms ease; }
+body[data-barra="claro"] .barra { color: var(--c-barra-claro, #111111); }
+/* Se esconde al bajar y reaparece al subir: en un caso largo no tapa el relato ni compite con el escenario fijo.
+   Cuando reaparece a mitad de página lleva un fondo de vidrio para leerse sobre cualquier sección */
+.barra.oculta { transform: translateY(-110%); }
+.barra.flota { padding-top: 12px; padding-bottom: 12px; background: rgba(17, 14, 34, 0.55); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); }
+body[data-barra="claro"] .barra.flota { background: rgba(255, 255, 255, 0.6); }
+/* Los enlaces internos del caso (como "Ver el proyecto") bajan suave */
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+
+/* =======================================================
+   16. PORTADA DE CAPÍTULO
+   ======================================================= */
+/* Cada capítulo abre a todo el ancho: número gigante de fondo, título, una línea y su visual */
+.cap-portada { position: relative; min-height: 86svh; align-items: center; overflow: hidden; }
+.cap-texto { position: relative; z-index: 2; grid-column: 1 / span 5; display: flex; flex-direction: column; gap: 22px; }
+.cap-pill { align-self: start; }
+.cap-texto h2 { font-family: var(--c-f-display); font-size: clamp(48px, 6vw, 104px); font-weight: var(--c-titulo-peso); letter-spacing: var(--c-titulo-track); line-height: 0.95; }
+.cap-texto p { max-width: 30ch; font-size: clamp(17px, 1.4vw, 21px); color: var(--c-texto-2); }
+.cap-visual { position: relative; z-index: 1; grid-column: 7 / -1; }
+.cap-num { position: absolute; right: var(--margen); bottom: -0.18em; z-index: 0; font-family: var(--c-f-display); font-size: clamp(240px, 34vw, 560px); font-weight: var(--c-display-peso); letter-spacing: -0.06em; line-height: 1; color: var(--c-texto); opacity: 0.05; pointer-events: none; }
+
+/* =======================================================
+   17. MAPA DEL PROYECTO
+   ======================================================= */
+/* Una pista con las etapas a escala de tiempo; los hitos se abren al pasar el mouse o al enfocarlos.
+   Al entrar, la pista se dibuja y los hitos aparecen en orden */
+.mapa-pista { grid-column: 1 / -1; position: relative; height: 340px; margin-top: 20px; }
+.mapa-fases { position: absolute; left: 0; right: 0; top: 50%; height: 16px; translate: 0 -50%; }
+.mapa-fase { position: absolute; top: 0; bottom: 0; left: var(--a); width: calc(var(--b) - var(--a)); border-radius: 999px; background: var(--fase); transform: scaleX(0); transform-origin: 0 50%; transition: transform 900ms var(--ease) calc(var(--k) * 260ms), filter 300ms; }
+.mapa-pista.visto .mapa-fase { transform: none; }
+/* Leyenda de las etapas: color, nombre y período; lleva a cada capítulo */
+.mapa-leyenda { grid-column: 1 / -1; display: flex; gap: clamp(16px, 3vw, 48px); list-style: none; }
+.mapa-leyenda a { display: grid; grid-template-columns: 14px auto; column-gap: 10px; row-gap: 2px; align-items: center; }
+.mapa-leyenda i { grid-row: 1 / span 2; width: 14px; height: 14px; border-radius: 50%; background: var(--fase); }
+.mapa-leyenda b { font-family: var(--c-f-display); font-size: 16px; font-weight: var(--c-titulo-peso); letter-spacing: -0.02em; }
+@media (hover: hover) { .mapa-leyenda a:hover b { color: var(--c-acento-2, var(--c-acento)); } }
+@media (hover: hover) { .mapa-fase:hover { filter: brightness(1.15); } }
+.mapa-hitos { list-style: none; }
+.mapa-hito { position: absolute; left: var(--x); top: 50%; width: 0; outline: none; }
+.mapa-hito > i { position: absolute; left: -7px; top: -7px; z-index: 2; box-shadow: 0 0 0 4px var(--c-fondo); width: 14px; height: 14px; border-radius: 50%; background: var(--c-fondo); border: 2px solid var(--c-texto); transform: scale(0); transition: transform 500ms var(--c-curva) calc(600ms + var(--k) * 90ms), background-color 300ms; }
+.mapa-pista.visto .mapa-hito > i { transform: none; }
+/* La tarjeta del hito: arriba o abajo, alternadas; se abre al pasar */
+.mh-txt { position: absolute; left: -7px; bottom: 34px; width: max-content; max-width: 190px; display: flex; flex-direction: column; gap: 4px; padding-left: 10px; border-left: 1px solid var(--c-linea); opacity: 0; transform: translateY(8px); transition: opacity 500ms var(--ease) calc(700ms + var(--k) * 90ms), transform 600ms var(--ease) calc(700ms + var(--k) * 90ms); }
+.mapa-hito.abajo .mh-txt { bottom: auto; top: 34px; }
+.mapa-pista.visto .mh-txt { opacity: 1; transform: none; }
+.mh-txt b { font-family: var(--c-f-display); font-size: 15px; font-weight: var(--c-titulo-peso); line-height: 1.2; }
+.mh-detalle { max-height: 0; overflow: hidden; font-size: 13px; color: var(--c-texto-2); transition: max-height 500ms var(--c-curva); }
+.mapa-hito:hover .mh-detalle, .mapa-hito:focus-visible .mh-detalle { max-height: 80px; }
+.mapa-hito:hover > i, .mapa-hito:focus-visible > i { background: var(--c-texto); }
+.mapa-hoy { position: absolute; right: 0; top: calc(50% - 40px); }
+
+/* =======================================================
+   18. RESULTADO EN VIVO
+   ======================================================= */
+/* Una lista de módulos a la izquierda (avanza sola con una barra de tiempo) y el elegido funcionando a la derecha */
+.en-vivo { grid-column: 1 / -1; display: grid; grid-template-columns: 4fr 8fr; gap: clamp(20px, 3vw, 48px); align-items: center; margin-bottom: clamp(48px, 5vw, 80px); }
+.ev-lista { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.ev-lista button { position: relative; width: 100%; display: grid; grid-template-columns: 32px 1fr; gap: 8px; padding: 16px 16px 18px; border-radius: var(--c-radio-pieza); text-align: left; color: var(--c-texto-2); transition: background-color 400ms var(--c-curva), color 400ms; }
+.ev-lista button.on { background: var(--c-superficie); color: var(--c-texto); }
+.ev-t { display: flex; flex-direction: column; gap: 4px; }
+.ev-t b { font-family: var(--c-f-display); font-size: clamp(17px, 1.4vw, 21px); font-weight: var(--c-titulo-peso); letter-spacing: -0.02em; }
+.ev-q { font-size: 13px; color: var(--c-texto-2); }
+.ev-barra { position: absolute; left: 16px; right: 16px; bottom: 8px; height: 2px; border-radius: 2px; background: var(--c-linea); overflow: hidden; opacity: 0; }
+.ev-barra::after { content: ''; position: absolute; inset: 0; background: var(--c-acento); transform: scaleX(0); transform-origin: 0 50%; }
+.ev-lista button.on .ev-barra { opacity: 1; }
+.ev-lista button.on .ev-barra::after { animation: evTiempo var(--ev-dur, 9s) linear forwards; }
+.en-vivo.pausa .ev-lista button.on .ev-barra::after { animation-play-state: paused; }
+@keyframes evTiempo { to { transform: scaleX(1); } }
+@media (hover: hover) { .ev-lista button:hover { color: var(--c-texto); } }
+.ev-pantalla { position: relative; aspect-ratio: 900 / 600; }
+.ev-cuadro { position: absolute; inset: 0; opacity: 0; transform: translateY(14px) scale(0.98); transition: opacity 600ms var(--c-curva), transform 800ms var(--c-curva); }
+.ev-cuadro.on { opacity: 1; transform: none; }
+.ev-cuadro .mk-marco { height: 100%; aspect-ratio: auto; }
+
+/* =======================================================
+   19. APRENDIZAJE QUE SE ENCIENDE
+   ======================================================= */
+[data-luz] .w { color: var(--c-texto-3); transition: color 400ms ease; }
+[data-luz] .w.on { color: var(--c-texto); }
+
+@media (max-width: 900px) {
+    .cap-texto, .cap-visual { grid-column: 1 / -1; }
+    .cap-visual { margin-top: 32px; }
+    .cap-portada { min-height: 0; padding-bottom: 64px; }
+    .en-vivo { grid-template-columns: 1fr; }
+    .mapa-pista { height: auto; display: flex; flex-direction: column; gap: 18px; }
+    .mapa-leyenda { flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .mapa-fases { position: relative; top: 0; translate: none; display: flex; gap: 6px; height: 10px; margin-bottom: 8px; }
+    .mapa-fase { position: relative; left: auto; flex: calc(var(--b) - var(--a)); width: auto; }
+    .mapa-hitos { display: flex; flex-direction: column; gap: 16px; }
+    .mapa-hito { position: relative; left: 0; top: 0; width: auto; padding-left: 24px; }
+    .mapa-hito > i { left: 0; top: 4px; }
+    .mh-txt, .mapa-hito.abajo .mh-txt { position: static; max-width: none; }
+    .mh-detalle { max-height: none; }
+    .mapa-hoy { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .mapa-pista .mapa-fase, .mapa-pista .mapa-hito > i, .mapa-pista .mh-txt { transform: none; opacity: 1; transition: none; }
+}
+
+/* =======================================================
+   20. FONDOS DEL CASO: TRES VARIANTES
+   ======================================================= */
+/* --- 1. FUNDIDO --- */
+/* Cada sección nace del color de la anterior: un degradado en su franja superior (el aire de su padding) */
+body.fondo-1 [data-caso] > .seccion::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: min(var(--c-seccion), 220px); background: linear-gradient(180deg, var(--fondo-prev, transparent), transparent); pointer-events: none; z-index: 0; }
+:where(body.fondo-1 [data-caso] > .seccion > *) { position: relative; z-index: 1; }
+
+/* --- 2. LÁMINAS (CON FLUJO DENTRO DE CADA CAPÍTULO) --- */
+/* Cada bloque es una lámina: sube con las esquinas redondeadas y un poco más angosta, y se abre a todo el ancho
+   al llegar arriba (--e, de 0 a 1). El bloque de atrás se oscurece a medida que la nueva lo cubre (--q).
+   Se usa clip-path solo mientras entra; al llegar (.plena) basta el radio: el fondo ya lo respeta, sin recortar
+   los hijos (recortarlos obliga a enmascarar el iframe y las capas animadas en cada cuadro) */
+body.fondo-2 [data-caso] > :is(.seccion, .flujo) { position: relative; isolation: isolate; }
+body.fondo-2 [data-caso] > :is(.seccion, .flujo) + :is(.seccion, .flujo) { margin-top: -48px; clip-path: inset(0 calc((1 - var(--e, 1)) * 4%) 0 round calc(48px - var(--e, 1) * 28px) calc(48px - var(--e, 1) * 28px) 0 0); }
+body.fondo-2 [data-caso] > :is(.seccion, .flujo).plena { clip-path: none; border-radius: 20px 20px 0 0; }
+body.fondo-2 [data-caso] > :is(.seccion, .flujo)::after { content: ''; position: absolute; inset: 0; z-index: 20; background: #07041A; opacity: calc(var(--q, 0) * 0.55); pointer-events: none; will-change: opacity; }
+/* El bloque de un capítulo cambia de color de forma continua según la sección que se lee (colores registrados) */
+body.fondo-2 [data-caso] > .flujo.flujo { background-color: var(--c-fondo); background-image: radial-gradient(60% 40% at 85% 6%, rgb(155 142 240 / calc(var(--g-claro) * 0.3)), transparent 70%), radial-gradient(110% 60% at 50% 0%, rgb(107 92 231 / var(--g-marca)), rgb(74 60 174 / var(--g-marca)) 45%, rgb(45 37 96 / calc(var(--g-marca) * 0.9)) 100%); transition: --c-fondo 900ms ease, --c-texto 900ms ease, --c-texto-2 900ms ease, --c-texto-3 900ms ease, --c-linea 900ms ease, --c-acento 900ms ease, --c-acento-2 900ms ease, --c-superficie 900ms ease, --c-velo 900ms ease, --c-sobre-acento 900ms ease, --g-claro 900ms ease, --g-marca 900ms ease; }
+body.fondo-2 .flujo.claro { --g-claro: 1; --g-marca: 0; }
+body.fondo-2 .flujo.marca { --g-claro: 0; --g-marca: 1; }
+body.fondo-2 .flujo.oscuro { --g-claro: 0; --g-marca: 0; }
+body.fondo-2 .flujo > .seccion { background: transparent; --c-fondo: inherit; --c-texto: inherit; --c-texto-2: inherit; --c-texto-3: inherit; --c-linea: inherit; --c-acento: inherit; --c-acento-2: inherit; --c-superficie: inherit; --c-velo: inherit; --c-sobre-acento: inherit; }
+@media (prefers-reduced-motion: reduce) { body.fondo-2 [data-caso] > :is(.seccion, .flujo) + :is(.seccion, .flujo) { clip-path: none; border-radius: 20px 20px 0 0; } }
+
+/* --- 3. FONDO QUE FLUYE --- */
+/* Las secciones no pintan fondo ni redefinen colores: heredan del body, que cambia de modo con el scroll.
+   Los colores están registrados con @property, así que todo se interpola en vez de cortar */
+body.fondo-3 [data-caso] > .seccion:not(.tp-hero) { background: transparent; --c-fondo: inherit; --c-texto: inherit; --c-texto-2: inherit; --c-texto-3: inherit; --c-linea: inherit; --c-acento: inherit; --c-acento-2: inherit; --c-superficie: inherit; --c-velo: inherit; --c-sobre-acento: inherit; }
+body.fondo-3 { background-color: var(--c-fondo); transition: --c-fondo 900ms ease, --c-texto 900ms ease, --c-texto-2 900ms ease, --c-texto-3 900ms ease, --c-linea 900ms ease, --c-acento 900ms ease, --c-acento-2 900ms ease, --c-superficie 900ms ease, --c-velo 900ms ease, --c-sobre-acento 900ms ease, --g-claro 900ms ease, --g-marca 900ms ease; }
+body.fondo-3::before { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(60% 50% at 85% 8%, rgb(155 142 240 / calc(var(--g-claro) * 0.32)), transparent 70%), radial-gradient(50% 40% at 8% 60%, rgb(107 92 231 / calc(var(--g-claro) * 0.14)), transparent 70%), radial-gradient(110% 80% at 50% 0%, rgb(107 92 231 / var(--g-marca)), rgb(74 60 174 / var(--g-marca)) 42%, rgb(45 37 96 / var(--g-marca)) 100%); }
+body.fondo-3.m-claro { --g-claro: 1; --g-marca: 0; }
+body.fondo-3.m-marca { --g-claro: 0; --g-marca: 1; }
+body.fondo-3.m-oscuro { --g-claro: 0; --g-marca: 0; }
+
+
+/* =======================================================
+   21. FICHA DEL RESUMEN, AÑOS DEL MAPA Y CRÉDITOS
+   ======================================================= */
+/* La ficha ocupa la columna derecha del resumen: el dato duro al lado de la frase */
+.resumen-ficha { grid-column: 9 / -1; grid-row: 2 / span 2; align-self: start; display: flex; flex-direction: column; gap: 14px; padding: 24px; border-radius: var(--c-radio-pieza); background: var(--c-superficie); border: 1px solid var(--c-linea); }
+.resumen-ficha dl { display: flex; flex-direction: column; }
+.resumen-ficha dl div { display: grid; grid-template-columns: 84px 1fr; gap: 12px; padding: 11px 0; border-top: 1px solid var(--c-linea); font-size: 14px; }
+.resumen-ficha dd a { border-bottom: 1px solid var(--c-texto-3); }
+.mapa-anios { position: absolute; left: 0; right: 0; top: calc(50% + 22px); }
+.mapa-anios span { position: absolute; left: var(--x); display: flex; flex-direction: column; gap: 4px; font: 11px var(--mono); color: var(--c-texto-3); }
+.mapa-anios i { width: 1px; height: 8px; background: var(--c-texto-3); }
+.creditos-lista { grid-column: 1 / span 7; margin-top: 56px; border-top: 1px solid var(--c-linea); }
+.creditos-lista div { display: grid; grid-template-columns: 180px 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--c-linea); font-size: 14px; }
+.ap-visual { grid-column: 9 / -1; grid-row: 2 / span 2; align-self: end; }
+@media (max-width: 900px) {
+    .resumen-ficha, .ap-visual, .creditos-lista { grid-column: 1 / -1; grid-row: auto; margin-top: 32px; }
+    .creditos-lista div { grid-template-columns: 1fr; gap: 4px; }
+    .mapa-anios { display: none; }
+}

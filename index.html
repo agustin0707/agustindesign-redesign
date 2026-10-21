@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rediseño · agustín.design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        /* =======================================================
+           ÍNDICE DE REVISIÓN DEL REDISEÑO
+           ======================================================= */
+        /* Página de entrada del repositorio de revisión: cada exploración con su estado */
+        :root { --negro: #0B0B0B; --blanco: #F5F5F3; --gris: #8E8E8B; --linea: #262625; --margen: clamp(16px, 2.6vw, 40px); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--negro); color: var(--blanco); font: 15px/1.5 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; padding: 0 var(--margen) 80px; }
+        a { color: inherit; text-decoration: none; }
+        .mono { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--gris); }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--linea); }
+        header b { font-weight: 500; letter-spacing: -0.035em; font-size: 16px; }
+        h1 { margin: clamp(48px, 9vw, 120px) 0 18px; font-size: clamp(48px, 8vw, 128px); font-weight: 500; letter-spacing: -0.065em; line-height: 0.85; }
+        .bajada { max-width: 52ch; color: var(--gris); margin-bottom: 48px; }
+        ol { list-style: none; border-top: 1px solid var(--linea); }
+        li a { display: grid; grid-template-columns: 48px 1fr auto; gap: 16px; align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--linea); transition: padding 500ms cubic-bezier(0.7, 0, 0.2, 1); }
+        li b { font-size: clamp(20px, 2.2vw, 30px); font-weight: 500; letter-spacing: -0.035em; }
+        li p { color: var(--gris); font-size: 14px; margin-top: 4px; }
+        @media (hover: hover) { li a:hover { padding-left: 10px; } }
+        @media (max-width: 640px) { li a { grid-template-columns: 32px 1fr; } li .estado { grid-column: 2; } }
+    </style>
+</head>
+<body>
+    <header><b>agustín.design</b><span class="mono">Actualizado: 21-10-2026 16:53</span></header>
+    <h1>Rediseño</h1>
+    <p class="bajada">Exploraciones del rediseño del portafolio, sección por sección. Este repositorio se actualiza en cada avance para revisarlo desde cualquier dispositivo.</p>
+    <ol>
+        <li><a href="redesign/explorations/caso/tapin.html"><span class="mono">01</span><span><b>Caso · Tap In</b><p>Página de proyecto en su versión más reciente.</p></span><span class="mono estado">En curso</span></a></li>
+        <li><a href="redesign/explorations/caso/llego.html"><span class="mono">02</span><span><b>Caso · Llegó Farma</b><p>Con la plantilla anterior; se rehace después de Tap In.</p></span><span class="mono estado">Pendiente</span></a></li>
+        <li><a href="redesign/explorations/works/w3-pila.html"><span class="mono">03</span><span><b>Works · Pila de cortinas</b><p>Índice de trabajos con los sitios en vivo y el archivo.</p></span><span class="mono estado">Aprobado</span></a></li>
+        <li><a href="redesign/explorations/hero/h1-capas.html"><span class="mono">04</span><span><b>Hero · Capas</b><p>La portada del sitio.</p></span><span class="mono estado">Aprobado</span></a></li>
+        <li><a href="redesign/explorations/caso/index.html"><span class="mono">05</span><span><b>Exploraciones anteriores del caso</b><p>Plantilla con identidad por proyecto, fondos y primeras direcciones.</p></span><span class="mono estado">Historial</span></a></li>
+        <li><a href="redesign/explorations/marca/c-indice.html"><span class="mono">06</span><span><b>Marca · Dirección C · Índice</b><p>La dirección de marca elegida.</p></span><span class="mono estado">Aprobado</span></a></li>
+    </ol>
+</body>
+</html>

@@ -1,0 +1,101 @@
+/* =======================================================
+   TEMA LLEGÓ FARMA (.tema-lf)
+   ======================================================= */
+/* La piel del caso sale del manual y del sitio de Llegó Farma: la retícula de precisión visible con cortes
+   en los cruces, nodos, Manrope liviana con escalón, LF Mono (cero sin punto), radios en cero, sin sombras
+   y el degradado turquesa con grano. Base: tokens de llegofarma.cl (css/base.css) */
+
+/* --- 1. TIPOGRAFÍAS DEL SITIO DE LLEGÓ FARMA --- */
+@font-face { font-family: "Manrope"; src: url("../works/sitios/llego/fonts/manrope-200.woff2") format("woff2"); font-weight: 200; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("../works/sitios/llego/fonts/manrope-300.woff2") format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("../works/sitios/llego/fonts/manrope-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("../works/sitios/llego/fonts/manrope-500.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "LF Mono"; src: url("../works/sitios/llego/fonts/lf-mono-300.woff2") format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "LF Mono"; src: url("../works/sitios/llego/fonts/lf-mono-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+
+/* --- 2. TOKENS --- */
+.tema-lf {
+    --c-f-display: "Manrope", sans-serif;
+    --c-f-texto: "Manrope", sans-serif;
+    --c-f-etiqueta: "LF Mono", monospace;
+    --c-display-peso: 200;
+    --c-display-track: -0.045em;
+    --c-display-lh: 0.9;
+    --c-titulo-peso: 300;
+    --c-titulo-track: -0.035em;
+    --c-clave-peso: 500;
+    --c-intro-peso: 300;
+    --c-intro-track: -0.02em;
+    --c-etiqueta-tam: 11px;
+    --c-etiqueta-track: 0.06em;
+    --c-etiqueta-caja: uppercase;
+    --c-radio: 0px;
+    --c-radio-pieza: 2px;
+    --c-radio-resalte: 0px;
+    --c-sombra: none;
+    --c-curva: cubic-bezier(0.65, 0, 0.35, 1);
+    --c-f-cifra: "LF Mono", monospace;
+    --c-cifra-peso: 300;
+    --c-cifra-track: -0.05em;
+    --c-portada-tam: clamp(88px, 14.5vw, 250px);
+    --c-portada-tam-movil: 22vw;
+    --c-barra-claro: #104E56;
+    --c-escena: #0A1415;
+}
+
+/* --- 3. RITMO DE FONDOS: OSCURO, PAPEL Y DEGRADADO CON GRANO --- */
+.tema-lf, .tema-lf .oscuro { --c-fondo: #0A1415; --c-texto: #FFFFFF; --c-texto-2: rgba(255, 255, 255, 0.62); --c-texto-3: rgba(255, 255, 255, 0.36); --c-linea: rgba(255, 255, 255, 0.16); --c-acento: #70CAC7; --c-sobre-acento: #0A1415; --c-velo: rgba(10, 20, 21, 0.38); --c-cuadro: #104E56; }
+.tema-lf .claro { --c-fondo: #F4F4F4; --c-texto: #104E56; --c-texto-2: rgba(16, 78, 86, 0.72); --c-texto-3: rgba(16, 78, 86, 0.42); --c-linea: rgba(16, 78, 86, 0.18); --c-acento: #178181; --c-sobre-acento: #FFFFFF; --c-velo: rgba(16, 78, 86, 0.16); --c-cuadro: #178181; }
+.tema-lf .marca { --c-fondo: #178181; --c-texto: #FFFFFF; --c-texto-2: rgba(255, 255, 255, 0.78); --c-texto-3: rgba(255, 255, 255, 0.5); --c-linea: rgba(255, 255, 255, 0.28); --c-acento: #FFFFFF; --c-sobre-acento: #104E56; }
+.tema-lf .marca { background: linear-gradient(160deg, #B7E5E2 0%, #49C2BF 28%, #178181 58%, #104E56 100%); }
+/* Grano del manual sobre el degradado */
+.tema-lf .marca::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.32; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); }
+
+/* --- 4. RETÍCULA DE PRECISIÓN CON CORTES --- */
+/* Cuatro módulos visibles. Las verticales se cortan 8 px antes y después de la línea de la franja, como en el
+   manual. --franja-y es la altura de esa línea dentro de la sección */
+.tema-lf .seccion { --franja-y: calc(var(--c-seccion) + 32px); }
+.tema-lf .portada { --franja-y: calc(72px + 32px); }
+.tema-lf .seccion::after { content: ''; position: absolute; inset: 0 var(--margen); pointer-events: none; border-right: 1px solid var(--c-linea); background: linear-gradient(to right, var(--c-linea) 1px, transparent 1px) 0 0 / 25% 100% repeat-x;
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(var(--franja-y) - 8px), transparent calc(var(--franja-y) - 8px), transparent calc(var(--franja-y) + 8px), #000 calc(var(--franja-y) + 8px));
+    mask-image: linear-gradient(to bottom, #000 calc(var(--franja-y) - 8px), transparent calc(var(--franja-y) - 8px), transparent calc(var(--franja-y) + 8px), #000 calc(var(--franja-y) + 8px)); }
+/* :where() sin especificidad: no pisa el sticky del escenario ni otras posiciones */
+:where(.tema-lf .seccion > *) { position: relative; z-index: 1; }
+
+/* --- 5. FRANJA CON NODO Y TÍTULOS CON ESCALÓN --- */
+.tema-lf .franja .nodo { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--c-acento); }
+.tema-lf .titulo-bloque { grid-column: 1 / span 10; text-indent: 25%; }
+/* text-indent se hereda: cada palabra animada es un inline-block y lo repetiría */
+.tema-lf .titulo-bloque .palabra { text-indent: 0; }
+.tema-lf .portada-titulo .linea + .linea { padding-left: 0.9em; }
+.tema-lf .portada-titulo .clave { font-weight: 500; }
+.tema-lf .bloque .num::before { content: ''; width: 7px; height: 7px; border: 1px solid var(--c-acento); border-radius: 50%; transition: background-color 400ms var(--c-curva); }
+.tema-lf .bloque.actual .num::before { background: var(--c-acento); }
+
+/* --- 6. ESCENARIO DE PRECISIÓN: LÍNEAS Y NODOS --- */
+.tema-lf .vitrina .marco-nav { border: 1px solid var(--c-linea); }
+/* El foco de Llegó: línea fina sin radio y nodos en las esquinas, como la retícula del manual */
+.tema-lf .resalte .r-caja { box-shadow: 0 0 0 1px var(--c-acento); }
+.tema-lf .resalte .esq { width: 7px; height: 7px; border: 0; border-radius: 50%; background: var(--c-acento); }
+.tema-lf .resalte .e1 { left: -4px; top: -4px; } .tema-lf .resalte .e2 { right: -4px; top: -4px; } .tema-lf .resalte .e3 { left: -4px; bottom: -4px; } .tema-lf .resalte .e4 { right: -4px; bottom: -4px; }
+.tema-lf .resalte .r-txt { left: 0; border-radius: 0; }
+/* Riel como nodos sobre una línea: contorno pendiente, relleno pasado, acento el actual */
+.tema-lf .riel-ev ol { position: relative; gap: 0; }
+.tema-lf .riel-ev ol::before { content: ''; position: absolute; left: 6px; right: 6px; top: 50%; height: 1px; background: var(--c-linea); }
+.tema-lf .riel-ev button { position: relative; min-width: 0; height: 26px; padding: 0 12px 0 0; border: 0; border-radius: 0; background: none; gap: 6px; grid-auto-flow: column; }
+.tema-lf .riel-ev button::before { content: ''; width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--c-texto-3); background: var(--c-fondo); transition: background-color 300ms, border-color 300ms; }
+.tema-lf .riel-ev button.ya::before { background: var(--c-texto-2); border-color: var(--c-texto-2); }
+.tema-lf .riel-ev button.actual { color: var(--c-acento); background: none; }
+.tema-lf .riel-ev button.actual::before { background: var(--c-acento); border-color: var(--c-acento); }
+.tema-lf .riel-ev kbd { border-radius: 0; }
+
+/* --- 7. PROCESO, RESULTADO Y PIEZAS --- */
+.tema-lf .linea-tiempo li::before { border-radius: 50%; }
+.tema-lf .cifras div { border-left: 1px solid var(--c-linea); padding-left: 16px; }
+.tema-lf .cifras div:first-child { border-left: 0; padding-left: 0; }
+.tema-lf .ficha a, .tema-lf .bloque .ver-vivo { font-family: var(--c-f-etiqueta); text-transform: uppercase; font-size: 11px; }
+@media (max-width: 768px) {
+    /* Dos módulos visibles en celular, como en llegofarma.cl */
+    .tema-lf .seccion::after { background-size: 50% 100%; }
+    .tema-lf .titulo-bloque { grid-column: 1 / -1; }
+}

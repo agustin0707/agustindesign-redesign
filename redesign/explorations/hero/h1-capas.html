@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero 1 · Capas · agustín.design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&display=swap" rel="stylesheet">
+    <link rel="preload" as="image" href="../../../img/fotodeperfilgus5.webp" fetchpriority="high">
+    <link rel="stylesheet" href="hero-base.css">
+    <style>
+        /* =======================================================
+           HERO 1 · CAPAS (V4)
+           ======================================================= */
+        /* --p: progreso del scroll al salir del hero (0 a 1), lo escribe h1-capas.js */
+        .hero { --fondo-hero: var(--gris-claro); --nombre-y: 56%; --p: 0; --hover-lento: cubic-bezier(0.7, 0, 0.2, 1); position: sticky; top: 0; min-height: 360px; background: var(--fondo-hero); color: var(--negro); }
+
+        /* --- 0. ESCENA --- */
+        /* El hero solo queda fijo mientras la sección siguiente lo cubre; después se suelta */
+        .escena { position: relative; }
+
+        /* --- 1. GRANO --- */
+        .hero::after { content: ''; position: absolute; inset: 0; z-index: 6; pointer-events: none; background: url('../../../img/grano-textura.png') repeat; background-size: 180px; opacity: 0.35; mix-blend-mode: multiply; }
+
+        /* --- 2. VELO DE SALIDA --- */
+        /* Oscurece el hero mientras la siguiente sección lo cubre: la entrega es un fundido a negro */
+        .hero::before { content: ''; position: absolute; inset: 0; z-index: 9; pointer-events: none; background: var(--negro); opacity: calc(var(--p) * 0.85); }
+
+        /* --- 3. RETRATO RESPONSIVO --- */
+        /* Caja anclada abajo con object-fit: cover. El tamaño de la cabeza depende del alto de la pantalla, no del ancho */
+        .retrato { position: absolute; left: -32px; right: -32px; bottom: -16px; height: calc(90svh + 16px); z-index: 1; }
+        /* La caja sobresale 32 px por lado y 16 px abajo: el parallax nunca deja bordes vacíos */
+        .retrato-in { height: 100%; clip-path: inset(100% 0 0 0); animation: descubre 1300ms var(--ease) 80ms forwards; }
+        .retrato-in img { width: 100%; height: 100%; object-fit: cover; object-position: 44% 85%; transform: scale(1.06); transform-origin: 50% 100%; animation: asienta 1800ms var(--ease) 80ms forwards; scale: calc(1 + var(--p) * 0.08); }
+        @keyframes descubre { to { clip-path: inset(0 0 0 0); } }
+        @keyframes asienta { to { transform: scale(1); } }
+
+        /* --- 4. NOMBRE CON INVERSIÓN --- */
+        .nombre { position: absolute; left: 0; right: 0; top: var(--nombre-y); transform: translateY(-58%); z-index: 2; padding-inline: var(--margen); color: #fff; mix-blend-mode: difference; pointer-events: none; opacity: calc(1 - var(--p) * 1.3); }
+        .nombre h1 { font-size: clamp(64px, min(15.6vw, 34svh), 480px); white-space: nowrap; text-align: center; word-spacing: -0.06em; }
+        /* Cada letra reacciona al cursor con la propiedad translate, que no choca con la animación de entrada */
+        .nombre .l { transition: translate 500ms var(--ease); }
+
+        /* =======================================================
+           NAVEGACIÓN
+           ======================================================= */
+        .links-actual { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; gap: 60px; list-style: none; }
+        .links-actual li { opacity: 0; animation: aparece 1200ms var(--ease) forwards; }
+        .links-actual li:nth-child(1) { animation-delay: 1000ms; }
+        .links-actual li:nth-child(2) { animation-delay: 1080ms; }
+        .links-actual li:nth-child(3) { animation-delay: 1160ms; }
+        .links-actual a { display: inline-flex; overflow: hidden; padding: 0 0.12em; margin: 0 -0.12em; font-family: 'Inter', sans-serif; font-size: clamp(1.1rem, 0.78vw, 1.5rem); line-height: 1.3; font-weight: 270; font-style: italic; letter-spacing: -0.045em; color: #202020; }
+
+        /* --- 1. HOVER: LETRAS QUE RUEDAN --- */
+        /* Cada letra lleva una copia de sí misma debajo (text-shadow). Al pasar el mouse suben en cascada y la copia ocupa su lugar */
+        .links-actual .c { display: inline-block; white-space: pre; text-shadow: 0 1.3em currentColor; transition: translate 900ms var(--hover-lento); transition-delay: calc(var(--i) * 40ms); }
+
+        /* --- 2. PUNTO JUNTO A LA HORA --- */
+        /* El punto que latía en "Disponible", ahora solo, a la izquierda de la hora */
+        .nav .der { gap: 10px; font-size: clamp(12px, 0.72vw, 15px); }
+        .nav .logo { font-size: clamp(16px, 1.05vw, 22px); }
+        .punto-vivo { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: latido 2s ease-in-out infinite; }
+
+        /* --- 3. HOVER LENTO EN LAS REDES --- */
+        /* El subrayado de LinkedIn, Behance e Instagram se dibuja más pausado, al ritmo de los links */
+        .redes .subraya { transition: background-size 900ms var(--hover-lento); }
+        @media (hover: hover) { .links-actual a:hover .c { translate: 0 -1.3em; } }
+        .nav .logo, .nav .der { opacity: 0; animation: aparece 1200ms var(--ease) 950ms forwards; }
+        .hero a:focus-visible { outline: 1px solid currentColor; outline-offset: 6px; border-radius: 2px; }
+
+        /* =======================================================
+           GRUPO DE ACCIÓN (DERECHA, SOBRE FONDO PLANO)
+           ======================================================= */
+        /* El botón queda bajo el extremo derecho del nombre */
+        .accion { position: absolute; z-index: 5; right: var(--margen); top: calc(var(--nombre-y) + 5.6vw + 36px); opacity: 0; animation: aparece 1200ms var(--ease) 1250ms forwards; }
+
+        /* --- 1. DESCRIPTOR BAJO EL LOGO --- */
+        /* Arriba a la izquierda siempre hay fondo liso: se lee en cualquier ancho y llena la franja superior */
+        
+        .btn-proyectos { position: relative; overflow: hidden; z-index: 1; display: block; padding: clamp(15px, 1.05vw, 22px) clamp(45px, 3.1vw, 64px); border: 2px solid #202020; border-radius: 999px; font-family: 'Inter', sans-serif; font-size: clamp(0.9rem, 0.62vw, 1.2rem); font-weight: 300; font-style: italic; letter-spacing: 1px; text-transform: uppercase; color: #202020; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), color 0.6s ease, box-shadow 0.6s ease; }
+        .btn-proyectos::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: #202020; transition: left 0.6s cubic-bezier(0.25, 1, 0.5, 1); z-index: -1; }
+        @media (hover: hover) {
+            .btn-proyectos:hover::before { left: 0; }
+            .btn-proyectos:hover { color: var(--gris-claro); transform: translateY(-10px); box-shadow: 0 15px 25px rgba(32, 32, 32, 0.2); }
+        }
+
+        /* =======================================================
+           PIE DEL HERO
+           ======================================================= */
+        .pie-hero { position: absolute; left: 0; right: 0; bottom: 0; z-index: 7; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: 0 var(--margen) var(--margen); align-items: end; color: #fff; mix-blend-mode: difference; }
+        .redes { grid-column: 1 / span 3; list-style: none; display: flex; flex-direction: column; gap: 6px; opacity: 0; animation: aparece 1200ms var(--ease) 1400ms forwards; }
+        .scroll { grid-column: 6 / span 2; justify-self: center; opacity: 0; animation: aparece 1200ms var(--ease) 1600ms forwards; }
+        .scroll i { position: relative; display: block; width: 1px; height: 46px; background: rgba(255, 255, 255, 0.28); overflow: hidden; }
+        .scroll i::after { content: ''; position: absolute; left: 0; top: -40%; width: 1px; height: 40%; background: #fff; animation: baja 1800ms var(--ease) infinite; }
+        .numero { grid-column: 12; justify-self: end; opacity: 0; animation: aparece 1200ms var(--ease) 1500ms forwards; }
+        @keyframes baja { to { top: 100%; } }
+        @keyframes aparece { from { opacity: 0; filter: blur(6px); transform: translateY(10px); } to { opacity: 1; filter: blur(0); transform: none; } }
+
+        /* =======================================================
+           SIGUIENTE SECCIÓN (VISTA PREVIA DE LA ENTREGA)
+           ======================================================= */
+        /* Sube sobre el hero fijo como una cortina negra. El diseño real de Works es la sección 2 */
+        .siguiente { position: relative; z-index: 20; min-height: 90svh; background: var(--negro); color: var(--blanco); display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: 96px var(--margen); align-content: start; }
+        .siguiente .mono { grid-column: 1 / span 3; color: var(--gris-medio); }
+        .siguiente h2 { grid-column: 4 / -1; font-size: clamp(40px, 6vw, 96px); font-weight: 500; letter-spacing: var(--tracking-titulo); line-height: 0.95; }
+        .siguiente p.sub { grid-column: 4 / span 6; margin-top: 28px; color: var(--gris-medio); }
+
+        /* =======================================================
+           PANTALLAS BAJAS (CELULAR HORIZONTAL, LAPTOPS CON POCA ALTURA)
+           ======================================================= */
+        /* El botón baja a la fila del pie y se ocultan los elementos que chocarían */
+        @media (max-height: 520px) and (min-width: 769px) {
+            .accion { top: auto; bottom: var(--margen); }
+            .numero, .scroll { display: none; }
+        }
+
+        /* =======================================================
+           VISTA MÓVIL
+           ======================================================= */
+        @media (max-width: 768px) {
+            .hero { --nombre-y: 40%; }
+            .retrato { height: calc(62svh + 16px); }
+            .retrato-in img { object-position: 46% 90%; }
+            .nombre h1 { font-size: 22.5vw; white-space: normal; line-height: 0.82; text-align: left; }
+            .links-actual { left: auto; right: var(--margen); top: 20px; transform: none; flex-direction: column; align-items: flex-end; gap: 12px; }
+            .links-actual a { font-size: 1rem; line-height: 1; }
+            .nav .der { display: none; }
+            .accion { right: auto; left: var(--margen); top: calc(var(--nombre-y) + 20vw + 20px); }
+            .btn-proyectos { padding: 12px 30px; font-size: 0.75rem; border-width: 1px; }
+            .redes, .numero { display: none; }
+            .scroll { grid-column: 1 / -1; }
+            .siguiente { grid-template-columns: repeat(4, 1fr); padding: 64px var(--margen); }
+            .siguiente .mono, .siguiente h2, .siguiente p.sub { grid-column: 1 / -1; }
+            .siguiente h2 { margin-top: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="escena">
+    <section class="hero" data-parallax>
+        <nav class="nav">
+            <a href="#" class="logo">agustín<span class="punto">.</span>design<span class="cursor"></span></a>
+            <span class="mono der"><span class="punto-vivo" aria-hidden="true"></span><span class="reloj" data-reloj>Santiago 00:00</span></span>
+        </nav>
+        <ul class="links-actual"><li><a href="#">About</a></li><li><a href="#">Works</a></li><li><a href="#trabajo">Contact</a></li></ul>
+
+        <div class="retrato" data-capa="0.6"><div class="retrato-in"><img src="../../../img/fotodeperfilgus5.webp" alt="" fetchpriority="high" width="3073" height="1750"></div></div>
+
+        <div class="nombre" data-capa="1.4"><h1 class="display"><span class="oculto">Agustín Avendaño, diseño de marca y desarrollo web en Santiago de Chile</span><span data-letras="520" aria-hidden="true">agustín design</span></h1></div>
+
+        <div class="accion"><a href="#trabajo" class="btn-proyectos">ver proyectos</a></div>
+
+        <div class="pie-hero mono">
+            <ul class="redes"><li><a href="#" class="subraya">LinkedIn ↗</a></li><li><a href="#" class="subraya">Behance ↗</a></li><li><a href="#" class="subraya">Instagram ↗</a></li></ul>
+            <span class="scroll" aria-hidden="true"><i></i></span>
+            <span class="numero">© 2026</span>
+        </div>
+    </section>
+
+    <section class="siguiente" id="trabajo">
+        <p class="mono">02 · Works</p>
+        <h2>Trabajo seleccionado</h2>
+        <p class="sub">Vista previa de la entrega: el hero queda fijo, se oscurece y esta sección lo cubre como una cortina. El diseño real de esta sección es el siguiente paso.</p>
+    </section>
+    </div>
+
+    <script src="hero-base.js"></script>
+    <script src="h1-capas.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Works 2 · Galería cinemática · agustín.design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="works-base.css">
+    <style>
+        /* =======================================================
+           WORKS 2 · GALERÍA CINEMÁTICA
+           ======================================================= */
+        /* La sección queda fija y el scroll vertical mueve las tarjetas en horizontal */
+
+        /* --- 1. PISTA FIJADA --- */
+        .pista { position: relative; height: 340svh; }
+        .escenario { position: sticky; top: 0; height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+        .riel { display: flex; gap: 3vw; padding-left: var(--margen); will-change: transform; }
+
+        /* --- 2. TARJETA --- */
+        .pieza { position: relative; flex: 0 0 auto; width: 68vw; height: 66svh; border-radius: 6px; overflow: hidden; cursor: pointer; background: var(--grafito); }
+        .pieza img { width: 100%; height: 100%; object-fit: cover; scale: 1.08; transition: scale 1200ms var(--hover-lento); }
+        .pieza::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(11, 11, 11, 0.8), rgba(11, 11, 11, 0) 50%); }
+        .pieza .info { position: absolute; left: 24px; right: 24px; bottom: 22px; z-index: 2; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 16px; }
+        .pieza .nombre { font-size: clamp(48px, 6.6vw, 118px); font-weight: 500; letter-spacing: var(--tracking-display); line-height: 0.85; }
+        .pieza .meta { text-align: right; display: flex; flex-direction: column; gap: 2px; }
+        .pieza .n { position: absolute; top: 20px; left: 24px; z-index: 2; }
+        .pieza .ver { position: absolute; top: 16px; right: 16px; z-index: 2; padding: 8px 13px; border-radius: 999px; background: var(--blanco); color: var(--negro); opacity: 0; translate: 0 -6px; transition: opacity 600ms var(--hover-lento), translate 700ms var(--hover-lento); }
+        @media (hover: hover) {
+            .pieza:hover img { scale: 1; }
+            .pieza:hover .ver { opacity: 1; translate: 0 0; }
+        }
+
+        /* --- 3. TARJETA FINAL: ARCHIVO --- */
+        .pieza.fin { width: 34vw; display: flex; flex-direction: column; justify-content: space-between; padding: 24px; background: var(--grafito); border: 1px solid #262625; }
+        .pieza.fin::after { display: none; }
+        .pieza.fin h3 { font-size: clamp(36px, 4vw, 64px); font-weight: 500; letter-spacing: var(--tracking-titulo); line-height: 0.95; }
+
+        /* --- 4. PROGRESO --- */
+        .progreso { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; padding: 28px var(--margen) 0; }
+        .progreso .linea { height: 1px; background: #262625; position: relative; overflow: hidden; }
+        .progreso .linea i { position: absolute; inset: 0; background: var(--blanco); transform-origin: 0 50%; transform: scaleX(0); }
+        .escenario .cabecera { padding-top: 0; padding-bottom: 28px; }
+
+        /* =======================================================
+           VISTA MÓVIL
+           ======================================================= */
+        /* Deslizar con el dedo y snap por tarjeta, sin fijar la sección */
+        @media (max-width: 768px) {
+            .pista { height: auto; }
+            .escenario { position: relative; height: auto; padding: 100px 0 60px; }
+            .escenario .cabecera { padding-top: 0; }
+            .riel { overflow-x: auto; scroll-snap-type: x mandatory; padding-right: var(--margen); scrollbar-width: none; transform: none !important; }
+            .riel::-webkit-scrollbar { display: none; }
+            .pieza { width: 86vw; height: auto; aspect-ratio: 4 / 5; scroll-snap-align: center; }
+            /* Las capturas de las webs son horizontales: en móvil la imagen ocupa la parte de arriba en su formato y el texto va abajo */
+            .pieza img { height: 58%; object-position: 0 0; scale: 1; }
+            .pieza::after { background: linear-gradient(to top, var(--grafito) 42%, rgba(26, 26, 25, 0) 60%); }
+            .pieza .nombre { font-size: 13vw; }
+            .pieza .info { grid-template-columns: 1fr; }
+            .pieza .meta { text-align: left; }
+            .pieza.fin { width: 70vw; }
+            .pieza .ver { opacity: 1; translate: 0 0; }
+            .progreso { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="barra"><a href="#" class="logo">agustín<span>.</span>design</a><ul><li><a href="#">About</a></li><li><a href="#">Works</a></li><li><a href="#">Contact</a></li></ul><span class="der mono">Santiago</span></header>
+
+    <section class="pista" id="pista">
+        <div class="escenario">
+            <div class="cabecera">
+                <span class="num mono gris">02 · Works</span>
+                <h2>Trabajo seleccionado</h2>
+                <p>Sigue bajando: los proyectos avanzan en horizontal. Presiona uno para entrar.</p>
+            </div>
+            <div class="riel" id="riel">
+                <article class="pieza" data-id="llego" tabindex="0"><img src="media/llego-web.jpg" alt=""><span class="n mono">01 / 03</span><span class="ver mono">Ver caso ↗</span><div class="info"><h3 class="nombre">Llegó Farma</h3><span class="meta mono"><span>Marca · One page</span><span class="gris">2026</span></span></div></article>
+                <article class="pieza" data-id="tapin" tabindex="0"><img src="media/tapin-web.jpg" alt=""><span class="n mono">02 / 03</span><span class="ver mono">Ver caso ↗</span><div class="info"><h3 class="nombre">Tap In</h3><span class="meta mono"><span>Marca · Producto · Web</span><span class="gris">2025–26</span></span></div></article>
+                <article class="pieza" data-id="mend" tabindex="0"><img src="media/mend-web.jpg" alt=""><span class="n mono">03 / 03</span><span class="ver mono">Ver caso ↗</span><div class="info"><h3 class="nombre">Mend</h3><span class="meta mono"><span>Investigación · Marca · Web app</span><span class="gris">2026</span></span></div></article>
+                <article class="pieza fin"><span class="mono gris">Archivo</span><h3>La Columna, HAI, Mido, Entrena Po y más</h3><span class="mono">Ver archivo ↓</span></article>
+            </div>
+            <div class="progreso mono"><span>01</span><span class="linea"><i id="barra"></i></span><span class="gris">03</span></div>
+        </div>
+    </section>
+
+    <section class="archivo"><span class="num mono gris">Archivo</span><ul data-archivo></ul></section>
+
+    <script src="works-base.js"></script>
+    <script>
+        /* =======================================================
+           INICIO JS · WORKS 2
+           ======================================================= */
+        (function () {
+            const pista = document.getElementById('pista');
+            const riel = document.getElementById('riel');
+            const barra = document.getElementById('barra');
+            const escritorio = window.matchMedia('(min-width: 769px)');
+
+            /* --- 1. SCROLL VERTICAL A HORIZONTAL --- */
+            /* El progreso dentro de la pista se traduce en el desplazamiento del riel */
+            let pendiente = false;
+            const pintar = () => {
+                pendiente = false;
+                if (!escritorio.matches) return;
+                const r = pista.getBoundingClientRect();
+                const recorrido = pista.offsetHeight - window.innerHeight;
+                const p = Math.min(Math.max(-r.top / recorrido, 0), 1);
+                const max = riel.scrollWidth - window.innerWidth + 32;
+                riel.style.transform = `translateX(${-p * max}px)`;
+                barra.style.transform = `scaleX(${p})`;
+            };
+            const pedir = () => { if (!pendiente) { pendiente = true; requestAnimationFrame(pintar); } };
+            window.addEventListener('scroll', pedir, { passive: true });
+            window.addEventListener('resize', pedir);
+            pintar();
+
+            /* --- 2. ENTRAR AL CASO --- */
+            /* La tarjeta completa viaja hasta la portada; el nombre viaja con ella */
+            riel.querySelectorAll('.pieza[data-id]').forEach(pz => {
+                const abrir = () => window.abrirCaso(pz.dataset.id, pz, pz.querySelector('.nombre'));
+                pz.addEventListener('click', abrir);
+                pz.addEventListener('keydown', e => { if (e.key === 'Enter') abrir(); });
+            });
+        })();
+        /* =======================================================
+           FIN JS · WORKS 2
+           ======================================================= */
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero 2 · Afiche · agustín.design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="hero-base.css">
+    <style>
+        /* =======================================================
+           HERO 2 · AFICHE
+           ======================================================= */
+        /* El nombre arriba como titular de afiche, el retrato delante y los datos repartidos en la grilla (referencia DARK) */
+        .hero { background: var(--gris-claro); color: var(--negro); }
+        .hero .nav { display: none; }
+
+        /* --- 1. TITULAR --- */
+        /* "agustín" a todo el ancho, detrás del retrato; ".design" chico, como un registro */
+        .titular { position: absolute; top: var(--margen); left: var(--margen); right: var(--margen); z-index: 1; display: flex; align-items: flex-start; }
+        .titular h1 { font-size: clamp(92px, 25.5vw, 460px); font-weight: 600; letter-spacing: -0.075em; line-height: 0.76; margin-left: -0.04em; }
+        .titular .registro { font-family: var(--mono); font-size: clamp(12px, 1.3vw, 20px); margin-top: 0.4em; margin-left: 6px; }
+
+        /* --- 2. RETRATO DELANTE DEL TITULAR --- */
+        .retrato { position: absolute; left: 0; bottom: 0; width: 100%; z-index: 2; }
+        .retrato img { animation: entraRetrato 1400ms var(--ease) 250ms both; }
+
+        /* --- 3. DATOS EN LA GRILLA --- */
+        /* Bloques chicos en mono, alineados a columnas como en un afiche */
+        .datos { position: absolute; inset: 0; z-index: 3; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: auto 1fr auto; column-gap: var(--medianil); padding: calc(var(--margen) + 21vw) var(--margen) var(--margen); pointer-events: none; }
+        .datos > * { pointer-events: auto; }
+        .bloque { font-family: var(--mono); font-size: 11px; line-height: 1.35; text-transform: uppercase; font-weight: 500; color: #fff; mix-blend-mode: difference; }
+        .b-hago { grid-column: 4 / span 2; grid-row: 1; align-self: start; }
+        .b-lugar { grid-column: 6 / span 2; grid-row: 1; align-self: start; }
+        .b-nav { grid-column: 10 / span 2; grid-row: 1; align-self: start; display: flex; flex-direction: column; }
+        .b-nav a { width: max-content; }
+        .anio { grid-column: 1 / span 3; grid-row: 3; align-self: end; font-size: clamp(48px, 6vw, 96px); font-weight: 600; letter-spacing: -0.06em; line-height: 0.8; }
+        .claim { grid-column: 7 / span 5; grid-row: 3; align-self: end; font-size: clamp(30px, 4.2vw, 70px); font-weight: 700; letter-spacing: -0.06em; line-height: 0.86; text-transform: uppercase; color: var(--blanco); mix-blend-mode: difference; }
+        .b-estado { grid-column: 12 / span 1; grid-row: 3; align-self: end; justify-self: end; text-align: right; }
+
+        @media (max-width: 768px) {
+            .datos { grid-template-columns: repeat(4, 1fr); padding-top: calc(var(--margen) + 26vw); }
+            .titular h1 { font-size: 23.5vw; }
+            .retrato { width: 220vw; left: -49vw; }
+            .b-hago { grid-column: 1 / span 2; }
+            .b-lugar { display: none; }
+            .b-nav { grid-column: 3 / span 2; justify-self: end; text-align: right; }
+            .anio { display: none; }
+            .claim { grid-column: 1 / -1; font-size: 34px; }
+            .b-estado { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero" data-parallax>
+        <div class="titular" data-capa="0.5"><h1 data-letras>agustín</h1><span class="registro">.design</span></div>
+
+        <div class="retrato" data-capa="1.2"><img src="../../../img/fotodeperfilgus5.webp" alt="Agustín Avendaño" fetchpriority="high"></div>
+
+        <div class="datos">
+            <p class="bloque b-hago">Marca<br>UX<br>Desarrollo web</p>
+            <p class="bloque b-lugar">Santiago, CL<br><span data-reloj="Hora">Hora 00:00</span></p>
+            <nav class="bloque b-nav"><a href="#" class="subraya">Trabajo</a><a href="#" class="subraya">Sobre mí</a><a href="#" class="subraya">Contacto</a></nav>
+            <p class="anio">026</p>
+            <p class="claim">Diseño marcas y construyo sus sitios</p>
+            <p class="bloque b-estado"><span class="disponible">Disponible</span></p>
+        </div>
+    </section>
+
+    <section class="nota-exploracion">
+        <p class="mono">Hero 2 · Afiche</p>
+        <p>"agustín" como titular de afiche detrás de ti, ".design" chico como un registro, y los datos repartidos en la grilla. La navegación también es un dato más. El claim invierte su color sobre la foto.</p>
+        <p class="mono"><a href="h1-capas.html" class="subraya">← Hero 1</a> · <a href="index.html" class="subraya">Comparar</a> · <a href="h3-columnas.html" class="subraya">Hero 3 →</a></p>
+    </section>
+
+    <script src="hero-base.js"></script>
+</body>
+</html>

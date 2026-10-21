@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casos · agustín.design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        /* =======================================================
+           COMPARADOR DE LA PÁGINA DE CASO
+           ======================================================= */
+        :root { --g: clamp(12px, 1.6vw, 20px); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #0B0B0B; color: #F5F5F3; font: 14px/1.5 'Geist', sans-serif; -webkit-font-smoothing: antialiased; }
+        a { color: inherit; text-decoration: none; }
+        header { display: flex; justify-content: space-between; align-items: end; padding: 28px var(--g) 20px; gap: 20px; flex-wrap: wrap; }
+        h1 { font-weight: 500; font-size: clamp(28px, 3vw, 44px); letter-spacing: -0.05em; line-height: 1; }
+        header p { color: rgba(245, 245, 243, 0.58); max-width: 64ch; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--g); padding: 0 var(--g) var(--g); }
+        .marco { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 4px; background: #1a1730; }
+        .marco iframe { position: absolute; top: 0; left: 0; width: 1440px; height: 900px; border: 0; transform-origin: 0 0; pointer-events: none; }
+        .pie { padding: 12px 2px; display: flex; flex-direction: column; gap: 4px; }
+        .pie span { color: rgba(245, 245, 243, 0.58); }
+        @media (hover: hover) { .card:hover strong { text-decoration: underline; text-underline-offset: 3px; } }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Caso · una plantilla, dos identidades</h1>
+        <p>La estructura y la mecánica de evidencia son de Agustín Design: el sitio real al lado del relato, que va a la parte de la que habla cada decisión. La piel es del proyecto: tipografía, color, fondos, formas y movimiento. <a href="exploracion-1/index.html" style="text-decoration:underline;text-underline-offset:3px">Ver la exploración anterior ↗</a></p>
+    </header>
+    <main class="grid">
+        <a class="card" href="llego.html"><div class="marco"><iframe src="llego.html" title="Caso Llegó Farma" loading="lazy" tabindex="-1"></iframe></div><div class="pie"><strong>01 · Llegó Farma</strong><span>Retícula de precisión con cortes, nodos, Manrope liviana con escalón y LF Mono. Sin radios ni sombras.</span></div></a>
+        <a class="card" href="tapin.html"><div class="marco"><iframe src="tapin.html" title="Caso Tap In" loading="lazy" tabindex="-1"></iframe></div><div class="pie"><strong>02 · Tap In</strong><span>Poppins, lavanda y morado, vidrio, píldoras y piezas que flotan. Decisiones sobre fondo claro, como el sitio.</span></div></a>
+    </main>
+    <script>
+        /* =======================================================
+           INICIO JS · ESCALA DE PREVIEWS
+           ======================================================= */
+        (function () {
+            const escalar = () => document.querySelectorAll('.marco').forEach(m => { m.querySelector('iframe').style.transform = `scale(${m.clientWidth / 1440})`; });
+            escalar(); window.addEventListener('resize', escalar);
+        })();
+        /* =======================================================
+           FIN JS · ESCALA DE PREVIEWS
+           ======================================================= */
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+Fuentes incluidas en este sitio
+
+Manrope (manrope-*.woff2)
+Copyright 2018 The Manrope Project Authors. SIL Open Font License 1.1 (https://openfontlicense.org).
+Subconjunto latino convertido a WOFF2, sin otras modificaciones.
+
+LF Mono (lf-mono-*.woff2)
+Versión modificada de JetBrains Mono. Copyright 2020 The JetBrains Mono Project Authors.
+SIL Open Font License 1.1 (https://openfontlicense.org).
+Cambios: se eliminó el punto interior del cero según el manual de marca de Llegó Farma,
+se renombró la familia y se dejó un subconjunto latino en WOFF2.

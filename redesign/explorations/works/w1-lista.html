@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Works 1 · Índice tipográfico · agustín.design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="works-base.css">
+    <style>
+        /* =======================================================
+           WORKS 1 · ÍNDICE TIPOGRÁFICO
+           ======================================================= */
+        /* Nombres gigantes en lista; una tarjeta con la web del proyecto sigue al cursor */
+
+        /* --- 1. FILAS --- */
+        .lista { position: relative; z-index: 45; list-style: none; padding: 0 var(--margen); border-top: 1px solid #262625; }
+        /* La lista va sobre la tarjeta y los nombres se invierten al cruzarla, como el nombre del hero */
+        .fila { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-items: end; padding: 22px 0 18px; border-bottom: 1px solid #262625; cursor: pointer; }
+        .fila .n { grid-column: 1 / span 1; align-self: start; padding-top: 0.9vw; }
+        .fila .nombre { grid-column: 2 / span 7; mix-blend-mode: difference; font-size: clamp(56px, 9.6vw, 170px); font-weight: 500; letter-spacing: var(--tracking-display); line-height: 0.82; transition: translate 900ms var(--hover-lento), color 600ms var(--hover-lento); }
+        .fila .meta { grid-column: 9 / span 3; display: flex; flex-direction: column; gap: 2px; padding-bottom: 0.6vw; }
+        .fila .anio { grid-column: 12; justify-self: end; padding-bottom: 0.6vw; }
+        .fila .mini { display: none; }
+
+        /* --- 2. FOCO DEL HOVER --- */
+        /* La fila activa avanza y las demás bajan al gris oscuro: el ojo va directo al proyecto */
+        @media (hover: hover) {
+            .lista:hover .fila .nombre { color: var(--gris-oscuro); }
+            .lista .fila:hover .nombre { color: var(--blanco); translate: 1.2vw 0; }
+        }
+
+        /* --- 3. TARJETA QUE SIGUE AL CURSOR --- */
+        /* Se mueve con inercia (lerp) y cambia de proyecto con una máscara que sube */
+        .tarjeta { position: fixed; top: 0; left: 0; z-index: 40; width: clamp(280px, 30vw, 520px); aspect-ratio: 16 / 10; border-radius: 4px; overflow: hidden; pointer-events: none; opacity: 0; scale: 0.86; transition: opacity 500ms var(--hover-lento), scale 700ms var(--hover-lento); will-change: transform; }
+        .tarjeta.on { opacity: 1; scale: 1; }
+        .tarjeta .capa { position: absolute; inset: 0; clip-path: inset(100% 0 0 0); transition: clip-path 800ms var(--hover-lento); }
+        .tarjeta .capa.on { clip-path: inset(0 0 0 0); }
+        .tarjeta img { width: 100%; height: 100%; object-fit: cover; }
+        .tarjeta .etiqueta { position: absolute; left: 12px; bottom: 12px; z-index: 3; padding: 7px 12px; border-radius: 999px; background: var(--blanco); color: var(--negro); }
+
+        /* =======================================================
+           VISTA MÓVIL
+           ======================================================= */
+        /* Sin cursor: cada fila muestra su imagen debajo del nombre */
+        @media (max-width: 768px) {
+            .fila { grid-template-columns: repeat(4, 1fr); row-gap: 12px; padding: 20px 0 22px; }
+            .fila .n { grid-column: 1 / span 1; padding-top: 0; }
+            .fila .anio { grid-column: 4; align-self: start; padding: 0; }
+            .fila .nombre { grid-column: 1 / -1; font-size: 15vw; }
+            .fila .meta { grid-column: 1 / -1; padding: 0; }
+            .fila .mini { display: block; grid-column: 1 / -1; aspect-ratio: 16 / 10; border-radius: 4px; overflow: hidden; }
+            .fila .mini img { width: 100%; height: 100%; object-fit: cover; }
+            .tarjeta { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="barra"><a href="#" class="logo">agustín<span>.</span>design</a><ul><li><a href="#">About</a></li><li><a href="#">Works</a></li><li><a href="#">Contact</a></li></ul><span class="der mono">Santiago</span></header>
+
+    <section class="cabecera">
+        <span class="num mono gris">02 · Works</span>
+        <h2>Trabajo seleccionado</h2>
+        <p>Tres proyectos de marca y web, contados desde las decisiones. Pasa el mouse y presiona uno.</p>
+    </section>
+
+    <ul class="lista" id="lista">
+        <li class="fila" data-id="llego" tabindex="0"><span class="n mono gris">01</span><span class="nombre">Llegó Farma</span><span class="meta mono"><span>Marca · One page</span><span class="gris">Submarca de logística de salud</span></span><span class="anio mono gris">2026</span><span class="mini"><img src="media/llego-web.jpg" alt=""></span></li>
+        <li class="fila" data-id="tapin" tabindex="0"><span class="n mono gris">02</span><span class="nombre">Tap In</span><span class="meta mono"><span>Marca · Producto · Web</span><span class="gris">Startup edtech</span></span><span class="anio mono gris">2025–26</span><span class="mini"><img src="media/tapin-web.jpg" alt=""></span></li>
+        <li class="fila" data-id="mend" tabindex="0"><span class="n mono gris">03</span><span class="nombre">Mend</span><span class="meta mono"><span>Investigación · Marca · Web app</span><span class="gris">Proyecto de título</span></span><span class="anio mono gris">2026</span><span class="mini"><img src="media/mend-web.jpg" alt=""></span></li>
+    </ul>
+
+    <section class="archivo"><span class="num mono gris">Archivo</span><ul data-archivo></ul></section>
+
+    <div class="tarjeta" id="tarjeta" aria-hidden="true">
+        <div class="capa" data-id="llego"><img src="media/llego-web.jpg" alt=""></div>
+        <div class="capa" data-id="tapin"><img src="media/tapin-web.jpg" alt=""></div>
+        <div class="capa" data-id="mend"><img src="media/mend-web.jpg" alt=""></div>
+        <span class="etiqueta mono">Ver caso ↗</span>
+    </div>
+
+    <script src="works-base.js"></script>
+    <script>
+        /* =======================================================
+           INICIO JS · WORKS 1
+           ======================================================= */
+        (function () {
+            const lista = document.getElementById('lista');
+            const tarjeta = document.getElementById('tarjeta');
+            const capas = [...tarjeta.querySelectorAll('.capa')];
+            const conMouse = window.matchMedia('(hover: hover)').matches;
+
+            /* --- 1. INERCIA DE LA TARJETA --- */
+            /* La posición real persigue al cursor con un factor de suavizado */
+            let tx = 0, ty = 0, x = 0, y = 0, corriendo = false;
+            const paso = () => {
+                x += (tx - x) * 0.12; y += (ty - y) * 0.12;
+                tarjeta.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+                if (Math.abs(tx - x) + Math.abs(ty - y) > 0.3) requestAnimationFrame(paso); else corriendo = false;
+            };
+            const mover = e => { tx = e.clientX + 60; ty = e.clientY; if (!corriendo) { corriendo = true; requestAnimationFrame(paso); } };
+
+            /* --- 2. CAMBIO DE PROYECTO --- */
+            const mostrar = id => capas.forEach(c => c.classList.toggle('on', c.dataset.id === id));
+            if (conMouse) {
+                lista.addEventListener('mousemove', mover);
+                lista.querySelectorAll('.fila').forEach(f => f.addEventListener('mouseenter', e => { if (!tarjeta.classList.contains('on')) { x = e.clientX + 60; y = e.clientY; } mostrar(f.dataset.id); tarjeta.classList.add('on'); }));
+                lista.addEventListener('mouseleave', () => { tarjeta.classList.remove('on'); capas.forEach(c => c.classList.remove('on')); });
+            }
+
+            /* --- 3. ENTRAR AL CASO --- */
+            /* Con mouse viaja la tarjeta; en móvil viaja la imagen de la fila. El nombre viaja en ambos */
+            const abrir = f => {
+                const id = f.dataset.id;
+                const desde = conMouse && tarjeta.classList.contains('on') ? tarjeta : f.querySelector('.mini');
+                const usaFila = !desde || desde.offsetParent === null;
+                window.abrirCaso(id, usaFila ? f : desde, f.querySelector('.nombre'));
+                tarjeta.classList.remove('on');
+            };
+            lista.querySelectorAll('.fila').forEach(f => {
+                f.addEventListener('click', () => abrir(f));
+                f.addEventListener('keydown', e => { if (e.key === 'Enter') abrir(f); });
+            });
+        })();
+        /* =======================================================
+           FIN JS · WORKS 1
+           ======================================================= */
+    </script>
+</body>
+</html>

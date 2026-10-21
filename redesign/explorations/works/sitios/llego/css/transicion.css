@@ -1,0 +1,24 @@
+/* Transición entre páginas: onepage ↔ privacidad.html (Fase 3, decidida 12.10: "cortina").
+   Salida: al hacer clic en un enlace a la otra página, js/main.js pone .sale en <html>, el telón sube desde abajo
+   y navega al terminar (--tr-salida, en ms). Entrada: el script del <head> pone .llega si se viene de una salida animada
+   (no al llegar por el QR o un enlace externo) y el telón se recoge hacia abajo, como las fotos del sitio.
+   Solo transform. Con prefers-reduced-motion no hay transición. */
+:root{ --tr-salida: 560; }
+
+/* Telón: cuatro franjas alineadas con la retícula (bordes + 4 columnas) */
+.telon{
+  --b: max(var(--gut), calc((100vw - var(--wrap)) / 2 + var(--gut)));
+  --c: calc((100vw - 2 * var(--b)) / 4);
+  position: fixed; inset: 0; z-index: 1000; display: flex; pointer-events: none; visibility: hidden;
+}
+.telon i{ display: block; flex: none; width: var(--c); height: 100%; background: var(--profundo); box-shadow: 1px 0 0 var(--profundo); transform: scaleY(0); transform-origin: 50% 100%; }
+.telon i:first-child, .telon i:nth-child(4){ width: calc(var(--b) + var(--c)); }
+html.sale .telon, html.llega .telon{ visibility: visible; }
+html.sale, html.sale *{ pointer-events: none; }
+
+html.sale .telon i{ animation: telon-cubre .56s var(--curva) both; }
+html.llega .telon i{ transform: none; animation: telon-descubre .8s var(--curva) .08s both; }
+@keyframes telon-cubre{ from{ transform: scaleY(0); } to{ transform: none; } }
+@keyframes telon-descubre{ from{ transform: none; } to{ transform: scaleY(0); } }
+
+@media (prefers-reduced-motion: reduce){ .telon{ display: none; } }

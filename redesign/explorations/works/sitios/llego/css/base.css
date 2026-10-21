@@ -1,0 +1,237 @@
+/* Tokens, reset, tipografía y retícula de precisión */
+
+/* ==========================================================
+   1. Tokens
+   ========================================================== */
+:root{
+  color-scheme: light;
+
+  /* Paleta de marca (manual, p. 11) */
+  --turquesa: #178181;          /* principal */
+  --turquesa-claro: #70CAC7;    /* fondos y apoyo */
+  --turquesa-oscuro: #104E56;   /* texto y contraste */
+
+  /* Secuencia oficial del degradado (manual, p. 13), en orden */
+  --g01: #F4F4F4; --g02: #E8E8E8; --g03: #B7E5E2; --g04: #80E2DF; --g05: #70CAC7;
+  --g06: #49C2BF; --g07: #21B6B6; --g08: #1B9C9C; --g09: #178181; --g10: #104E56;
+
+  /* Más oscuro que #104E56: solo para el cierre (autorizado por Agustín 10.10) */
+  --profundo: #0B3439;
+
+  /* Neutros */
+  --blanco: #FFFFFF;
+  --papel: var(--g01);
+
+  /* Texto sobre claro: #104E56 del manual (decidido 10.10) */
+  --tinta: #104E56;
+  --tinta-suave: color-mix(in srgb, var(--tinta) 74%, var(--papel));
+
+  /* Negro de la sección 05. A probar */
+  --negro: #0A1415;
+
+  /* Retícula: hueco 8 px y 18 % sobre claro decididos 10.10; sobre oscuro, a probar */
+  --corte: 8px;                                  /* cada línea se detiene esto antes de un cruce */
+  --linea-sobre-claro: rgba(16, 78, 86, .18);
+  --linea-sobre-oscuro: rgba(255, 255, 255, .16);
+
+  /* Tipografía */
+  --f-texto: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "LF Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --peso-display: 300;                           /* decidido 10.10 (sección 01): 300, como el hero */
+  --peso-clave: 500;                             /* palabra destacada del título de sección: Medium 500 (decidido 10.10). El hero usa 600 */
+  --t-display: clamp(56px, 6.3vw, 100px);
+  --t-h2: clamp(40px, 4.3vw, 66px);
+  --t-h3: clamp(22px, 1.8vw, 28px);
+  --t-cuerpo: 17px;
+  --t-chico: 15px;
+  --t-etiqueta: 11px;
+
+  /* Medidas */
+  --wrap: 1440px;
+  --gut: 48px;                                   /* margen lateral */
+  --celda: 16px;                                 /* aire entre una línea y su contenido */
+  --franja: 46px;                                /* alto de la franja de sección */
+  --header: 72px;
+  --esp-seccion: 112px;                          /* aire vertical dentro de cada sección */
+  --radio: 0px;
+  --radio-pildora: 999px;
+
+  /* Movimiento */
+  --dur-1: .3s;
+  --dur-2: .6s;
+  --dur-3: .9s;
+  --dur-4: 1.6s;
+  --curva: cubic-bezier(.65, 0, .35, 1);
+  --curva-salida: cubic-bezier(.22, 1, .36, 1);
+  --escalonado: 80ms;
+}
+
+/* ==========================================================
+   2. Reset y base
+   ========================================================== */
+*, *::before, *::after{ box-sizing: border-box; }
+html{
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
+  /* Sin rebote al pasarse del scroll (Chrome solo pinta un color plano en esa zona): la página se detiene en su borde */
+  overscroll-behavior-y: none;
+  background-color: var(--profundo);
+}
+body{
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--f-texto);
+  font-size: var(--t-cuerpo);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, h4, p, ul, ol, figure{ margin: 0; }
+ul, ol{ padding: 0; list-style: none; }
+img, svg, video{ display: block; max-width: 100%; }
+a{ color: inherit; }
+button, input, textarea, select{ font: inherit; color: inherit; }
+:focus-visible{ outline: 2px solid var(--g07); outline-offset: 3px; }
+/* Fotos en AVIF con respaldo JPG (Fase 4): <picture> no genera caja, así la <img> se ordena como antes */
+picture{ display: contents; }
+.visualmente-oculto{
+  position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ==========================================================
+   3. Tipografía
+   ========================================================== */
+.t-display, .t-h2{ font-weight: var(--peso-display); text-wrap: balance; }
+.t-display{ font-size: var(--t-display); line-height: .98; letter-spacing: -.035em; }
+.t-h2{ font-size: var(--t-h2); line-height: 1.02; letter-spacing: -.03em; }
+.t-h3{ font-size: var(--t-h3); font-weight: 400; line-height: 1.15; letter-spacing: -.015em; }
+.t-display strong, .t-h2 strong{ font-weight: var(--peso-clave); }
+.t-chico{ font-size: var(--t-chico); line-height: 1.6; }
+.t-mono{ font-family: var(--f-mono); }
+.t-etiqueta{
+  font-family: var(--f-mono); font-size: var(--t-etiqueta);
+  letter-spacing: .08em; text-transform: uppercase; line-height: 1.4;
+}
+
+/* Títulos en escalón: cada .linea es un renglón; .corre-1 / .corre-2 corren una o dos columnas */
+.escalon .linea{ display: block; }
+.escalon .corre-1{ padding-left: 25%; }
+.escalon .corre-2{ padding-left: 50%; }
+
+/* ==========================================================
+   4. Fondos
+   Los degradados usan solo la secuencia oficial, combinada en capas suaves
+   como las tres tonalidades de la página "Fondos" del manual.
+   ========================================================== */
+.sec{ position: relative; isolation: isolate; --linea: var(--linea-sobre-claro); color: var(--tinta); }
+.sec.es-oscuro{ --linea: var(--linea-sobre-oscuro); color: var(--blanco); }
+
+.fondo-claro{ background: var(--papel); }
+.fondo-blanco{ background: var(--blanco); }
+.fondo-oscuro{ background: var(--turquesa-oscuro); }
+.fondo-negro{ background: var(--negro); }
+
+.fondo-degradado-clara{
+  background:
+    radial-gradient(60% 55% at 78% 92%, color-mix(in srgb, var(--g05) 70%, transparent) 0%, transparent 70%),
+    radial-gradient(70% 60% at 20% 10%, var(--g01) 0%, transparent 70%),
+    linear-gradient(170deg, var(--g01) 0%, var(--g02) 30%, var(--g03) 70%, var(--g04) 100%);
+}
+.fondo-degradado-media{
+  background:
+    linear-gradient(115deg, transparent 30%, color-mix(in srgb, var(--g02) 55%, transparent) 48%, transparent 64%),
+    radial-gradient(70% 70% at 90% 10%, color-mix(in srgb, var(--g08) 55%, transparent) 0%, transparent 65%),
+    radial-gradient(60% 60% at 10% 90%, color-mix(in srgb, var(--g06) 60%, transparent) 0%, transparent 70%),
+    linear-gradient(160deg, var(--g05) 0%, var(--g03) 45%, var(--g05) 100%);
+}
+.fondo-degradado-oscura{
+  background:
+    linear-gradient(120deg, transparent 15%, color-mix(in srgb, var(--g03) 35%, transparent) 32%, transparent 50%),
+    radial-gradient(55% 60% at 70% 95%, color-mix(in srgb, var(--g10) 80%, transparent) 0%, transparent 70%),
+    radial-gradient(60% 60% at 15% 15%, color-mix(in srgb, var(--g06) 70%, transparent) 0%, transparent 70%),
+    linear-gradient(175deg, var(--g07) 0%, var(--g08) 45%, var(--g09) 100%);
+}
+.fondo-degradado-profunda{
+  background:
+    radial-gradient(55% 60% at 82% 18%, color-mix(in srgb, var(--g08) 70%, transparent) 0%, transparent 65%),
+    radial-gradient(60% 70% at 8% 88%, color-mix(in srgb, var(--g09) 75%, transparent) 0%, transparent 70%),
+    linear-gradient(172deg, var(--g10) 0%, var(--profundo) 70%);
+}
+
+/* Grano de profundidad (manual, p. 21). Va sobre los degradados */
+.grano::after{
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  opacity: var(--grano, .22); mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ==========================================================
+   5. Retícula de precisión
+   Cada sección se arma con filas (.fila). La fila ocupa todo el ancho
+   de la ventana y su contenido se ordena en 4 columnas medidas dentro de --wrap.
+   Como en el manual, las líneas no se tocan: cada una se detiene --corte
+   antes de un cruce y deja la intersección vacía.
+   - Verticales: ::before de cada fila.
+   - Horizontal: ::after de cada fila, en su borde superior. La primera fila
+     de una sección no la lleva (el cambio de fondo hace de borde) salvo .con-linea.
+   - .sin-verticales: fila sin líneas verticales (retícula por módulos).
+   ========================================================== */
+.fila{
+  --borde: max(var(--gut), calc((100% - var(--wrap)) / 2 + var(--gut)));
+  --ancho: calc(100% - 2 * var(--borde));
+  position: relative;
+  padding-inline: var(--borde);
+}
+.fila::before,
+.fila::after{ content: ""; position: absolute; pointer-events: none; z-index: 5; }
+
+/* Verticales: 5 líneas (bordes + 3 interiores) */
+.fila::before{
+  top: 0; bottom: 0;
+  left: var(--borde); right: var(--borde);
+  background:
+    linear-gradient(var(--linea), var(--linea)) 0 0 / 1px 100% no-repeat,
+    linear-gradient(var(--linea), var(--linea)) 25% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--linea), var(--linea)) 50% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--linea), var(--linea)) 75% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--linea), var(--linea)) 100% 0 / 1px 100% no-repeat;
+}
+/* hueco arriba si hay una horizontal encima; hueco abajo si viene otra fila */
+.fila + .fila::before, .fila.con-linea::before{ top: var(--corte); }
+.fila:has(+ .fila)::before{ bottom: var(--corte); }
+.fila.sin-verticales::before{ display: none; }
+
+/* Horizontal con huecos en cada vertical */
+.fila + .fila::after,
+.fila.con-linea::after{
+  top: 0; left: 0; right: 0; height: 1px;
+  background: var(--linea);
+  --p0: var(--borde);
+  --p1: calc(var(--borde) + var(--ancho) * .25);
+  --p2: calc(var(--borde) + var(--ancho) * .5);
+  --p3: calc(var(--borde) + var(--ancho) * .75);
+  --p4: calc(var(--borde) + var(--ancho));
+  --h: var(--corte);
+  -webkit-mask-image: linear-gradient(to right,
+    #000 calc(var(--p0) - var(--h)), transparent 0 calc(var(--p0) + var(--h) + 1px),
+    #000 0 calc(var(--p1) - var(--h)), transparent 0 calc(var(--p1) + var(--h) + 1px),
+    #000 0 calc(var(--p2) - var(--h)), transparent 0 calc(var(--p2) + var(--h) + 1px),
+    #000 0 calc(var(--p3) - var(--h)), transparent 0 calc(var(--p3) + var(--h) + 1px),
+    #000 0 calc(var(--p4) - var(--h)), transparent 0 calc(var(--p4) + var(--h) + 1px),
+    #000 0);
+          mask-image: linear-gradient(to right,
+    #000 calc(var(--p0) - var(--h)), transparent 0 calc(var(--p0) + var(--h) + 1px),
+    #000 0 calc(var(--p1) - var(--h)), transparent 0 calc(var(--p1) + var(--h) + 1px),
+    #000 0 calc(var(--p2) - var(--h)), transparent 0 calc(var(--p2) + var(--h) + 1px),
+    #000 0 calc(var(--p3) - var(--h)), transparent 0 calc(var(--p3) + var(--h) + 1px),
+    #000 0 calc(var(--p4) - var(--h)), transparent 0 calc(var(--p4) + var(--h) + 1px),
+    #000 0);
+}
+/* Si la fila de arriba no tiene verticales, la horizontal no necesita huecos */
+.fila.sin-verticales + .fila::after{ -webkit-mask-image: none; mask-image: none; }
+
+/* Grilla de 4 columnas para el contenido (base de 12 para ubicar con más precisión) */
+.g4{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.g12{ display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.celda{ padding-inline: var(--celda); }

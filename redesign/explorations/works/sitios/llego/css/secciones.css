@@ -1,0 +1,495 @@
+/* Estilos propios de cada sección (00 a 07 y footer). Escritorio primero. */
+
+.suave{ opacity: .72; }
+.fila.cierre{ height: var(--esp-seccion); }
+
+/* ---------- 00 Hero ---------- */
+.s-hero{ min-height: max(600px, 100svh); display: flex; flex-direction: column; background: var(--profundo); }
+.s-hero .foto{ position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+.s-hero .foto img{ width: 100%; height: 100%; object-fit: cover; }
+/* Velo para el contraste del texto (decidido 10.10: opción 02/18, completa + velo medio): más denso a la izquierda (título),
+   abajo (bajada, CTA e índice) y en una franja superior (header) */
+.s-hero .velo{
+  position: absolute; inset: 0; opacity: .85;
+  background:
+    linear-gradient(180deg, rgba(11, 52, 57, .45) 0%, rgba(11, 52, 57, 0) 22%),
+    linear-gradient(0deg, rgba(11, 52, 57, .82) 0%, rgba(11, 52, 57, .35) 38%, rgba(11, 52, 57, 0) 62%),
+    linear-gradient(90deg, rgba(11, 52, 57, .6) 0%, rgba(11, 52, 57, .25) 50%, rgba(11, 52, 57, .05) 100%);
+}
+.s-hero .fila-tope{ margin-top: var(--header); }
+.s-hero .cuerpo{ flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 40px; }
+.s-hero h1{ padding-inline: var(--celda); font-size: clamp(44px, min(5.5vw, 9.6svh), 88px); font-weight: 300; }
+.s-hero h1 strong{ font-weight: 600; }
+
+/* Fila inferior: bajada + CTA (col 1 y 2), prueba +21 (col 3) e índice de secciones (col 4) */
+.s-hero .pie{ align-items: end; padding-block: clamp(24px, 3.5svh, 36px) clamp(28px, 4.5svh, 44px); }
+.s-hero .entrada{ grid-column: 1 / span 2; padding-inline: var(--celda); display: flex; flex-direction: column; align-items: flex-start; gap: clamp(20px, 3svh, 28px); }
+.s-hero .bajada-hero{ font-size: 18px; line-height: 1.55; max-width: 46ch; }
+.s-hero .prueba{ grid-column: 3; padding-inline: var(--celda); display: flex; flex-direction: column; gap: 8px; }
+.s-hero .prueba .n{ font-family: var(--f-mono); font-weight: 300; font-size: 56px; line-height: 1; letter-spacing: -.04em; }
+.s-hero .prueba .d{ font-size: var(--t-chico); opacity: .8; max-width: 20ch; }
+.s-hero .indice{ grid-column: 4; padding-inline: var(--celda); display: flex; flex-direction: column; }
+.s-hero .indice a{
+  display: grid; grid-template-columns: 34px 1fr auto; align-items: center;
+  padding: 12px 0; border-top: 1px solid var(--linea); text-decoration: none;
+  font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase;
+}
+.s-hero .indice a:last-child{ border-bottom: 1px solid var(--linea); }
+.s-hero .indice .i-num{ opacity: .55; }
+.s-hero .indice .i-nom{ transition: transform var(--dur-2) var(--curva-salida), font-weight var(--dur-1); }
+.s-hero .indice .flecha{ opacity: .6; transition: transform var(--dur-2) var(--curva-salida), opacity var(--dur-1); }
+.s-hero .indice a:hover .i-nom{ transform: translateX(6px); font-weight: 700; }
+.s-hero .indice a:hover .i-num{ font-weight: 700; opacity: .85; }
+.s-hero .indice a:hover .flecha{ opacity: 1; transform: translateY(3px); }
+
+/* ---------- 01 Qué es ---------- */
+.s-quees .intro{ padding-block: var(--esp-seccion) 64px; row-gap: 40px; }
+/* 14.10: título y párrafos en filas separadas de la retícula, para que cada párrafo quede en su celda */
+.s-quees .intro-titulo{ padding-block: var(--esp-seccion) 56px; }
+.s-quees .intro-parrafos{ padding-block: 0; row-gap: 0; }
+.s-quees .intro-parrafos p{ padding-block: 32px 52px; }   /* opción 1 (14.10): celdas en las columnas 2 a 4 */
+.s-quees .intro h2{ grid-column: 1 / -1; padding-inline: var(--celda); }
+.s-quees .t1{ grid-column: 2; }
+.s-quees .t2{ grid-column: 3; }
+.s-quees .sub-franja .nombre{ grid-column: 1; }   /* "Capacidades": aquí aterriza el índice del hero (decidido 10.10) */
+/* Bento a la altura de la pantalla (decidido 10.10): se ve completo de una vez bajo el header */
+.s-quees .bento{ grid-template-rows: repeat(2, clamp(240px, calc((100svh - var(--header) - var(--franja) - 2 * var(--celda)) / 2), 380px)); }
+.s-quees .b-a{ grid-column: 1 / span 2; grid-row: 1 / span 2; }
+.s-quees .b-b{ grid-column: 3 / span 2; grid-row: 1; }
+.s-quees .b-c{ grid-column: 3; grid-row: 2; }
+.s-quees .b-d{ grid-column: 4; grid-row: 2; }
+/* Express (IMG 04, cuadrada): el repartidor va a la derecha; encuadre alto para no cortar la cara */
+.s-quees .b-c img{ object-position: 62% 30%; }
+/* Última milla (IMG 02, cuadrada): encuadre levemente alto para que no se corten las caras */
+.s-quees .b-a img{ object-position: 50% 35%; }
+
+/* Bento (decidido 10.10, opción C): velo propio alto y denso; con mouse solo se ven rótulo y título,
+   y la descripción sube al pasar el cursor. En pantallas táctiles la descripción queda siempre visible. */
+.s-quees .modulo .sobre{ background: none; }
+.s-quees .modulo::after{
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(0deg, rgba(11, 52, 57, .92) 0%, rgba(11, 52, 57, .62) 32%, rgba(11, 52, 57, .12) 62%, rgba(11, 52, 57, 0) 80%);
+  transition: opacity var(--dur-2) var(--curva);
+}
+@media (hover: hover) and (pointer: fine){
+  .s-quees .modulo::after{ opacity: .75; }
+  .s-quees .modulo:hover::after{ opacity: 1; }
+  .s-quees .modulo .sobre{ transform: translateY(var(--alto-p, 0px)); transition: transform var(--dur-2) var(--curva-salida); }
+  .s-quees .modulo .sobre p{ opacity: 0; transition: opacity var(--dur-2) var(--curva); }
+  .s-quees .modulo:hover .sobre{ transform: none; }
+  .s-quees .modulo:hover .sobre p{ opacity: .9; transition-delay: 80ms; }
+}
+/* Tablet táctil (B2, decidido 12.10): sin hover, el módulo muestra solo el título y la descripción sube al tocarlo
+   (js/main.js agrega .toca); tocar otro módulo la cambia. En celular el bento es un carrusel y no cambia. */
+@media (hover: none) and (min-width: 768px){
+  .s-quees .modulo{ cursor: pointer; }
+  .s-quees .modulo::after{ opacity: .75; }
+  .s-quees .modulo .sobre{ transform: translateY(var(--alto-p, 0px)); transition: transform var(--dur-2) var(--curva-salida); }
+  .s-quees .modulo .sobre p{ opacity: 0; transition: opacity var(--dur-2) var(--curva); }
+  .s-quees .modulo.toca::after{ opacity: 1; }
+  .s-quees .modulo.toca .sobre{ transform: none; }
+  .s-quees .modulo.toca .sobre p{ opacity: .9; transition-delay: 80ms; }
+}
+
+/* Párrafos (decidido 10.10): palabras clave en SemiBold y, al pasar el cursor por el párrafo, un destacador turquesa claro
+   que se dibuja detrás, de izquierda a derecha. En celular se activará al entrar en pantalla (pendiente de la etapa celular). */
+.s-quees .intro p{ isolation: isolate; }
+.s-quees .clave{ position: relative; font-weight: 600; white-space: nowrap; }
+.s-quees .clave::before{
+  content: ""; position: absolute; z-index: -1; left: -.18em; right: -.18em; top: .08em; bottom: .02em;
+  background: var(--resalte, color-mix(in srgb, var(--g05) 55%, transparent));
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .5s var(--curva-salida);
+}
+.s-quees .clave:nth-of-type(2)::before{ transition-delay: .12s; }
+.s-quees .intro p:hover .clave::before{ transform: none; }
+
+/* ---------- 02 Propuesta de valor ---------- */
+.s-valor .intro{ padding-block: var(--esp-seccion) 64px; }
+.s-valor .intro h2{ grid-column: 1 / -1; padding-inline: var(--celda); }
+/* Velo de contraste (decidido 10.10): oscurece la parte baja, donde va el texto blanco de los pilares */
+.s-valor::before{
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(0deg, rgba(11, 52, 57, .45) 0%, rgba(11, 52, 57, .15) 45%, rgba(11, 52, 57, 0) 75%);
+}
+/* Fondo (decidido 10.10): el degradado "oscura" corrido un paso hacia el turquesa oscuro */
+.s-valor{
+  background:
+    linear-gradient(120deg, transparent 15%, color-mix(in srgb, var(--g03) 26%, transparent) 32%, transparent 50%),
+    radial-gradient(55% 60% at 70% 95%, color-mix(in srgb, var(--g10) 85%, transparent) 0%, transparent 70%),
+    radial-gradient(60% 60% at 15% 15%, color-mix(in srgb, var(--g06) 55%, transparent) 0%, transparent 70%),
+    linear-gradient(175deg, var(--g07) 0%, var(--g08) 38%, var(--g09) 100%);
+}
+.s-valor .pilar{ position: relative; min-height: 560px; display: flex; flex-direction: column; justify-content: space-between; padding: 36px var(--celda) 44px; }
+.s-valor .pilar h3{ font-weight: 300; font-size: clamp(28px, 2.6vw, 40px); line-height: 1.05; letter-spacing: -.025em; margin-bottom: 18px; }
+.s-valor .pilar p{ font-size: var(--t-chico); line-height: 1.6; max-width: 30ch; opacity: .92; }
+/* Títulos y descripciones a la misma altura en los cuatro pilares (13.10): los pilares comparten las filas de la grilla
+   (ícono, espacio, título, descripción) con subgrid; el texto sigue siendo un solo bloque para su entrada animada */
+@media (min-width: 768px){
+  /* el alto mínimo va en la grilla: con subgrid, el del pilar ya no estira la fila central (--alto-pilar por fila de pilares) */
+  .s-valor .pilares{ grid-template-rows: auto 1fr auto auto; min-height: calc(var(--filas-pilar, 1) * var(--alto-pilar, 560px)); }
+  .s-valor .pilar{ display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; }
+  .s-valor .pilar .marca{ grid-row: 1; }
+  .s-valor .pilar > div{ grid-row: 3 / span 2; display: grid; grid-template-rows: subgrid; row-gap: 0; }
+}
+/* Ícono de cada pilar (Phosphor Regular, 26 px) en una caja fija para que la ruta pase por su eje */
+.s-valor .pilar .marca{ position: relative; z-index: 2; display: flex; align-items: center; height: 26px; }
+.s-valor .pilar .icono{ display: block; width: 26px; height: 26px; fill: currentColor; transition: scale .45s var(--curva-salida), opacity .3s var(--curva); }
+.s-valor .pilar > div{ transition: opacity .3s var(--curva); }
+/* Hover (decidido 10.10, "foco"): el pilar bajo el cursor queda y los otros se atenúan; su ícono crece */
+@media (hover: hover) and (pointer: fine){   /* con dedo, el hover quedaría pegado al tocar */
+.s-valor .pilares:has(.pilar:hover) .pilar:not(:hover) > div,
+.s-valor .pilares:has(.pilar:hover) .pilar:not(:hover) .icono{ opacity: .4; }
+.s-valor .pilar:hover .icono{ scale: 1.35; }
+}
+/* Ruta que une los pilares (decidido 10.10): un tramo por pilar que parte 8 px después del ícono
+   y se detiene 8 px antes de la vertical de la retícula, como las líneas cortadas del manual */
+.s-valor .pilar:not(:last-child)::after{
+  content: ""; position: absolute; z-index: 1; pointer-events: none;
+  top: calc(36px + 13px); left: calc(var(--celda) + 26px + 8px); right: 8px; height: 1px;
+  background: currentColor; opacity: .55;
+}
+/* Después del último pilar la ruta sigue y se desvanece: la operación continúa (decidido 10.10) */
+.s-valor .pilar:last-child::after{
+  content: ""; position: absolute; z-index: 1; pointer-events: none;
+  top: calc(36px + 13px); left: calc(var(--celda) + 26px + 8px); right: 8px; height: 1px;
+  background: linear-gradient(90deg, currentColor, transparent); opacity: .55;
+}
+/* Una palabra clave en SemiBold por descripción, mismo patrón de lectura que la 01 (decidido 10.10) */
+.s-valor .pilar .clave{ font-weight: 600; }
+
+/* ---------- 03 Calidad ---------- */
+.s-calidad{ --telon: var(--turquesa-oscuro); }   /* la cortina de la imagen usa el fondo de la sección */
+.s-calidad .arriba{ padding-block: var(--esp-seccion) 72px; }
+.s-calidad .texto{ grid-column: 1 / span 2; padding-inline: var(--celda); display: flex; flex-direction: column; gap: 20px; }
+.s-calidad .texto > h2{ margin-bottom: 20px; }
+/* Párrafos apilados (decidido 11.10): el segundo ("…requisitos aplicables:") queda pegado a las normas que presenta */
+.s-calidad .parrafos{ display: grid; gap: 20px; max-width: 62ch; }
+/* Normas: las líneas se cortan 8 px a cada lado de la vertical de la retícula que las cruza (decidido 11.10) */
+.s-calidad .normas{ margin: 0; position: relative; }
+.s-calidad .normas div{ position: relative; display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 18px 0; }
+.s-calidad .normas::before, .s-calidad .normas div::after{
+  content: ""; position: absolute; left: 0; right: 0; height: 1px; background: var(--linea);
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(50% - 8px), transparent 0 calc(50% + 8px), #000 0);
+          mask-image: linear-gradient(90deg, #000 calc(50% - 8px), transparent 0 calc(50% + 8px), #000 0);
+}
+.s-calidad .normas::before{ top: 0; }
+.s-calidad .normas div::after{ bottom: 0; }
+.s-calidad .normas dt{ font-size: 22px; font-weight: 300; color: var(--g05); }
+.s-calidad .normas dd{ margin: 0; }
+/* Palabras clave en SemiBold en los textos bajo el título (decidido 11.10), mismo patrón de lectura que la 01 y la 02 */
+.s-calidad .clave{ font-weight: 700; }   /* Bold: sobre el turquesa oscuro el SemiBold no se distinguía (11.10) */
+.s-calidad .vertical{ grid-column: 3 / span 2; min-height: 600px; }
+.s-calidad .vertical img{ object-position: 55% 50%; }
+/* Lista: un ícono Phosphor por punto (decidido 11.10): documento, termómetro, ruta y ciclo.
+   14.10, opción 3 "ruta de hitos": los cuatro puntos en columnas (.lista-calidad > .lc), unidos por una ruta que parte
+   de cada ícono, con su número; la ruta se dibuja cuando el punto se enciende (hito). En celular, lista vertical (celular.css) */
+.s-calidad .lc{ position: relative; counter-increment: lc; }
+.s-calidad .lista-calidad{ counter-reset: lc; }
+.s-calidad .lc .k{ display: flex; align-items: center; gap: 12px; }
+.s-calidad .lc .icono{ display: block; width: 24px; height: 24px; fill: currentColor; transition: scale .45s var(--curva-salida), opacity .5s var(--curva); }
+.s-calidad .lc p{ font-size: var(--t-chico); opacity: .9; }
+.s-calidad .lc > *{ transition: opacity .3s var(--curva); }
+@media (min-width: 768px){
+  .s-calidad .lista-calidad{ align-items: stretch; }
+  .s-calidad .lc{ display: flex; flex-direction: column; gap: 14px; padding: 30px var(--celda) 44px; }
+  .s-calidad .lc .k{ height: 24px; margin-bottom: 22px; }
+  .s-calidad .lc .k::before{ content: counter(lc, decimal-leading-zero); order: 2; font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; opacity: .6; }
+  .s-calidad .lc .t-h3{ font-size: 24px; line-height: 1.15; }
+  .s-calidad .lc::after{
+    content: ""; position: absolute; top: calc(30px + 12px); left: calc(var(--celda) + 24px + 12px + 24px); right: 8px; height: 1px;
+    background: currentColor; opacity: .45; transform-origin: 0 50%;
+  }
+  .s-calidad .lc:last-child::after{ background: linear-gradient(90deg, currentColor, transparent); }
+  .m-reticula .s-calidad .lc::after{ transform: scaleX(0); transition: transform .7s var(--curva) .3s; }
+  .m-reticula .s-calidad .lc.hito::after{ transform: none; }
+}
+/* Hover "foco", como los pilares de la 02: el punto bajo el cursor queda y los otros se atenúan */
+@media (hover: hover) and (pointer: fine){
+.s-calidad:has(.lc:hover) .lc:not(:hover) > *{ opacity: .4; }
+.s-calidad .lc:hover .icono{ scale: 1.25; }
+}
+
+/* ---------- 04 Tecnología ---------- */
+.s-tecno .arriba{ padding-block: var(--esp-seccion) 64px; }
+.s-tecno .arriba h2{ grid-column: 1 / span 2; padding-inline: var(--celda); }
+.s-tecno .bajada{ grid-column: 3; align-self: end; }
+.s-tecno .arriba h2 strong{ font-weight: var(--peso-clave); }
+/* Palabras clave en SemiBold en la bajada y en cada paso (decidido 11.10) */
+.s-tecno .clave{ font-weight: 600; }
+
+/* Lista de pasos (decidido 11.10): tapa la vertical interior de la retícula; sus líneas se cortan 8 px antes de las verticales */
+.s-tecno .pasos{ grid-column: 1 / span 2; position: relative; z-index: 6; background: var(--papel); margin-inline: 1px; }
+.s-tecno .paso{ position: relative; display: grid; grid-template-columns: 72px 1fr; padding: 22px var(--celda); cursor: default; transition: background-color var(--dur-1); }
+.s-tecno .paso::after, .s-tecno .paso:first-child::before{ content: ""; position: absolute; left: 8px; right: 8px; height: 1px; background: var(--linea); }
+.s-tecno .paso::after{ bottom: 0; }
+.s-tecno .paso:first-child::before{ top: 0; }
+.s-tecno .paso .t-mono{ font-size: 12px; color: var(--turquesa); padding-top: 5px; }
+.s-tecno .paso h3{ font-weight: 500; font-size: 19px; letter-spacing: -.01em; margin-bottom: 4px; }
+.s-tecno .paso p{ font-size: 14.5px; color: var(--tinta-suave); max-width: 46ch; }
+.s-tecno .paso.activo{ background: rgba(23, 129, 129, .07); }
+.s-tecno .paso.activo .t-mono{ color: var(--turquesa-oscuro); }
+/* Progreso: una línea turquesa a la izquierda marca hasta qué paso va la operación */
+.s-tecno .paso .barra-progreso{ position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--turquesa); transform: scaleY(0); transform-origin: 50% 0; transition: transform .5s var(--curva); }
+.s-tecno .paso.hecho .barra-progreso, .s-tecno .paso.activo .barra-progreso{ transform: none; }
+
+/* Panel de seguimiento (gráfica C, decidido 11.10): con el mismo margen de los módulos de imagen (--celda) y sobre la retícula */
+.s-tecno .ruta{
+  grid-column: 3 / span 2; margin: var(--celda); position: relative; z-index: 6; align-self: stretch;   /* quieto y del alto de la lista (11.10) */
+  display: flex; flex-direction: column;
+  background: var(--turquesa-oscuro); color: var(--blanco); --linea: var(--linea-sobre-oscuro);
+}
+.s-tecno .ruta .barra{ display: flex; justify-content: space-between; padding: 14px var(--celda); border-bottom: 1px solid var(--linea); }
+.s-tecno .ruta .estado{ color: var(--g03); }
+.s-tecno .ruta svg{ display: block; width: 100%; height: auto; flex: 1 1 auto; min-height: 0; }
+.s-tecno .seguimiento text{ font-family: var(--f-mono); letter-spacing: .06em; fill: var(--blanco); }
+.s-tecno .seguimiento .rotulo{ font-size: 11.5px; opacity: .55; }
+.s-tecno .seguimiento .separador{ stroke: rgba(255, 255, 255, .14); }
+/* Estado en grande: entra subiendo, como los títulos del sitio */
+.s-tecno .seguimiento .estado-grande{ font-family: var(--f-texto); font-size: 40px; font-weight: 300; letter-spacing: -.02em; opacity: 0; transform: translateY(18px); transition: opacity .5s var(--curva), transform .7s var(--curva-salida); }
+.s-tecno .ruta[data-paso="0"] .e0, .s-tecno .ruta[data-paso="1"] .e1, .s-tecno .ruta[data-paso="2"] .e2,
+.s-tecno .ruta[data-paso="3"] .e3, .s-tecno .ruta[data-paso="4"] .e4, .s-tecno .ruta[data-paso="5"] .e5{ opacity: 1; transform: none; }
+/* Tramos: base tenue y una línea turquesa que se llena de izquierda a derecha */
+.s-tecno .seguimiento .tramo{ stroke: var(--blanco); stroke-width: 1.5; opacity: .25; }
+.s-tecno .seguimiento .llenado{ stroke: var(--g05); stroke-width: 1.5; transform-box: fill-box; transform-origin: 0 50%; transform: scaleX(0); transition: transform .55s var(--curva); }
+.s-tecno .seguimiento .llenado.hecho{ transform: none; }
+/* Hitos con ícono Phosphor: pendiente = contorno, hecho = turquesa, actual = blanco */
+.s-tecno .seguimiento .disco{ fill: var(--turquesa-oscuro); stroke: rgba(255, 255, 255, .55); stroke-width: 1.5; transition: fill .4s var(--curva), stroke .4s var(--curva); }
+.s-tecno .seguimiento .hito.hecho .disco{ fill: var(--g05); stroke: var(--g05); }
+.s-tecno .seguimiento .hito.actual .disco{ fill: var(--blanco); stroke: var(--blanco); }
+.s-tecno .ruta .seguimiento .ico{ width: 20px; height: 20px; overflow: visible; fill: var(--blanco); opacity: .55; transition: opacity .4s var(--curva), fill .4s var(--curva); }
+.s-tecno .seguimiento .hito.hecho .ico, .s-tecno .seguimiento .hito.actual .ico{ opacity: 1; fill: var(--turquesa-oscuro); }
+.s-tecno .seguimiento .hito text{ font-size: 11.5px; opacity: .55; transition: opacity .4s var(--curva); }
+.s-tecno .seguimiento .hito.hecho text, .s-tecno .seguimiento .hito.actual text{ opacity: 1; }
+/* Registro: cada línea nueva se desliza; la última va en turquesa */
+.s-tecno .seguimiento .registro text{ font-size: 13px; opacity: 0; transform: translateX(-8px); transition: opacity .4s var(--curva), transform .5s var(--curva-salida); }
+.s-tecno .seguimiento .registro text.visible{ opacity: .85; transform: none; }
+.s-tecno .seguimiento .registro text.ultimo{ opacity: 1; fill: var(--g05); }
+
+/* ---------- 05 Experiencia ---------- */
+/* Fondo (decidido 11.10, F3 "noche"): negro arriba que baja a turquesa profundo hacia los clientes, con grano */
+.s-exp{ background: linear-gradient(180deg, #0A1415 0%, #0B1F22 45%, var(--profundo) 100%); --grano: .18; --telon: #0A1415; }
+/* Foto de flota con las cifras encima (decidido 11.10, propuesta 1): velo en la parte baja y una cifra por columna */
+/* La franja toma la proporción de la foto (4:1, decidido 11.10): se ven los cinco furgones completos */
+.s-exp .flota{ aspect-ratio: 4 / 1; }
+.s-exp .flota::after{ content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(0deg, rgba(10, 20, 21, .88) 0%, rgba(10, 20, 21, .55) 38%, rgba(10, 20, 21, 0) 70%); }
+.s-exp .cifras-foto{ position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; }
+.s-exp .cifras-foto .cifra{ gap: 10px; padding: 0 var(--celda) 30px; }
+.s-exp .cifras-foto .cifra + .cifra{ border-left: 1px solid rgba(255, 255, 255, .18); }
+.s-exp .cifras-foto .cifra .n{ font-size: clamp(36px, 3.6vw, 54px); }
+.s-exp .cifras-foto .cifra .d{ opacity: .92; font-size: 16px; }   /* más legibles sobre la foto (decidido 11.10) */
+/* Rodillo al pasar el cursor por cada cifra, como el +21 del hero (decidido 11.10; js/main.js separa los caracteres al terminar el conteo) */
+.s-exp .cifra{ cursor: default; }
+.s-exp .cifra .n .dig{ position: relative; display: inline-block; overflow: hidden; vertical-align: top; }
+.s-exp .cifra .n .dig > span{ display: block; transition: transform .55s var(--curva) calc(var(--i) * 60ms); }
+.s-exp .cifra .n .dig > span + span{ position: absolute; left: 0; top: 100%; }
+.s-exp .cifra:hover .n .dig > span{ transform: translateY(-100%); }
+.s-exp .clientes-tit{ padding-block: 64px 40px; }
+.s-exp .clientes-tit h2{ grid-column: 1 / span 2; padding-inline: var(--celda); }
+.s-exp .clientes-tit h2 strong{ font-weight: var(--peso-clave); }
+/* Logos con el mismo peso óptico (decidido 11.10): los anchos y finos crecen, el círculo de Salcobrand baja */
+.s-exp .carrusel img[src*="abbott"]{ scale: 1.18; }
+.s-exp .carrusel img[src*="stryker"]{ scale: .92; }
+.s-exp .carrusel img[src*="salcobrand"]{ scale: .88; }
+.s-exp .carrusel img[src*="ahumada"]{ scale: .94; }
+.s-exp .carrusel img[src*="sanderson"]{ scale: 1.08; }
+.s-exp .fila.sin-verticales{ container-type: inline-size; }
+/* cada logo mide una columna de la retícula (se calcula con el ancho de la fila) */
+.s-exp .carrusel{ --ancho-celda: calc((100cqw - 2 * max(var(--gut), calc((100cqw - var(--wrap)) / 2 + var(--gut)))) / 4); }
+.s-exp .logo-cliente{ border-left: 1px solid var(--linea); }
+
+/* ---------- 06 Categorías ---------- */
+.s-cat .arriba{ padding-block: var(--esp-seccion) 56px; }
+.s-cat .arriba h2{ grid-column: 1 / span 3; padding-inline: var(--celda); }
+.s-cat .arriba h2 strong{ font-weight: var(--peso-clave); }
+/* Lista (decidido 11.10): tapa la vertical interior de la retícula, como los pasos de la 04; líneas cortadas 8 px en los bordes */
+.s-cat .categorias{ grid-column: 1 / span 3; position: relative; z-index: 6; background: var(--papel); margin-inline: 1px; }
+.s-cat .categorias li{
+  position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center;
+  padding: 16px var(--celda); color: var(--turquesa);
+}
+.s-cat .categorias li::after, .s-cat .categorias li:first-child::before{ content: ""; position: absolute; left: 8px; right: 8px; height: 1px; background: var(--linea); }
+.s-cat .categorias li::after{ bottom: 0; }
+.s-cat .categorias li:first-child::before{ top: 0; }
+/* Ícono Phosphor por categoría: píldora, jeringa, gota, matraz, parches, estetoscopio, hueso, tienda */
+.s-cat .marca{ display: flex; align-items: center; }
+.s-cat .marca .icono{ display: block; width: 28px; height: 28px; fill: currentColor; transition: scale var(--dur-2) var(--curva-salida); }
+.s-cat .nm{ grid-column: 2 / span 2; color: var(--tinta); font-weight: 300; font-size: clamp(26px, 2.6vw, 40px); letter-spacing: -.025em; line-height: 1.15; }
+/* Hover "foco", como la 02 y la 03: la categoría bajo el cursor queda, se corre un poco y las otras se atenúan */
+.s-cat .categorias li > *{ transition: opacity var(--dur-2) var(--curva), transform .45s var(--curva); }
+@media (hover: hover) and (pointer: fine){
+.s-cat .categorias:has(li:hover) li:not(:hover) > *{ opacity: .35; }
+.s-cat .categorias li:hover .nm{ transform: translateX(14px); }
+.s-cat .categorias li:hover .icono{ scale: 1.2; }
+}
+/* Imagen (ajustada 11.10): ocupa todo el alto de la lista en la columna 4, con el margen --celda de los módulos */
+.s-cat .cat-img{ grid-column: 4; align-self: stretch; min-height: 420px; }
+.s-cat .cat-img img{ object-position: 55% 50%; }   /* IMG 08: refrigerador clínico; entran la farmacéutica y la caja */
+
+/* ---------- 07 CTA y formulario ---------- */
+/* Disposición lado a lado (decidido 11.10): titular y bajada en las columnas 1 y 2, formulario en la 3 y la 4; cabe casi en una pantalla */
+/* Altura (ajustada 11.10): la sección completa cabe en la pantalla bajo el header (1280 × 800 en adelante) */
+.s-cta{ min-height: calc(100svh - var(--header)); display: flex; flex-direction: column; }
+.s-cta > .fila:last-child{ flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.s-cta .arriba{ align-items: start; grid-template-rows: auto auto 1fr; padding-block: clamp(32px, 6svh, 80px); row-gap: 28px; }   /* la bajada queda pegada al titular; el aire sobrante va abajo */
+.s-cta .arriba h2{ grid-column: 1 / span 2; grid-row: 1; padding-inline: var(--celda); font-size: clamp(40px, 4.2vw, 64px); line-height: 1.02; }
+.s-cta .arriba h2 strong{ font-weight: var(--peso-clave); }
+.s-cta .bajada{ grid-column: 1 / span 2; grid-row: 2; max-width: 40ch; font-size: var(--t-cuerpo); }
+.s-cta .formulario{ grid-column: 3 / span 2; grid-row: 1 / span 3; }
+/* Panel de vidrio esmerilado (el material del CTA del hero) que tapa la retícula */
+.s-cta .campos{
+  position: relative; z-index: 6; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 32px;
+  margin-inline: var(--celda); padding: 6px 28px 24px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 4px;
+  background: rgba(255, 255, 255, .06); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+}
+.s-cta .completo{ grid-column: 1 / -1; }
+.s-cta .enviar{ margin-top: 22px; }
+.s-cta .mensaje{ min-height: 18px; color: var(--g03); padding-top: 12px; }
+/* "Entregando confianza" como firma de la sección, abajo a la izquierda con el nodo punto (decidido 11.10) */
+.s-cta .firma{ display: flex; align-items: center; gap: 10px; grid-column: 1 / span 2; grid-row: 3; align-self: end; padding: 0 var(--celda) 6px; }
+/* Casilla propia: cuadro con borde blanco y check turquesa (decidido 11.10) */
+.s-cta .casilla input{
+  -webkit-appearance: none; appearance: none; width: 18px; height: 18px; margin-top: 1px;
+  border: 1.5px solid rgba(255, 255, 255, .6); border-radius: 3px; background: transparent; cursor: pointer;
+  transition: background-color var(--dur-1), border-color var(--dur-1);
+}
+.s-cta .casilla input:checked{
+  background: var(--g05) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3.5 8.5l3 3 6-7' fill='none' stroke='%230B3439' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 14px no-repeat;
+  border-color: var(--g05);
+}
+.s-cta .casilla input:focus-visible{ outline: 2px solid var(--g07); outline-offset: 3px; }
+/* El mensaje crece con el texto (js/main.js); sin tirador de cambio de tamaño */
+.s-cta .campo textarea{ resize: none; overflow: hidden; }
+.s-cta .casilla a{ color: inherit; }
+/* Botón "Conversemos" (decidido 11.10, hover "ruta"): el botón sigue blanco, una línea se dibuja del texto a la flecha y el círculo crece */
+.s-cta .enviar .ruta-boton{ display: none; }
+@media (hover: hover) and (pointer: fine){
+  .s-cta .enviar .cta-grande::before{ display: none; }
+  .s-cta .enviar .cta-grande:hover, .s-cta .enviar .cta-grande:focus-visible{ color: var(--turquesa-oscuro); }
+  .s-cta .enviar .ruta-boton{ display: block; flex: 1; height: 1.5px; margin-inline: 8px; background: var(--turquesa-oscuro); transform: scaleX(0); transform-origin: 0 50%; transition: transform .6s var(--curva); }
+  .s-cta .enviar .cta-grande:hover .ruta-boton, .s-cta .enviar .cta-grande:focus-visible .ruta-boton{ transform: none; }
+  .s-cta .enviar .cta-grande .circulo{ transition: scale .5s var(--curva-salida), background-color var(--dur-2) var(--curva), color var(--dur-2) var(--curva); }
+  .s-cta .enviar .cta-grande:hover .circulo, .s-cta .enviar .cta-grande:focus-visible .circulo{ background: var(--turquesa-oscuro); color: var(--blanco); scale: 1.08; }
+}
+/* Envío (Fase 3, decidido 12.10): errores al enviar en coral bajo cada campo (A), botón deshabilitado mientras envía
+   y confirmación dentro del panel con titular grande y ruta turquesa (3) */
+.s-cta .formulario{ position: relative; }
+.s-cta .campo .error, .s-cta .casilla .error{ font-family: var(--f-mono); font-size: 11px; letter-spacing: .02em; min-height: 0; padding-top: 6px; color: #F2A39A; }
+.s-cta .casilla{ flex-wrap: wrap; }
+.s-cta .casilla .error{ flex-basis: 100%; padding-left: 30px; }
+.s-cta .error:empty{ display: none; }
+.s-cta .con-error input, .s-cta .con-error textarea, .s-cta .con-error.casilla input{ border-color: #F2A39A; }
+.s-cta .formulario.con-falla .mensaje, .s-cta .formulario:has(.con-error) .mensaje{ color: #F2A39A; }
+/* Confirmación: reemplaza los campos en el mismo panel (mismo alto) */
+.s-cta .exito{ display: none; }
+.s-cta .formulario.enviado .campos > *, .s-cta .formulario.enviado .campos.visible > *{ opacity: 0; visibility: hidden; transition: opacity .3s, visibility 0s .3s; }
+.s-cta .formulario.enviado .exito{
+  display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 16px;
+  position: absolute; inset: 0 var(--celda); z-index: 7; padding: 28px 40px;
+  animation: exito-entra .7s var(--curva-salida) .25s both;
+}
+.s-cta .exito::before{ content: ""; align-self: stretch; height: 1.5px; margin-bottom: 4px; background: var(--g05); transform-origin: 0 50%; animation: exito-ruta 1s var(--curva) .5s both; }
+.s-cta .exito-titulo{ font-size: clamp(36px, 3.4vw, 52px); font-weight: var(--peso-display); line-height: 1.02; letter-spacing: -.01em; }
+.s-cta .exito-titulo:focus{ outline: none; }
+.s-cta .exito-texto{ font-size: 17px; max-width: 36ch; opacity: .92; }
+.s-cta .exito-otro{ margin-top: 12px; color: inherit; background: none; border: 0; padding: 4px 0; border-bottom: 1px solid currentColor; cursor: pointer; }
+.s-cta .exito-otro:focus-visible{ outline: 2px solid var(--g07); outline-offset: 3px; }
+@keyframes exito-entra{ from{ opacity: 0; transform: translateY(14px); } }
+@keyframes exito-ruta{ from{ transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce){ .s-cta .formulario.enviado .exito, .s-cta .exito::before{ animation: none; } }
+/* Etiquetas más legibles; los campos opcionales lo dicen */
+.s-cta .campo label{ font-size: 12px; opacity: .9; padding-top: 14px; }
+.s-cta .campo input, .s-cta .campo textarea{ padding-block: 8px; }
+.s-cta .campo textarea{ min-height: 64px; }
+.s-cta .casilla{ padding-top: 18px; }
+.s-cta .campo input::placeholder{ color: rgba(255, 255, 255, .4); }
+.s-cta .campo .opc{ text-transform: none; letter-spacing: .02em; opacity: .6; }
+/* Al enfocar un campo, una línea turquesa se dibuja de izquierda a derecha y la etiqueta se ilumina.
+   Excepción consciente a "solo transform y opacity": background-size, solo en el campo activo */
+.s-cta .campo input, .s-cta .campo textarea{
+  background-image: linear-gradient(var(--g05), var(--g05)); background-repeat: no-repeat; background-position: 0 100%; background-size: 0% 2px;
+  transition: background-size .5s var(--curva), border-color var(--dur-1), background-color 600000s 0s;
+}
+/* Autocompletar del navegador: sin el fondo amarillo o blanco de Chrome y Safari; el texto sigue en blanco */
+.s-cta .campo input:-webkit-autofill{ -webkit-text-fill-color: var(--blanco); caret-color: var(--blanco); }
+.s-cta .campo input:focus, .s-cta .campo textarea:focus{ background-size: 100% 2px; border-color: rgba(255, 255, 255, .35); }
+.s-cta .campo:focus-within label{ opacity: 1; color: var(--g03); }
+
+/* ---------- Footer ---------- */
+.s-pie .columnas > div{ display: flex; flex-direction: column; gap: 10px; padding: 56px var(--celda) 64px; font-size: var(--t-chico); }
+.s-pie .logo-pie{ width: 170px; height: auto; margin-bottom: 8px; }
+.s-pie .acento{ color: var(--turquesa); }
+.s-pie address{ font-style: normal; }
+.s-pie a{ text-decoration: none; }
+.s-pie a:hover{ color: var(--turquesa); }
+.s-pie .legal{ color: var(--tinta-suave); padding-block: 20px; }
+.s-pie .legal > :nth-child(2){ grid-column: 2; }
+.s-pie .legal .der{ text-align: right; }
+/* El correo como contacto principal (decidido 11.10): más grande y con una línea que se dibuja al pasar el cursor */
+.s-pie .correo{ position: relative; width: max-content; font-size: clamp(20px, 1.7vw, 26px); font-weight: 300; letter-spacing: -.01em; }
+.s-pie .correo::after{ content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 1.5px; background: currentColor; transform: scaleX(0); transform-origin: 0 50%; transition: transform .5s var(--curva-salida); }
+.s-pie .correo:hover::after{ transform: none; }
+/* LinkedIn, Instagram y llego.cl (decidido 11.10): al pasar el cursor el texto pasa a turquesa, la flecha ↗ sale hacia arriba
+   y el ícono de la red entra en su mismo lugar (así ninguna línea de la retícula lo cruza) */
+.s-pie .red{ position: relative; display: inline-flex; align-items: center; gap: 8px; width: max-content; }
+.s-pie .red:hover{ color: inherit; }
+.s-pie .red .txt{ transition: color var(--dur-1), transform .45s var(--curva-salida); }
+.s-pie .red:hover .txt{ color: var(--turquesa); }
+.s-pie .red .ico{ position: absolute; inset: 0; width: 18px; height: 18px; fill: var(--turquesa); transform: translate(-100%, 100%); transition: transform .45s var(--curva) .12s; }
+.s-pie .red .fl{ width: 18px; height: 18px; }
+.s-pie .red:hover .ico{ transform: none; }
+.s-pie .fl{ position: relative; display: inline-block; overflow: hidden; width: 1em; height: 1.2em; }
+.s-pie .fl i{ position: absolute; inset: 0; display: grid; place-items: center; font-style: normal; transition: transform .45s var(--curva); }
+.s-pie .red:hover .fl i{ transform: translate(100%, -100%); }
+/* Volver arriba (decidido 11.10): usa el desplazamiento animado del sitio (data-ir) */
+.s-pie .arriba-link{ display: inline-flex; gap: 8px; align-items: center; grid-column: 3; text-decoration: none; }
+.s-pie .arriba-link .fl i + i{ transform: translateY(100%); }
+.s-pie .arriba-link:hover .fl i:first-child{ transform: translateY(-100%); }
+.s-pie .arriba-link:hover .fl i + i{ transform: none; transition-delay: .1s; }
+
+/* La bajada movida del hero se suma a la sección 01 como tercera columna */
+.s-quees .t3{ grid-column: 4; }
+
+/* ---------- Logo del header: hover leve (se aclara apenas y crece un 3 %) ---------- */
+.hdr .logo{ transform-origin: left center; transition: transform var(--dur-2) var(--curva-salida), opacity var(--dur-2) var(--curva); }
+.hdr .logo:hover{ transform: scale(1.03); opacity: .82; }
+
+/* ---------- Botón del header (decidido 10.10: hover vidrio) ----------
+   Reposo: píldora blanca sólida. Hover: se vuelve vidrio esmerilado turquesa (el del CTA del hero), el texto pasa a blanco
+   y el botón se ensancha hacia la izquierda para dar lugar a la flecha ↓, que cae cuando ya hay espacio.
+   Excepción consciente a "solo transform y opacity": el padding de un solo botón chico, sin costo real. */
+.hdr .pildora.accion{
+  position: relative; overflow: hidden; font-weight: 500;
+  background: var(--blanco); color: var(--turquesa-oscuro); border-color: var(--blanco);
+  transition: background-color var(--dur-2) var(--curva), color var(--dur-2) var(--curva), border-color var(--dur-2) var(--curva), padding-right var(--dur-2) var(--curva);
+}
+.hdr .pildora.accion .flecha{
+  position: absolute; right: 18px; top: 50%; margin-top: -.62em; line-height: 1.24;
+  opacity: 0; transform: translateY(-7px);
+  transition: opacity .15s var(--curva), transform .15s var(--curva);
+}
+.hdr .pildora.accion:hover, .hdr .pildora.accion:focus-visible{
+  padding-right: 42px;
+  background: color-mix(in srgb, var(--turquesa-oscuro) 40%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  color: var(--blanco); border-color: rgba(255, 255, 255, .7);
+}
+.hdr .pildora.accion:hover .flecha, .hdr .pildora.accion:focus-visible .flecha{
+  opacity: 1; transform: none;
+  transition: opacity var(--dur-1) var(--curva) .2s, transform var(--dur-2) var(--curva-salida) .2s;
+}
+.hdr.sobre-claro .pildora.accion{ background: var(--turquesa-oscuro); color: var(--blanco); border-color: var(--turquesa-oscuro); }
+.hdr.sobre-claro .pildora.accion:hover, .hdr.sobre-claro .pildora.accion:focus-visible{ background: transparent; color: var(--turquesa-oscuro); border-color: var(--turquesa-oscuro); }
+
+/* +21: hover rodillo (decidido 10.10): cada carácter rueda hacia arriba y vuelve a entrar, uno tras otro */
+.s-hero .prueba{ position: relative; cursor: default; }
+.s-hero .prueba .d{ transition: opacity var(--dur-2) var(--curva); }
+.s-hero .prueba:hover .d{ opacity: 1; }
+.s-hero .prueba .dig{ position: relative; display: inline-block; overflow: hidden; vertical-align: top; }
+.s-hero .prueba .dig > span{ display: block; transition: transform .55s var(--curva) calc(var(--i) * 70ms); }
+.s-hero .prueba .dig > span + span{ position: absolute; left: 0; top: 100%; }
+.s-hero .prueba:hover .dig > span{ transform: translateY(-100%); }
+
+/* Bajada: palabras clave en Bold (decidido 10.10) */
+.s-hero .clave{ font-weight: 700; }
+

@@ -1,0 +1,5 @@
+/* Pantallas grandes (desde 1600 px: 1920 × 1080 en adelante). Se carga después de las demás hojas.
+   Base: la versión de escritorio; aquí solo los ajustes de pantallas grandes (decididos 12.10). */
+
+/* W1: el contenido llega hasta 1600 px de ancho (antes 1440); fotos y textos ocupan más pantalla */
+:root{ --wrap: 1600px; }

@@ -1,0 +1,1293 @@
+/* ══════════════════════════════════════════════════
+   TAP IN — PÁGINA EMPRESA / ABOUT
+   Página editorial. Hereda el ADN del sitio (pp-shell,
+   pp-reveal, pp-btn, Poppins, paleta morada) pero se
+   ancla en el tono corporativo --c-deep (#2D2560).
+   Namespace: emp-*  ·  se enlaza DESPUÉS de product-page.css
+   ══════════════════════════════════════════════════ */
+
+/* Empresa es la única página donde el fondo oscuro cubre TODA la
+   subpágina de punta a punta (hero → cómo construimos → conversemos →
+   footer). Por eso, y sólo acá, el html/body también van oscuros: así
+   el rebote del scroll (overscroll/rubber-band) al final o al principio
+   no revela una franja blanca detrás del contenido. Este archivo se
+   enlaza después de styles.css, así que gana por orden de cascada sin
+   tocar el body{} global (que sigue claro para el resto del sitio). */
+html.page-empresa, body.page-empresa { background: var(--c-bg); }
+
+/* ─── FONDO · blooms desplazados a --c-deep ─────────
+   Mismo mecanismo que .pp-shell--cpa::before: el fondo
+   se pinta detrás de la navbar para que sea continuo,
+   sin línea de corte. Tonos más profundos/corporativos. */
+.pp-shell--empresa::before {
+  background:
+    radial-gradient(ellipse 52% 50% at 16% 3%, rgba(45,37,96,.20), transparent 62%),
+    radial-gradient(ellipse 58% 44% at 88% 0%, rgba(74,60,174,.16), transparent 66%),
+    radial-gradient(ellipse 40% 38% at 64% 8%, rgba(107,92,231,.10), transparent 70%);
+}
+
+/* Sin padding-top: el wrapper oscuro .empx-dark arranca en el tope del main
+   y cubre el área detrás del navbar, eliminando la franja blanca del shell.
+   La holgura del navbar la asume .empx-hero con su propio padding-top. */
+.pp-shell--empresa { padding-top: 0; background: var(--c-bg); }
+
+/* .pp-shell::after es el degradado blanco→oscuro que las páginas de
+   producto usan para hacer bonita la transición del final de <main>
+   (claro) al footer oscuro. En empresa.html <main> termina en medio de
+   "Cómo construimos", que YA es oscuro — por eso ese degradado (blanco
+   brillante arriba) se veía como una banda rota cruzando la sección.
+   Empresa no necesita esa transición: ya es oscura de punta a punta. */
+.pp-shell--empresa::after { display: none; }
+
+/* Secciones sin bloques blancos ni bordes: el degradé del
+   shell fluye sin cortes horizontales (igual que en CPA). */
+.pp-shell--empresa .emp-section { background: transparent; }
+
+/* ─── CONTENEDOR EDITORIAL (más angosto que el de producto) */
+.emp-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.emp-section { padding: 84px 0; position: relative; }
+.emp-section--tight { padding: 64px 0; }
+
+.emp-kicker {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--c-deep);
+  background: rgba(45,37,96,.08);
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+
+.emp-section-title {
+  font-size: clamp(26px, 3.4vw, 38px);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: -.01em;
+  color: var(--c-deep);
+  margin: 0 0 14px;
+}
+
+.emp-section-lead {
+  font-size: clamp(15px, 1.6vw, 17px);
+  line-height: 1.65;
+  color: var(--c-muted);
+  max-width: 620px;
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   BLOQUE 1 · HERO MANIFIESTO
+   ═══════════════════════════════════════════════════ */
+.emp-hero {
+  padding: 28px 0 64px;
+  text-align: left;
+}
+
+.emp-hero-h1 {
+  font-size: clamp(30px, 5.2vw, 56px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -.02em;
+  color: var(--c-deep);
+  margin: 0 0 22px;
+  max-width: 16ch;
+}
+
+.emp-hero-sub {
+  font-size: clamp(16px, 1.9vw, 20px);
+  line-height: 1.55;
+  color: var(--c-muted);
+  font-weight: 400;
+  max-width: 56ch;
+  margin: 0 0 30px;
+}
+
+.emp-hero-cta {
+  display: inline-flex;
+}
+/* CTA sobrio: reutiliza pp-btn--primary pero tamaño contenido */
+.emp-hero-cta .pp-btn { font-size: 13px; }
+
+/* ═══════════════════════════════════════════════════
+   BLOQUE 2 · BANDA DE CONFIANZA
+   ═══════════════════════════════════════════════════ */
+.emp-trust { padding: 56px 0; }
+
+.emp-trust-phrase {
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--c-text);
+  text-align: center;
+  max-width: 22ch;
+  margin: 0 auto 36px;
+}
+
+.emp-figures {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px 56px;
+  margin-bottom: 48px;
+}
+.emp-figure { text-align: center; }
+.emp-figure-num {
+  display: block;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--c-main);
+  letter-spacing: -.01em;
+}
+.emp-figure-label {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--c-muted);
+  letter-spacing: .01em;
+}
+
+/* Muro de logos · grilla calma, estática, grayscale con realce al hover */
+.emp-logos {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  gap: 28px 24px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+.emp-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+}
+.emp-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: .55;
+  transition: filter .3s ease, opacity .3s ease, transform .3s ease;
+}
+.emp-logo img:hover {
+  filter: grayscale(0);
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════════
+   BLOQUE 3 · EL ECOSISTEMA
+   ═══════════════════════════════════════════════════ */
+.emp-eco .emp-eco-head { text-align: center; margin-bottom: 44px; }
+.emp-eco .emp-eco-head .emp-section-lead { margin: 0 auto; }
+
+.emp-eco-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.emp-eco-card {
+  --emp-tone: var(--c-main);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255,255,255,.78);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  border: 1px solid var(--c-border);
+  border-radius: 20px;
+  padding: 26px 24px 28px;
+  overflow: hidden;
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+/* franja superior con el tono de la vertical */
+.emp-eco-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--emp-tone);
+}
+.emp-eco-card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--emp-tone) 55%, var(--c-border));
+  box-shadow: 0 18px 40px rgba(45,37,96,.12);
+}
+
+.emp-eco-card--campus  { --emp-tone: var(--c-main); }
+.emp-eco-card--connect { --emp-tone: var(--c-mid); }
+.emp-eco-card--health  { --emp-tone: var(--c-light); }
+
+.emp-eco-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.emp-eco-isotipo {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  color: var(--emp-tone);
+}
+.emp-eco-isotipo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.emp-eco-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--emp-tone);
+  flex-shrink: 0;
+}
+.emp-eco-name {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--c-deep);
+  margin: 0;
+}
+.emp-eco-descriptor {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--emp-tone);
+  margin: 0 0 12px;
+}
+.emp-eco-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--emp-tone);
+  background: color-mix(in srgb, var(--emp-tone) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--emp-tone) 32%, transparent);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-left: auto;
+}
+.emp-eco-text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--c-muted);
+  margin: 0;
+}
+
+/* Chips de módulos (solo Connect) */
+.emp-eco-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.emp-eco-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-deep);
+  background: rgba(107,92,231,.08);
+  border: 1px solid rgba(107,92,231,.22);
+  padding: 6px 12px;
+  border-radius: 999px;
+  transition: background .25s ease, border-color .25s ease, transform .25s ease;
+}
+.emp-eco-chip:hover {
+  background: rgba(107,92,231,.16);
+  border-color: rgba(107,92,231,.45);
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════════════════
+   BLOQUE 4 · PRINCIPIOS (tríada editorial, mucho aire)
+   ═══════════════════════════════════════════════════ */
+.emp-principles { padding-top: 88px; padding-bottom: 96px; position: relative; }
+
+/* Fondo con vida: 1 orbe (esquina superior, lejos de la costura de
+   abajo hacia "Conversemos" — ese hueco queda deliberadamente sin
+   overlay, ver comentario en .empx-closing). */
+.emp-principles-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.emp-principles-orb { position: absolute; border-radius: 50%; filter: blur(80px); }
+.emp-principles-orb--1 {
+  width: 620px; height: 620px;
+  background: radial-gradient(circle, rgba(139,92,246,.16) 0%, rgba(139,92,246,.06) 40%, transparent 100%);
+  top: -220px; right: 4%;
+  animation: empPrincOrb1 20s ease-in-out infinite;
+}
+@keyframes empPrincOrb1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-40px,30px) scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { .emp-principles-orb { animation: none !important; } }
+
+.emp-principles .emp-container { position: relative; z-index: 1; }
+.emp-principles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 24px;
+}
+
+/* Cada principio pasa de "línea + texto" a tarjeta interactiva. */
+.emp-principle {
+  position: relative;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 18px;
+  padding: 28px 24px 26px;
+  transition: transform .3s cubic-bezier(.22,.61,.36,1), background .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+.emp-principle:hover {
+  transform: translateY(-6px);
+  background: rgba(255,255,255,.06);
+  border-color: rgba(155,142,240,.4);
+  box-shadow: 0 20px 40px rgba(20,14,50,.4), 0 0 0 1px rgba(155,142,240,.12);
+}
+.emp-principle-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(107,92,231,.28), rgba(74,60,174,.16));
+  color: var(--c-light);
+  margin-bottom: 18px;
+  transition: transform .35s cubic-bezier(.22,.61,.36,1), background .3s ease;
+}
+.emp-principle-ic svg { width: 20px; height: 20px; }
+.emp-principle:hover .emp-principle-ic {
+  transform: scale(1.1) rotate(-6deg);
+  background: linear-gradient(135deg, rgba(107,92,231,.42), rgba(74,60,174,.26));
+}
+.emp-principle-title {
+  font-size: clamp(21px, 2.4vw, 26px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  color: var(--c-deep);
+  margin: 0 0 10px;
+}
+.emp-principle-text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--c-muted);
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   BLOQUE 5 · TAP IN EN TERRENO
+   ═══════════════════════════════════════════════════ */
+.emp-team .emp-team-head { text-align: center; margin-bottom: 40px; }
+.emp-team .emp-team-head .emp-section-lead { margin: 0 auto; }
+
+.emp-team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.emp-team-item { display: flex; flex-direction: column; gap: 10px; }
+.emp-team-photo {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--c-xlight);
+  border: 1px solid var(--c-border);
+}
+.emp-team-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* overlay leve */
+.emp-team-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(45,37,96,.16) 100%);
+  pointer-events: none;
+}
+/* fallback "Foto pendiente" cuando no hay imagen aún */
+.emp-team-photo--pending {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.emp-team-photo--pending::after { display: none; }
+.emp-team-photo--pending span {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--c-light);
+}
+.emp-team-caption {
+  font-size: 13.5px;
+  color: var(--c-muted);
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .emp-eco-grid { grid-template-columns: 1fr; }
+  .emp-team-grid { grid-template-columns: repeat(2, 1fr); }
+  .emp-logos { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 720px) {
+  .emp-section { padding: 56px 0; }
+  .emp-hero { padding: 16px 0 44px; }
+  .emp-principles-grid { grid-template-columns: 1fr; gap: 30px; }
+  .emp-team-grid { grid-template-columns: 1fr; }
+  .emp-logos { grid-template-columns: repeat(3, 1fr); gap: 22px 18px; }
+  .emp-figures { gap: 22px 36px; }
+  .emp-eco-badge { margin-left: 0; }
+  .emp-eco-top { flex-wrap: wrap; }
+}
+
+/* ══════════════════════════════════════════════════
+   EMPRESA · REGIÓN OSCURA (emp-canvas)
+   Superficie #0E0C1E + atmósfera. CSS puro, sin JS.
+   Namespace emp-*. No reutiliza clases globales.
+   ══════════════════════════════════════════════════ */
+
+/* ── Wrapper: superficie oscura opaca (tapa los blooms claros del pp-shell) ── */
+.emp-canvas {
+  position: relative;
+  background: var(--c-bg);   /* #0E0C1E */
+  isolation: isolate;
+  overflow-x: clip;          /* contiene orbes en horizontal; vertical queda
+                                 visible para que el brillo sangre hacia las
+                                 secciones vecinas y no se corte en el borde */
+}
+.emp-canvas .emp-hero,
+.emp-canvas .emp-section { background: transparent; }
+
+/* ── Fondo del hero: orbes estáticos + ruido ── */
+.emp-hero-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.emp-orb { position: absolute; border-radius: 50%; filter: blur(20px); opacity: .55; }
+.emp-orb--1 { width: 600px; height: 600px; background: radial-gradient(circle, #4A3CAE 0%, transparent 70%); top: -150px; left: -100px; }
+.emp-orb--2 { width: 500px; height: 500px; background: radial-gradient(circle, #6B5CE7 0%, transparent 70%); top: 100px; right: 0; opacity: .35; }
+.emp-orb--3 { width: 300px; height: 300px; background: radial-gradient(circle, #9B8EF0 0%, transparent 70%); bottom: 50px; left: 40%; opacity: .2; }
+.emp-noise {
+  position: absolute; inset: 0; opacity: .04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+.emp-hero .emp-container { position: relative; z-index: 2; }
+
+/* ── Atmósfera del ecosistema ── */
+.emp-eco-atmos { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.emp-eco .emp-container { position: relative; z-index: 2; }
+
+/* Bloom superior suave */
+.emp-eco-atmos::before {
+  content: ''; position: absolute; left: 50%; top: -540px;
+  transform: translateX(-50%); width: min(1600px, 130vw); height: 1080px;
+  background: radial-gradient(ellipse 48% 50% at 50% 50%,
+    rgba(155,142,240,.16) 0%, rgba(155,142,240,.10) 30%,
+    rgba(107,92,231,.06) 55%, transparent 85%);
+  pointer-events: none;
+}
+
+/* Orbes flotantes */
+.emp-eco-orb { position: absolute; border-radius: 50%; filter: blur(24px); }
+.emp-eco-orb--1 { width: 720px; height: 520px; background: radial-gradient(ellipse, rgba(139,92,246,.22) 0%, transparent 70%); top: 6%; left: 18%; animation: empEcoOrb1 16s ease-in-out infinite; }
+.emp-eco-orb--2 { width: 480px; height: 480px; background: radial-gradient(circle, rgba(74,60,174,.16) 0%, transparent 70%); bottom: -80px; right: -80px; animation: empEcoOrb2 20s ease-in-out infinite; }
+.emp-eco-orb--3 { width: 380px; height: 380px; background: radial-gradient(circle, rgba(192,132,252,.13) 0%, transparent 70%); top: 38%; left: -120px; animation: empEcoOrb3 24s ease-in-out infinite; }
+.emp-eco-orb--4 { width: 340px; height: 340px; background: radial-gradient(circle, rgba(155,142,240,.1) 0%, transparent 70%); top: 58%; right: 22%; animation: empEcoOrb4 19s ease-in-out infinite; }
+@keyframes empEcoOrb1 { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(80px,30px) scale(1.06); } 66% { transform: translate(-40px,50px) scale(.96); } }
+@keyframes empEcoOrb2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-60px,-40px) scale(1.1); } }
+@keyframes empEcoOrb3 { 0%,100% { transform: translate(0,0) scale(1); opacity:.7; } 50% { transform: translate(60px,-40px) scale(1.12); opacity:1; } }
+@keyframes empEcoOrb4 { 0%,100% { transform: translate(0,0) scale(.95); opacity:.55; } 50% { transform: translate(-50px,30px) scale(1.08); opacity:1; } }
+
+/* Barrido cónico lento */
+.emp-eco-sweep {
+  position: absolute; top: 50%; left: 50%; width: 1400px; height: 1400px;
+  transform: translate(-50%, -50%);
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(155,142,240,.05) 60deg, transparent 120deg, transparent 240deg, rgba(192,132,252,.04) 300deg, transparent 360deg);
+  filter: blur(20px); opacity: .6; animation: empEcoSweep 38s linear infinite; pointer-events: none;
+}
+@keyframes empEcoSweep { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+/* Rayos aurora */
+.emp-eco-ray {
+  position: absolute; width: 260px; height: 140%; top: -20%;
+  background: linear-gradient(180deg, transparent 0%, rgba(155,142,240,.12) 25%, rgba(192,132,252,.18) 50%, rgba(155,142,240,.1) 75%, transparent 100%);
+  filter: blur(35px); transform-origin: center; pointer-events: none; mix-blend-mode: screen;
+}
+.emp-eco-ray--1 { left: -2%; transform: rotate(-18deg); animation: empEcoRay1 22s ease-in-out infinite; }
+.emp-eco-ray--2 { right: -2%; transform: rotate(14deg); animation: empEcoRay2 28s ease-in-out infinite; animation-delay: -7s; opacity: .8; }
+.emp-eco-ray--3 { right: 14%; top: 30%; height: 90%; width: 200px; transform: rotate(-22deg); animation: empEcoRay3 26s ease-in-out infinite; animation-delay: -12s; opacity: .55; }
+@keyframes empEcoRay1 { 0%,100% { transform: rotate(-18deg) translateX(0) scaleY(1); opacity:.55; } 50% { transform: rotate(-22deg) translateX(60px) scaleY(1.08); opacity:1; } }
+@keyframes empEcoRay2 { 0%,100% { transform: rotate(14deg) translateX(0) scaleY(1); opacity:.45; } 50% { transform: rotate(18deg) translateX(-80px) scaleY(1.06); opacity:.9; } }
+@keyframes empEcoRay3 { 0%,100% { transform: rotate(-22deg) translateX(0) scaleY(1); opacity:.35; } 50% { transform: rotate(-26deg) translateX(40px) scaleY(1.1); opacity:.75; } }
+
+/* Campo de estrellas */
+.emp-eco-stars { position: absolute; inset: 0; pointer-events: none; }
+.emp-eco-star { position: absolute; display: block; width: 2px; height: 2px; border-radius: 50%; background: rgba(196,181,253,.85); box-shadow: 0 0 6px rgba(196,181,253,.6); opacity: 0; }
+.emp-eco-star--1  { top: 9%;  left: 14%; animation: empEcoStarTwinkle 7s   ease-in-out  .0s infinite; }
+.emp-eco-star--2  { top: 18%; left: 78%; animation: empEcoStarTwinkle 9s   ease-in-out 1.2s infinite; }
+.emp-eco-star--3  { top: 32%; left: 22%; animation: empEcoStarTwinkle 8s   ease-in-out 2.5s infinite; }
+.emp-eco-star--4  { top: 26%; left: 56%; animation: empEcoStarTwinkle 6s   ease-in-out  .7s infinite; }
+.emp-eco-star--5  { top: 44%; left: 88%; animation: empEcoStarTwinkle 7.5s ease-in-out 3.1s infinite; }
+.emp-eco-star--6  { top: 52%; left: 6%;  animation: empEcoStarTwinkle 9s   ease-in-out 1.8s infinite; }
+.emp-eco-star--7  { top: 62%; left: 38%; animation: empEcoStarTwinkle 8s   ease-in-out 4.0s infinite; }
+.emp-eco-star--8  { top: 70%; left: 72%; animation: empEcoStarTwinkle 6.5s ease-in-out 2.3s infinite; width: 3px; height: 3px; }
+.emp-eco-star--9  { top: 78%; left: 18%; animation: empEcoStarTwinkle 7s   ease-in-out  .4s infinite; }
+.emp-eco-star--10 { top: 84%; left: 60%; animation: empEcoStarTwinkle 9.5s ease-in-out 3.6s infinite; }
+.emp-eco-star--11 { top: 14%; left: 42%; animation: empEcoStarTwinkle 8s   ease-in-out 5.0s infinite; width: 1.5px; height: 1.5px; }
+.emp-eco-star--12 { top: 90%; left: 92%; animation: empEcoStarTwinkle 7s   ease-in-out 1.5s infinite; }
+@keyframes empEcoStarTwinkle { 0%,100% { opacity: 0; transform: translate(0,0) scale(.5); } 20% { opacity:.65; } 50% { opacity:1; transform: translate(6px,-10px) scale(1.15); } 80% { opacity:.5; } }
+
+/* Retícula de puntos que respira */
+.emp-eco-lattice {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle at center, rgba(155,142,240,.14) 0.6px, transparent 1.2px);
+  background-size: 32px 32px; background-attachment: fixed; opacity: .25;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  animation: empEcoLattice 14s ease-in-out infinite; pointer-events: none;
+}
+@keyframes empEcoLattice { 0%,100% { opacity:.18; } 50% { opacity:.32; } }
+
+/* ── Overrides de color para legibilidad sobre oscuro ── */
+.emp-canvas .emp-kicker { color: var(--c-light); background: rgba(155,142,240,.12); }
+.emp-canvas .emp-hero-h1,
+.emp-canvas .emp-section-title { color: var(--c-white); }
+.emp-canvas .emp-hero-sub,
+.emp-canvas .emp-section-lead { color: rgba(255,255,255,.7); }
+.emp-canvas .emp-trust-phrase { color: rgba(255,255,255,.55); }
+.emp-canvas .emp-figure-num { color: var(--c-white); }
+.emp-canvas .emp-figure-label { color: rgba(255,255,255,.55); }
+
+/* Principios (Conexión/Tranquilidad/Practicidad) sobre oscuro */
+.emp-canvas .emp-principle-title { color: var(--c-white); }
+.emp-canvas .emp-principle-text { color: rgba(255,255,255,.65); }
+
+/* Cards del eco: glass oscuro (conserva el acento --emp-tone por vertical) */
+.emp-canvas .emp-eco-card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); }
+.emp-canvas .emp-eco-name { color: var(--c-white); }
+.emp-canvas .emp-eco-descriptor { color: var(--c-light); }
+.emp-canvas .emp-eco-text { color: rgba(255,255,255,.7); }
+.emp-canvas .emp-eco-chip { color: rgba(255,255,255,.85); background: rgba(155,142,240,.12); border-color: rgba(155,142,240,.25); }
+.emp-canvas .emp-eco-chip:hover { background: rgba(155,142,240,.2); }
+
+/* Logos legibles sobre oscuro */
+.emp-canvas .emp-logo img { filter: brightness(0) invert(1); opacity: .55; transition: opacity .25s ease; }
+.emp-canvas .emp-logo img:hover { opacity: .9; }
+
+/* Banda de transición oscuro → claro */
+.emp-canvas-fade { height: 160px; background: linear-gradient(180deg, var(--c-bg) 0%, transparent 100%); pointer-events: none; }
+
+/* Respeta prefers-reduced-motion: detiene movimiento, deja capas visibles */
+@media (prefers-reduced-motion: reduce) {
+  .emp-canvas [class*="emp-eco-orb"],
+  .emp-canvas .emp-eco-sweep,
+  .emp-canvas [class*="emp-eco-ray"],
+  .emp-canvas [class*="emp-eco-star"],
+  .emp-canvas .emp-eco-lattice { animation: none !important; }
+}
+
+/* ══════════════════════════════════════════════════
+   §3.5 · BANDA DE CIFRAS (alcance real)
+   Vive DENTRO de la región oscura .empx-dark (entre el
+   marquee de logos y los productos), por eso el texto va
+   en claro y no en --c-deep como sugería el prompt: sobre
+   #0E0C1E el --c-deep sería invisible. Sin contador animado;
+   solo la entrada pp-reveal del bloque completo.
+   ══════════════════════════════════════════════════ */
+.empx-stats-strip {
+  position: relative;
+  z-index: 1;
+  padding: 88px 0;
+}
+.empx-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: center;
+}
+.empx-stat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+/* separadores verticales sutiles entre cifras (solo desktop) */
+.empx-stat + .empx-stat::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 58px;
+  background: rgba(255,255,255,.12);
+}
+.empx-stat-num {
+  font-size: clamp(32px, 4vw, 46px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1;
+  color: var(--c-white);
+}
+.empx-stat-label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: rgba(255,255,255,.6);
+  max-width: 24ch;
+}
+@media (max-width: 720px) {
+  .empx-stats-strip { padding: 64px 0; }
+  .empx-stats-grid { grid-template-columns: 1fr; gap: 40px; }
+  .empx-stat + .empx-stat::before { display: none; }
+}
+
+/* ══════════════════════════════════════════════════
+   §3.6 · CIERRE RELACIONAL
+   Reemplaza al formulario CPA. Vive dentro de .bg-dark-stack
+   (#0E0C1E); bloom en tono empresa --c-deep para cerrar
+   coherente con el hero. Reutiliza .empx-btn-primary /
+   .empx-btn-ghost ya definidos en empresa-import.css.
+   ══════════════════════════════════════════════════ */
+.empx-closing {
+  position: relative;
+  padding: 120px 0;
+  background: transparent;
+  overflow-x: clip;
+}
+/* La costura entre "Cómo construimos" y "Conversemos" pasó por 4 intentos
+   de "puente decorativo" en ese hueco vacío (retícula enmascarada → orbes
+   clippeados → 3 orbes sumados con quiebre de pendiente → un solo blob
+   radial → una franja lineal) y CADA UNO mostró algún tipo de corte —
+   máscara dura, clip, quiebre de suma, contorno de óvalo, banding de
+   color en un degradado casi imperceptible sobre #0E0C1E. La única
+   franja que es MATEMÁTICAMENTE imposible de ver como un corte es la que
+   no existe: .emp-canvas y .bg-dark-stack ya pintan el mismo #0E0C1E
+   sólido (verificado por computed style), así que sin ningún overlay acá
+   no hay ningún píxel distinto que un ojo o un códec de imagen pueda
+   detectar como borde. La "vida" de esta sección queda en los orbes de
+   las esquinas (lejos de este hueco, cerca del contenido), no acá. */
+
+/* ── Fondo con vida: orbe flotante en la esquina inferior, lejos de la
+   costura de arriba (ese hueco queda deliberadamente sin overlay — ver
+   comentario arriba). Mismo lenguaje visual que Soluciones. ── */
+.empx-closing-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.empx-closing-orb { position: absolute; border-radius: 50%; filter: blur(80px); }
+.empx-closing-orb--2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(192,132,252,.12) 0%, rgba(192,132,252,.04) 40%, transparent 100%);
+  bottom: -220px; right: 8%;
+  animation: empxClosingOrb2 22s ease-in-out infinite;
+}
+@keyframes empxClosingOrb2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, -30px) scale(1.1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .empx-closing-orb { animation: none !important; }
+}
+
+.empx-closing-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.empx-closing-kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--c-light);
+  background: rgba(155,142,240,.15);
+  padding: 5px 14px;
+  border-radius: var(--r-pill);
+  margin-bottom: 22px;
+}
+.empx-closing-title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -.02em;
+  color: var(--c-white);
+  margin: 0 0 16px;
+}
+.empx-closing-text {
+  font-size: clamp(15px, 1.8vw, 17px);
+  line-height: 1.6;
+  color: rgba(255,255,255,.62);
+  margin: 0 0 36px;
+  max-width: 520px;
+}
+/* ── 3 tarjetas de contacto, interactivas ── */
+.empx-closing-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 28px;
+}
+.empx-closing-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  padding: 16px 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.10);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  transition: transform .25s cubic-bezier(.22,.61,.36,1), background .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.empx-closing-card:hover,
+.empx-closing-card:focus-visible {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,.08);
+  border-color: rgba(155,142,240,.4);
+  box-shadow: 0 16px 32px rgba(20,14,50,.35), 0 0 0 1px rgba(155,142,240,.12);
+}
+.empx-closing-card--primary {
+  background: linear-gradient(140deg, rgba(107,92,231,.28), rgba(74,60,174,.16));
+  border-color: rgba(155,142,240,.35);
+}
+.empx-closing-card--primary:hover { background: linear-gradient(140deg, rgba(107,92,231,.38), rgba(74,60,174,.22)); }
+.empx-closing-card-ic {
+  flex-shrink: 0;
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.08);
+  color: var(--c-light);
+  transition: transform .25s cubic-bezier(.22,.61,.36,1);
+}
+.empx-closing-card-ic svg { width: 17px; height: 17px; }
+.empx-closing-card:hover .empx-closing-card-ic { transform: scale(1.1) rotate(-4deg); }
+.empx-closing-card-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.empx-closing-card-tx strong { font-size: 13.5px; font-weight: 700; color: var(--c-white); }
+.empx-closing-card-tx span { font-size: 11.5px; color: rgba(255,255,255,.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.empx-closing-card-arrow {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,.5);
+  transform: translateX(-2px);
+  opacity: 0;
+  transition: transform .25s cubic-bezier(.22,.61,.36,1), opacity .25s ease;
+}
+.empx-closing-card-arrow svg { width: 11px; height: 11px; }
+.empx-closing-card:hover .empx-closing-card-arrow { transform: translateX(0); opacity: 1; }
+
+.empx-closing-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+.empx-closing-trust span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: rgba(255,255,255,.5);
+}
+.empx-closing-trust svg { width: 13px; height: 13px; color: #3ab263; flex-shrink: 0; }
+
+@media (max-width: 720px) {
+  .empx-closing-cards { grid-template-columns: 1fr; }
+  .empx-closing-card-tx span { white-space: normal; }
+}
+@media (max-width: 600px) {
+  .empx-closing { padding: 64px 0; }
+  .emp-principles { padding-top: 56px; padding-bottom: 60px; }
+}
+
+/* ════════════════════════════════════════════
+   HERO · collage de fotos reales (lado derecho)
+   1 grande (5:4) + 2 chicas (5:4 y 3:2) apiladas.
+   Vive dentro del .empx-hero original (fondo + textos
+   en empresa-import.css); este bloque solo maqueta las
+   fotos en el espacio que ocupaba el mockup.
+═══════════════════════════════════════════ */
+.empx-hero-media {
+  position: relative; /* ancla las pills flotantes */
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+}
+.empx-hero-media-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 2;
+  margin-right: -32px; /* overlap sutil sobre la foto grande */
+}
+/* wrapper que recibe el pp-reveal (translateY+opacity), separado de la
+   rotación estática de la foto para que ambas transforms convivan. */
+.empx-hero-photo-wrap { margin: 0; min-width: 0; }
+.empx-hero-photo-wrap--conv { position: relative; z-index: 1; }
+
+.empx-hero-photo {
+  margin: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  box-shadow:
+    0 24px 48px -16px rgba(0,0,0,0.55),
+    0 2px 8px rgba(0,0,0,0.25),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+  transition: transform .4s cubic-bezier(.2,.8,.2,1);
+  will-change: transform;
+}
+.empx-hero-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+/* Prefijo .empx-hero-media para ganar especificidad sobre .pp-reveal.is-in
+   (que fija transform: translateY(0) y borraría rotaciones/escala). El fade
+   de entrada se mantiene porque pp-reveal solo anima la opacidad. */
+/* cliente: más chica, subida y corrida a la derecha (ajuste pedido) */
+.empx-hero-media .empx-hero-photo--cliente { transform: translate(70px, -86px) rotate(-1.5deg) scale(0.88); }
+.empx-hero-media .empx-hero-photo--equipo { transform: rotate(2deg); }
+.empx-hero-photo--conversacion {
+  border-radius: 28px;
+  position: relative;
+  z-index: 1;
+}
+.empx-hero-media .empx-hero-photo--conversacion { transform: rotate(-0.5deg); }
+.empx-hero-media .empx-hero-photo:hover {
+  transform: rotate(0deg) translateY(-4px);
+}
+/* mantiene su posición/escala al hacer hover (va después del hover general) */
+.empx-hero-media .empx-hero-photo--cliente:hover {
+  transform: translate(70px, -86px) rotate(0deg) scale(0.9);
+}
+
+/* Tablet: el hero pasa a 1 columna (empresa-import.css);
+   centramos el collage y lo limitamos en ancho. */
+@media (max-width: 1024px) {
+  .empx-hero-media {
+    max-width: 620px;
+    margin: 8px auto 0;
+  }
+}
+
+/* Mobile: misma jerarquía que desktop (1 foto grande + 2 chicas en
+   collage), ajustada al ancho angosto — antes era un stack de 3 fotos
+   iguales en fila, que se sentía como una grilla plana. */
+@media (max-width: 768px) {
+  .empx-hero-media {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 420px;
+    margin: 8px auto 0;
+  }
+  /* la foto grande (conversación) va primero visualmente aunque en el
+     DOM venga después del stack chico */
+  .empx-hero-photo-wrap--conv { order: -1; }
+  .empx-hero-media .empx-hero-photo--conversacion { transform: rotate(-0.6deg); }
+
+  .empx-hero-media-stack {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-right: 0;
+    padding: 0 10px;
+  }
+  .empx-hero-media-stack .empx-hero-photo-wrap:first-child {
+    margin-right: -22px;
+    z-index: 2;
+    flex: 0 0 56%;
+  }
+  .empx-hero-media-stack .empx-hero-photo-wrap:last-child {
+    z-index: 1;
+    flex: 0 0 56%;
+  }
+  .empx-hero-media .empx-hero-photo--cliente,
+  .empx-hero-media .empx-hero-photo--cliente:hover {
+    transform: translateY(-6px) rotate(-3deg) scale(0.94);
+  }
+  .empx-hero-media .empx-hero-photo--equipo,
+  .empx-hero-media .empx-hero-photo--equipo:hover {
+    transform: translateY(12px) rotate(3deg) scale(0.94);
+  }
+  .empx-hero-media .empx-hero-photo--conversacion:hover {
+    transform: rotate(-0.6deg);
+  }
+}
+
+/* ════════════════════════════════════════════
+   HERO · pills flotantes (gráfica Tap In)
+   Tarjetas claras con acentos morados, sobre el dark hero.
+   Cada una guiña a una vertical del ecosistema.
+═══════════════════════════════════════════ */
+.empx-hero-pill {
+  position: absolute;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 16px;
+  background: rgba(22,17,48,0.94);
+  border: 1px solid rgba(155,142,240,0.24);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 20px 56px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(107,92,231,0.08),
+    0 0 36px rgba(107,92,231,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  white-space: nowrap;
+}
+.empx-hero-pill-tx {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+  min-width: 0;
+}
+.empx-hero-pill-tx strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 1px;
+}
+.empx-hero-pill-tx span {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+}
+.empx-hero-pill-check {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: #9B8EF0;
+  background: rgba(107,92,231,0.2);
+  box-shadow: 0 0 16px rgba(107,92,231,0.25);
+}
+.empx-hero-pill-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--c-mid, #6B5CE7) 0%, var(--c-main, #4A3CAE) 100%);
+}
+.empx-hero-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #34D399;
+  box-shadow: 0 0 0 4px rgba(52,211,153,0.18);
+}
+.empx-hero-pill-dot--inline { margin-left: 2px; }
+
+/* posiciones (desktop): repartidas en las esquinas del collage, fuera de
+   las caras, ancladas al perímetro (notif arriba-der sobre las cabezas,
+   persona abajo-izq, ruta abajo-der). */
+/* Connect (ex-Sofía): más abajo y a la izquierda, solapando la foto de
+   arriba y la grande de la derecha. */
+.empx-hero-pill--notif  { top: 50px;     right: 98px; }
+/* Alcance (Conectando): más abajo. */
+.empx-hero-pill--person { bottom: -38px;  left: -46px; }
+.empx-hero-pill--live   { bottom: 30px;   right: -38px; }
+
+/* tablet/mobile: el collage se centra y achica; ocultamos las pills
+   para no saturar ni desbordar (se puede reactivar con posiciones propias). */
+@media (max-width: 1024px) {
+  .empx-hero-pill { display: none; }
+}
+
+/* ════════════════════════════════════════════
+   HERO PILLS · diferenciación cromática por vertical
+   Se agrega DESPUÉS del bloque base .empx-hero-pill
+   para ganar especificidad y sobreescribir border/shadow.
+═══════════════════════════════════════════ */
+
+/* ícono en círculo para las pills de producto (Connect / Campus) */
+.empx-hero-pill-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+.empx-hero-pill--connect .empx-hero-pill-icon {
+  color: #9B8EF0;
+  background: rgba(107, 92, 231, 0.22);
+  box-shadow: 0 0 16px rgba(107, 92, 231, 0.28);
+}
+.empx-hero-pill--campus .empx-hero-pill-icon {
+  color: #C4B5FD;
+  background: rgba(74, 60, 174, 0.30);
+  box-shadow: 0 0 16px rgba(74, 60, 174, 0.30);
+}
+
+/* Connect · tinte --c-mid (#6B5CE7) — pill arriba derecha */
+.empx-hero-pill--connect {
+  border-color: rgba(107, 92, 231, 0.32);
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(107, 92, 231, 0.12),
+    0 0 36px rgba(107, 92, 231, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.empx-hero-pill--connect .empx-hero-pill-check {
+  color: #9B8EF0;
+  background: rgba(107, 92, 231, 0.22);
+  box-shadow: 0 0 16px rgba(107, 92, 231, 0.28);
+}
+
+/* Campus · tinte --c-main (#4A3CAE) — pill abajo derecha */
+.empx-hero-pill--campus {
+  border-color: rgba(74, 60, 174, 0.38);
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(74, 60, 174, 0.14),
+    0 0 36px rgba(74, 60, 174, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.empx-hero-pill--campus .empx-hero-pill-dot {
+  background: #6B5CE7;
+  box-shadow: 0 0 0 4px rgba(107, 92, 231, 0.22);
+}
+
+/* Alcance · tinte --c-light (#9B8EF0) — pill abajo izquierda */
+.empx-hero-pill--alcance {
+  border-color: rgba(155, 142, 240, 0.34);
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(155, 142, 240, 0.16),
+    0 0 36px rgba(155, 142, 240, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.empx-hero-pill--alcance .empx-hero-pill-pin {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: #9B8EF0;
+  background: rgba(155, 142, 240, 0.20);
+  box-shadow: 0 0 16px rgba(155, 142, 240, 0.26);
+}
+
+/* ════════════════════════════════════════════
+   PRESENCIA · sección con mapa (Chile + Perú)
+   Reemplaza la banda de cifras. Namespace empx-pres-*.
+   Vive sobre la región oscura .empx-dark.
+═══════════════════════════════════════════ */
+.empx-pres {
+  position: relative;
+  padding: clamp(80px, 11vh, 120px) 0;
+  overflow-x: clip;
+  z-index: 1;
+}
+.empx-pres-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.empx-pres-orb {
+  position: absolute;
+  right: 4%; top: 50%;
+  transform: translateY(-50%);
+  width: 520px; height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(107,92,231,0.22) 0%, transparent 70%);
+  filter: blur(40px);
+}
+.empx-pres-lattice {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle at center, rgba(155,142,240,0.10) 0.6px, transparent 1.2px);
+  background-size: 32px 32px;
+  background-attachment: fixed;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  opacity: 0.5;
+}
+.empx-pres-inner {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 5vw, 80px);
+  align-items: center;
+}
+
+/* copy */
+.empx-pres-title {
+  font-size: clamp(26px, 3.4vw, 40px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 14px 0 16px;
+  max-width: 18ch;
+}
+.empx-pres-tlight { font-weight: 300; }
+.empx-pres-hl {
+  font-weight: 800;
+  background: linear-gradient(120deg, #C4B5FD 0%, #9B8EF0 45%, #6B5CE7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.empx-pres-lead {
+  font-size: clamp(15px, 1.6vw, 17px);
+  line-height: 1.65;
+  font-weight: 400;
+  color: rgba(255,255,255,0.72);
+  margin: 0 0 36px;
+  max-width: 44ch;
+}
+.empx-pres-lead strong { font-weight: 600; color: inherit; }
+.empx-pres-stats { display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start; }
+.empx-pres-stat { display: flex; flex-direction: column; gap: 6px; }
+.empx-pres-stat-num {
+  font-size: clamp(26px, 2.6vw, 34px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.empx-pres-stat--featured .empx-pres-stat-num {
+  font-size: clamp(34px, 3.6vw, 46px);
+  line-height: 0.85;
+  background: linear-gradient(120deg, #C4B5FD 0%, #9B8EF0 45%, #6B5CE7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.empx-pres-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.42);
+  max-width: 16ch;
+}
+
+/* mapa */
+.empx-pres-map {
+  position: relative;
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
+  aspect-ratio: 210.77 / 478.95;
+  perspective: 1100px;
+}
+/* plano inclinado: da la perspectiva isométrica al mapa */
+.empx-pres-plane {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(40deg);
+  transform-origin: center 45%;
+}
+/* la malla va detrás del mapa (empujada en Z dentro del plano 3D) */
+.empx-pres-mesh { position: absolute; inset: 0; width: 100%; height: 100%; transform: translateZ(-10px); }
+.empx-pres-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* contornos reales Chile + Perú (fill/stroke heredados por los paths del grupo).
+   Relleno casi opaco para que la malla no se transparente sobre la tierra. */
+.empx-pres-land {
+  fill: rgba(101,86,196,0.92);
+  stroke: rgba(176,164,255,0.7);
+  stroke-width: 0.7;
+  stroke-linejoin: round;
+}
+.empx-pres-route { stroke-width: 3; }
+.empx-pres-route { animation: empx_presDash 2.4s linear infinite; }
+@keyframes empx_presDash { to { stroke-dashoffset: -48; } }
+
+.empx-pres-pin { position: absolute; transform: translate(-50%, -50%); }
+.empx-pres-pin--lima   { left: 20.3%; top: 28.7%; }
+.empx-pres-pin--cusco  { left: 39.6%; top: 30.4%; }
+.empx-pres-pin--vina   { left: 50.8%; top: 55.7%; }
+.empx-pres-pin--scl    { left: 52.3%; top: 56.6%; }
+.empx-pres-pin--pvaras { left: 55%;   top: 68.2%; }
+.empx-pres-pin--pmc    { left: 53.5%; top: 69.2%; }
+
+/* label a la izquierda del punto (para pares cercanos / borde derecho) */
+.empx-pres-label.empx-pres-label--left {
+  left: auto; right: 26px;
+  text-align: right;
+}
+.empx-pres-dot {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #9B8EF0;
+  box-shadow: 0 0 12px rgba(155,142,240,0.85);
+}
+.empx-pres-pulse {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 1px solid rgba(155,142,240,0.6);
+  animation: empx_presPulse 2.6s ease-out infinite;
+}
+@keyframes empx_presPulse {
+  0%   { width: 12px; height: 12px; opacity: 0.7; }
+  100% { width: 54px; height: 54px; opacity: 0; }
+}
+.empx-pres-label {
+  position: absolute; left: 26px; top: 50%;
+  transform: translateY(-50%);
+  line-height: 1.15;
+  font-size: 13px; font-weight: 400; color: #fff; white-space: nowrap;
+}
+/* solo Lima y Santiago en negrita; el resto liviano */
+.empx-pres-pin--lima .empx-pres-label,
+.empx-pres-pin--scl .empx-pres-label { font-weight: 600; }
+/* ajustes finos de posición (labels de lado izquierdo; --left para ganar especificidad) */
+.empx-pres-pin--lima .empx-pres-label--left { right: 40px; }
+.empx-pres-pin--vina .empx-pres-label--left { right: 24px; transform: translateY(calc(-50% - 14px)); }
+.empx-pres-pin--pmc  .empx-pres-label--left { right: 24px; transform: translateY(calc(-50% + 14px)); }
+.empx-pres-label small { display: block; font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.45); }
+
+@media (max-width: 900px) {
+  .empx-pres-inner { grid-template-columns: 1fr; gap: 48px; }
+  .empx-pres-map { margin: 0 auto; max-width: 260px; }
+  .empx-pres-stats { gap: 28px; }
+}
+@media (max-width: 480px) {
+  .empx-pres-map { max-width: 180px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .empx-pres-route, .empx-pres-pulse { animation: none; }
+}

@@ -1,0 +1,207 @@
+/* Componentes comunes: header, franja de sección, nodo, botones, títulos, módulos de imagen, filas, cifras, campos */
+
+/* ---------- Nodo (manual p. 23): contorno = pendiente, relleno = activo o ya ocurrió ---------- */
+.nodo{
+  width: 9px; height: 9px; border-radius: 50%;
+  border: 1.5px solid currentColor; display: inline-block; flex: none;
+  transition: background-color var(--dur-1), transform var(--dur-2) var(--curva-salida);
+}
+.nodo.encendido{ background: currentColor; }
+
+/* ---------- Nodos de referencia del manual (punto, cápsula y red), siempre rellenos (decidido 10.10) ----------
+   Misma escala para los tres: el punto mide --nr-d y la cápsula y la red mantienen su proporción.
+   Se pueden girar o reflejar con .gira-90, .gira-180, .gira-45 y .refleja (no cambian el espacio que ocupan). */
+:root{ --nr-d: 7px; }
+.nr{ display: inline-block; flex: none; fill: currentColor; overflow: visible; transition: scale var(--dur-2) var(--curva-salida), color var(--dur-1); }
+.nr-punto{ width: var(--nr-d); height: var(--nr-d); }
+.nr-capsula{ width: calc(var(--nr-d) * 2.4835); height: var(--nr-d); }
+.nr-red{ width: calc(var(--nr-d) * 2.4835); height: calc(var(--nr-d) * 2.4835); }
+.nr.gira-90{ rotate: 90deg; }
+.nr.gira-180{ rotate: 180deg; }
+.nr.gira-45{ rotate: -45deg; }
+.nr.refleja{ transform: scaleX(-1); }
+.franja.destello .nr{ scale: 1.5; color: var(--g07); }
+
+/* ---------- Franja de sección ---------- */
+.franja{ height: var(--franja); align-items: center; }
+.franja > *{ padding-inline: var(--celda); }
+.franja .num{ opacity: .7; }
+.franja .nombre{ grid-column: 3; display: flex; align-items: center; gap: 10px; }
+.franja .accion{ grid-column: 4; justify-self: end; text-decoration: none; }
+.franja.destello .nodo{ background: var(--g07); border-color: var(--g07); transform: scale(1.7); }
+
+/* Botón fijo de celular (ver css/celular.css): en escritorio no existe */
+.barra-cta, .contador-cap, .txt-corto{ display: none; }
+
+/* ---------- Header ---------- */
+.hdr{
+  position: fixed; inset: 0 0 auto; z-index: 50;
+  color: var(--blanco);
+  transition: background-color var(--dur-2), color var(--dur-2), border-color var(--dur-2);
+  border-bottom: 1px solid transparent;
+}
+.hdr .fila{ height: var(--header); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: center; }
+.hdr .fila::before{ display: none; }
+.hdr .logo{ position: relative; display: block; width: 123px; height: 40px; margin-left: var(--celda); }
+.hdr .logo img{ position: absolute; inset: 0; width: 123px; height: 40px; transition: opacity var(--dur-2); }
+.hdr .logo .color{ opacity: 0; }
+.hdr .meta{ grid-column: 3; padding-left: var(--celda); opacity: .75; }
+.hdr .pildora{ grid-column: 4; justify-self: end; margin-right: var(--celda); }
+
+.hdr.sobre-claro{
+  background: color-mix(in srgb, var(--papel) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  color: var(--tinta); border-color: var(--linea-sobre-claro);
+}
+.hdr.sobre-claro .logo .color{ opacity: 1; }
+.hdr.sobre-claro .logo .blanco{ opacity: 0; }
+.hdr.sobre-oscuro{
+  background: color-mix(in srgb, var(--turquesa-oscuro) 62%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border-color: var(--linea-sobre-oscuro);
+}
+
+/* ---------- Botón píldora (sin nodo) ---------- */
+.pildora{
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase;
+  text-decoration: none; color: inherit; background: transparent; cursor: pointer;
+  border: 1px solid currentColor; border-radius: var(--radio-pildora);
+  padding: 12px 20px;
+  transition: background-color var(--dur-1), color var(--dur-1), border-color var(--dur-1);
+}
+.pildora .flecha{ display: inline-block; transition: transform var(--dur-2) var(--curva-salida); }
+.pildora:hover .flecha{ transform: translateY(2px); }
+.es-oscuro .pildora:hover, .hdr:not(.sobre-claro) .pildora:hover{ background: var(--blanco); color: var(--turquesa-oscuro); border-color: var(--blanco); }
+.hdr.sobre-claro .pildora:hover, .sec:not(.es-oscuro) .pildora:hover{ background: var(--turquesa-oscuro); color: var(--blanco); border-color: var(--turquesa-oscuro); }
+.pildora.chica{ padding: 9px 16px; font-size: 10.5px; }
+
+/* ---------- CTA grande (hero y formulario) ----------
+   Píldora blanca ancha. Al pasar el cursor, un relleno turquesa oscuro barre
+   de izquierda a derecha y la flecha sale y vuelve a entrar en su círculo. */
+.cta-grande{
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  width: 100%; min-height: 72px; padding: 10px 10px 10px 32px;
+  border: 0; border-radius: var(--radio-pildora); cursor: pointer;
+  background: var(--blanco); color: var(--turquesa-oscuro);
+  font-family: var(--f-texto); font-size: 18px; font-weight: 500; letter-spacing: -.01em;
+  text-decoration: none; text-align: left;
+  transition: color var(--dur-2) var(--curva);
+}
+.cta-grande::before{
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: var(--turquesa-oscuro); border-radius: inherit;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--dur-2) var(--curva);
+}
+.cta-grande .circulo{
+  position: relative; overflow: hidden; flex: none;
+  width: 52px; height: 52px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--turquesa-oscuro); color: var(--blanco);
+  transition: background-color var(--dur-2) var(--curva), color var(--dur-2) var(--curva);
+}
+.cta-grande .circulo span{
+  grid-area: 1 / 1; font-family: var(--f-mono); font-size: 18px; line-height: 1;
+  transition: transform var(--dur-2) var(--curva);
+}
+.cta-grande .circulo span + span{ transform: translateY(-46px); }
+.cta-grande:hover, .cta-grande:focus-visible{ color: var(--blanco); }
+.cta-grande:hover::before, .cta-grande:focus-visible::before{ transform: scaleX(1); }
+.cta-grande:hover .circulo, .cta-grande:focus-visible .circulo{ background: var(--blanco); color: var(--turquesa-oscuro); }
+.cta-grande:hover .circulo span:first-child, .cta-grande:focus-visible .circulo span:first-child{ transform: translateY(46px); }
+.cta-grande:hover .circulo span + span, .cta-grande:focus-visible .circulo span + span{ transform: none; }
+.cta-grande.horizontal .circulo span + span{ transform: translateX(-46px); }
+.cta-grande.horizontal:hover .circulo span:first-child, .cta-grande.horizontal:focus-visible .circulo span:first-child{ transform: translateX(46px); }
+.cta-grande[disabled]{ opacity: .6; cursor: progress; }
+
+/* ---------- Enlace con flecha ---------- */
+.enlace{ font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
+.enlace:hover{ color: var(--turquesa); }
+
+/* ---------- Módulo de imagen (bento) ---------- */
+/* z-index 6: las fotos quedan por encima de las líneas de la retícula (z 5) en todo el sitio */
+.modulo{ position: relative; z-index: 6; overflow: hidden; margin: var(--celda); background: var(--profundo); color: var(--blanco); }
+.modulo img{ width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--curva); }
+.modulo:hover img{ transform: scale(1.035); }
+.modulo .sobre{
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  display: flex; flex-direction: column; gap: 8px; padding: 24px 22px 22px;
+  background: linear-gradient(0deg, rgba(11, 52, 57, .82), rgba(11, 52, 57, 0));
+}
+.modulo .sobre .t-etiqueta{ opacity: .8; }
+.modulo .sobre p{ font-size: 14px; line-height: 1.5; max-width: 42ch; opacity: .9; }
+
+/* Marcador de imagen pendiente: degradado de marca + grano + etiqueta */
+.pendiente{ background:
+  radial-gradient(110% 80% at 75% 20%, color-mix(in srgb, var(--g08) 80%, transparent) 0%, transparent 60%),
+  linear-gradient(170deg, var(--g10), var(--profundo)); }
+.pendiente .rotulo{
+  position: absolute; left: 16px; top: 16px; z-index: 2;
+  font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; color: var(--blanco); opacity: .7;
+}
+
+/* ---------- Fila de lista (patrón de Spectra) ---------- */
+.lista-fila{ align-items: start; }
+.lista-fila > *{ padding: 28px var(--celda); }
+.lista-fila .k{ display: flex; align-items: center; gap: 12px; padding-top: 34px; }
+.lista-fila .t-h3{ grid-column: 2; }
+.lista-fila p{ grid-column: 3 / span 2; max-width: 52ch; font-size: var(--t-chico); opacity: .9; }
+
+/* ---------- Cifra ---------- */
+.cifra{ display: flex; flex-direction: column; gap: 14px; padding: var(--esp-seccion) var(--celda) 64px; }
+.cifra .n{ font-family: var(--f-mono); font-weight: 300; font-size: clamp(40px, 4.1vw, 64px); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.cifra .d{ font-size: var(--t-chico); opacity: .72; max-width: 22ch; }
+
+/* ---------- Carrusel infinito de logos ---------- */
+.carrusel{
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.carrusel .pista{ display: flex; width: max-content; animation: carrusel 42s linear infinite; }
+.carrusel .logo-cliente{
+  width: calc(var(--ancho-celda, 336px)); height: 150px; flex: none;
+  display: grid; place-items: center;
+}
+.carrusel .logo-cliente img{ max-width: 46%; max-height: 52px; width: auto; height: auto; opacity: .88; transition: opacity var(--dur-2) var(--curva), transform var(--dur-2) var(--curva-salida); }
+/* Hover (decidido 11.10): el carrusel no se detiene, baja la velocidad (js/main.js) y el logo bajo el cursor se destaca levemente */
+.carrusel:hover .logo-cliente img{ opacity: .55; }
+.carrusel .logo-cliente:hover img{ opacity: 1; transform: scale(1.08); }
+@keyframes carrusel{ to{ transform: translateX(-50%); } }
+
+/* ---------- Campo de formulario (solo línea inferior) ---------- */
+.campo{ display: flex; flex-direction: column; }
+.campo label{ font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; opacity: .72; padding-top: 18px; }
+.campo input, .campo textarea{
+  font-size: 17px; color: inherit; background: transparent;
+  border: 0; border-bottom: 1px solid rgba(255, 255, 255, .35); border-radius: 0;
+  padding: 10px 0; outline: none; transition: border-color var(--dur-1);
+}
+.campo input:focus, .campo textarea:focus{ border-color: var(--g05); }
+.campo textarea{ resize: vertical; min-height: 96px; }
+.campo.con-error input, .campo.con-error textarea{ border-color: #F2A39A; }
+.campo .error{ font-family: var(--f-mono); font-size: 10.5px; color: #F2A39A; min-height: 16px; padding-top: 6px; }
+.casilla{ display: flex; gap: 12px; align-items: flex-start; font-size: 14px; padding-top: 24px; opacity: .9; }
+.casilla input{ accent-color: var(--g05); width: 16px; height: 16px; margin-top: 2px; flex: none; }
+.trampa{ position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ---------- CTA vidrio (hero): mismo vidrio esmerilado del header ----------
+   Reposo: vidrio turquesa con desenfoque, borde claro y círculo blanco.
+   Hover: un relleno blanco barre de izquierda a derecha, el texto pasa a turquesa
+   y el círculo se invierte; la flecha sale y vuelve a entrar. */
+.cta-grande.vidrio{
+  color: var(--blanco);
+  background: color-mix(in srgb, var(--turquesa-oscuro) 42%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(140%); backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, .38);
+}
+.cta-grande.vidrio::before{ background: var(--blanco); }
+.cta-grande.vidrio .circulo{ background: var(--blanco); color: var(--turquesa-oscuro); }
+.cta-grande.vidrio:hover, .cta-grande.vidrio:focus-visible{ color: var(--turquesa-oscuro); border-color: var(--blanco); }
+.cta-grande.vidrio:hover .circulo, .cta-grande.vidrio:focus-visible .circulo{ background: var(--turquesa-oscuro); color: var(--blanco); }
+
+/* CTA compacto: del ancho de su texto (hero) */
+.cta-grande.compacto{ width: auto; min-height: 60px; gap: 20px; padding: 8px 8px 8px 28px; font-size: 16px; font-weight: 600; letter-spacing: 0; }
+.cta-grande.compacto .circulo{ width: 44px; height: 44px; }

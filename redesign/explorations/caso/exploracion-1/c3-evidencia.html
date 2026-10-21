@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../works/works-base.css">
+    <link rel="stylesheet" href="caso-base.css">
+    <title>Caso 3 · Evidencia · agustín.design</title>
+    <style>
+        /* =======================================================
+           CASO 3 · EVIDENCIA
+           ======================================================= */
+        /* El sitio real es la prueba: a la derecha queda fijo un navegador con tapin.cl y, a medida que se lee
+           cada decisión, el sitio se desplaza a la parte exacta de la que habla y un marco la señala.
+           En las decisiones de marca, el escenario cambia a las piezas de marca */
+
+        /* --- 1. ESTRUCTURA --- */
+        .evidencia { padding-top: var(--seccion); align-items: start; }
+        .evidencia .cab { padding-bottom: clamp(24px, 3vw, 40px); }
+        .relato { grid-column: 1 / span 5; }
+        .escenario { grid-column: 6 / -1; position: sticky; top: 76px; height: calc(100svh - 100px); }
+
+        /* --- 2. BLOQUES DE TEXTO --- */
+        .bloque { min-height: 78svh; display: flex; flex-direction: column; justify-content: center; gap: 18px; padding: 40px 0; opacity: 0.28; transition: opacity 600ms var(--hover-lento); }
+        .bloque.actual { opacity: 1; }
+        .bloque:first-child { min-height: 62svh; justify-content: flex-start; padding-top: 12px; }
+        .bloque .num { display: flex; align-items: center; gap: 10px; }
+        .bloque .num::after { content: ''; flex: 0 0 40px; height: 1px; background: currentColor; opacity: 0.5; }
+        .bloque h3 { font-size: clamp(28px, 2.7vw, 44px); font-weight: 500; letter-spacing: -0.045em; line-height: 1; max-width: 16ch; }
+        .bloque p { max-width: 42ch; font-size: 16px; line-height: 1.5; }
+        .bloque .porque { display: flex; flex-direction: column; gap: 6px; color: var(--texto-2); font-size: 15px; }
+        .bloque .pz-solo { display: none; }
+
+        /* --- 3. ESCENARIO --- */
+        .escenario > * { position: absolute; inset: 0; transition: opacity 600ms var(--hover-lento), scale 900ms var(--hover-lento); }
+        .escenario .capa { display: flex; align-items: center; justify-content: center; opacity: 0; scale: 0.97; pointer-events: none; }
+        .escenario .capa.on { opacity: 1; scale: 1; pointer-events: auto; }
+        .escenario .capa .pz { width: 100%; }
+        .escenario .capa .pz-img.con-extra { grid-template-columns: 1.3fr 1fr; align-items: end; }
+        .escenario .capa .pz-img.con-extra img { width: 100%; }
+        .escenario .capa .pz-img.con-extra .extra { width: 100%; }
+
+        /* --- 4. NAVEGADOR CON EL SITIO EN VIVO --- */
+        .vitrina { display: flex; flex-direction: column; border-radius: var(--radio); overflow: hidden; background: #fff; box-shadow: 0 40px 100px -24px rgba(0, 0, 0, 0.6); opacity: 0; scale: 0.97; }
+        .vitrina.on { opacity: 1; scale: 1; }
+        .vitrina .barra-nav { position: relative; flex: 0 0 32px; display: flex; align-items: center; gap: 6px; padding: 0 12px; background: #F1F1EF; border-bottom: 1px solid #E2E2DF; }
+        .vitrina .barra-nav i { width: 9px; height: 9px; border-radius: 50%; background: #CFCFCB; }
+        .vitrina .barra-nav .url { position: absolute; left: 50%; translate: -50% 0; font-size: 11px; color: #77736B; background: #fff; padding: 2px 18px; border-radius: 999px; }
+        .vitrina .pantalla { position: relative; flex: 1; overflow: hidden; background: #fff; }
+        .vitrina .pantalla img { position: absolute; inset: 0 0 auto 0; width: 100%; transition: opacity 500ms ease; }
+        .vitrina iframe { position: absolute; top: 0; left: 0; width: 1440px; border: 0; transform-origin: 0 0; transform: scale(var(--escala, 0.5)); pointer-events: none; opacity: 0; transition: opacity 400ms ease; }
+        .vitrina.cargado iframe { opacity: 1; }
+        .vitrina.cargado .pantalla img { opacity: 0; }
+
+        /* --- 5. MARCO QUE SEÑALA LA PARTE DEL SITIO --- */
+        /* Se mueve con top/left/width/height entre una decisión y otra: es una sola caja que viaja */
+        .resalte { position: absolute; z-index: 3; left: var(--x, 0); top: var(--y, 0); width: var(--w, 0); height: var(--h, 0); border: 1.5px solid var(--acento, #9A8CFA); border-radius: 10px; box-shadow: 0 0 0 9999px rgba(17, 14, 34, 0.18); opacity: 0; pointer-events: none; transition: top 700ms var(--hover-lento), left 700ms var(--hover-lento), width 700ms var(--hover-lento), height 700ms var(--hover-lento), opacity 400ms var(--hover-lento); }
+        .resalte.on { opacity: 1; }
+        .resalte span { position: absolute; left: -1.5px; top: -1.5px; padding: 4px 8px; border-radius: 10px 0 8px 0; background: var(--acento, #9A8CFA); color: #110E22; white-space: nowrap; }
+
+        /* --- 6. VISTA MÓVIL --- */
+        /* Sin escenario fijo: cada decisión muestra su pieza debajo del texto */
+        @media (max-width: 900px) {
+            .relato { grid-column: 1 / -1; }
+            .escenario { display: none; }
+            .bloque, .bloque:first-child { min-height: 0; opacity: 1; padding: 48px 0 0; }
+            .bloque .pz-solo { display: block; margin-top: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="barra"><a href="#" class="logo">agustín<span>.</span>design</a><ul><li><a href="#">About</a></li><li><a href="#">Works</a></li><li><a href="#">Contact</a></li></ul><a class="der mono" href="../../works/w3-pila.html">← Índice</a></header>
+
+    <main>
+        <section class="grilla portada" data-portada></section>
+        <section class="grilla resumen" data-resumen></section>
+        <section class="grilla evidencia" id="decisiones">
+            <div class="cab"><span class="etiqueta">Decisiones</span><h2 data-letras>Siete decisiones, una por problema</h2></div>
+            <div class="relato" data-relato></div>
+            <div class="escenario" data-escenario aria-hidden="true">
+                <div class="vitrina" data-vitrina><div class="barra-nav"><i></i><i></i><i></i><span class="url mono">tapin.cl</span></div><div class="pantalla"><img src="../media/tp-hero.jpg" alt=""><div class="resalte" data-resalte><span class="mono"></span></div></div></div>
+            </div>
+        </section>
+        <section class="grilla proceso" data-proceso></section>
+        <section class="grilla resultados" data-resultados></section>
+        <div data-cierre></div>
+    </main>
+    <script src="caso-datos.js"></script>
+    <script src="caso-piezas.js"></script>
+    <script src="c3-evidencia.js"></script>
+    <script src="caso-base.js"></script>
+</body>
+</html>

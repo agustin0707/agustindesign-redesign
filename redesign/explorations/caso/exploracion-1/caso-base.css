@@ -1,0 +1,197 @@
+/* =======================================================
+   BASE COMÚN · PÁGINA DE CASO (S3)
+   ======================================================= */
+/* Se carga después de works-base.css (tokens, barra y base). Todo el caso vive sobre el tinte del proyecto,
+   el mismo color del panel en el índice: la entrada desde la Pila no cambia de fondo */
+
+/* --- 1. TOKENS DEL CASO --- */
+:root {
+    --tinte: #110E22;
+    --texto: #F5F5F3;
+    --texto-2: rgba(245, 245, 243, 0.58);
+    --texto-3: rgba(245, 245, 243, 0.36);
+    --linea: rgba(245, 245, 243, 0.13);
+    --superficie: rgba(245, 245, 243, 0.05);
+    --radio: 8px;
+    --seccion: clamp(96px, 12vw, 200px);
+}
+body { background: var(--tinte); color: var(--texto); }
+.gris { color: var(--texto-2); }
+.etiqueta { font-family: var(--mono); font-size: 12px; letter-spacing: 0; color: var(--texto-2); }
+.grilla { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: 0 var(--margen); }
+
+/* =======================================================
+   1. LETRAS QUE SUBEN Y APARICIONES
+   ======================================================= */
+/* Mismo gesto del hero y del índice. El clip-path se extiende más allá de la caja para no cortar acentos,
+   descendentes ni la última letra con tracking negativo */
+[data-letras] .palabra { display: inline-block; vertical-align: top; clip-path: inset(-0.6em -0.35em -0.36em -0.35em); }
+[data-letras] .l { display: inline-block; transform: translateY(1.9em); }
+[data-letras].entra .l { animation: subeLetra 1000ms var(--ease) forwards; }
+@keyframes subeLetra { to { transform: translateY(0); } }
+
+/* Bloques que aparecen al entrar en pantalla: se anima el wrapper, nunca el elemento con hover propio */
+[data-aparece] { opacity: 0; transform: translateY(28px); transition: opacity 900ms var(--ease), transform 1100ms var(--ease); transition-delay: var(--retraso, 0ms); }
+[data-aparece].visto { opacity: 1; transform: none; }
+
+/* =======================================================
+   2. PORTADA
+   ======================================================= */
+.portada { padding-top: 72px; }
+.portada .fila-top { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding-bottom: 14px; border-bottom: 1px solid var(--linea); }
+.portada .fila-top > :nth-child(1) { grid-column: 1 / span 3; }
+.portada .fila-top > :nth-child(2) { grid-column: 4 / span 5; }
+.portada .fila-top > :nth-child(3) { grid-column: 9 / -1; justify-self: end; }
+.portada .fila-top a { color: var(--texto); border-bottom: 1px solid var(--texto-3); }
+
+/* --- 1. TÍTULO Y BAJADA --- */
+.portada-titulo { grid-column: 1 / span 9; margin: clamp(28px, 4vw, 64px) 0 clamp(20px, 2.4vw, 36px) -0.05em; font-size: clamp(96px, 21vw, 360px); font-weight: 500; letter-spacing: -0.07em; line-height: 0.78; white-space: nowrap; }
+.portada-bajada { grid-column: 9 / -1; align-self: end; justify-self: end; max-width: 22ch; margin-bottom: clamp(24px, 2.6vw, 40px); text-align: right; font-size: clamp(18px, 1.6vw, 24px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.2; }
+
+/* --- 2. ESCENA DE PORTADA --- */
+/* Misma escena que la lámina del índice (degradado de marca y navegador con el sitio): continúa el viaje */
+.portada-escena { grid-column: 1 / -1; position: relative; height: min(82svh, 56vw); border-radius: var(--radio); overflow: hidden; container-type: size; background: radial-gradient(120% 95% at 50% 0%, #9A8CFA 0%, #4A3CAE 46%, #16113A 100%); }
+.portada-escena .navegador { position: absolute; left: 15%; right: 15%; top: 12%; bottom: -3%; border-radius: max(6px, 0.7cqw) max(6px, 0.7cqw) 0 0; background: #fff; overflow: hidden; box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6); }
+.portada-escena .barra-nav { position: relative; height: clamp(14px, 2.3cqw, 34px); display: flex; align-items: center; gap: max(4px, 0.45cqw); padding: 0 max(8px, 1cqw); background: #F1F1EF; border-bottom: 1px solid #E2E2DF; }
+.portada-escena .barra-nav i { width: max(6px, 0.7cqw); height: max(6px, 0.7cqw); border-radius: 50%; background: #CFCFCB; }
+.portada-escena .barra-nav .url { position: absolute; left: 50%; translate: -50% 0; font-size: max(9px, 0.85cqw); color: #77736B; background: #fff; padding: 0.2em 1.4em; border-radius: 999px; }
+.portada-escena .navegador img { width: 100%; height: auto; }
+
+/* --- 3. FICHA --- */
+.ficha { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); column-gap: var(--medianil); margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--linea); }
+.ficha div { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.ficha a { border-bottom: 1px solid var(--texto-3); align-self: start; }
+
+/* =======================================================
+   3. RESUMEN
+   ======================================================= */
+.resumen { padding-top: var(--seccion); }
+.resumen-intro { grid-column: 4 / span 8; font-size: clamp(26px, 2.7vw, 44px); font-weight: 500; letter-spacing: -0.035em; line-height: 1.14; }
+.resumen-intro span { color: var(--texto-3); }
+.resumen-cols { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--medianil); margin-top: clamp(48px, 5vw, 80px); }
+.resumen-cols div { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--linea); }
+.resumen-cols p { max-width: 30ch; color: var(--texto); font-size: 15px; }
+.resumen .lado { grid-column: 1 / span 3; grid-row: 1; }
+
+/* =======================================================
+   4. CABECERA DE BLOQUE
+   ======================================================= */
+/* Etiqueta mono a la izquierda y título grande: se repite en decisiones, proceso y resultados */
+.cab { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-items: end; padding-bottom: clamp(28px, 3vw, 48px); }
+.cab .etiqueta { grid-column: 1 / span 3; }
+.cab h2 { grid-column: 4 / span 8; font-size: clamp(40px, 5.2vw, 88px); font-weight: 500; letter-spacing: -0.055em; line-height: 0.92; }
+
+/* =======================================================
+   5. PROCESO (LÍNEA DE TIEMPO)
+   ======================================================= */
+.proceso { padding-top: var(--seccion); }
+.linea-tiempo { grid-column: 1 / -1; position: relative; display: grid; grid-template-columns: repeat(6, 1fr); column-gap: var(--medianil); list-style: none; padding-top: 28px; }
+/* La línea se dibuja de izquierda a derecha al entrar en pantalla */
+.linea-tiempo::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--texto); transform: scaleX(0); transform-origin: 0 50%; transition: transform 1600ms var(--ease); }
+.linea-tiempo.visto::before { transform: scaleX(1); }
+.linea-tiempo li { position: relative; display: flex; flex-direction: column; gap: 8px; padding-right: 8px; }
+.linea-tiempo li::before { content: ''; position: absolute; top: -32px; left: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--tinte); border: 1px solid var(--texto); }
+.linea-tiempo li:last-child::before { background: var(--texto); }
+.linea-tiempo strong { font-size: clamp(17px, 1.4vw, 21px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.15; }
+.linea-tiempo p { color: var(--texto-2); font-size: 14px; }
+
+/* =======================================================
+   6. RESULTADOS
+   ======================================================= */
+.resultados { padding-top: var(--seccion); }
+.cifras { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--medianil); border-top: 1px solid var(--linea); }
+.cifras div { display: flex; flex-direction: column; gap: 10px; padding: 18px 16px 0 0; }
+.cifras b { font-size: clamp(56px, 7vw, 120px); font-weight: 500; letter-spacing: -0.06em; line-height: 0.9; }
+.cifras p { max-width: 24ch; color: var(--texto-2); font-size: 14px; }
+.cifras .verificar { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-family: var(--mono); font-size: 11px; color: #E9C46A; }
+.cifras .verificar::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* --- 1. GALERÍA DEL CAMPUS --- */
+.galeria { grid-column: 1 / -1; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.4fr; gap: var(--medianil); margin-top: clamp(64px, 7vw, 112px); }
+.galeria figure { overflow: hidden; border-radius: var(--radio); aspect-ratio: 4 / 5; }
+.galeria figure:first-child, .galeria figure:last-child { aspect-ratio: 5 / 4; align-self: end; }
+.galeria img { width: 100%; height: 100%; object-fit: cover; }
+.galeria figcaption { grid-column: 1 / -1; }
+
+/* =======================================================
+   7. APRENDIZAJE Y SIGUIENTE PROYECTO
+   ======================================================= */
+.aprendizaje { padding-top: var(--seccion); }
+.aprendizaje blockquote { grid-column: 4 / span 8; font-size: clamp(28px, 3.2vw, 52px); font-weight: 500; letter-spacing: -0.04em; line-height: 1.1; }
+.aprendizaje .etiqueta { grid-column: 1 / span 3; grid-row: 1; padding-top: 0.6em; }
+.creditos { grid-column: 4 / span 8; margin-top: 40px; color: var(--texto-2); font-size: 14px; max-width: 60ch; }
+
+.siguiente { display: block; margin-top: var(--seccion); padding: 24px var(--margen) clamp(40px, 5vw, 72px); background: var(--sig, #0D2024); border-radius: 18px 18px 0 0; }
+.siguiente .fila { display: flex; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid var(--linea); }
+.siguiente .nombre-sig { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-top: clamp(40px, 6vw, 96px); }
+.siguiente .nombre-sig b { font-size: clamp(88px, 17vw, 300px); font-weight: 500; letter-spacing: -0.07em; line-height: 0.78; margin-left: -0.05em; }
+.siguiente .nombre-sig > span { max-width: 26ch; color: var(--texto-2); text-align: right; padding-bottom: 0.6em; }
+.siguiente .flecha { display: inline-block; transition: transform 700ms var(--hover-lento); }
+@media (hover: hover) { .siguiente:hover .flecha { transform: translate(6px, -6px); } }
+
+/* =======================================================
+   VISTA MÓVIL
+   ======================================================= */
+@media (max-width: 768px) {
+    .grilla, .portada .fila-top, .cab { grid-template-columns: repeat(4, 1fr); }
+    .portada .fila-top > :nth-child(2) { display: none; }
+    .portada .fila-top > :nth-child(3) { grid-column: 3 / -1; }
+    .portada-titulo { grid-column: 1 / -1; font-size: 28vw; }
+    .portada-bajada { grid-column: 1 / -1; justify-self: start; text-align: left; }
+    .portada-escena { height: 62svh; }
+    .portada-escena .navegador { left: 6%; right: 6%; top: 14%; }
+    .ficha { grid-template-columns: 1fr 1fr; row-gap: 18px; }
+    .resumen-intro, .resumen-cols, .resumen .lado, .cab .etiqueta, .cab h2, .aprendizaje blockquote, .aprendizaje .etiqueta, .creditos { grid-column: 1 / -1; }
+    .resumen .lado, .aprendizaje .etiqueta { grid-row: auto; margin-bottom: 20px; }
+    .resumen-cols { grid-template-columns: 1fr; row-gap: 24px; }
+    .cab h2 { margin-top: 12px; }
+    .linea-tiempo { grid-template-columns: 1fr; row-gap: 28px; padding: 0 0 0 24px; }
+    .linea-tiempo::before { top: 0; bottom: 0; left: 3px; right: auto; width: 1px; height: auto; transform: scaleY(0); transform-origin: 50% 0; }
+    .linea-tiempo.visto::before { transform: scaleY(1); }
+    .linea-tiempo li::before { top: 6px; left: -24px; }
+    .cifras { grid-template-columns: 1fr 1fr; row-gap: 28px; }
+    .galeria { grid-template-columns: 1fr 1fr; }
+    .siguiente .nombre-sig { flex-direction: column; align-items: flex-start; }
+    .siguiente .nombre-sig > span { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+    [data-letras] .l { transform: none; }
+    [data-aparece] { opacity: 1; transform: none; }
+    .linea-tiempo::before { transform: none; }
+}
+
+/* =======================================================
+   8. PIEZAS DE LAS DECISIONES
+   ======================================================= */
+/* Cada pieza respeta la identidad del proyecto: el marco solo pone radio, aire y etiquetas mono */
+.pz { position: relative; }
+.pz img { border-radius: var(--radio); }
+.pz figcaption { margin-top: 12px; }
+.pz figcaption span { color: var(--texto); }
+
+/* --- 1. GRILLA DE ISOTIPOS EXPLORADOS --- */
+.isos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.isos img { width: 100%; aspect-ratio: 559 / 346; object-fit: cover; border-radius: 4px; opacity: 0.62; transition: opacity 500ms var(--hover-lento); }
+.isos img.final { opacity: 1; outline: 1px solid var(--texto); outline-offset: 3px; }
+@media (hover: hover) { .isos img:hover { opacity: 1; } }
+
+/* --- 2. IMAGEN CON EXTRA --- */
+.pz-img.con-extra { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.pz-img.con-extra .extra { width: 62%; justify-self: end; }
+
+/* --- 3. PAR CLARO Y OSCURO --- */
+.pz-par { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pz-par div { display: flex; flex-direction: column; gap: 10px; }
+
+/* --- 4. TELÉFONO Y CHEQUEO --- */
+.pz-movil { display: grid; grid-template-columns: auto 1fr; gap: clamp(24px, 3vw, 48px); align-items: center; }
+.telefono-caso { width: clamp(180px, 16vw, 260px); aspect-ratio: 390 / 844; border: 5px solid #0B0B0B; border-radius: 34px; overflow: hidden; background: #0B0B0B; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6); }
+.telefono-caso img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 0; }
+.chequeo { list-style: none; display: flex; flex-direction: column; border-top: 1px solid var(--linea); color: var(--texto); }
+.chequeo li { display: flex; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--linea); }
+.chequeo li::before { content: '✓'; color: var(--texto-2); }
+@media (max-width: 768px) {
+    .isos { grid-template-columns: repeat(3, 1fr); }
+    .pz-movil { grid-template-columns: 1fr; justify-items: center; }
+    .chequeo { width: 100%; }
+}

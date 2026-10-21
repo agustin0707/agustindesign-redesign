@@ -1,0 +1,28 @@
+/* Vista notebook chico (1195 a 1439 px: 1280 × 720, 1366 × 768). Se carga después de las demás hojas.
+   Base: la versión de escritorio; aquí solo los ajustes de notebook (decididos 12.10). */
+
+/* Etiquetas en mono más chicas, como en tablet; el nombre de la franja queda en una línea */
+:root{ --t-etiqueta: 10px; }
+.t-etiqueta{ letter-spacing: .06em; }
+.franja .nombre{ white-space: nowrap; }
+.s-cta .campo label{ font-size: 11px; letter-spacing: .04em; }
+
+/* 02 (P1): pilares de 420 px, como en tablet; la sección cabe mejor en pantallas bajas */
+.s-valor .pilar{ min-height: 420px; }
+.s-valor{ --alto-pilar: 420px; }   /* lo mismo para la grilla alineada (13.10) */
+
+/* 05 (F1): foto de flota más alta (3:1); se ven los furgones bajo las cifras */
+.s-exp .flota{ aspect-ratio: 3 / 1; }
+
+/* E1: menos aire vertical en cada sección (112 → 88 px); en 720 de alto se sentía mucho */
+:root{ --esp-seccion: 88px; }
+
+/* L1: lista de la 06 más compacta; la lista y la foto entran casi completas en una pantalla */
+.s-cat .categorias li{ padding-block: 10px; }
+.s-cat .nm{ font-size: 28px; }
+.s-cat .marca .icono{ width: 24px; height: 24px; }
+
+/* R1: recorrido más chico y pegado al borde, con más distancia de los títulos */
+.recorrido{ left: 12px; gap: 11px; }
+.recorrido .punto{ width: 7px; height: 7px; }
+.recorrido::before{ left: 3px; }

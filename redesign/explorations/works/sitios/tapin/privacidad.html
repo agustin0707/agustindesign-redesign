@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#F2F1F8" />
+  <title>Política de Privacidad · Tap In</title>
+  <meta name="description" content="Política de Privacidad de Tap In SpA. Cómo recolectamos, usamos y protegemos tus datos personales conforme a la Ley 19.628 y la Ley 21.719 de Chile." />
+
+  <!-- Ícono de pestaña + vista previa al compartir. Ver nota completa en index.html -->
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="canonical" href="https://tapin.cl/privacidad.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Tap In" />
+  <meta property="og:locale" content="es_CL" />
+  <meta property="og:url" content="https://tapin.cl/privacidad.html" />
+  <meta property="og:title" content="Política de Privacidad · Tap In" />
+  <meta property="og:description" content="Cómo recolectamos, usamos y protegemos tus datos personales conforme a la Ley 19.628 y la Ley 21.719 de Chile." />
+  <meta property="og:image" content="https://tapin.cl/img/og-tapin.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css?v=20260929c" />
+  <style>
+    /* ───────── Legal page · privacidad ─────────
+       Tipografía sobria estilo documento legal. Single column · compacto. */
+
+    .legal-shell{
+      min-height:calc(100vh - 1px);
+      /* padding-bottom 320 → matchea section-objeciones del home · deja
+         espacio para el ::after de 220px (transición atmósferica) +
+         ~100px de aire blanco arriba para que se sienta natural. */
+      padding:104px 0 320px;
+      position:relative;
+      background:#FFFFFF;
+    }
+
+    /* Glow ambient muy sutil detrás del hero */
+    .legal-shell::before{
+      content:"";
+      position:absolute;
+      top:0; left:50%;
+      width:900px;height:380px;
+      background:radial-gradient(ellipse at center,
+                  rgba(107,92,231,0.10) 0%,
+                  rgba(107,92,231,0.04) 40%,
+                  transparent 70%);
+      transform:translateX(-50%);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    /* Atmospheric transition white → dark (mirror del home section-objeciones::after)
+       3 layers · white dissolve top + radial blooms morados + dark canvas desde abajo */
+    .legal-shell::after{
+      content:"";
+      position:absolute;
+      bottom:0; left:0; right:0;
+      height:220px;
+      background:
+        /* White dissolve top · matchea el wrapper */
+        linear-gradient(180deg,
+          #FFFFFF 0%,
+          rgba(255,255,255,0.92) 2%,
+          rgba(255,255,255,0.55) 8%,
+          transparent 18%,
+          transparent 100%),
+        /* Off-center bloom 1 (izq superior) */
+        radial-gradient(ellipse 55% 60% at 32% 30%,
+          rgba(155,142,240,0.30) 0%,
+          rgba(107,92,231,0.14) 42%,
+          transparent 75%),
+        /* Off-center bloom 2 (der superior) */
+        radial-gradient(ellipse 45% 50% at 78% 26%,
+          rgba(192,132,252,0.16) 0%,
+          transparent 75%),
+        /* Dark canvas radial from below · termina en #0E0C1E sólido */
+        radial-gradient(ellipse 140% 100% at 50% 110%,
+          #0E0C1E 0%,
+          #0E0C1E 38%,
+          #14112C 50%,
+          #1B1740 60%,
+          rgba(45,37,96,0.55) 70%,
+          rgba(74,60,174,0.32) 78%,
+          rgba(107,92,231,0.20) 84%,
+          rgba(155,142,240,0.12) 89%,
+          rgba(155,142,240,0.06) 93%,
+          rgba(155,142,240,0.02) 97%,
+          transparent 100%);
+      pointer-events:none;
+      z-index:1;
+    }
+
+    .legal-container{
+      max-width:880px;
+      margin:0 auto;
+      padding:0 36px;
+      position:relative;
+      z-index:2;
+    }
+
+    /* ─── Hero compacto ─── */
+    .legal-hero{
+      text-align:left;
+      padding:0 0 32px;
+      border-bottom:1px solid rgba(45,37,96,0.10);
+      margin-bottom:36px;
+      opacity:0;
+      transform:translateY(10px);
+      animation:legalFadeUp 620ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .legal-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:10px;
+      font-weight:600;
+      letter-spacing:1.2px;
+      text-transform:uppercase;
+      color:var(--c-main,#4A3CAE);
+      margin-bottom:18px;
+    }
+    .legal-kicker::before{
+      content:"";
+      width:5px;height:5px;border-radius:50%;
+      background:var(--c-main,#4A3CAE);
+    }
+    .legal-hero h1{
+      font-size:clamp(30px, 4vw, 42px);
+      font-weight:300;             /* "Política de" liviano */
+      letter-spacing:-0.6px;
+      line-height:1.12;
+      color:var(--c-text,#2C2B3A);
+      margin:0 0 14px;
+    }
+    .legal-hero h1 .hl{
+      font-weight:700;             /* "Privacidad" con peso */
+      color:var(--c-main,#4A3CAE);
+    }
+    .legal-hero-sub{
+      font-size:14.5px;
+      font-weight:400;
+      line-height:1.55;
+      color:var(--c-muted,#6B6A7D);
+      max-width:560px;
+      margin:0 0 18px;
+    }
+    .legal-hero-meta{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      font-size:11.5px;
+      font-weight:500;
+      color:var(--c-muted,#6B6A7D);
+      letter-spacing:0.2px;
+    }
+    .legal-hero-meta strong{
+      color:var(--c-text,#2C2B3A);
+      font-weight:600;
+    }
+    .legal-hero-meta span.sep{
+      color:rgba(45,37,96,0.20);
+    }
+
+    /* ─── Contenido ─── */
+    .legal-content{
+      opacity:0;
+      transform:translateY(10px);
+      animation:legalFadeUp 620ms cubic-bezier(0.22, 1, 0.36, 1) 80ms forwards;
+    }
+
+    .legal-intro{
+      font-size:13.5px;
+      font-weight:400;
+      line-height:1.6;
+      color:var(--c-text,#2C2B3A);
+      margin:0 0 28px;
+      padding:14px 16px;
+      background:rgba(107,92,231,0.05);
+      border-left:2px solid var(--c-main,#4A3CAE);
+      border-radius:0 6px 6px 0;
+    }
+    .legal-intro strong{ color:var(--c-main,#4A3CAE); font-weight:600; }
+
+    .legal-section{
+      scroll-margin-top:88px;
+      margin-bottom:24px;
+    }
+    .legal-content h2{
+      font-size:14.5px;
+      font-weight:600;
+      color:var(--c-text,#2C2B3A);
+      letter-spacing:-0.05px;
+      margin:0 0 8px;
+      line-height:1.4;
+    }
+    .legal-num{
+      display:inline;
+      color:var(--c-main,#4A3CAE);
+      font-weight:700;
+      margin-right:8px;
+      letter-spacing:0.3px;
+    }
+    .legal-content p{
+      font-size:13.5px;
+      font-weight:400;
+      line-height:1.6;
+      color:var(--c-text,#2C2B3A);
+      margin:0 0 8px;
+    }
+    .legal-content p:last-child{ margin-bottom:0; }
+    .legal-content ul{
+      margin:6px 0 8px;
+      padding-left:18px;
+      list-style:none;
+      font-size:13.5px;
+      line-height:1.6;
+      color:var(--c-text,#2C2B3A);
+    }
+    .legal-content ul li{
+      position:relative;
+      padding-left:0;
+      margin-bottom:5px;
+    }
+    .legal-content ul li::before{
+      content:"·";
+      position:absolute;
+      left:-12px; top:0;
+      font-weight:700;
+      color:var(--c-mid,#6B5CE7);
+    }
+    .legal-content ul li strong{ color:var(--c-main,#4A3CAE); font-weight:600; }
+    .legal-content a{
+      color:var(--c-main,#4A3CAE);
+      text-decoration:underline;
+      text-decoration-thickness:1px;
+      text-underline-offset:2px;
+      text-decoration-color:rgba(107,92,231,0.40);
+      font-weight:500;
+      transition:color 200ms ease-out, text-decoration-color 200ms ease-out;
+    }
+    .legal-content a:hover{
+      color:var(--c-mid,#6B5CE7);
+      text-decoration-color:var(--c-mid,#6B5CE7);
+    }
+
+    /* ─── Callouts (info / warning) ─── */
+    .legal-callout{
+      display:flex;
+      gap:9px;
+      align-items:flex-start;
+      padding:10px 12px;
+      margin:10px 0 4px;
+      background:rgba(34,164,89,0.05);
+      border:1px solid rgba(34,164,89,0.18);
+      border-radius:6px;
+      font-size:12.5px;
+      font-weight:400;
+      line-height:1.5;
+      color:var(--c-text,#2C2B3A);
+    }
+    .legal-callout-icon{
+      width:16px;height:16px;border-radius:50%;
+      background:#22A459;
+      color:#FFFFFF;
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;
+      margin-top:1px;
+    }
+    .legal-callout-icon svg{ width:9px; height:9px; }
+    .legal-callout strong{ color:#1A8A49; font-weight:600; }
+
+    .legal-callout--warning{
+      background:rgba(232,155,47,0.06);
+      border-color:rgba(232,155,47,0.24);
+    }
+    .legal-callout--warning .legal-callout-icon{ background:#E89B2F; }
+    .legal-callout--warning strong{ color:#B87718; font-weight:600; }
+
+    /* ─── Contact box final · refinado ─── */
+    .legal-contact-box{
+      margin-top:40px;
+      padding:24px 26px;
+      background:#FFFFFF;
+      border:1px solid rgba(107,92,231,0.20);
+      border-radius:14px;
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 10px 30px -10px rgba(74,60,174,0.20),
+                 0 1px 3px rgba(45,37,96,0.04);
+    }
+    .legal-contact-box::before{
+      content:"";
+      position:absolute;
+      top:0; left:0; right:0;
+      height:3px;
+      background:linear-gradient(90deg, var(--c-main,#4A3CAE) 0%, var(--c-mid,#6B5CE7) 50%, var(--c-light,#9B8EF0) 100%);
+    }
+    .legal-contact-inner{
+      display:flex;
+      gap:18px;
+      align-items:flex-start;
+    }
+    .legal-contact-icon{
+      width:42px;height:42px;border-radius:11px;
+      background:linear-gradient(135deg, var(--c-mid,#6B5CE7), var(--c-main,#4A3CAE));
+      color:#FFFFFF;
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;
+      box-shadow:0 6px 14px rgba(107,92,231,0.30);
+    }
+    .legal-contact-icon svg{ width:20px; height:20px; }
+    .legal-contact-text{ flex:1; min-width:0; }
+    .legal-contact-text h3{
+      font-size:14.5px;
+      font-weight:600;
+      color:var(--c-text,#2C2B3A);
+      margin:0 0 4px;
+      letter-spacing:-0.1px;
+    }
+    .legal-contact-text p{
+      font-size:13px;
+      font-weight:400;
+      color:var(--c-muted,#6B6A7D);
+      margin:0 0 12px;
+      line-height:1.5;
+    }
+    .legal-contact-cta{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:8px 14px;
+      background:linear-gradient(135deg, var(--c-mid,#6B5CE7), var(--c-main,#4A3CAE));
+      color:#FFFFFF !important;
+      border:none;
+      border-radius:8px;
+      font-family:'Poppins',sans-serif;
+      font-size:12.5px;
+      font-weight:600;
+      letter-spacing:0.2px;
+      text-decoration:none !important;
+      box-shadow:0 4px 12px rgba(107,92,231,0.32);
+      transition:transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 220ms ease-out;
+    }
+    .legal-contact-cta:hover{
+      transform:translateY(-1px);
+      box-shadow:0 7px 18px rgba(107,92,231,0.42);
+    }
+    .legal-contact-cta svg{ width:13px; height:13px; }
+    .legal-contact-fineprint{
+      font-size:10.5px !important;
+      font-weight:500 !important;
+      color:rgba(45,37,96,0.45) !important;
+      letter-spacing:0.4px;
+      text-transform:uppercase;
+      margin:14px 0 0 !important;
+    }
+
+    @keyframes legalFadeUp{
+      to{ opacity:1; transform:translateY(0); }
+    }
+
+    /* ─── Mobile ─── */
+    @media (max-width: 600px){
+      .legal-shell{ padding-top:88px; }
+      .legal-container{ padding:0 22px; }
+      .legal-hero{ padding-bottom:24px; margin-bottom:28px; }
+      .legal-hero-meta{ flex-wrap:wrap; gap:8px; }
+      .legal-contact-inner{ flex-direction:column; gap:14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .legal-hero, .legal-content{
+        opacity:1;
+        transform:none;
+        animation:none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="nav-shield" aria-hidden="true"></div>
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <span class="nav-glass-sheen" aria-hidden="true"></span>
+      <span class="nav-glass-grain" aria-hidden="true"></span>
+      <a href="index.html" class="nav-logo" aria-label="Tap In · inicio">
+        <span class="nav-wordmark" role="img" aria-label="tap in"></span>
+      </a>
+      <ul class="nav-links">
+        <li class="nav-li nav-li--has-dd">
+          <button type="button" class="nav-link nav-link--toggle" aria-haspopup="true" aria-expanded="false" id="navSolucionesTrigger">
+            <span>Soluciones</span>
+            <svg class="nav-chev" width="10" height="10" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown" role="menu" aria-labelledby="navSolucionesTrigger">
+            <a class="nav-dd-item" href="comedor-escolar.html" role="menuitem">Comedor Escolar</a>
+            <a class="nav-dd-item" href="centro-de-padres.html" role="menuitem">Centro de Padres</a>
+            <a class="nav-dd-item" href="gestion-de-proveedores.html" role="menuitem">Gestión Interna</a>
+            <a class="nav-dd-item" href="ligas-y-talleres.html" role="menuitem">Talleres y Ligas</a>
+          </div>
+        </li>
+        <li class="nav-li"><a href="index.html#colegios" class="nav-link">Comunidad</a></li>
+        <li class="nav-li nav-li--divider" aria-hidden="true"></li>
+        <li class="nav-li nav-li--empresa"><a href="empresa.html" class="nav-link">Empresa</a></li>
+        <li class="btn-nav-mobile-wrap"><a href="index.html#contacto" class="btn-nav-mobile">Agenda una demo</a></li>
+      </ul>
+      <div class="nav-cta-group">
+        <div class="nav-li nav-li--has-dd nav-cta-ingresar">
+          <button type="button" class="nav-link nav-link--toggle" id="navIngresarTrigger" aria-haspopup="true" aria-expanded="false">
+            <span>Ingresar</span>
+            <svg class="nav-chev" width="10" height="10" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown" role="menu" aria-labelledby="navIngresarTrigger">
+            <a class="nav-dd-item" href="https://colegios.tapin.cl/admin/login" target="_blank" rel="noopener" role="menuitem">Portal Administrativo</a>
+            <a class="nav-dd-item" href="https://colegios.tapin.cl/" target="_blank" rel="noopener" role="menuitem">Ingresa como Apoderado</a>
+          </div>
+        </div>
+        <a href="index.html#contacto" class="btn-nav">
+          <span>Agenda una demo</span>
+          <svg class="btn-nav-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 7H12M12 7L7.5 2.5M12 7L7.5 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="legal-shell">
+    <div class="legal-container">
+
+      <header class="legal-hero">
+        <span class="legal-kicker">Información legal</span>
+        <h1>Política de <span class="hl">Privacidad</span></h1>
+        <p class="legal-hero-sub">
+          Cómo recolectamos, usamos y protegemos tus datos personales cuando interactúas con este sitio o contratas nuestros servicios.
+        </p>
+        <div class="legal-hero-meta">
+          <strong>Tap In SpA</strong>
+          <span class="sep" aria-hidden="true">·</span>
+          <span>Última actualización: 26 de marzo de 2026</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <span>Versión 3</span>
+        </div>
+      </header>
+
+      <article class="legal-content">
+
+        <p class="legal-intro">Esta Política regula el tratamiento de datos personales conforme a la Ley N° 19.628 sobre Protección de la Vida Privada y la Ley N° 21.719 que Regula la Protección y el Tratamiento de los Datos Personales y Crea la Agencia de Protección de Datos Personales, según corresponda a su entrada en vigencia.</p>
+
+        <section class="legal-section" id="sec-1">
+          <h2><span class="legal-num">1.</span>Responsable del tratamiento</h2>
+          <p>TAP IN SPA, RUT N° 78.118.687-2, es el responsable del tratamiento de los datos personales recopilados a través de la Plataforma, en los términos definidos por la legislación vigente. Para efectos de consultas o ejercicio de derechos, el contacto es: jose.larrain@tapin.cl.</p>
+        </section>
+
+        <section class="legal-section" id="sec-2">
+          <h2><span class="legal-num">2.</span>Datos personales recopilados</h2>
+          <p>Tap In recopila las siguientes categorías de datos:</p>
+          <ul>
+            <li><strong>Datos del Usuario (Apoderado):</strong> Nombre completo, RUT, correo electrónico, número de teléfono, método de pago (procesado por terceros; Tap In no almacena datos de tarjetas).</li>
+            <li><strong>Datos del Estudiante:</strong> Nombre completo, RUT, curso, Establecimiento Educacional al que pertenece, historial de consumo de tickets.</li>
+            <li><strong>Datos biométricos del Estudiante (cuando aplique):</strong> Template Biométrico cifrado generado a partir de la huella dactilar u otro rasgo biométrico, según el método de validación elegido por el Establecimiento.</li>
+            <li><strong>Datos de uso:</strong> Registros de acceso, transacciones, validaciones y actividad dentro de la Plataforma.</li>
+          </ul>
+        </section>
+
+        <section class="legal-section" id="sec-3">
+          <h2><span class="legal-num">3.</span>Datos biométricos de los estudiantes: tratamiento específico</h2>
+          <p>Los datos biométricos constituyen datos personales conforme a la legislación chilena. Tap In aplica las siguientes garantías específicas:</p>
+          <ul>
+            <li><strong>Naturaleza del dato:</strong> El enrolamiento biométrico se realiza mediante dispositivos especializados (ZKTeco u otro proveedor certificado) que no capturan ni almacenan la imagen de la huella dactilar. El dispositivo genera un Template Biométrico, que es un código alfanumérico cifrado e irreversible. No es posible reconstruir la huella original a partir del Template bajo ninguna circunstancia.</li>
+            <li><strong>Finalidad exclusiva:</strong> El Template Biométrico se utiliza única y exclusivamente para validar la identidad del Estudiante en el punto de entrega del almuerzo en el comedor escolar. No será utilizado para ningún otro fin.</li>
+            <li><strong>Almacenamiento:</strong> El Template Biométrico se almacena en infraestructura cloud segura (Amazon Web Services) con cifrado en tránsito y en reposo, controles de acceso restringidos y políticas de autenticación robustas. No se almacenan datos biométricos en dispositivos físicos locales más allá del proceso transitorio de enrolamiento.</li>
+            <li><strong>Consentimiento expreso y específico:</strong> El tratamiento de datos biométricos requiere un consentimiento específico. Al momento de enrolar a un Estudiante en el sistema biométrico, la Plataforma solicitará al apoderado o representante legal una autorización expresa, informada y específica mediante un mecanismo electrónico dedicado (casilla de aceptación explícita) que detallará: (i) la naturaleza del Template Biométrico y su carácter irreversible; (ii) la finalidad exclusiva de validación de identidad en el comedor; (iii) el período de retención; (iv) el derecho a revocar el consentimiento en cualquier momento; y (v) la existencia de alternativas no biométricas. Este consentimiento queda registrado con fecha, hora e identificación del otorgante. La aceptación de los presentes Términos y Condiciones constituye, por sí sola, consentimiento para el tratamiento de datos.</li>
+            <li><strong>Alternativa no biométrica:</strong> Todo Estudiante cuyo apoderado no otorgue consentimiento biométrico, o lo revoque, tendrá acceso a métodos alternativos de validación igualmente funcionales: ingreso de RUT directamente en el sistema, pulsera NFC, u otro mecanismo definido por el Establecimiento. Adicionalmente, el apoderado podrá coordinar directamente con el Concesionario o con el equipo de Tap In para resolver cualquier situación particular. La validación biométrica no es condición para acceder al servicio de alimentación.</li>
+            <li><strong>Período de retención:</strong> El Template Biométrico será conservado únicamente mientras el Estudiante mantenga vínculo con el Establecimiento Educacional que utiliza la Plataforma. Una vez finalizado dicho vínculo, el Template será eliminado conforme al procedimiento descrito en la sección de Eliminación de datos.</li>
+          </ul>
+        </section>
+
+        <section class="legal-section" id="sec-4">
+          <h2><span class="legal-num">4.</span>Datos de menores de edad</h2>
+          <p>El tratamiento de datos personales de menores de 18 años requiere en todos los casos el consentimiento de sus padres, representantes legales o quien tenga a su cargo el cuidado personal del menor.</p>
+          <p>Tap In no recopila datos de menores de edad con fines de marketing, publicidad ni perfilamiento comercial. Los datos de los Estudiantes son tratados exclusivamente para la prestación del servicio de gestión de comedor escolar.</p>
+        </section>
+
+        <section class="legal-section" id="sec-5">
+          <h2><span class="legal-num">5.</span>Finalidad del tratamiento</h2>
+          <p>Los datos personales recopilados serán tratados exclusivamente para:</p>
+          <ul>
+            <li>Gestionar la compra y consumo de tickets de alimentación por los estudiantes.</li>
+            <li>Validar la identidad del Estudiante en el punto de entrega.</li>
+            <li>Generar reportes operativos y financieros para el Establecimiento y/o Concesionario y usuarios.</li>
+            <li>Enviar notificaciones al Usuario relacionadas con el servicio (consumo de tickets, recordatorios de pago, avisos operativos).</li>
+            <li>Cumplir con obligaciones legales y requerimientos de autoridades competentes.</li>
+            <li>Mejorar la Plataforma y sus funcionalidades.</li>
+            <li>Realizar a los Usuarios ofertas comerciales o de promoción de productos o servicios de Tap In, su matriz, filiales y coligadas.</li>
+          </ul>
+        </section>
+
+        <section class="legal-section" id="sec-6">
+          <h2><span class="legal-num">6.</span>Prohibición de cesión y venta de datos</h2>
+          <p>Tap In no vende, arrienda, cede ni transfiere datos personales ni datos biométricos a terceros con fines comerciales, de marketing o publicitarios, ni lo hará. No obstante, los datos podrán ser compartidos únicamente con:</p>
+          <ul>
+            <li>El Establecimiento Educacional y/o Concesionario, en la medida necesaria para la prestación del servicio contratado.</li>
+            <li>Proveedores de servicios tecnológicos (hosting, procesamiento de pagos) que actúen como encargados del tratamiento, sujetos a obligaciones de confidencialidad equivalentes.</li>
+            <li>Autoridades competentes, cuando sea requerido por ley o resolución judicial.</li>
+            <li>La matriz, filiales o coligadas de Tap In.</li>
+          </ul>
+        </section>
+
+        <section class="legal-section" id="sec-7">
+          <h2><span class="legal-num">7.</span>Eliminación de datos</h2>
+          <p>Se activará un procedimiento de eliminación de datos en los siguientes casos:</p>
+          <ul>
+            <li>Cuando el apoderado o representante legal solicite la eliminación de los datos del Estudiante.</li>
+            <li>Cuando el apoderado revoque el consentimiento para el tratamiento biométrico.</li>
+          </ul>
+          <p>La eliminación incluirá el Template Biométrico, los datos personales asociados y, si corresponde, la cuenta del apoderado. La eliminación se ejecutará en un plazo máximo de 30 días hábiles desde la solicitud o desde que se verifique alguna de las causales anteriores. El Establecimiento o la familia podrán solicitar una certificación de borrado.</p>
+        </section>
+
+        <section class="legal-section" id="sec-8">
+          <h2><span class="legal-num">8.</span>Derechos del titular</h2>
+          <p>El Usuario y/o el apoderado del Estudiante podrán ejercer los siguientes derechos respecto de sus datos personales y los de sus hijos:</p>
+          <ul>
+            <li><strong>Acceso:</strong> Solicitar información sobre qué datos personales son tratados y con qué finalidad.</li>
+            <li><strong>Rectificación:</strong> Solicitar la corrección de datos inexactos o incompletos.</li>
+            <li><strong>Supresión:</strong> Solicitar la eliminación de datos personales cuando ya no sean necesarios para la finalidad del tratamiento o cuando se revoque el consentimiento, siempre que su ejercicio no implique la pérdida de información necesaria para dar el servicio contratado o cobrarlo a los establecimientos.</li>
+            <li><strong>Oposición:</strong> Oponerse al tratamiento de datos en determinadas circunstancias, siempre que su ejercicio no implique la pérdida de información necesaria para dar el servicio contratado o cobrarlo a los establecimientos.</li>
+            <li><strong>Portabilidad:</strong> Solicitar la entrega de sus datos en un formato estructurado de uso común, conforme a la normativa vigente.</li>
+          </ul>
+          <p>Las solicitudes deberán dirigirse a jose.larrain@tapin.cl y serán atendidas en un plazo máximo de 30 días hábiles.</p>
+        </section>
+
+        <section class="legal-section" id="sec-9">
+          <h2><span class="legal-num">9.</span>Medidas de seguridad</h2>
+          <p>Tap In implementa medidas de seguridad técnicas y organizativas para proteger los datos personales contra acceso no autorizado, pérdida, alteración o destrucción, incluyendo:</p>
+          <ul>
+            <li>Almacenamiento en infraestructura Amazon Web Services (AWS) con controles de acceso basados en roles.</li>
+            <li>Cifrado de datos en tránsito (TLS) y en reposo (AES-256).</li>
+            <li>Políticas de autenticación robustas y control de acceso basado en el principio de menor privilegio.</li>
+            <li>Monitoreo continuo de la infraestructura y protocolos de respuesta a incidentes de seguridad.</li>
+          </ul>
+          <p>En caso de una vulneración de seguridad que comprometa datos personales, Tap In notificará al Establecimiento Educacional y a los Usuarios afectados en un plazo razonable conforme a la legislación vigente.</p>
+        </section>
+
+        <section class="legal-section" id="sec-10">
+          <h2><span class="legal-num">10.</span>Certificaciones del equipamiento biométrico</h2>
+          <p>Los dispositivos de enrolamiento biométrico utilizados corresponden a ZKTeco u otro fabricante con certificaciones internacionales ISO/IEC 27001 (seguridad de la información) e ISO/IEC 27701 (protección de datos personales). El equipamiento físico es propiedad o responsabilidad del Establecimiento Educacional o del Concesionario. Tap In se encarga de la configuración, integración y soporte técnico del sistema.</p>
+        </section>
+
+        <section class="legal-section" id="sec-contacto">
+          <h2>Contacto</h2>
+          <p>Para el ejercicio de derechos o consultas sobre datos personales: TAP IN SPA · jose.larrain@tapin.cl · +56 9 9816 9101 · www.tapin.cl</p>
+        </section>
+
+        <div class="legal-contact-box">
+          <div class="legal-contact-inner">
+            <div class="legal-contact-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
+            </div>
+            <div class="legal-contact-text">
+              <h3>¿Consultas sobre tu privacidad?</h3>
+              <p>Nuestro equipo responde dentro de 15 días hábiles. Escríbenos directamente al correo de contacto.</p>
+              <a class="legal-contact-cta" href="mailto:contacto@tapin.cl">
+                contacto@tapin.cl
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </a>
+              <p class="legal-contact-fineprint">Tap In SpA · Chile</p>
+            </div>
+          </div>
+        </div>
+
+      </article>
+
+    </div>
+  </main>
+
+  <!-- bg-dark-stack wrapper · paints the dark canvas continuously across
+       el footer (mismo patrón que index.html) → footer dark identico al home -->
+  <div class="bg-dark-stack">
+  <footer class="footer" data-nav-theme="dark">
+    <div class="footer-bg" aria-hidden="true">
+      <div class="footer-dots"></div>
+      <div class="footer-divider"></div>
+      <div class="footer-beam"></div>
+      <div class="footer-horizon"></div>
+    </div>
+
+    <div class="container footer-inner">
+      <div class="footer-col footer-col--brand">
+        <span class="footer-brand" aria-label="Tap In">
+          <img src="img/wordmark_tapin.svg" alt="tap in" class="footer-wordmark" />
+        </span>
+        <p class="footer-tagline">El sistema que conecta directores, apoderados, alumnos y equipo en un solo ecosistema.</p>
+        <div class="footer-locale"><span class="locale-dot" aria-hidden="true"></span> Hecho en Chile · Operando en LATAM</div>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading"><span class="heading-accent" aria-hidden="true"></span>Soluciones</h3>
+        <a class="footer-link" href="comedor-escolar.html">Comedor Escolar</a>
+        <a class="footer-link" href="centro-de-padres.html">Centro de Padres</a>
+        <a class="footer-link" href="gestion-de-proveedores.html">Gestión Interna</a>
+        <a class="footer-link" href="ligas-y-talleres.html">Talleres y Ligas</a>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading"><span class="heading-accent" aria-hidden="true"></span>Empresa</h3>
+        <a class="footer-link" href="empresa.html">Sobre Tap In</a>
+        <a class="footer-link" href="index.html#colegios">Casos</a>
+        <a class="footer-link" href="index.html#objeciones">Preguntas frecuentes</a>
+        <a class="footer-link" href="index.html#contacto">Solicitar demo</a>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading"><span class="heading-accent" aria-hidden="true"></span>Contacto</h3>
+        <a class="footer-link footer-link--icon footer-link--mail" href="mailto:contacto@tapin.cl">
+          <span class="contact-icon" aria-hidden="true">
+            <svg class="mail-envelope" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2"/>
+              <path d="M3 7l9 7 9-7"/>
+            </svg>
+            <svg class="mail-plane" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2.5L11.5 12.5"/>
+              <path d="M21.5 2.5L15 21L11.5 12.5L3 8.5L21.5 2.5Z"/>
+            </svg>
+            <svg class="mail-trail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 18 Q 7 14, 12 12"/>
+            </svg>
+          </span>
+          <span>contacto@tapin.cl</span>
+        </a>
+        <a class="footer-link footer-link--icon footer-link--call" href="index.html#contacto">
+          <span class="contact-icon" aria-hidden="true">
+            <span class="call-pulse" aria-hidden="true"></span>
+            <svg class="call-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5a2 2 0 0 1 2-2h2.5a1 1 0 0 1 .96.71l1.4 4.21a1 1 0 0 1-.5 1.21l-2.36 1.18a13 13 0 0 0 6.69 6.69l1.18-2.36a1 1 0 0 1 1.21-.5l4.21 1.4a1 1 0 0 1 .71.96V19a2 2 0 0 1-2 2A16 16 0 0 1 3 5z"/></svg>
+          </span>
+          Agenda una llamada
+        </a>
+        <div class="footer-socials">
+          <a class="social-btn" href="https://www.linkedin.com/company/tap-in-cl/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.34 18.34H5.67V9.67h2.67v8.67zM7 8.5a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1zm11.34 9.84h-2.67v-4.21c0-1-.02-2.3-1.4-2.3-1.41 0-1.62 1.1-1.62 2.23v4.28H10v-8.67h2.56v1.18h.04c.36-.68 1.23-1.4 2.53-1.4 2.71 0 3.21 1.78 3.21 4.1v4.79z"/></svg>
+          </a>
+          <a class="social-btn" href="https://www.instagram.com/app.tapin/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+          </a>
+          <a class="social-btn" href="https://wa.me/56991365484" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.14 6.45 2.14 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.15h-.01c-1.52 0-3.01-.41-4.32-1.18l-.31-.18-3.21.84.85-3.13-.2-.32a8.18 8.18 0 0 1-1.25-4.36c0-4.52 3.68-8.2 8.21-8.2 2.19 0 4.25.86 5.81 2.41a8.16 8.16 0 0 1 2.41 5.8c0 4.53-3.68 8.22-8.2 8.22zm4.5-6.16c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.56.13-.16.25-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.41-.55-.42l-.47-.01c-.16 0-.43.06-.66.31-.23.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.12.16 1.74 2.66 4.22 3.73.59.25 1.05.4 1.41.52.59.19 1.13.16 1.55.1.47-.07 1.46-.6 1.66-1.18.2-.58.2-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <span class="footer-copy">© 2026 Tap In SpA. Todos los derechos reservados.</span>
+        <div class="footer-legal">
+          <a href="terminos.html">Términos</a>
+          <span aria-hidden="true">·</span>
+          <a href="privacidad.html">Privacidad</a>
+          <span aria-hidden="true">·</span>
+          <a href="cookies.html">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  </div><!-- /.bg-dark-stack -->
+
+  <script src="js/main.js?v=20260929d"></script>
+</body>
+</html>

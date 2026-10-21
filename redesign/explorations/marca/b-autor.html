@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dirección B · Autor · Agustín Design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* =======================================================
+           TOKENS · DIRECCIÓN B · AUTOR
+           ======================================================= */
+        :root {
+            /* --- 1. COLOR --- */
+            --crema: #F3EEE4;
+            --carbon: #1D1B18;
+            --piedra: #8B857A;
+            --linea: #DDD5C6;
+            --bosque: #24392F;
+            --arcilla: #B4583B;
+
+            /* --- 2. TIPOGRAFÍA: SERIF QUE HABLA, SANS QUE ORDENA --- */
+            --serif: 'Instrument Serif', Georgia, serif;
+            --sans: 'Instrument Sans', system-ui, sans-serif;
+            --t-display: clamp(56px, 9vw, 150px);
+            --t-h1: clamp(40px, 5.4vw, 84px);
+            --t-h2: clamp(26px, 2.6vw, 40px);
+            --t-texto: 17px;
+            --t-meta: 13px;
+
+            /* --- 3. ESPACIO Y GRILLA --- */
+            --margen: clamp(16px, 3.4vw, 48px);
+            --medianil: clamp(12px, 1.6vw, 24px);
+
+            /* --- 4. MOTION --- */
+            --ease: cubic-bezier(0.65, 0, 0.35, 1);
+            --lento: 700ms;
+            --medio: 420ms;
+        }
+
+        /* =======================================================
+           BASE
+           ======================================================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--crema); color: var(--carbon); font: var(--t-texto)/1.55 var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        a { color: inherit; text-decoration: none; }
+        img { display: block; width: 100%; height: auto; }
+        ::selection { background: var(--bosque); color: var(--crema); }
+
+        /* --- 1. UTILIDADES TIPOGRÁFICAS --- */
+        .meta { font-size: var(--t-meta); font-weight: 500; letter-spacing: 0.01em; }
+        .display { font-family: var(--serif); font-weight: 400; font-size: var(--t-display); line-height: 0.92; letter-spacing: -0.02em; }
+        .h1 { font-family: var(--serif); font-weight: 400; font-size: var(--t-h1); line-height: 1; letter-spacing: -0.015em; }
+        .h2 { font-family: var(--serif); font-weight: 400; font-size: var(--t-h2); line-height: 1.12; }
+        em { font-style: italic; }
+        .gris { color: var(--piedra); }
+
+        /* --- 2. GRILLA EDITORIAL --- */
+        /* 12 columnas: 1 a 3 son el margen de notas, 4 a 12 el cuerpo */
+        .grilla { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding-inline: var(--margen); }
+        .seccion { padding-block: clamp(72px, 10vw, 160px); }
+        .nota { grid-column: 1 / span 3; padding-right: 24px; }
+        .nota .num { font-family: var(--serif); font-style: italic; font-size: 22px; display: block; margin-bottom: 6px; color: var(--arcilla); }
+        .cuerpo { grid-column: 4 / -1; }
+
+        /* --- 3. OVERLAY DE GRILLA --- */
+        .overlay-grilla { position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0; transition: opacity var(--medio) var(--ease); }
+        .overlay-grilla div { height: 100%; background: color-mix(in srgb, var(--bosque) 6%, transparent); border-inline: 1px solid color-mix(in srgb, var(--bosque) 18%, transparent); }
+        .overlay-grilla div:nth-child(-n+3) { background: color-mix(in srgb, var(--arcilla) 9%, transparent); }
+        body.ver-grilla .overlay-grilla { opacity: 1; }
+
+        /* =======================================================
+           BARRA DE EXPLORACIÓN
+           ======================================================= */
+        .explora { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 60; display: flex; gap: 4px; padding: 4px; background: var(--bosque); border-radius: 999px; }
+        .explora a, .explora button { font: 500 13px/1 var(--sans); color: var(--crema); background: none; border: 0; padding: 10px 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; transition: background 200ms; }
+        @media (hover: hover) { .explora a:hover, .explora button:hover { background: #31493d; } }
+        .explora button[aria-pressed="true"] { background: var(--arcilla); }
+
+        /* =======================================================
+           FIRMA
+           ======================================================= */
+        /* Nombre en serif con la segunda palabra en sans espaciada */
+        .logo { display: inline-flex; align-items: baseline; gap: 0.32em; white-space: nowrap; }
+        .logo .s { font-family: var(--serif); font-size: 1.35em; line-height: 1; letter-spacing: -0.01em; }
+        .logo .d { font-family: var(--sans); font-size: 0.62em; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; }
+
+        /* --- 1. EL GIRO A CURSIVA --- */
+        /* Micro interacción firma: el texto pasa de redonda a cursiva al pasar el mouse */
+        .giro { transition: color var(--medio) var(--ease); }
+        .giro .r { display: inline; }
+        @media (hover: hover) { .giro:hover { color: var(--bosque); font-style: italic; } }
+
+        /* =======================================================
+           01 · HOME (APLICACIÓN)
+           ======================================================= */
+        .home { min-height: 100svh; display: flex; flex-direction: column; }
+        .nav { display: flex; justify-content: space-between; align-items: center; padding: 22px var(--margen); }
+        .nav .logo { font-size: 20px; }
+        .nav ul { display: flex; gap: 30px; list-style: none; }
+        .nav .cta { font-family: var(--serif); font-size: 22px; font-style: italic; border-bottom: 1px solid currentColor; }
+        .home-cuerpo { flex: 1; align-content: center; row-gap: 40px; }
+        .home-titulo { grid-column: 1 / -1; }
+        .home-titulo .linea { display: block; overflow: hidden; padding-bottom: 0.06em; }
+        .home-titulo .linea > span { display: block; transform: translateY(110%); animation: pagina var(--lento) var(--ease) forwards; }
+        .home-titulo .linea:nth-child(2) > span { animation-delay: 120ms; }
+        .home-titulo .linea:nth-child(3) > span { animation-delay: 240ms; }
+        .home-pie { grid-column: 4 / span 5; display: grid; grid-template-columns: 1fr; gap: 18px; }
+        .home-pie p { max-width: 40ch; }
+        .home-firma { grid-column: 10 / -1; align-self: end; justify-self: end; text-align: right; }
+        @keyframes pagina { to { transform: translateY(0); } }
+
+        /* =======================================================
+           SECCIONES
+           ======================================================= */
+        .titulo-seccion { max-width: 18ch; }
+        .texto-col { max-width: 54ch; margin-top: 28px; color: #4a463f; }
+        .adjetivos { display: flex; gap: 40px; margin-top: 40px; font-family: var(--serif); font-size: var(--t-h2); font-style: italic; color: var(--bosque); flex-wrap: wrap; }
+
+        /* --- 1. VOZ --- */
+        .voz { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--medianil); margin-top: 40px; }
+        .voz article { display: flex; flex-direction: column; gap: 16px; padding-top: 16px; border-top: 1px solid var(--carbon); }
+        .voz .frase { font-family: var(--serif); font-size: var(--t-h2); line-height: 1.1; }
+
+        /* --- 2. FIRMA --- */
+        .firma-grande { display: grid; place-items: center; min-height: 54vh; background: var(--bosque); color: var(--crema); margin-top: 40px; }
+        .firma-grande .logo { font-size: clamp(34px, 6vw, 96px); }
+        .firma-fila { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--medianil); margin-top: var(--medianil); }
+        .firma-fila > div { border: 1px solid var(--linea); min-height: 220px; display: grid; place-items: center; position: relative; padding: 24px; }
+        .firma-fila .meta { position: absolute; top: 12px; left: 14px; }
+        .monograma { font-family: var(--serif); font-size: 96px; line-height: 1; font-style: italic; }
+        .monograma span { color: var(--arcilla); }
+        .favicons { display: flex; gap: 18px; align-items: end; }
+        .fav { background: var(--bosque); color: var(--crema); font-family: var(--serif); font-style: italic; display: flex; align-items: center; justify-content: center; border-radius: 50%; line-height: 1; }
+        .fav.s16 { width: 16px; height: 16px; font-size: 13px; }
+        .fav.s32 { width: 32px; height: 32px; font-size: 24px; }
+        .fav.s64 { width: 64px; height: 64px; font-size: 48px; }
+
+        /* --- 3. TIPOGRAFÍA --- */
+        .escala { list-style: none; margin-top: 40px; }
+        .escala li { display: grid; grid-template-columns: 140px 1fr; gap: var(--medianil); align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--linea); }
+        .escala li:first-child { border-top: 1px solid var(--carbon); }
+        .pareja { display: grid; grid-template-columns: 1fr 1fr; gap: var(--medianil); margin-top: 48px; }
+        .pareja div { border-top: 1px solid var(--carbon); padding-top: 14px; }
+        .pareja strong { display: block; font-weight: 400; font-size: 88px; line-height: 1; margin: 16px 0 10px; }
+
+        /* --- 4. PALETA --- */
+        .paleta { display: grid; grid-template-columns: 3fr 2.4fr 2fr 1.2fr 1.2fr 1.2fr; height: 360px; margin-top: 40px; }
+        .paleta div { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; }
+        .paleta .n { font-family: var(--serif); font-size: 28px; font-style: italic; }
+
+        /* --- 5. GRILLA --- */
+        .grilla-demo { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); height: 220px; margin-top: 40px; }
+        .grilla-demo span { display: flex; align-items: end; justify-content: center; padding-bottom: 8px; background: color-mix(in srgb, var(--bosque) 8%, transparent); }
+        .grilla-demo span:nth-child(-n+3) { background: color-mix(in srgb, var(--arcilla) 14%, transparent); }
+        .specs { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--medianil); margin-top: 32px; }
+        .specs div { border-top: 1px solid var(--carbon); padding-top: 12px; }
+
+        /* --- 6. MOTION --- */
+        .motion { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--medianil); margin-top: 40px; }
+        .motion > div { border: 1px solid var(--linea); min-height: 260px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; }
+        .demo-centro { flex: 1; display: grid; place-items: center; }
+        .btn-repite { align-self: start; font: 500 13px var(--sans); background: none; border: 1px solid var(--carbon); padding: 8px 12px; border-radius: 999px; cursor: pointer; }
+        .velo { width: 72%; aspect-ratio: 4 / 3; overflow: hidden; clip-path: inset(0 0 100% 0); }
+        .velo.on { animation: velo 1100ms var(--ease) forwards; }
+        .velo img { height: 100%; object-fit: cover; transform: scale(1.12); }
+        .velo.on img { animation: escala 1400ms var(--ease) forwards; }
+        @keyframes velo { to { clip-path: inset(0 0 0 0); } }
+        @keyframes escala { to { transform: scale(1); } }
+        .lineas-demo { font-family: var(--serif); font-size: 32px; line-height: 1.05; }
+        .lineas-demo span { display: block; overflow: hidden; }
+        .lineas-demo span > i { display: block; font-style: normal; transform: translateY(110%); }
+        .lineas-demo.on span > i { animation: pagina var(--lento) var(--ease) forwards; }
+        .lineas-demo.on span:nth-child(2) > i { animation-delay: 120ms; }
+        .principios-motion { list-style: none; margin-top: 40px; }
+        .principios-motion li { display: grid; grid-template-columns: 200px 1fr; gap: var(--medianil); padding: 16px 0; border-top: 1px solid var(--linea); }
+        .principios-motion li strong { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: 22px; }
+
+        /* --- 7. ÍNDICE --- */
+        .indice { list-style: none; margin-top: 40px; }
+        .indice a { display: grid; grid-template-columns: 1fr auto; gap: 6px var(--medianil); padding: 26px 0; border-top: 1px solid var(--linea); }
+        .indice .nombre { font-family: var(--serif); font-size: var(--t-h1); line-height: 1; transition: color var(--medio) var(--ease); }
+        .indice .detalle { grid-column: 1 / -1; color: var(--piedra); }
+        .indice .anio { font-family: var(--serif); font-style: italic; font-size: 24px; color: var(--piedra); align-self: center; }
+        @media (hover: hover) { .indice a:hover .nombre { font-style: italic; color: var(--bosque); } }
+
+        /* --- 8. CASO --- */
+        .caso-titulo { margin-top: 24px; }
+        .caso-titulo em { color: var(--bosque); }
+        .ficha { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--medianil); margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--carbon); }
+        .ficha div { display: flex; flex-direction: column; gap: 4px; }
+        .caso-img { grid-column: 1 / -1; margin-top: 48px; aspect-ratio: 16 / 8; overflow: hidden; background: #171622; }
+        .caso-img img { height: 100%; object-fit: cover; }
+        .caso-intro { margin-top: 56px; max-width: 26ch; }
+        .caso-intro em { color: var(--bosque); }
+
+        /* --- 9. OG --- */
+        .og { aspect-ratio: 1200 / 630; background: var(--crema); border: 1px solid var(--linea); padding: 4%; display: flex; flex-direction: column; justify-content: space-between; margin-top: 40px; max-width: 760px; }
+        .og .titulo { font-family: var(--serif); font-size: clamp(24px, 3.8vw, 56px); line-height: 0.98; }
+        .og .titulo em { color: var(--bosque); }
+
+        footer.pie { padding: 28px var(--margen) 90px; display: flex; justify-content: space-between; border-top: 1px solid var(--linea); }
+
+        /* =======================================================
+           VISTA MÓVIL
+           ======================================================= */
+        @media (max-width: 768px) {
+            .explora { max-width: calc(100vw - 24px); }
+            .explora a, .explora button { padding: 9px 10px; }
+            .explora kbd { display: none; }
+            .grilla { grid-template-columns: repeat(4, 1fr); }
+            .nota, .cuerpo, .home-pie, .home-firma { grid-column: 1 / -1; }
+            .nota { margin-bottom: 24px; }
+            .home-firma { justify-self: start; text-align: left; }
+            .nav ul { display: none; }
+            .voz, .motion, .specs, .pareja { grid-template-columns: 1fr; }
+            .firma-fila { grid-template-columns: 1fr; }
+            .paleta { grid-template-columns: 1fr 1fr; height: auto; }
+            .paleta div { min-height: 120px; }
+            .grilla-demo { grid-template-columns: repeat(4, 1fr); }
+            .grilla-demo span:nth-child(n+5) { display: none; }
+            .escala li, .principios-motion li { grid-template-columns: 1fr; gap: 6px; }
+            .ficha { grid-template-columns: 1fr 1fr; row-gap: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay-grilla grilla" aria-hidden="true">
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    </div>
+
+    <nav class="explora" aria-label="Exploración">
+        <a href="a-oficio.html">← A</a>
+        <a href="index.html">Direcciones</a>
+        <button type="button" id="btnGrilla" aria-pressed="false">Grilla</button>
+        <a href="c-indice.html">C →</a>
+    </nav>
+
+    <!-- =================== 01 HOME =================== -->
+    <header class="home">
+        <div class="nav">
+            <a href="#" class="logo" aria-label="Agustín Design"><span class="s">Agustín</span><span class="d">Design</span></a>
+            <ul class="meta">
+                <li><a href="#indice" class="giro">Trabajo</a></li>
+                <li><a href="#concepto" class="giro">Sobre mí</a></li>
+                <li><a href="#og" class="giro">Contacto</a></li>
+            </ul>
+            <a href="#" class="cta giro">Escríbeme</a>
+        </div>
+        <div class="grilla home-cuerpo">
+            <h1 class="display home-titulo"><span class="linea"><span>Diseño marcas</span></span><span class="linea"><span>y <em>construyo</em> los sitios</span></span><span class="linea"><span>donde viven.</span></span></h1>
+            <div class="home-pie">
+                <p>Identidad, experiencia y código, de la primera idea al sitio publicado, en las mismas manos.</p>
+            </div>
+            <p class="home-firma meta gris">Santiago de Chile<br>Disponible para proyectos</p>
+        </div>
+    </header>
+
+    <!-- =================== 02 CONCEPTO =================== -->
+    <section class="seccion grilla" id="concepto">
+        <aside class="nota meta gris"><span class="num">i.</span>Concepto</aside>
+        <div class="cuerpo">
+            <h2 class="h1 titulo-seccion">Autor. Un estudio de una persona que <em>escribe</em> lo que diseña.</h2>
+            <p class="texto-col">La marca se comporta como un libro bien editado: una serif con voz para lo que se dice y una sans tranquila para lo que se ordena. El margen izquierdo es para notas, como en una edición comentada. El color es cálido y escaso: crema, carbón y un verde bosque que aparece cuando algo importa.</p>
+            <p class="adjetivos"><span>cercano</span><span>reflexivo</span><span>cuidadoso</span></p>
+        </div>
+    </section>
+
+    <!-- =================== 03 VOZ =================== -->
+    <section class="seccion grilla">
+        <aside class="nota meta gris"><span class="num">ii.</span>Voz</aside>
+        <div class="cuerpo">
+            <h2 class="h1 titulo-seccion">Primera persona, frases enteras, sin jerga.</h2>
+            <div class="voz">
+                <article><p class="meta gris">Llamado a la acción</p><p class="frase">Escríbeme. Te responde una persona, no un formulario.</p></article>
+                <article><p class="meta gris">Entrada de caso</p><p class="frase">En Mend aprendí que <em>la accesibilidad manda</em> sobre el manual de marca.</p></article>
+                <article><p class="meta gris">Página 404</p><p class="frase">Esta página se perdió en el camino.</p></article>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== 04 FIRMA =================== -->
+    <section class="seccion grilla">
+        <aside class="nota meta gris"><span class="num">iii.</span>Firma</aside>
+        <div class="cuerpo">
+            <h2 class="h1 titulo-seccion">El nombre en serif, el oficio en sans: la persona primero.</h2>
+        </div>
+        <div class="cuerpo">
+            <div class="firma-grande"><span class="logo"><span class="s">Agustín</span><span class="d">Design</span></span></div>
+            <div class="firma-fila">
+                <div><span class="meta gris">Sobre crema</span><span class="logo" style="font-size:40px"><span class="s">Agustín</span><span class="d">Design</span></span></div>
+                <div><span class="meta gris">Monograma</span><span class="monograma">A<span>.</span></span></div>
+                <div><span class="meta gris">Favicon 16 · 32 · 64</span><div class="favicons"><span class="fav s16">A</span><span class="fav s32">A</span><span class="fav s64">A</span></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== 05 TIPOGRAFÍA =================== -->
+    <section class="seccion grilla">
+        <aside class="nota meta gris"><span class="num">iv.</span>Tipografía</aside>
+        <div class="cuerpo">
+            <h2 class="h1 titulo-seccion">Instrument Serif e Instrument Sans: misma familia, dos voces.</h2>
+            <ul class="escala">
+                <li><span class="meta gris">Display · serif</span><span class="display" style="font-size:clamp(48px,6.4vw,104px)">Tap <em>In</em></span></li>
+                <li><span class="meta gris">Título · serif</span><span class="h1">De la cafetería al colegio</span></li>
+                <li><span class="meta gris">Subtítulo · serif</span><span class="h2">Una marca que acompañó <em>un pivote completo</em></span></li>
+                <li><span class="meta gris">Texto · sans</span><span>Diseñé la identidad en 2025 y la landing B2B en 2026, con código propio y varias rondas de revisión con el equipo.</span></li>
+                <li><span class="meta gris">Meta · sans</span><span class="meta">Marca, producto y web · 2025–2026</span></li>
+            </ul>
+            <div class="pareja">
+                <div><span class="meta gris">Serif · lo que se dice</span><strong style="font-family:var(--serif)">Aa <em>Aa</em></strong><span class="gris">Titulares, frases de autor, la firma.</span></div>
+                <div><span class="meta gris">Sans · lo que se ordena</span><strong style="font-family:var(--sans);font-weight:500;font-size:76px">Aa</strong><span class="gris">Texto, fichas, navegación.</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== 06 PALETA =================== -->
+    <section class="seccion grilla">
+        <aside class="nota meta gris"><span class="num">v.</span>Paleta</aside>
+        <div class="cuerpo">
+            <h2 class="h1 titulo-seccion">Cálida y escasa: el color aparece cuando algo importa.</h2>
+            <div class="paleta meta">
+                <div style="background:var(--crema);border:1px solid var(--linea)"><span class="n">Crema</span><span>#F3EEE4 · fondo</span></div>
+                <div style="background:var(--carbon);color:var(--crema)"><span class="n">Carbón</span><span>#1D1B18 · texto</span></div>
+                <div style="background:var(--bosque);color:var(--crema)"><span class="n">Bosque</span><span>#24392F · acento</span></div>
+                <div style="background:var(--arcilla);color:var(--crema)"><span class="n">Arcilla</span><span>#B4583B</span></div>
+                <div style="background:var(--piedra);color:var(--crema)"><span class="n">Piedra</span><span>#8B857A</span></div>
+                <div style="background:var(--linea)"><span class="n">Línea</span><span>#DDD5C6</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== 07 GRILLA =================== -->
+    <section class="seccion grilla">
+        <aside class="nota meta gris"><span class="num">vi.</span>Grilla</aside>
+        <div class="cuerpo">
+            <h2 class="h1 titulo-seccion">Un margen para notas, como un libro comentado.</h2>
+        </div>
+        <div style="grid-column:1/-1">
+            <div class="grilla-demo meta"><span>notas</span><span></span><span></span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
+        </div>
+        <div class="cuerpo">
+            <div class="specs">
+                <div><p class="meta gris">Desktop</p><p>12 columnas · 1 a 3 notas · 4 a 12 cuerpo</p></div>
+                <div><p class="meta gris">Móvil</p><p>4 columnas · las notas suben sobre el cuerpo</p></div>
+                <div><p class="meta gris">Recurso</p><p>Pies de foto, datos y aclaraciones viven en el margen.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== 08 MOTION =================== -->
+    <section class="seccion grilla">
+        <aside class="nota meta gris"><span class="num">vii.</span>Motion</aside>
+        <div class="cuerpo">
+            <h2 class="h1 titulo-seccion">Lento y deliberado, como pasar una página.</h2>
+            <div class="motion">
+                <div><p class="meta gris">Giro a cursiva · pasa el mouse</p><div class="demo-centro"><a href="#" class="giro h2">Ver el caso</a></div></div>
+                <div><p class="meta gris">Líneas que suben</p><div class="demo-centro"><p class="lineas-demo" id="lineasDemo"><span><i>La accesibilidad</i></span><span><i>manda.</i></span></p></div><button type="button" class="btn-repite" data-demo="lineasDemo">Repetir</button></div>
+                <div><p class="meta gris">Velo que se abre</p><div class="demo-centro"><div class="velo" id="veloDemo"><img src="../../../img/tapin_contenido5.webp" alt=""></div></div><button type="button" class="btn-repite" data-demo="veloDemo">Repetir</button></div>
+            </div>
+            <ul class="principios-motion">
+                <li><strong>Deliberado</strong><span>420 a 900 ms, curva simétrica. Las cosas llegan, no aparecen.</span></li>
+                <li><strong>Editorial</strong><span>Texto que sube línea a línea, imágenes que se descubren con un velo.</span></li>
+                <li><strong>Firma</strong><span>El giro a cursiva es la micro interacción de la marca: links, índice y llamados.</span></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- =================== 09 ÍNDICE =================== -->
+    <section class="seccion grilla" id="indice">
+        <aside class="nota meta gris"><span class="num">viii.</span>Índice de proyectos</aside>
+        <div class="cuerpo">
+            <h2 class="h1 titulo-seccion">Trabajo <em>seleccionado</em>.</h2>
+            <ul class="indice">
+                <li><a href="#caso"><span class="nombre">Llegó Farma</span><span class="anio">2026</span><span class="detalle meta">Marca y one page para una submarca de logística de salud</span></a></li>
+                <li><a href="#caso"><span class="nombre">Tap In</span><span class="anio">2025–26</span><span class="detalle meta">Marca, producto y web a lo largo de un pivote</span></a></li>
+                <li><a href="#caso"><span class="nombre">Mend</span><span class="anio">2026</span><span class="detalle meta">Investigación, marca y web app de salud articular</span></a></li>
+                <li><a href="#caso"><span class="nombre gris">Archivo</span><span class="anio">2022–25</span><span class="detalle meta">La Columna, HAI, Mido y más</span></a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- =================== 10 CASO =================== -->
+    <section class="seccion grilla" id="caso">
+        <aside class="nota meta gris"><span class="num">ix.</span>Cabecera de caso</aside>
+        <div class="cuerpo">
+            <h2 class="display caso-titulo">Tap <em>In</em></h2>
+            <div class="ficha meta">
+                <div><span class="gris">Cliente</span><span>Startup edtech</span></div>
+                <div><span class="gris">Rol</span><span>Marca, UX/UI, desarrollo web</span></div>
+                <div><span class="gris">Período</span><span>2025–2026</span></div>
+                <div><span class="gris">En vivo</span><a href="https://tapin.cl" class="giro" target="_blank">tapin.cl ↗</a></div>
+            </div>
+        </div>
+        <div class="caso-img"><img src="../../../img/tap_in_mockup_hero.webp" alt="Tap In"></div>
+        <aside class="nota meta gris" style="margin-top:56px">Pie de foto en el margen: app de pedidos para el campus, 2025.</aside>
+        <div class="cuerpo"><p class="h1 caso-intro">De la cafetería del campus a <em>la plataforma del colegio</em>.</p></div>
+    </section>
+
+    <!-- =================== 11 OG =================== -->
+    <section class="seccion grilla" id="og">
+        <aside class="nota meta gris"><span class="num">x.</span>Tarjeta para compartir</aside>
+        <div class="cuerpo">
+            <div class="og">
+                <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="logo" style="font-size:clamp(12px,1.6vw,20px)"><span class="s">Agustín</span><span class="d">Design</span></span><span class="meta gris">agustindesign.cl</span></div>
+                <p class="titulo">Diseño marcas y <em>construyo</em><br>los sitios donde viven.</p>
+            </div>
+            <p class="meta gris" style="margin-top:12px">1200 × 630 · cada caso tendría la suya con su título.</p>
+        </div>
+    </section>
+
+    <footer class="pie meta"><a href="a-oficio.html" class="giro">← A · Oficio</a><span>Dirección B · Autor</span><a href="c-indice.html" class="giro">C · Índice →</a></footer>
+
+    <script>
+        /* =======================================================
+           INICIO JS · DIRECCIÓN B
+           ======================================================= */
+        (function () {
+            /* --- 1. MOSTRAR GRILLA --- */
+            const btn = document.getElementById('btnGrilla');
+            btn.addEventListener('click', () => btn.setAttribute('aria-pressed', document.body.classList.toggle('ver-grilla')));
+
+            /* --- 2. DEMOS DE MOTION (REPETIR Y ENTRAR AL VERLAS) --- */
+            const repetir = el => { el.classList.remove('on'); void el.offsetWidth; el.classList.add('on'); };
+            document.querySelectorAll('[data-demo]').forEach(b => b.addEventListener('click', () => repetir(document.getElementById(b.dataset.demo))));
+            ['lineasDemo', 'veloDemo'].forEach(id => {
+                const el = document.getElementById(id);
+                new IntersectionObserver((e, o) => { if (e[0].isIntersecting) { repetir(el); o.disconnect(); } }, { threshold: 0.6 }).observe(el);
+            });
+        })();
+        /* =======================================================
+           FIN JS · DIRECCIÓN B
+           ======================================================= */
+    </script>
+</body>
+</html>

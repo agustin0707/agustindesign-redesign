@@ -1,0 +1,118 @@
+/* =======================================================
+   BASE COMÚN · ÍNDICE DE TRABAJOS
+   ======================================================= */
+
+/* --- 1. TOKENS --- */
+/* Mismos tokens del hero: negro, grises y blanco, Geist con tracking cerrado */
+:root {
+    --negro: #0B0B0B;
+    --grafito: #1A1A19;
+    --gris-oscuro: #3A3A38;
+    --gris-medio: #8E8E8B;
+    --gris-claro: #D9D9D6;
+    --blanco: #F5F5F3;
+    --sans: 'Geist', system-ui, sans-serif;
+    --mono: 'Geist Mono', ui-monospace, monospace;
+    --tracking-display: -0.065em;
+    --tracking-titulo: -0.045em;
+    --margen: clamp(16px, 2.2vw, 32px);
+    --medianil: 16px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-morph: cubic-bezier(0.76, 0, 0.24, 1);
+    --hover-lento: cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* --- 2. BASE --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--negro); color: var(--blanco); font: 15px/1.5 var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+img { display: block; width: 100%; height: auto; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+.mono { font-family: var(--mono); font-size: 12px; letter-spacing: 0; }
+.gris { color: var(--gris-medio); }
+:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; border-radius: 2px; }
+
+/* =======================================================
+   BARRA SUPERIOR (CONTEXTO)
+   ======================================================= */
+/* Versión compacta de la navegación del hero, sobre negro */
+.barra { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 16px var(--margen); mix-blend-mode: difference; color: #fff; }
+.barra .logo { font-weight: 500; font-size: 16px; letter-spacing: -0.035em; }
+.barra .logo span { opacity: 0.45; }
+.barra ul { display: flex; gap: 48px; list-style: none; }
+.barra ul a { font-family: 'Inter', sans-serif; font-weight: 270; font-style: italic; font-size: 1.05rem; letter-spacing: -0.045em; }
+.barra .der { justify-self: end; }
+
+/* =======================================================
+   CABECERA DE SECCIÓN
+   ======================================================= */
+.cabecera { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: 120px var(--margen) 48px; align-items: end; }
+.cabecera .num { grid-column: 1 / span 3; }
+.cabecera h2 { grid-column: 4 / span 6; font-size: clamp(40px, 5.4vw, 88px); font-weight: 500; letter-spacing: var(--tracking-titulo); line-height: 0.95; }
+.cabecera p { grid-column: 10 / -1; color: var(--gris-medio); font-size: 14px; max-width: 32ch; justify-self: end; }
+
+/* =======================================================
+   ARCHIVO (COMÚN A LAS TRES DIRECCIONES)
+   ======================================================= */
+.archivo { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: 96px var(--margen) 140px; border-top: 1px solid #262625; }
+.archivo .num { grid-column: 1 / span 3; }
+.archivo ul { grid-column: 4 / -1; list-style: none; border-top: 1px solid #262625; }
+.archivo li a { display: grid; grid-template-columns: 1.3fr 1fr auto; gap: 16px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid #262625; transition: color 500ms var(--hover-lento), padding 700ms var(--hover-lento); }
+.archivo .a-nombre { font-size: clamp(20px, 1.9vw, 30px); font-weight: 500; letter-spacing: -0.035em; }
+@media (hover: hover) { .archivo ul:hover a { color: var(--gris-oscuro); } .archivo ul:hover a .a-disc, .archivo ul:hover a .a-anio { color: var(--gris-oscuro); } .archivo ul a:hover { color: var(--blanco); padding-left: 12px; } .archivo ul a:hover .a-disc, .archivo ul a:hover .a-anio { color: var(--gris-medio); } }
+
+/* --- 1. MINIATURA DEL ARCHIVO --- */
+/* Sigue al cursor con inercia y aparece con una leve escala */
+.miniatura { position: fixed; top: 0; left: 0; z-index: 60; width: clamp(200px, 18vw, 300px); aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; pointer-events: none; opacity: 0; scale: 0.9; transition: opacity 450ms var(--hover-lento), scale 600ms var(--hover-lento); }
+.miniatura.on { opacity: 1; scale: 1; }
+.miniatura img { width: 100%; height: 100%; object-fit: cover; }
+
+/* =======================================================
+   PÁGINA DE CASO DE PRUEBA (DESTINO DE LA TRANSICIÓN)
+   ======================================================= */
+/* Capa fija que se abre al presionar un proyecto. El diseño real del caso es la sección 3 */
+.caso { position: fixed; inset: 0; z-index: 100; background: var(--negro); overflow-y: auto; visibility: hidden; }
+.caso.abierto { visibility: visible; }
+.caso-media { position: relative; height: 78svh; overflow: hidden; }
+.caso-media img { width: 100%; height: 100%; object-fit: cover; }
+.caso-media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(11, 11, 11, 0.75), rgba(11, 11, 11, 0) 45%); }
+.caso-titulo { position: absolute; left: var(--margen); bottom: 28px; z-index: 2; font-size: clamp(56px, 10vw, 172px); font-weight: 500; letter-spacing: var(--tracking-display); line-height: 0.85; transform-origin: 0 100%; }
+.caso-volver { position: fixed; top: 14px; right: var(--margen); z-index: 3; display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid rgba(245, 245, 243, 0.35); border-radius: 999px; background: rgba(11, 11, 11, 0.35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; }
+.caso-cuerpo { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: 40px var(--margen) 120px; }
+.caso-ficha { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--medianil); border-top: 1px solid #262625; padding-top: 14px; }
+.caso-ficha div { display: flex; flex-direction: column; gap: 4px; }
+.caso-intro { grid-column: 4 / span 7; margin-top: 72px; font-size: clamp(24px, 2.4vw, 38px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.15; }
+.caso-nota { grid-column: 4 / span 6; margin-top: 40px; color: var(--gris-medio); font-size: 14px; }
+.caso-segunda { grid-column: 1 / -1; margin-top: 72px; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 4px; }
+.caso-segunda img { width: 100%; height: 100%; object-fit: cover; }
+.caso .aparece { opacity: 0; transform: translateY(24px); }
+
+/* --- 1. CLON QUE VIAJA --- */
+/* La imagen presionada se clona y viaja desde su lugar hasta la portada del caso */
+.viajero { position: fixed; z-index: 120; overflow: hidden; pointer-events: none; }
+.viajero img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --- 2. BLOQUEO DE SCROLL (IOS) --- */
+/* Se fija el body con top negativo en vez de overflow hidden, según los aprendizajes del repo */
+body.bloqueado { position: fixed; left: 0; right: 0; }
+
+/* =======================================================
+   VISTA MÓVIL
+   ======================================================= */
+@media (max-width: 768px) {
+    .barra ul { display: none; }
+    .barra { grid-template-columns: 1fr 1fr; }
+    .cabecera, .archivo, .caso-cuerpo { grid-template-columns: repeat(4, 1fr); }
+    .cabecera .num, .cabecera h2, .cabecera p, .archivo .num, .archivo ul { grid-column: 1 / -1; }
+    .cabecera p { justify-self: start; margin-top: 16px; }
+    .cabecera h2 { margin-top: 12px; }
+    .archivo ul { margin-top: 20px; }
+    .archivo li a { grid-template-columns: 1fr auto; }
+    .archivo .a-disc { display: none; }
+    .caso-media { height: 62svh; }
+    .caso-ficha { grid-template-columns: 1fr 1fr; row-gap: 18px; }
+    .caso-intro, .caso-nota { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+}

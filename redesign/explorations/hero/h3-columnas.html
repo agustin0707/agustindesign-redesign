@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero 3 · Columnas · agustín.design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="hero-base.css">
+    <style>
+        /* =======================================================
+           HERO 3 · COLUMNAS
+           ======================================================= */
+        /* Fondo negro, grilla visible sobre todo y el nombre abajo (referencia Forty Seven) */
+        .hero { background: var(--negro); color: var(--blanco); }
+
+        /* --- 1. GRILLA VISIBLE --- */
+        /* 12 líneas verticales que se dibujan de arriba hacia abajo al cargar */
+        .columnas { position: absolute; inset: 0; z-index: 4; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding-inline: var(--margen); pointer-events: none; }
+        .columnas span { border-left: 1px solid rgba(245, 245, 243, 0.13); transform-origin: top; transform: scaleY(0); animation: dibujaLinea 1400ms var(--ease) forwards; }
+        .columnas span:last-child { border-right: 1px solid rgba(245, 245, 243, 0.13); }
+        @keyframes dibujaLinea { to { transform: scaleY(1); } }
+
+        /* --- 2. RETRATO --- */
+        .retrato { position: absolute; left: 0; bottom: 0; width: 100%; z-index: 1; filter: grayscale(1) contrast(1.08) brightness(0.92); }
+        .retrato img { animation: entraRetrato 1600ms var(--ease) 300ms both; }
+
+        /* --- 3. CONTENIDO SOBRE LA GRILLA --- */
+        .capa { position: absolute; inset: 0; z-index: 3; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: auto 1fr auto; column-gap: var(--medianil); padding: 76px var(--margen) var(--margen); }
+        .redes { grid-column: 1 / span 2; grid-row: 2; align-self: center; list-style: none; font-size: 15px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.15; }
+        .redes li:nth-child(2) { padding-left: 1.4em; color: var(--gris-medio); }
+        .redes li:nth-child(3) { padding-left: 2.8em; }
+        .manifiesto { grid-column: 9 / -1; grid-row: 2; align-self: center; display: grid; grid-template-columns: 1fr 1fr; gap: 18px var(--medianil); }
+        .manifiesto .lead { grid-column: 1 / -1; font-size: 15px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; text-align: right; }
+        .manifiesto .col { font-size: 12px; line-height: 1.3; color: var(--gris-medio); }
+        .manifiesto .col strong { color: var(--blanco); font-weight: 500; display: block; }
+        .indice-hero { grid-column: 1 / span 1; grid-row: 3; align-self: end; font-size: 13px; padding-bottom: 0.6em; }
+        .nombre { grid-column: 2 / span 7; grid-row: 3; align-self: end; }
+        .nombre h1 { font-size: clamp(64px, 10.4vw, 188px); font-weight: 600; letter-spacing: -0.07em; line-height: 0.8; color: rgba(245, 245, 243, 0.86); mix-blend-mode: difference; }
+        .firma { grid-column: 9 / span 2; grid-row: 3; align-self: end; font-size: 15px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.15; }
+        .firma span { color: var(--gris-medio); display: block; }
+        .copy { grid-column: 11 / -1; grid-row: 3; align-self: end; justify-self: end; font-size: 15px; font-weight: 500; }
+        .nav .links a, .nav .logo, .nav .der { color: var(--blanco); }
+        .nav .cta { grid-column: 12; justify-self: end; }
+
+        @media (max-width: 768px) {
+            .columnas, .capa { grid-template-columns: repeat(4, 1fr); }
+            .columnas span:nth-child(n+5) { display: none; }
+            .columnas span:nth-child(4) { border-right: 1px solid rgba(245,245,243,0.13); }
+            .retrato { width: 220vw; left: -49vw; }
+            .nav > .reloj { display: none; }
+            .redes, .indice-hero, .copy { display: none; }
+            .manifiesto { grid-column: 1 / -1; grid-row: 1; align-self: start; margin-top: 8px; }
+            .manifiesto .lead { text-align: left; }
+            .manifiesto .col { display: none; }
+            .nombre { grid-column: 1 / -1; }
+            .nombre h1 { font-size: 23vw; }
+            .firma { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero" data-parallax>
+        <nav class="nav">
+            <a href="#" class="logo">agustín<span class="punto">.</span>design<span class="cursor"></span></a>
+            <span class="mono reloj" data-reloj="Santiago" style="grid-column:4 / span 2">Santiago 00:00</span>
+            <ul class="links" style="grid-column:6 / span 4"><li><a href="#">Trabajo</a></li><li><a href="#">Servicios</a></li><li><a href="#">Sobre mí</a></li></ul>
+            <span class="der"><a href="#" class="subraya" style="background-size:100% 1px">Contacto</a></span>
+        </nav>
+
+        <div class="columnas" aria-hidden="true"><span style="animation-delay:0ms"></span><span style="animation-delay:40ms"></span><span style="animation-delay:80ms"></span><span style="animation-delay:120ms"></span><span style="animation-delay:160ms"></span><span style="animation-delay:200ms"></span><span style="animation-delay:240ms"></span><span style="animation-delay:280ms"></span><span style="animation-delay:320ms"></span><span style="animation-delay:360ms"></span><span style="animation-delay:400ms"></span><span style="animation-delay:440ms"></span></div>
+
+        <div class="retrato" data-capa="0.7"><img src="../../../img/fotodeperfilgus5.webp" alt="Agustín Avendaño" fetchpriority="high"></div>
+
+        <div class="capa">
+            <ul class="redes"><li><a href="#">LinkedIn</a></li><li><a href="#">Behance</a></li><li><a href="#">Instagram</a></li></ul>
+            <div class="manifiesto">
+                <p class="lead">Diseño marcas y construyo los sitios donde viven. Identidad, experiencia y código, de la primera idea al sitio publicado, en las mismas manos.</p>
+                <p class="col"><strong>Hago</strong>Marca, UX y desarrollo web para founders y equipos chicos.</p>
+                <p class="col"><strong>Último lanzamiento</strong>tapin.cl, diseño y código, septiembre 2026.</p>
+            </div>
+            <span class="indice-hero mono">01</span>
+            <div class="nombre" data-capa="1.3"><h1 data-letras>agustín design</h1></div>
+            <p class="firma">Diseño y código<span>por Agustín Avendaño</span></p>
+            <p class="copy">© 2026</p>
+        </div>
+    </section>
+
+    <section class="nota-exploracion">
+        <p class="mono">Hero 3 · Columnas</p>
+        <p>Fondo negro y la grilla de 12 columnas dibujada sobre todo, como en tu referencia. El nombre abajo a la izquierda, el manifiesto en dos columnas a la derecha y la hora de Santiago en la navegación.</p>
+        <p class="mono"><a href="h2-afiche.html" class="subraya">← Hero 2</a> · <a href="index.html" class="subraya">Comparar heros</a></p>
+    </section>
+
+    <script src="hero-base.js"></script>
+</body>
+</html>
