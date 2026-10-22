@@ -335,20 +335,21 @@
 .tp-forma.on { opacity: 1; transform: scale(1.03); color: var(--tp-campus); box-shadow: 0 0 0 2px var(--tp-campus), 0 22px 40px -20px rgba(74, 60, 174, 0.55); }
 /* Título del paso: arriba de la grilla, las palabras suben en cascada desde una máscara; a la derecha, el
    contador y siete segmentos que se llenan */
-.tp-rotulo { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 18px; }
-.tp-rotulo-t { position: relative; flex: 1; height: 1.25em; font: 600 clamp(20px, 1.9vw, 30px) / 1.2 var(--tp-f); letter-spacing: -0.03em; color: var(--texto); }
+/* Título del paso: un detalle, no un titular. Número, nombre en texto chico y siete segmentos; las palabras
+   suben apenas desde una máscara al cambiar de paso */
+.tp-rotulo { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--linea); }
+.tp-rotulo > b { font-weight: 400; color: var(--acento); white-space: nowrap; }
+.tp-rotulo-t { position: relative; flex: 1; height: 1.4em; font: 500 14px / 1.4 var(--sans); letter-spacing: 0; color: var(--texto-2); }
 .tp-rotulo-t > span { position: absolute; inset: 0; white-space: nowrap; overflow: hidden; }
-.tp-rotulo-t i { display: inline-block; font-style: normal; transform: translateY(110%); transition: transform 500ms var(--ease); }
-.tp-rotulo-t > span.ya i { transform: translateY(-110%); transition-duration: 350ms; }
-.tp-rotulo-t > span.on i { transform: none; transition-delay: calc(120ms + var(--w) * 45ms); }
-.tp-rotulo-av { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-.tp-rotulo-av b { font-weight: 400; color: var(--acento); }
+.tp-rotulo-t i { display: inline-block; font-style: normal; opacity: 0; transform: translateY(100%); transition: transform 420ms var(--ease), opacity 300ms; }
+.tp-rotulo-t > span.ya i { transform: translateY(-100%); }
+.tp-rotulo-t > span.on i { opacity: 1; transform: none; transition-delay: calc(80ms + var(--w) * 30ms); }
 .tp-segmentos { display: flex; gap: 4px; }
 .tp-segmentos i { width: 16px; height: 3px; border-radius: 3px; background: var(--linea); transition: background-color 300ms; }
 .tp-segmentos i.ya { background: var(--tp-soft); }
 .tp-segmentos i.on { background: var(--tp-campus); }
 /* Al final, el logotipo oficial de Tap In Campus en el lugar de la grilla */
-.tp-fk-final { position: absolute; left: 0; right: 0; bottom: 0; top: calc(1.25em + 18px); display: grid; place-items: center; color: var(--tp-campus); opacity: 0; transform: scale(0.9); transition: opacity 600ms var(--ease), transform 800ms var(--tp-curva); pointer-events: none; font: 600 clamp(20px, 1.9vw, 30px) / 1.2 var(--tp-f); }
+.tp-fk-final { position: absolute; left: 0; right: 0; bottom: 0; top: 40px; display: grid; place-items: center; color: var(--tp-campus); opacity: 0; transform: scale(0.9); transition: opacity 600ms var(--ease), transform 800ms var(--tp-curva); pointer-events: none; font: 600 clamp(20px, 1.9vw, 30px) / 1.2 var(--tp-f); }
 .tp-logo-campus { width: 78%; aspect-ratio: 449.89 / 158; }
 .tp-fk-final.on { opacity: 1; transform: none; }
 .tp-formas-zona:has(.tp-fk-final.on) .tp-formas { opacity: 0; transform: scale(0.94); }
@@ -359,6 +360,12 @@
 /* Fotos a todo el ancho con un parallax interno leve; el par de fotos se destapa al entrar */
 .tp-plena { position: relative; height: min(100svh, 66vw); overflow: hidden; background: var(--tp-empresa); }
 .tp-plena img { height: 116%; object-fit: cover; transform: translateY(calc(var(--v, 0) * -6% - 7%)); will-change: transform; }
+/* La primera foto sale de la decisión 01 como una ventana: entra recortada, con márgenes y esquinas sobre el
+   lavanda, y se abre a todo el ancho cuando su borde llega arriba (--v es su avance por la pantalla) */
+.tp-plena-abre { --r: clamp(0, var(--v, -1) + 1, 1); background: var(--tp-papel); }
+.tp-plena-abre img { clip-path: inset(calc((1 - var(--r)) * 9%) calc((1 - var(--r)) * 7vw) 0 round calc((1 - var(--r)) * 32px)); }
+.tp-plena-abre img { scale: calc(1.12 - var(--r) * 0.12); }
+.tp-plena-abre .tp-pie { opacity: var(--r); }
 .tp-plena .tp-pie { position: absolute; left: var(--margen); right: var(--margen); bottom: 22px; color: #FFFFFF; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35); }
 .tp-par-fotos { display: grid; grid-template-columns: 1fr 1fr; background: var(--tp-empresa); }
 .tp-par-fotos figure { aspect-ratio: 1; overflow: hidden; clip-path: inset(14% 0 0 0); transition: clip-path 1100ms var(--ease); }
