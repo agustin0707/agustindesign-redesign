@@ -789,18 +789,168 @@
 .tp-cer-flota small { margin-top: -6px; font-size: 11px; color: rgba(255, 255, 255, 0.7); }
 
 /* =======================================================
-   EL MANUAL EN HORIZONTAL
+   EL MANUAL, EN CÓDIGO
    ======================================================= */
-.tp-manual { --n: 6; --ancho: 62vw; --gap: 2vw; height: 340svh; }
-.tp-manual .tp-fijo { display: flex; flex-direction: column; justify-content: center; }
-.tp-manual-cab { position: absolute; top: 84px; left: var(--margen); right: var(--margen); display: flex; justify-content: space-between; color: var(--texto-2); }
-.tp-manual-cab b { font-weight: 400; color: var(--texto); }
-.tp-manual-avance { position: absolute; left: 0; right: 0; top: calc(100% + 14px); height: 1px; background: var(--linea); }
-.tp-manual-avance::after { content: ''; position: absolute; inset: 0; background: var(--acento); transform-origin: 0 50%; transform: scaleX(var(--p, 0)); }
-.tp-manual-riel { display: flex; gap: var(--gap); width: max-content; padding: 0 var(--margen); transform: translateX(calc(var(--p, 0) * -1 * (var(--n) * var(--ancho) + (var(--n) - 1) * var(--gap) + 2 * var(--margen) - 100vw))); will-change: transform; }
-.tp-manual-riel figure { width: var(--ancho); display: flex; flex-direction: column; gap: 14px; }
-.tp-manual-riel img { aspect-ratio: 16 / 9; object-fit: cover; border-radius: 14px; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.7); }
-.tp-manual-riel figcaption { color: var(--texto-2); }
+/* Lo que el manual suma, en cuatro pasos: el archivo marca.css se escribe con el scroll y la vista previa lo vuelve
+   gráfica. Los dos paneles conversan con etiquetas de variable, un pulso al compilar y el foco cruzado */
+.tp-man { --ed: #1B1733; --ed-2: #100D1E; --cod: #CFCBEA; --error: #FF5B4D; --ok: #2FB37A; height: 580svh; }
+.tp-man .tp-fijo { align-content: center; align-items: start; }
+.tp-man .tp-fijo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(50% 60% at 76% 52%, rgba(107, 92, 231, 0.24), transparent 70%); pointer-events: none; }
+
+/* --- 1. RIEL Y TEXTO: RÓTULO, PASOS, LA IDEA Y LA REGLA DEL PASO --- */
+.tp-man-rot { grid-column: 1 / span 3; grid-row: 1; display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); }
+.tp-man-rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--tp-health); }
+.tp-man-pasos { height: min(76svh, 720px); justify-content: flex-end; }
+.tp-man-txt { position: relative; grid-column: 4 / span 3; grid-row: 1; height: min(76svh, 720px); display: flex; flex-direction: column; justify-content: space-between; }
+.tp-man-txt h3 { margin: 0 0 14px; font: 600 var(--tp-t3) / 1.02 var(--tp-f); letter-spacing: -0.04em; }
+.tp-man-txt > div:first-child p { max-width: 26ch; color: var(--texto-2); font: 400 var(--tp-t4) / 1.42 var(--tp-f); }
+.tp-man-regla { display: grid; }
+.tp-man-regla > * { grid-area: 1 / 1; opacity: 0; clip-path: inset(0 0 100% 0); translate: 0 14px; transition: opacity 200ms linear, clip-path 420ms var(--tp-curva), translate 420ms var(--tp-curva); }
+.tp-man-regla > .on { opacity: 1; clip-path: inset(0 0 -10% 0); translate: 0 0; }
+.tp-man-regla .mono { display: block; margin-bottom: 10px; color: var(--tp-health); }
+.tp-man-regla b { display: block; margin-bottom: 10px; font: 600 clamp(28px, 2.9vw, 46px) / 0.98 var(--tp-f); letter-spacing: -0.045em; text-wrap: balance; }
+.tp-man-regla p { max-width: 30ch; color: var(--texto-2); font: 400 clamp(15px, 1.1vw, 16px) / 1.42 var(--tp-f); }
+
+/* --- 2. EDITOR: CABECERA CON ESTADO DE GUARDADO, RUTA, CÓDIGO Y MINIMAPA --- */
+/* El editor se corre hacia la columna 7 para que la vista previa quede a un costado sin tapar el código */
+.tp-man-pieza { position: relative; grid-column: 8 / -1; grid-row: 1; height: min(76svh, 720px); }
+.tp-man-editor { position: absolute; left: -16%; right: 18%; top: 0; height: 56%; display: flex; flex-direction: column; border-radius: 16px; background: linear-gradient(180deg, var(--ed), #151229); box-shadow: inset 0 0 0 1px var(--linea), inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 50px 100px -40px rgba(0, 0, 0, 0.95); overflow: hidden; cursor: default; }
+.tp-man-cab { flex: none; display: flex; align-items: stretch; height: 42px; padding: 0 12px 0 14px; background: var(--ed-2); border-bottom: 1px solid var(--linea); }
+.tp-man-luces { display: flex; gap: 7px; align-self: center; margin-right: 18px; }
+.tp-man-luces i { width: 11px; height: 11px; border-radius: 50%; background: #FF5F57; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.3); } .tp-man-luces i:nth-child(2) { background: #FEBC2E; } .tp-man-luces i:nth-child(3) { background: #28C840; }
+.tp-man-cab .tp-man-luces i { opacity: 0.85; }
+.tp-man-pests { display: flex; align-items: flex-end; gap: 2px; min-width: 0; }
+.tp-man-pest { position: relative; display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 8px 0 10px; border-radius: 9px 9px 0 0; color: var(--texto-3); font: 400 12px var(--mono); white-space: nowrap; }
+.tp-man-pest.on { background: var(--ed); color: var(--texto); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 1px 0 0 var(--linea), -1px 0 0 var(--linea); }
+.tp-man-pest.on::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--ed); }
+.tp-man-ico { display: grid; place-items: center; width: 20px; height: 16px; border-radius: 4px; background: rgba(155, 142, 240, 0.16); color: var(--tp-health); font: 500 8.5px / 1 var(--mono); }
+.tp-man-pdf { background: rgba(255, 91, 77, 0.12); color: #FF8A80; }
+.tp-man-cierra { display: grid; place-items: center; width: 16px; height: 16px; margin-left: 2px; color: var(--texto-3); }
+.tp-man-cierra::before { content: '×'; font: 400 14px / 1 var(--sans); }
+.sucio .tp-man-cierra::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--tp-health); }
+.tp-man-acciones { margin-left: auto; display: flex; align-items: center; gap: 12px; color: var(--texto-3); font: 400 11px var(--mono); }
+.tp-man-kbd { padding: 2px 7px; border-radius: 5px; box-shadow: inset 0 0 0 1px var(--linea), inset 0 -1px 0 rgba(155, 142, 240, 0.28); }
+.tp-man-kbd.pulsa { animation: tpManPulsa 600ms var(--tp-curva); }
+@keyframes tpManPulsa { 0% { background: var(--tp-health); color: var(--tp-tinta); translate: 0 1px; } 100% { background: transparent; } }
+.tp-man-split { position: relative; width: 14px; height: 12px; border: 1.3px solid currentColor; border-radius: 3px; }
+.tp-man-split::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1.3px; margin-left: -0.65px; background: currentColor; }
+.tp-man-ruta { flex: none; display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 16px; color: var(--texto-3); font-size: 11px; }
+.tp-man-ruta b { font-weight: 400; color: var(--texto-2); }
+.tp-man-cuerpo { position: relative; flex: 1; display: flex; min-height: 0; }
+.tp-man-cod { position: relative; flex: 1; overflow: hidden; -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 78%, transparent 98%); mask-image: linear-gradient(transparent, #000 10%, #000 78%, transparent 98%); }
+.tp-man-codigo { padding: 10px 0 40px; counter-reset: l; font: 400 clamp(11.5px, 0.92vw, 14px) / 1.9 var(--mono); transition: translate 700ms var(--tp-curva); }
+.tp-man-codigo > div { position: relative; padding: 0 16px 0 50px; white-space: pre; color: var(--cod); opacity: 0.16; transition: opacity 300ms linear, background-color 300ms ease; }
+.tp-man-codigo > div::before { counter-increment: l; content: counter(l); position: absolute; left: 0; width: 34px; text-align: right; color: rgba(238, 237, 254, 0.24); }
+.tp-man-codigo > .activo { opacity: 1; }
+.tp-man-codigo > .actual { background-color: rgba(155, 142, 240, 0.07); } .tp-man-codigo > .actual::before { color: var(--texto-2); }
+.tp-man-codigo > .foco { background-color: rgba(155, 142, 240, 0.16); }
+.tp-man-tipeo { display: inline-block; vertical-align: top; clip-path: inset(-2px calc((1 - var(--l, 0)) * 100%) -2px 0); }
+.tp-man-codigo .cursor .tp-man-tipeo::after { content: ''; display: inline-block; width: 7px; height: 1.15em; margin: 0 0 -0.2em 2px; background: var(--tp-health); }
+.tp-man-codigo .c { color: rgba(238, 237, 254, 0.42); } .tp-man-codigo .q { color: #B5ABF5; font-style: italic; } .tp-man-codigo .p, .tp-man-codigo b { color: #A99EF5; font-weight: 400; } .tp-man-codigo .v { color: #F4F3FB; } .tp-man-codigo .s { color: #86DDBC; } .tp-man-codigo .k { color: #EBA9F4; }
+.tp-man-codigo .chip { display: inline-block; vertical-align: -1px; margin-left: 4px; width: 10px; height: 10px; border-radius: 3px; background: var(--c); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); } .tp-man-codigo .chip:first-of-type { margin-left: 8px; }
+.tp-man-codigo .mal { color: var(--error); } .tp-man-codigo .tachado .tp-man-tipeo { text-decoration: line-through; text-decoration-color: var(--error); }
+.tp-man-codigo .aviso { margin-left: 10px; padding: 1px 6px; border-radius: 4px; background: rgba(255, 91, 77, 0.14); color: var(--error); font-size: 0.85em; opacity: 0; transition: opacity 200ms linear; } .tp-man-codigo .tachado .aviso { opacity: 1; }
+.tp-man-mapa { flex: none; width: 46px; padding: 12px 10px 12px 8px; border-left: 1px solid rgba(155, 142, 240, 0.1); display: flex; flex-direction: column; gap: 2px; }
+.tp-man-mapa i { display: block; height: 2px; width: var(--w); border-radius: 1px; background: rgba(238, 237, 254, 0.14); transition: background-color 300ms linear; }
+.tp-man-mapa i.on { background: var(--tp-health); } .tp-man-mapa i.ya { background: rgba(155, 142, 240, 0.35); }
+
+/* --- 3. VISTA PREVIA: VENTANA CLARA, ESTADO EN VIVO, ETIQUETAS Y FOCO --- */
+.tp-man-vista { position: absolute; left: 14%; right: 0; bottom: 0; height: 56%; display: flex; flex-direction: column; border-radius: 18px; background: var(--tp-papel); color: var(--tp-tinta); box-shadow: 0 0 0 1px rgba(16, 13, 32, 0.25), 0 1px 2px rgba(16, 13, 32, 0.3), 0 24px 48px -20px rgba(0, 0, 0, 0.6), 0 70px 120px -40px rgba(0, 0, 0, 0.9); overflow: hidden; cursor: default; -webkit-user-select: none; user-select: none; }
+.tp-man-vcab { flex: none; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 36px; padding: 0 12px; background: #FFFFFF; border-bottom: 1px solid rgba(45, 37, 96, 0.08); color: #8A889E; font-size: 11px; }
+.tp-man-vcab b { font-weight: 400; color: var(--tp-tinta); }
+.tp-man-vivo { justify-self: end; display: inline-flex; align-items: center; gap: 6px; transition: color 200ms linear; }
+.tp-man-vivo::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #C9C6D8; transition: background-color 200ms linear, box-shadow 200ms linear; }
+.tp-man-vivo.ok { color: var(--ok); } .tp-man-vivo.ok::before { background: var(--ok); box-shadow: 0 0 0 3px rgba(47, 179, 122, 0.18); }
+.tp-man-lienzo { position: relative; flex: 1; container-type: size; }
+.tp-man-prev { position: absolute; inset: 0; display: grid; place-items: center; padding: clamp(16px, 1.8vw, 26px); opacity: 0; scale: 0.98; transition: opacity 260ms linear, scale 600ms var(--tp-curva); pointer-events: none; }
+.tp-man-prev.on { opacity: 1; scale: 1; pointer-events: auto; }
+.tp-man-entra { opacity: clamp(0, (var(--t, 0) - var(--d, 0)) / 0.08, 1); translate: 0 calc((1 - clamp(0, (var(--t, 0) - var(--d, 0)) / 0.08, 1)) * 12px); }
+/* Etiqueta: el nombre de la variable en el morado del editor; aparece cuando su línea compila */
+.tp-man-vista [data-k] { position: relative; transition: transform 350ms var(--tp-curva), box-shadow 350ms ease, background-color 300ms ease; }
+.tp-man-tag { position: absolute; z-index: 3; left: 8px; top: -9px; padding: 2px 7px; border-radius: 6px; background: var(--ed); color: #B5ABF5; box-shadow: inset 0 0 0 1px rgba(155, 142, 240, 0.35), 0 0 0 2px var(--tp-papel); font: 400 10px / 1.4 var(--mono); white-space: nowrap; opacity: 0; translate: 0 4px; transition: opacity 250ms ease, translate 350ms var(--tp-curva), background-color 250ms ease, color 250ms ease; pointer-events: none; }
+.tp-man-vista .ya > .tp-man-tag { opacity: 1; translate: 0 0; }
+.tp-man-vista .foco > .tp-man-tag { background: var(--tp-campus); color: #FFFFFF; }
+.tp-man-vista .pulso::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 0 0 2px rgba(155, 142, 240, 0.7); pointer-events: none; animation: tpManPulso 800ms ease-out forwards; }
+@keyframes tpManPulso { from { opacity: 1; inset: 0; } to { opacity: 0; inset: -10px; } }
+/* Foco suave: la pieza sube un poco con una sombra morada; las líneas de texto solo se tiñen */
+.tp-man-vista .foco:is(.tp-man-muestra, .tp-man-band, .tp-man-chip, .tp-man-pesos) { transform: translateY(-3px); box-shadow: 0 0 0 1.5px rgba(155, 142, 240, 0.55), 0 18px 30px -16px rgba(45, 37, 96, 0.5); }
+.tp-man-vista .foco:is(.t1, .t2, .t3, li) { background-color: rgba(155, 142, 240, 0.12); }
+
+/* --- 4. COLOR: MUESTRAS DE NEUTROS CON SU GRIS PURO Y UN ACENTO QUE NO ENTRA --- */
+.tp-man-muestras { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; width: 100%; }
+.tp-man-muestra { display: flex; flex-direction: column; border-radius: 12px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.06), 0 14px 28px -16px rgba(28, 26, 46, 0.4); }
+.tp-man-color { position: relative; aspect-ratio: 1 / 1.05; border-radius: 12px 12px 0 0; background: var(--c); overflow: hidden; }
+.tp-man-color::after { content: ''; position: absolute; right: 8px; bottom: 8px; width: 34%; aspect-ratio: 1; border-radius: 50%; background: var(--puro); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7); }
+.tp-man-info { display: grid; gap: 1px; padding: 8px 10px 10px; font: 400 10px / 1.3 var(--mono); color: #8A889E; }
+.tp-man-info b { color: var(--tp-tinta); font: 600 12px var(--tp-f); }
+.tp-man-leyenda { grid-column: 1 / -1; display: flex; justify-content: space-between; margin-top: 18px; color: #8A889E; font-size: 10px; }
+.tp-man-leyenda span { display: inline-flex; align-items: center; gap: 6px; } .tp-man-leyenda i { width: 10px; height: 10px; border-radius: 50%; background: #6E6E6E; box-shadow: 0 0 0 1.5px #FFFFFF, 0 0 0 2.5px rgba(28, 26, 46, 0.12); }
+.tp-man-ajena { z-index: 4; transform-origin: 20% 0; transition: rotate 500ms var(--tp-curva), translate 500ms var(--tp-curva); }
+.tp-man-ajena .tp-man-color { background: #FF7A00; } .tp-man-ajena .tp-man-color::after { display: none; }
+.tp-man-sello { position: absolute; left: 50%; top: 40%; padding: 3px 8px; border: 2px solid var(--error); border-radius: 6px; color: var(--error); background: rgba(255, 255, 255, 0.92); font: 600 11px var(--mono); translate: -50% -50%; rotate: -12deg; opacity: 0; scale: 1.4; transition: opacity 200ms linear, scale 300ms var(--tp-curva); white-space: nowrap; }
+.tp-man-ajena.fuera { rotate: 8deg; translate: 4% 3%; }
+.tp-man-ajena.fuera .tp-man-sello { opacity: 1; scale: 1; }
+
+/* --- 5. TIPOGRAFÍA: ESPÉCIMEN, PESOS Y UN PANEL CON LOS TRES NIVELES --- */
+.tp-man-tipo { display: grid; grid-template-columns: auto 1fr; gap: 16px 18px; align-items: center; width: 100%; }
+.tp-man-espec { display: grid; place-items: center; align-content: center; width: clamp(96px, 9vw, 140px); aspect-ratio: 1; border-radius: 16px; background: var(--tp-campus); color: #FFFFFF; font: 600 clamp(48px, 4.8vw, 76px) / 1 var(--tp-f); letter-spacing: -0.04em; box-shadow: 0 16px 30px -16px rgba(45, 37, 96, 0.7); }
+.tp-man-espec small { margin-top: -6px; font-size: 10px; letter-spacing: 0; opacity: 0.75; }
+.tp-man-pesos { display: flex; gap: clamp(10px, 1.4vw, 22px); align-items: baseline; justify-self: start; padding: 14px 16px 10px; border-radius: 12px; }
+.tp-man-pesos > span:not(.tp-man-tag) { display: flex; flex-direction: column; gap: 4px; font: var(--w) clamp(26px, 2.4vw, 38px) / 1 var(--tp-f); letter-spacing: -0.03em; } .tp-man-pesos small { font-size: 10px; letter-spacing: 0; color: #8A889E; }
+.tp-man-panel { grid-column: 1 / -1; display: grid; gap: 2px; padding: 12px 14px; border-radius: 14px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.06), 0 14px 28px -16px rgba(28, 26, 46, 0.35); }
+.tp-man-panel > div { padding: 5px 72px 5px 6px; border-radius: 8px; }
+.tp-man-panel .t1 { font: 600 clamp(18px, 1.6vw, 24px) / 1.1 var(--tp-f); letter-spacing: -0.03em; }
+.tp-man-panel .t2 { font: 400 clamp(13px, 1vw, 15px) / 1.38 var(--tp-f); color: #3A3850; }
+.tp-man-panel .t3 { font: 300 clamp(13px, 1vw, 15px) / 1.2 var(--tp-f); color: #6E6B84; }
+.tp-man-panel .tp-man-tag { left: auto; right: 6px; top: 50%; translate: 0 -40%; }
+.tp-man-vista .tp-man-panel .ya > .tp-man-tag { translate: 0 -50%; }
+
+/* --- 6. ADN: LA PLACA DEL ISOTIPO Y SU CORREDOR DE TESTS --- */
+.tp-man-adn { display: grid; grid-template-columns: 44% 1fr; gap: 16px; align-items: stretch; width: 100%; height: 100%; }
+.tp-man-placa { position: relative; display: grid; place-items: center; border-radius: 16px; background: radial-gradient(80% 80% at 50% 25%, #6455D0, var(--tp-campus) 70%); color: #FFFFFF; overflow: hidden; box-shadow: 0 18px 36px -18px rgba(45, 37, 96, 0.8); }
+.tp-man-placa::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px); background-size: 14px 14px; }
+.tp-man-placa > .tp-marca { position: relative; width: 48%; aspect-ratio: 142 / 158; transform-origin: 50% 90%; }
+.tp-man-placa.corre > .tp-marca { animation: tpManZancada 520ms cubic-bezier(0.5, 0, 0.5, 1) infinite alternate; }
+@keyframes tpManZancada { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(-6%) rotate(3deg); } }
+.tp-man-pr { position: absolute; display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 999px; background: rgba(16, 13, 32, 0.35); font-size: 10px; opacity: 0; translate: 0 6px; transition: opacity 250ms linear, translate 400ms var(--tp-curva); }
+.tp-man-pr.on { opacity: 1; translate: 0 0; }
+.tp-man-pr-1 { left: 10px; top: 10px; } .tp-man-pr-1 .tp-marca { width: 12px; aspect-ratio: 142 / 158; } .tp-man-pr-4 { right: 10px; bottom: 10px; background: #FFFFFF; color: var(--tp-campus); }
+.tp-man-runner { display: flex; flex-direction: column; justify-content: center; padding: 12px; border-radius: 14px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.06), 0 14px 28px -16px rgba(28, 26, 46, 0.35); }
+.tp-man-rcab, .tp-man-total { display: flex; justify-content: space-between; color: #8A889E; font-size: 10px; }
+.tp-man-rcab { margin-bottom: 6px; }
+.tp-man-runner ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+.tp-man-runner li { display: flex; align-items: center; gap: 10px; padding: 6px; border-radius: 8px; font: 500 13px var(--tp-f); }
+.tp-man-runner li i { flex: none; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: rgba(45, 37, 96, 0.08); color: transparent; font: 600 11px / 1 var(--sans); font-style: normal; transition: background-color 200ms linear, color 200ms linear, scale 400ms var(--tp-curva); }
+.tp-man-runner li small { margin-left: auto; color: transparent; font-size: 10px; transition: color 200ms linear; }
+.tp-man-runner li.ok i { background: var(--ok); color: #FFFFFF; scale: 1.08; } .tp-man-runner li.ok small { color: #8A889E; }
+.tp-man-avance { height: 4px; margin: 8px 0 6px; border-radius: 99px; background: rgba(45, 37, 96, 0.08); overflow: hidden; }
+.tp-man-avance i { display: block; height: 100%; width: calc(var(--pasa, 0) * 20%); border-radius: inherit; background: var(--ok); transition: width 300ms var(--tp-curva); }
+.tp-man-total b { font-weight: 400; color: var(--ok); }
+
+/* --- 7. INTERFAZ: UNA PANTALLA DE COMEDOR QUE SIGUE A --tono Y --suave --- */
+@property --tono { syntax: '<color>'; inherits: true; initial-value: #4A3CAE; }
+.tp-man-ui { --tono: var(--tp-campus); --suave: color-mix(in srgb, var(--tono) 18%, var(--tp-n50, #F2F1F7)); display: grid; gap: 10px; width: 100%; max-width: 420px; transition: --tono 500ms ease; }
+.tp-man-app { border-radius: 18px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.06), 0 22px 40px -22px rgba(28, 26, 46, 0.45); }
+.tp-man-band { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 18px 18px 0 0; background: linear-gradient(120deg, color-mix(in srgb, var(--tono) 82%, #FFFFFF), var(--tono)); color: #FFFFFF; font: 500 12px var(--tp-f); }
+.tp-man-band .tp-wm { width: 54px; }
+.tp-man-av { margin-left: auto; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); font: 600 9px var(--tp-f); }
+.tp-man-metrica { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: end; padding: 14px 14px 6px; }
+.tp-man-metrica small { display: block; color: #8A889E; font: 400 11px var(--tp-f); } .tp-man-metrica b { display: block; font: 600 clamp(24px, 2.2vw, 32px) / 1 var(--tp-f); letter-spacing: -0.04em; }
+.tp-man-delta { display: inline-block; margin-top: 6px; padding: 2px 7px; border-radius: 999px; background: var(--suave); color: var(--tono); font: 600 10px var(--tp-f); }
+.tp-man-metrica svg { width: 100%; height: clamp(44px, 7cqh, 64px); overflow: visible; }
+.tp-man-metrica .area { fill: url(#tp-man-grad); } .tp-man-metrica .linea { fill: none; stroke: var(--tono); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.tp-man-filas { margin: 0; padding: 4px 8px 8px; list-style: none; display: grid; gap: 2px; }
+.tp-man-filas li { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; padding: 8px 6px; border-top: 1px solid rgba(45, 37, 96, 0.06); }
+.tp-man-ini { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--suave); color: var(--tono); font: 600 10px var(--tp-f); }
+.tp-man-filas b { display: block; font: 500 12px var(--tp-f); } .tp-man-filas small { color: #8A889E; font: 400 10px var(--tp-f); }
+.tp-man-chip { padding: 4px 10px; border-radius: 999px; background: var(--suave); color: var(--tono); font: 600 10px var(--tp-f); }
+.tp-man-chip .tp-man-tag { left: auto; right: 0; top: -16px; }
+/* Selector segmentado: la pastilla blanca se desliza al producto elegido */
+.tp-man-seg { --k: 0; position: relative; display: grid; grid-template-columns: repeat(3, 1fr); padding: 3px; border-radius: 999px; background: rgba(45, 37, 96, 0.07); }
+.tp-man-seg::before { content: ''; position: absolute; top: 3px; bottom: 3px; left: calc(3px + var(--k) * (100% - 6px) / 3); width: calc((100% - 6px) / 3); border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 6px -2px rgba(28, 26, 46, 0.3); transition: left 400ms var(--tp-curva); }
+.tp-man-seg button { position: relative; padding: 6px 0; border: 0; background: none; color: #6E6B84; font: 500 11px var(--tp-f); cursor: pointer; transition: color 200ms linear; }
+.tp-man-seg button.on { color: var(--tp-tinta); }
+@container (max-height: 300px) { .tp-man-filas li:nth-child(2) { display: none; } }
 
 /* =======================================================
    DECISIONES 06 A 10 · EL SITIO CON EL SCROLL
@@ -983,7 +1133,17 @@
     .tp-cer-pieza { order: 3; height: 50svh; } .tp-cer-ventana { right: 8%; } .tp-cer-tel { --w: 34vw; right: 0; } .tp-cer-otra { display: none; }
     .tp-cer-svg { width: 50vw; }
     .tp-cer-flota { display: none; }
-    .tp-manual { --ancho: 84vw; --gap: 4vw; }
+    .tp-man .tp-fijo { align-content: start; padding-top: 9svh; row-gap: 12px; }
+    .tp-man-rot, .tp-man-txt > div:first-child { display: none; }
+    .tp-man-txt { grid-row: auto; order: 1; height: auto; } .tp-man-pasos { grid-row: auto; order: 2; height: auto; justify-content: flex-start; } .tp-man-pieza { grid-row: auto; order: 3; height: 62svh; }
+    .tp-man-regla b { font-size: 28px; }
+    .tp-man-editor { left: 0; right: 0; height: 48%; } .tp-man-vista { left: 6%; height: 58%; }
+    .tp-man-mapa, .tp-man-ruta, .tp-man-otra, .tp-man-split { display: none; }
+    .tp-man-codigo { font-size: 10.5px; } .tp-man-codigo > div { padding-left: 34px; } .tp-man-codigo > div::before { width: 22px; }
+    .tp-man-muestras { gap: 6px; } .tp-man-info { padding: 6px; } .tp-man-info span, .tp-man-leyenda { display: none; }
+    .tp-man-espec { width: 76px; font-size: 40px; } .tp-man-pesos > span:not(.tp-man-tag) { font-size: 22px; }
+    .tp-man-runner li { font-size: 12px; padding: 3px 4px; } .tp-man-runner li small { display: none; }
+    .tp-man-filas li:nth-child(2) { display: none; } .tp-man-metrica { padding: 10px 12px 4px; } .tp-man-band { padding: 8px 12px; }
     .tp-url { top: 28svh; padding: 14px 22px; }
     .tp-sitio .tp-fijo { display: flex; flex-direction: column; justify-content: center; gap: 18px; padding-top: 64px; }
     .tp-sitio-nav { height: 56svh; width: 100%; flex: none; }

@@ -186,10 +186,70 @@
                 el.classList.toggle('escrito', n === letras.length);
             };
         },
-        /* El manual: el contador sigue a la lámina que está al centro */
+        /* El manual en código: el bloque del paso se escribe con el scroll y la vista previa lo vuelve gráfica. Cada
+           variable que compila enciende su etiqueta con un pulso; pasar el cursor por una línea o por una pieza enciende
+           el par. En el paso 4 el producto cambia solo, o con el selector */
         manual: el => {
-            const n = el.querySelector('[data-manual-n]'), total = el.querySelectorAll('.tp-manual-riel figure').length;
-            return p => { n.textContent = String(Math.min(Math.floor(p * total), total - 1) + 1).padStart(2, '0'); };
+            const N = 4, codigo = el.querySelector('[data-man-codigo]'), lineas = [...codigo.children];
+            const nombres = ['Color', 'Tipografía', 'ADN', 'Interfaz'], rutas = ['color', 'tipografia', 'adn', 'interfaz'];
+            const prods = [['#4A3CAE', 'campus', 'Campus'], ['#6B5CE7', 'connect', 'Connect'], ['#9B8EF0', 'health', 'Health']];
+            const ui = el.querySelector('[data-man-ui]'), seg = el.querySelector('[data-man-seg]'), placa = el.querySelector('[data-man-placa]');
+            const ajena = el.querySelector('[data-man-ajena]'), pest = el.querySelector('[data-man-pest]'), kbd = el.querySelector('[data-man-kbd]');
+            const runner = el.querySelector('[data-man-runner]'), vivo = el.querySelector('[data-man-vivo]'), pieza = el.querySelector('.tp-man-pieza');
+            const mapa = el.querySelector('[data-man-mapa]');
+            mapa.innerHTML = lineas.map(l => `<i style="--w:${Math.min(Math.max(l.textContent.length * 0.55, 3), 26)}px"></i>`).join('');
+            const barritas = [...mapa.children], compiladas = new Set();
+            let elegido = null, pasoAntes = -1;
+            const ponerProd = k => {
+                ui.style.setProperty('--tono', prods[k][0]); seg.style.setProperty('--k', k);
+                ui.querySelector('[data-man-ui-n]').textContent = prods[k][2];
+                seg.querySelectorAll('[data-p]').forEach(b => b.classList.toggle('on', +b.dataset.p === k));
+                el.querySelector('[data-man-prod]').textContent = prods[k][1];
+            };
+            seg.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => { elegido = +b.dataset.p; ponerProd(elegido); }));
+            pieza.querySelectorAll('[data-k]').forEach(x => {
+                x.addEventListener('pointerenter', () => pieza.querySelectorAll(`[data-k="${x.dataset.k}"]`).forEach(y => y.classList.add('foco')));
+                x.addEventListener('pointerleave', () => pieza.querySelectorAll('.foco').forEach(y => y.classList.remove('foco')));
+            });
+            el.querySelectorAll('[data-man-ir]').forEach(b => b.addEventListener('click', () => {
+                const top = el.getBoundingClientRect().top + window.scrollY, alto = el.offsetHeight - vh;
+                window.scrollTo({ top: top + ((+b.dataset.manIr + 0.8) / N) * alto, behavior: quieto ? 'auto' : 'smooth' });
+            }));
+            return p => {
+                const i = Math.min(Math.floor(p * N), N - 1), t = fijar(p * N - i);
+                el.querySelectorAll('[data-man-paso], [data-man-ir]').forEach(x => x.classList.toggle('on', +(x.dataset.manPaso ?? x.dataset.manIr) === i));
+                el.querySelector('[data-man-nombre]').textContent = nombres[i]; el.querySelector('[data-man-ruta]').textContent = rutas[i];
+                el.querySelectorAll('.tp-man-prev').forEach(x => x.style.setProperty('--t', +x.dataset.manPaso === i ? t : (+x.dataset.manPaso < i ? 1 : 0)));
+                /* Tipeo en el primer 55 % del tramo; las líneas de bloques anteriores quedan escritas y atenuadas */
+                const bloque = lineas.filter(l => +l.dataset.s === i), d = 0.55 / bloque.length;
+                let actual = null;
+                lineas.forEach((l, n) => {
+                    const s = +l.dataset.s, k = bloque.indexOf(l), v = s < i ? 1 : s > i ? 0 : fijar((t - k * d) / d);
+                    l.style.setProperty('--l', v.toFixed(3)); l.classList.toggle('activo', s === i);
+                    const escribiendo = s === i && v > 0 && v < 1; l.classList.toggle('cursor', escribiendo); if (escribiendo) actual = l;
+                    barritas[n].classList.toggle('on', s === i); barritas[n].classList.toggle('ya', s < i);
+                    if (!l.dataset.k) return;
+                    const dest = pieza.querySelector(`.tp-man-prev [data-k="${l.dataset.k}"]`), lista = v >= 1 && s <= i;
+                    if (dest) { dest.classList.toggle('ya', lista); if (lista && !compiladas.has(l.dataset.k) && s === i) { dest.classList.remove('pulso'); void dest.offsetWidth; dest.classList.add('pulso'); } }
+                    if (lista) compiladas.add(l.dataset.k); else compiladas.delete(l.dataset.k);
+                });
+                lineas.forEach(l => l.classList.toggle('actual', l === actual));
+                /* Al compilar: la vista pasa a "en vivo", la pestaña pierde el punto de cambios y el atajo se presiona */
+                const listo = t > 0.56;
+                vivo.classList.toggle('ok', listo); vivo.textContent = listo ? 'en vivo' : 'escribiendo';
+                if (pest.classList.contains('sucio') && listo) { kbd.classList.remove('pulsa'); void kbd.offsetWidth; kbd.classList.add('pulsa'); }
+                pest.classList.toggle('sucio', !listo);
+                const tachar = i > 0 || listo; codigo.querySelector('[data-man-mal]').classList.toggle('tachado', tachar); ajena.classList.toggle('fuera', tachar);
+                if (i !== pasoAntes) { codigo.style.translate = `0 ${-Math.max(bloque[0].offsetTop - 10, 0)}px`; pasoAntes = i; if (i !== 3) elegido = null; }
+                /* ADN: los cinco tests pasan en orden; la placa muestra su prueba y el isotipo corre */
+                const ok = i > 2 ? 5 : i < 2 ? 0 : Math.min(Math.floor(fijar((t - 0.56) / 0.36) * 5.99), 5);
+                runner.querySelectorAll('li').forEach((li, k) => li.classList.toggle('ok', k < ok));
+                runner.style.setProperty('--pasa', ok);
+                el.querySelector('[data-man-ok]').textContent = `${ok} / 5`; el.querySelector('[data-man-ms]').textContent = `${[0, 12, 20, 34, 43, 54][ok]} ms`;
+                placa.querySelectorAll('[data-pr]').forEach(x => x.classList.toggle('on', +x.dataset.pr < ok));
+                placa.classList.toggle('corre', ok >= 3 && !quieto);
+                if (elegido === null) ponerProd(i < 3 ? 0 : Math.min(Math.floor(fijar((t - 0.56) / 0.44) * 3), 2));
+            };
         },
         /* El sitio: baja por tapin.cl y se detiene en cada decisión; el foco se dibuja sobre la parte que
            explica. Las cajas están en píxeles del sitio a 1440 de ancho */

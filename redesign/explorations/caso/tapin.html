@@ -6,7 +6,7 @@
     <title>Tap In · Caso · agustín.design</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../works/works-base.css">
     <link rel="stylesheet" href="caso-siguiente.css">
     <link rel="stylesheet" href="tapin.css">
@@ -342,17 +342,133 @@
             </div>
         </section>
 
-        <!-- --- EL MANUAL, EN HORIZONTAL --- -->
-        <section class="tp-manual tp-oscuro" data-escena="manual">
-            <div class="tp-fijo">
-                <div class="tp-manual-cab"><span class="mono">El manual · Sistema de identidad 2026</span><span class="mono"><b data-manual-n>01</b> / 06</span><i class="tp-manual-avance"></i></div>
-                <div class="tp-manual-riel">
-                    <figure><img src="media/connect-portada.jpg" alt="Portada del manual de identidad de Tap In" loading="lazy"><figcaption class="mono">Portada</figcaption></figure>
-                    <figure><img src="media/connect-sistema.jpg" alt="Lámina del sistema de productos" loading="lazy"><figcaption class="mono">El sistema</figcaption></figure>
-                    <figure><img src="media/connect-adn.jpg" alt="Lámina del ADN del sistema" loading="lazy"><figcaption class="mono">El ADN</figcaption></figure>
-                    <figure><img src="media/connect-paleta.jpg" alt="Lámina de la paleta" loading="lazy"><figcaption class="mono">La paleta</figcaption></figure>
-                    <figure><img src="media/connect-tipografia.jpg" alt="Lámina de tipografía, Poppins" loading="lazy"><figcaption class="mono">Una familia, siempre</figcaption></figure>
-                    <figure><img src="media/connect-cerebro.jpg" alt="Lámina del isotipo de Connect" loading="lazy"><figcaption class="mono">El cerebro</figcaption></figure>
+        <!-- --- EL MANUAL, EN CÓDIGO --- -->
+        <section class="tp-man tp-oscuro" data-escena="manual">
+            <div class="tp-fijo tp-grilla">
+                <span class="tp-man-rot mono">El manual · Sistema de identidad 2026</span>
+                <nav class="tp-cer-pasos tp-man-pasos" aria-label="Pasos del manual">
+                    <button type="button" class="tp-cer-paso" data-man-ir="0"><b>01</b><span class="mono">Color</span></button>
+                    <button type="button" class="tp-cer-paso" data-man-ir="1"><b>02</b><span class="mono">Tipografía</span></button>
+                    <button type="button" class="tp-cer-paso" data-man-ir="2"><b>03</b><span class="mono">ADN</span></button>
+                    <button type="button" class="tp-cer-paso" data-man-ir="3"><b>04</b><span class="mono">Interfaz</span></button>
+                </nav>
+                <div class="tp-man-txt">
+                    <div><h3>Las reglas, escritas</h3><p>Lo que el manual suma, escrito como código y visto en vivo</p></div>
+                    <div class="tp-man-regla" aria-live="polite">
+                        <div data-man-paso="0"><span class="mono">01 / 04 · Color</span><b>Grises con intención</b><p>Hasta los neutros llevan violeta. Ningún acento entra de afuera.</p></div>
+                        <div data-man-paso="1"><span class="mono">02 / 04 · Tipografía</span><b>Una familia, tres niveles</b><p>Poppins en tres pesos, sin excepciones.</p></div>
+                        <div data-man-paso="2"><span class="mono">03 / 04 · ADN</span><b>Cinco reglas por símbolo</b><p>Por qué funcionan los isotipos, para que el próximo nazca igual.</p></div>
+                        <div data-man-paso="3"><span class="mono">04 / 04 · Interfaz</span><b>Una variable mueve todo</b><p>Cambia el tono y la interfaz completa lo sigue.</p></div>
+                    </div>
+                </div>
+                <div class="tp-man-pieza" aria-label="El manual escrito como código, con una vista previa de lo que produce cada regla" role="img">
+                    <div class="tp-man-editor">
+                        <div class="tp-man-cab"><span class="tp-man-luces"><i></i><i></i><i></i></span><div class="tp-man-pests"><span class="tp-man-pest on sucio" data-man-pest><span class="tp-man-ico">{ }</span>marca.css<span class="tp-man-cierra"></span></span><span class="tp-man-pest tp-man-otra"><span class="tp-man-ico tp-man-pdf">PDF</span>manual.pdf</span></div><span class="tp-man-acciones"><span class="tp-man-kbd" data-man-kbd>⌘ S</span><i class="tp-man-split"></i></span></div>
+                        <div class="tp-man-ruta mono">tapin <span>›</span> marca <span>›</span> <b data-man-ruta>color</b></div>
+                        <div class="tp-man-cuerpo">
+                            <div class="tp-man-cod"><div class="tp-man-codigo" data-man-codigo>
+                                <div data-s="0"><span class="tp-man-tipeo"><span class="c">/* 01 · Color */</span></span></div>
+                                <div data-s="0"><span class="tp-man-tipeo"><span class="q">/* "dentro del mismo rango cromático" */</span></span></div>
+                                <div data-s="0"><span class="tp-man-tipeo"><span class="p">:root</span> {</span></div>
+                                <div data-s="0"><span class="tp-man-tipeo">  <span class="c">/* tonos: decisión 03 */</span><i class="chip" style="--c:#2D2560"></i><i class="chip" style="--c:#4A3CAE"></i><i class="chip" style="--c:#6B5CE7"></i><i class="chip" style="--c:#9B8EF0"></i></span></div>
+                                <div data-s="0" data-k="n900"><span class="tp-man-tipeo">  <span class="p">--n-900</span>: <span class="v">#2C2B39</span>;</span></div>
+                                <div data-s="0" data-k="n500"><span class="tp-man-tipeo">  <span class="p">--n-500</span>: <span class="v">#6B6A7A</span>;</span></div>
+                                <div data-s="0" data-k="n300"><span class="tp-man-tipeo">  <span class="p">--n-300</span>: <span class="v">#BCBAC5</span>;</span></div>
+                                <div data-s="0" data-k="n50"><span class="tp-man-tipeo">  <span class="p">--n-50</span>:  <span class="v">#F2F1F7</span>;</span></div>
+                                <div data-s="0" data-k="acento" data-man-mal><span class="tp-man-tipeo">  <span class="p">--acento</span>: <span class="mal">#FF7A00</span>;</span><span class="aviso">fuera del sistema</span></div>
+                                <div data-s="0"><span class="tp-man-tipeo">}</span></div>
+                                <div data-s="1"><span class="tp-man-tipeo"> </span></div>
+                                <div data-s="1"><span class="tp-man-tipeo"><span class="c">/* 02 · Tipografía */</span></span></div>
+                                <div data-s="1"><span class="tp-man-tipeo"><span class="q">/* "a un director, a un operador y a un usuario final" */</span></span></div>
+                                <div data-s="1"><span class="tp-man-tipeo"><span class="p">:root</span> {</span></div>
+                                <div data-s="1" data-k="familia"><span class="tp-man-tipeo">  <span class="p">--familia</span>: <span class="s">'Poppins'</span>;</span></div>
+                                <div data-s="1" data-k="titulo"><span class="tp-man-tipeo">  <span class="p">--titulo</span>: <span class="v">600</span>;</span></div>
+                                <div data-s="1" data-k="texto"><span class="tp-man-tipeo">  <span class="p">--texto</span>:  <span class="v">400</span>;</span></div>
+                                <div data-s="1" data-k="dato"><span class="tp-man-tipeo">  <span class="p">--dato</span>:   <span class="v">300</span>;</span></div>
+                                <div data-s="1"><span class="tp-man-tipeo">}</span></div>
+                                <div data-s="2"><span class="tp-man-tipeo"> </span></div>
+                                <div data-s="2"><span class="tp-man-tipeo"><span class="c">/* 03 · ADN */</span></span></div>
+                                <div data-s="2"><span class="tp-man-tipeo"><span class="k">test</span>(<span class="s">'isotipo de Campus'</span>, [</span></div>
+                                <div data-s="2" data-k="r0"><span class="tp-man-tipeo">  <span class="s">'doble lectura'</span>,</span></div>
+                                <div data-s="2" data-k="r1"><span class="tp-man-tipeo">  <span class="s">'silueta plana'</span>,</span></div>
+                                <div data-s="2" data-k="r2"><span class="tp-man-tipeo">  <span class="s">'movimiento y actitud'</span>,</span></div>
+                                <div data-s="2" data-k="r3"><span class="tp-man-tipeo">  <span class="s">'abstracción media'</span>,</span></div>
+                                <div data-s="2" data-k="r4"><span class="tp-man-tipeo">  <span class="s">'sin ser obvio'</span></span></div>
+                                <div data-s="2"><span class="tp-man-tipeo">]);</span></div>
+                                <div data-s="3"><span class="tp-man-tipeo"> </span></div>
+                                <div data-s="3"><span class="tp-man-tipeo"><span class="c">/* 04 · Interfaz */</span></span></div>
+                                <div data-s="3"><span class="tp-man-tipeo"><span class="p">.producto</span> {</span></div>
+                                <div data-s="3" data-k="tono"><span class="tp-man-tipeo">  <span class="p">--tono</span>: <span class="k">var</span>(<span class="p">--<b data-man-prod>campus</b></span>);</span></div>
+                                <div data-s="3" data-k="suave"><span class="tp-man-tipeo">  <span class="p">--suave</span>: <span class="k">color-mix</span>(<span class="k">in</span> srgb,</span></div>
+                                <div data-s="3"><span class="tp-man-tipeo">    <span class="k">var</span>(<span class="p">--tono</span>) <span class="v">18%</span>, <span class="k">var</span>(<span class="p">--n-50</span>));</span></div>
+                                <div data-s="3"><span class="tp-man-tipeo">}</span></div>
+                            </div></div>
+                            <div class="tp-man-mapa" data-man-mapa></div>
+                        </div>
+                    </div>
+                    <div class="tp-man-vista">
+                        <div class="tp-man-vcab mono"><span class="tp-man-luces"><i></i><i></i><i></i></span><span>Vista previa · <b data-man-nombre>Color</b></span><span class="tp-man-vivo" data-man-vivo>escribiendo</span></div>
+                        <div class="tp-man-lienzo">
+                            <div class="tp-man-prev" data-man-paso="0">
+                                <div class="tp-man-muestras">
+                                    <div class="tp-man-muestra tp-man-entra" data-k="n900" style="--d:0.16"><span class="tp-man-tag">n-900</span><div class="tp-man-color" style="--c:#2C2B39; --puro:#2F2F2F"></div><div class="tp-man-info"><b>n-900</b>#2C2B39<span>puro #2F2F2F</span></div></div>
+                                    <div class="tp-man-muestra tp-man-entra" data-k="n500" style="--d:0.22"><span class="tp-man-tag">n-500</span><div class="tp-man-color" style="--c:#6B6A7A; --puro:#6E6E6E"></div><div class="tp-man-info"><b>n-500</b>#6B6A7A<span>puro #6E6E6E</span></div></div>
+                                    <div class="tp-man-muestra tp-man-entra" data-k="n300" style="--d:0.28"><span class="tp-man-tag">n-300</span><div class="tp-man-color" style="--c:#BCBAC5; --puro:#BEBEBE"></div><div class="tp-man-info"><b>n-300</b>#BCBAC5<span>puro #BEBEBE</span></div></div>
+                                    <div class="tp-man-muestra tp-man-entra" data-k="n50" style="--d:0.34"><span class="tp-man-tag">n-50</span><div class="tp-man-color" style="--c:#F2F1F7; --puro:#F3F3F3"></div><div class="tp-man-info"><b>n-50</b>#F2F1F7<span>puro #F3F3F3</span></div></div>
+                                    <div class="tp-man-muestra tp-man-ajena tp-man-entra" data-k="acento" data-man-ajena style="--d:0.42"><span class="tp-man-tag">acento</span><div class="tp-man-color"><span class="tp-man-sello">NO ENTRA</span></div><div class="tp-man-info"><b>acento</b>#FF7A00</div></div>
+                                    <div class="tp-man-leyenda tp-man-entra mono" style="--d:0.4"><span>Muestra · con violeta</span><span><i></i>Círculo · el gris puro</span></div>
+                                </div>
+                            </div>
+                            <div class="tp-man-prev" data-man-paso="1">
+                                <div class="tp-man-tipo">
+                                    <div class="tp-man-espec tp-man-entra" style="--d:0.16">Aa<small class="mono">Poppins</small></div>
+                                    <div class="tp-man-pesos tp-man-entra" data-k="familia" style="--d:0.2"><span class="tp-man-tag">familia</span><span style="--w:300">Aa<small class="mono">300</small></span><span style="--w:400">Aa<small class="mono">400</small></span><span style="--w:600">Aa<small class="mono">600</small></span></div>
+                                    <div class="tp-man-panel tp-man-entra" style="--d:0.34">
+                                        <div class="t1" data-k="titulo"><span class="tp-man-tag">titulo</span>Casino · marzo</div>
+                                        <div class="t2" data-k="texto"><span class="tp-man-tag">texto</span>El pago ya está conciliado y el apoderado recibió su aviso</div>
+                                        <div class="t3" data-k="dato"><span class="tp-man-tag">dato</span>$12.400 · actualizado 9:41</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tp-man-prev" data-man-paso="2">
+                                <div class="tp-man-adn">
+                                    <div class="tp-man-placa" data-man-placa>
+                                        <span class="tp-marca" style="--svg:url('media/tp-forky.svg')"></span>
+                                        <span class="tp-man-pr tp-man-pr-1 mono" data-pr="1"><span class="tp-marca" style="--svg:url('media/tp-forky.svg')"></span>16 px</span>
+                                        <span class="tp-man-pr tp-man-pr-4 mono" data-pr="4">5 / 5</span>
+                                    </div>
+                                    <div class="tp-man-runner" data-man-runner>
+                                        <div class="tp-man-rcab mono"><span>test · isotipo de Campus</span><span data-man-ms>0 ms</span></div>
+                                        <ol>
+                                            <li data-k="r0"><i>✓</i>Doble lectura<small class="mono">12 ms</small></li>
+                                            <li data-k="r1"><i>✓</i>Silueta plana<small class="mono">8 ms</small></li>
+                                            <li data-k="r2"><i>✓</i>Movimiento y actitud<small class="mono">14 ms</small></li>
+                                            <li data-k="r3"><i>✓</i>Abstracción media<small class="mono">9 ms</small></li>
+                                            <li data-k="r4"><i>✓</i>Sin ser obvio<small class="mono">11 ms</small></li>
+                                        </ol>
+                                        <div class="tp-man-avance"><i></i></div>
+                                        <div class="tp-man-total mono"><span>reglas</span><b data-man-ok>0 / 5</b></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tp-man-prev" data-man-paso="3">
+                                <div class="tp-man-ui" data-man-ui>
+                                    <div class="tp-man-app">
+                                        <div class="tp-man-band" data-k="tono"><span class="tp-man-tag">tono</span><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span><span data-man-ui-n>Campus</span><span class="tp-man-av">SM</span></div>
+                                        <div class="tp-man-metrica">
+                                            <div><small>Consumos hoy</small><b>184</b><span class="tp-man-delta">↑ 8 %</span></div>
+                                            <svg viewBox="0 0 200 64" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="tp-man-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--tono)" stop-opacity="0.28"/><stop offset="1" stop-color="var(--tono)" stop-opacity="0"/></linearGradient></defs><path class="area" d="M0,48 C20,44 30,30 50,34 S80,50 100,38 S140,14 160,20 S190,10 200,8 L200,64 L0,64 Z"/><path class="linea" d="M0,48 C20,44 30,30 50,34 S80,50 100,38 S140,14 160,20 S190,10 200,8"/></svg>
+                                        </div>
+                                        <ul class="tp-man-filas">
+                                            <li><span class="tp-man-ini">SM</span><div><b>Sofía Martínez · 5°B</b><small>Almuerzo · 12:40</small></div><span class="tp-man-chip" data-k="suave"><span class="tp-man-tag">suave</span>Pagado</span></li>
+                                            <li><span class="tp-man-ini">TR</span><div><b>Tomás Rojas · 3°A</b><small>Almuerzo · 12:44</small></div><span class="tp-man-chip">Pagado</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="tp-man-seg" data-man-seg><button type="button" data-p="0">Campus</button><button type="button" data-p="1">Connect</button><button type="button" data-p="2">Health</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
