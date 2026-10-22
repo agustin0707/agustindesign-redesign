@@ -421,10 +421,10 @@
 .tp-qr-boton:nth-child(2) { left: -2px; top: 25%; height: 9%; }
 .tp-qr-boton:nth-child(3) { left: -2px; top: 36%; height: 9%; }
 .tp-qr-boton:nth-child(4) { right: -2px; top: 29%; height: 14%; background: linear-gradient(270deg, #2A2735, #5B5670); }
-.tp-qr-pant { position: relative; width: 100%; height: 100%; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); overflow: hidden; background: #FFFFFF; container-type: size; }
+.tp-qr-pant { position: relative; width: 100%; height: 100%; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); overflow: hidden; background: #050408; container-type: size; }
 /* Reflejo del vidrio, que se desplaza con el avance de la escena */
 .tp-qr-pant::after { content: ''; position: absolute; inset: -20% -60%; z-index: 6; background: linear-gradient(112deg, transparent 38%, rgba(255, 255, 255, 0.16) 46%, rgba(255, 255, 255, 0.05) 52%, transparent 58%); translate: calc(var(--p, 0) * 50% - 25%) 0; pointer-events: none; }
-.tp-qr-estado { position: absolute; inset: 0 0 auto; z-index: 5; display: flex; justify-content: space-between; align-items: center; height: 11cqw; padding: 0 7cqw; color: var(--tp-tinta); transition: color 300ms linear; }
+.tp-qr-estado { position: absolute; inset: 0 0 auto; z-index: 5; display: flex; justify-content: space-between; align-items: center; height: 14cqw; padding: 0 8cqw 0 9cqw; color: var(--tp-tinta); transition: color 300ms linear; }
 .tp-qr-pant:has(.tp-qr-camara.on) .tp-qr-estado { color: #FFFFFF; }
 .tp-qr-estado b { font: 600 4.4cqw / 1 var(--tp-f); }
 .tp-qr-isla { position: absolute; left: 50%; top: 2.8cqw; width: 29cqw; height: 8.4cqw; margin-left: -14.5cqw; border-radius: 5cqw; background: #050408; }
@@ -460,30 +460,47 @@
 .tp-qr-modos i { font-style: normal; } .tp-qr-modos .on { color: #FFD60A; }
 .tp-qr-disparo { width: 16cqw; aspect-ratio: 1; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 0 1cqw rgba(5, 4, 8, 0.6), 0 0 0 1.8cqw #FFFFFF; }
 /* App: se abre desde el aviso. Las dos promos son un carrusel que avanza con el paso */
-.tp-qr-app { padding: 13cqw 0 0; background: #FFFFFF; transform: scale(0.82) translateY(14cqh); transform-origin: 50% 70%; }
+.tp-qr-app { padding: 18cqw 0 0; background: #FFFFFF; transform: scale(0.82) translateY(14cqh); transform-origin: 50% 70%; }
 .tp-qr-cabeza { display: flex; justify-content: space-between; align-items: center; padding: 0 6cqw; color: var(--tp-campus); }
 .tp-qr-cabeza .tp-wm { width: 22cqw; }
 .tp-qr-avatar { width: 8cqw; aspect-ratio: 1; border-radius: 50%; background: linear-gradient(140deg, var(--tp-soft), var(--tp-connect)); }
-.tp-qr-titulo { padding: 6cqw 6cqw 4cqw; font: 600 8.4cqw / 1 var(--tp-f); letter-spacing: -0.03em; color: var(--tp-tinta); }
+.tp-qr-titulo { padding: 7cqw 6cqw 4.4cqw; font: 600 9cqw / 1 var(--tp-f); letter-spacing: -0.03em; color: var(--tp-tinta); }
 .tp-qr-carrusel { overflow: hidden; padding: 0 6cqw 3cqw; }
 .tp-qr-pista { display: flex; gap: 3cqw; transition: translate 700ms var(--tp-curva); }
 .tp-qr-app:has(.tp-qr-puntos [data-paso="2"].on) .tp-qr-pista { translate: calc(-100% - 3cqw) 0; }
 .tp-qr-pista figure { flex: 0 0 100%; overflow: hidden; border-radius: 5cqw; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(45, 37, 96, 0.08), 0 4cqw 9cqw -5cqw rgba(45, 37, 96, 0.45); }
 .tp-qr-pista img { display: block; width: 100%; aspect-ratio: 1200 / 1392; height: auto; object-fit: cover; }
-.tp-qr-pista figcaption { display: flex; flex-direction: column; gap: 0.6cqw; padding: 3.4cqw 4cqw 4cqw; }
+.tp-qr-pista figcaption { display: flex; flex-direction: column; gap: 1cqw; padding: 4.4cqw 4.4cqw 5cqw; }
 .tp-qr-pista figcaption b { font: 600 4.4cqw var(--tp-f); color: var(--tp-tinta); }
 .tp-qr-pista figcaption span { font: 400 3.4cqw var(--tp-f); color: #8A889E; }
-.tp-qr-puntos { display: flex; justify-content: center; gap: 1.6cqw; }
+.tp-qr-puntos { display: flex; justify-content: center; gap: 1.6cqw; padding-top: 2cqw; }
 .tp-qr-puntos i { width: 1.8cqw; height: 1.8cqw; border-radius: 1cqw; background: var(--tp-soft); transition: width 400ms var(--tp-curva), background 300ms linear; }
 .tp-qr-puntos i.on { width: 5cqw; background: var(--tp-campus); }
-.tp-qr-cta { margin: 5cqw 6cqw 0; padding: 3.6cqw 0; border-radius: 3.4cqw; background: var(--tp-campus); color: #FFFFFF; font: 600 4cqw / 1 var(--tp-f); text-align: center; }
+.tp-qr-chips { display: flex; gap: 2cqw; padding: 0 6cqw 5.4cqw; }
+.tp-qr-chips i { padding: 1.6cqw 3.4cqw; border-radius: 4cqw; background: #F1EFFA; color: #57556B; font: 500 3.3cqw / 1 var(--tp-f); font-style: normal; }
+.tp-qr-chips i.on { background: var(--tp-tinta); color: #FFFFFF; }
+.tp-qr-cta { margin: 6.4cqw 6cqw 0; padding: 3.6cqw 0; border-radius: 3.4cqw; background: var(--tp-campus); color: #FFFFFF; font: 600 4cqw / 1 var(--tp-f); text-align: center; }
 .tp-qr-tabs { position: absolute; inset: auto 0 0; display: flex; justify-content: space-around; padding: 3.6cqw 6cqw 8cqw; border-top: 1px solid rgba(45, 37, 96, 0.08); background: rgba(255, 255, 255, 0.94); }
 .tp-qr-tabs i { width: 5.4cqw; aspect-ratio: 1; border-radius: 1.6cqw; box-shadow: inset 0 0 0 0.6cqw #B5B3C6; }
 .tp-qr-tabs i.on { background: var(--tp-campus); box-shadow: none; }
-.tp-datos { display: flex; gap: 40px; list-style: none; margin-top: 4px; }
-.tp-datos li { display: flex; flex-direction: column; gap: 4px; }
-.tp-datos b { font: 600 clamp(40px, 3.6vw, 60px) / 1 var(--tp-f); letter-spacing: -0.05em; color: var(--acento); }
-.tp-datos span { font-size: 13px; color: var(--texto-2); }
+/* Cifras de la decisión: cada una con su rótulo, un ícono y una línea arriba. Al pasar el mouse la línea se llena,
+   la cifra vuelve a contar y el ícono se mueve (el QR gira, los dos círculos de la alianza se juntan) */
+.tp-datos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--medianil); list-style: none; margin: 4px 0 0; padding: 0; }
+.tp-datos li { position: relative; display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--linea); cursor: default; }
+.tp-datos li::before { content: ''; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--acento); transform: scaleX(0); transform-origin: left; transition: transform 600ms var(--ease); }
+.tp-dato-cab { display: flex; justify-content: space-between; align-items: center; color: var(--texto-2); }
+.tp-dato-ico { width: 16px; height: 16px; fill: none; stroke: var(--acento); stroke-width: 1.3; transition: rotate 600ms var(--tp-curva); }
+.tp-dato-qr path { fill: var(--acento); stroke: none; }
+.tp-dato-par circle { transition: translate 500ms var(--tp-curva); }
+.tp-datos b { font: 600 clamp(44px, 4vw, 64px) / 0.9 var(--tp-f); letter-spacing: -0.05em; color: var(--acento); font-variant-numeric: tabular-nums; transition: translate 500ms var(--tp-curva), color 300ms linear; }
+.tp-dato-pie { font: 400 13px / 1.35 var(--tp-f); color: var(--texto-2); text-wrap: balance; }
+@media (hover: hover) {
+    .tp-datos li:hover::before { transform: scaleX(1); }
+    .tp-datos li:hover b { translate: 0 -3px; color: var(--tp-connect); }
+    .tp-datos li:hover .tp-dato-qr { rotate: 90deg; }
+    .tp-datos li:hover .tp-dato-par circle:first-child { translate: 1.5px 0; }
+    .tp-datos li:hover .tp-dato-par circle:last-child { translate: -1.5px 0; }
+}
 
 /* =======================================================
    LAS ACTIVACIONES
@@ -503,17 +520,33 @@
 .tp-pliego-logo { width: auto; aspect-ratio: 238.71 / 94.06; height: clamp(44px, 4.2vw, 68px); }
 .tp-pliego-bc .tp-pliego-logo { aspect-ratio: 449.84 / 72.37; height: clamp(26px, 2.4vw, 38px); }
 .tp-pliego-sobre b { grid-column: 4 / -1; font: 600 clamp(64px, 11vw, 200px) / 0.8 var(--tp-f); letter-spacing: -0.06em; }
-.tp-pliego-apoyos { align-items: end; padding: var(--medianil) var(--margen) 0; }
-.tp-pliego-indice { grid-column: 1 / span 3; align-self: start; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--linea); }
-.tp-pliego-indice li { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--linea); color: var(--texto-2); font: 12px var(--mono); }
-.tp-pliego-indice li b { font-weight: 400; color: var(--acento); }
-.tp-pliego-apoyos figure { overflow: hidden; border-radius: 20px; clip-path: inset(10% 0 0 0 round 20px); transition: clip-path 1100ms var(--ease); }
-.tp-pliego-apoyos figure.visto { clip-path: inset(0 0 0 0 round 20px); }
-.tp-pliego-a2 { transition-delay: 140ms !important; }
-.tp-pliego-apoyos img { width: 100%; height: auto; transition: scale 900ms var(--ease); }
-@media (hover: hover) { .tp-pliego-apoyos figure:hover img { scale: 1.03; } }
-.tp-pliego-rb .tp-pliego-a1 { grid-column: 4 / span 5; } .tp-pliego-rb .tp-pliego-a2 { grid-column: 9 / -1; }
-.tp-pliego-bc .tp-pliego-a1 { grid-column: 4 / span 3; } .tp-pliego-bc .tp-pliego-a2 { grid-column: 7 / -1; }
+/* Galería de cada activación: un riel con snap que sale por el borde derecho. En el riel de la grilla, contador,
+   barra de avance y flechas; también se arrastra con el mouse y se recorre con las flechas del teclado */
+.tp-pliego-galeria { align-items: start; padding: var(--medianil) var(--margen) 0; }
+.tp-galeria-riel { grid-column: 1 / span 3; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 4px; }
+.tp-galeria-eti { color: var(--texto-2); }
+.tp-galeria-cont { display: flex; align-items: baseline; gap: 8px; }
+.tp-galeria-cont b { font: 600 clamp(36px, 3.2vw, 52px) / 0.9 var(--tp-f); letter-spacing: -0.05em; color: var(--acento); font-variant-numeric: tabular-nums; }
+.tp-galeria-cont .mono { color: var(--texto-3); }
+.tp-galeria-barra { width: min(100%, 200px); height: 2px; border-radius: 2px; background: var(--linea); overflow: hidden; }
+.tp-galeria-barra i { display: block; height: 100%; background: var(--acento); transform-origin: left; transform: scaleX(calc(0.12 + var(--avance, 0) * 0.88)); transition: transform 200ms linear; }
+.tp-galeria-botones { display: flex; gap: 8px; }
+.tp-galeria-botones button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--linea); border-radius: 50%; background: transparent; color: var(--texto); cursor: pointer; transition: background 200ms linear, color 200ms linear, border-color 200ms linear, opacity 200ms linear; }
+.tp-galeria-botones svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: translate 300ms var(--tp-curva); }
+.tp-galeria-botones button:disabled { opacity: 0.35; cursor: default; }
+.tp-galeria-botones button:focus-visible, .tp-galeria-pista:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
+@media (hover: hover) {
+    .tp-galeria-botones button:not(:disabled):hover { background: var(--acento); border-color: var(--acento); color: #FFFFFF; }
+    .tp-galeria-botones [data-car-ant]:not(:disabled):hover svg { translate: -2px 0; }
+    .tp-galeria-botones [data-car-sig]:not(:disabled):hover svg { translate: 2px 0; }
+    .tp-galeria-pista figure:hover img { scale: 1.03; }
+}
+.tp-galeria-pista { grid-column: 4 / -1; display: flex; gap: 16px; margin-right: calc(var(--margen) * -1); padding-right: var(--margen); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: grab; }
+.tp-galeria-pista::-webkit-scrollbar { display: none; }
+.tp-galeria-pista.arrastrando { cursor: grabbing; scroll-snap-type: none; }
+.tp-galeria-pista figure { flex: none; height: clamp(260px, 30vw, 460px); overflow: hidden; border-radius: 18px; background: var(--tp-tint); scroll-snap-align: start; opacity: 0; translate: 32px 0; transition: opacity 700ms var(--ease), translate 900ms var(--ease); transition-delay: calc(var(--i) * 70ms); }
+.tp-galeria-pista.visto figure { opacity: 1; translate: 0 0; }
+.tp-galeria-pista img { width: auto; height: 100%; user-select: none; -webkit-user-drag: none; pointer-events: none; transition: scale 900ms var(--ease); }
 
 /* =======================================================
    CAPÍTULO 02 · EL REBIRTH Y LA PALETA
@@ -758,10 +791,15 @@
     .tp-pliego-sangre { height: 64svh; }
     .tp-pliego-sobre b { font-size: clamp(52px, 15vw, 80px); }
     .tp-pliego-firma { gap: 12px; }
-    .tp-pliego-apoyos { grid-template-columns: 1fr 1fr; column-gap: 12px; row-gap: 12px; }
-    .tp-pliego-apoyos > * { grid-column: auto !important; }
-    .tp-pliego-indice { grid-column: 1 / -1 !important; }
-    .tp-pliego-rb .tp-pliego-a1, .tp-pliego-rb .tp-pliego-a2 { grid-column: 1 / -1 !important; }
+    .tp-pliego-galeria { row-gap: 16px; }
+    .tp-pliego-galeria > * { grid-column: 1 / -1 !important; }
+    .tp-galeria-riel { flex-direction: row; align-items: center; gap: 14px; }
+    .tp-galeria-eti { display: none; }
+    .tp-galeria-cont b { font-size: 32px; }
+    .tp-galeria-barra { flex: 1; }
+    .tp-galeria-botones button { width: 40px; height: 40px; }
+    .tp-galeria-pista { gap: 10px; margin-left: calc(var(--margen) * -1); padding-left: var(--margen); scroll-padding-left: var(--margen); }
+    .tp-galeria-pista figure { height: 58vw; border-radius: 14px; }
     .tp-rb-arriba { flex-direction: column; align-items: flex-start; justify-content: flex-end; height: 40svh; gap: 14px; }
     .tp-rb-arriba .tp-cap-txt p, .tp-dec-rb p { display: none; }
     .tp-dec-rb h3 { font-size: 20px; }

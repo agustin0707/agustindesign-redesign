@@ -273,6 +273,11 @@
         io.unobserve(e.target);
     }), { threshold: 0.2, rootMargin: '0px 0px -8% 0px' });
     document.querySelectorAll('[data-revela], .tp-cifras, .tp-datos, .tp-cap-txt').forEach(el => io.observe(el));
+    /* Las cifras de la decisión 02 vuelven a contar al pasar el mouse */
+    if (window.matchMedia('(hover: hover)').matches) document.querySelectorAll('.tp-datos li').forEach(li => li.addEventListener('mouseenter', () => {
+        const b = li.querySelector('[data-cuenta]'), ahora = performance.now();
+        if (b && ahora - (b.ultimo || 0) > 1000) { b.ultimo = ahora; contar(b); }
+    }));
 
     /* --- 6. MOCKUPS EN VIVO --- */
     /* Se montan cerca de la pantalla y solo animan mientras se ven; el PNG queda de póster hasta que cargan */
@@ -383,6 +388,36 @@
         hueco.outerHTML = window.CASO_SIGUIENTE(C);
         (window.CASO_INICIOS || []).forEach(f => f(C, { quieto }));
     }
+
+    /* --- 11. GALERÍAS DE LAS ACTIVACIONES --- */
+    /* Riel con snap: flechas, contador y barra de avance; con el mouse se arrastra y con el teclado se recorre */
+    document.querySelectorAll('[data-carrusel]').forEach(car => {
+        const pista = car.querySelector('[data-car-pista]'), figs = [...pista.children], n = car.querySelector('[data-car-n]');
+        const ant = car.querySelector('[data-car-ant]'), sig = car.querySelector('[data-car-sig]');
+        const lugar = f => f.offsetLeft - figs[0].offsetLeft, fin = () => pista.scrollWidth - pista.clientWidth;
+        const cerca = () => figs.reduce((m, f, i) => Math.abs(lugar(f) - pista.scrollLeft) < Math.abs(lugar(figs[m]) - pista.scrollLeft) ? i : m, 0);
+        const marcar = () => {
+            const alFinal = pista.scrollLeft >= fin() - 4;
+            n.textContent = String((alFinal ? figs.length - 1 : cerca()) + 1).padStart(2, '0');
+            car.style.setProperty('--avance', fin() > 0 ? (pista.scrollLeft / fin()).toFixed(3) : 1);
+            ant.disabled = pista.scrollLeft <= 4; sig.disabled = alFinal;
+        };
+        const ir = d => { const i = fijar(cerca() + d, 0, figs.length - 1); pista.scrollTo({ left: Math.min(lugar(figs[i]), fin()), behavior: quieto ? 'auto' : 'smooth' }); };
+        ant.addEventListener('click', () => ir(-1));
+        sig.addEventListener('click', () => ir(1));
+        pista.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); ir(e.key === 'ArrowLeft' ? -1 : 1); } });
+        let pendiente = false;
+        pista.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; marcar(); }); } }, { passive: true });
+        let x0 = null, s0 = 0;
+        pista.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; x0 = e.clientX; s0 = pista.scrollLeft; pista.classList.add('arrastrando'); pista.setPointerCapture(e.pointerId); });
+        pista.addEventListener('pointermove', e => { if (x0 !== null) pista.scrollLeft = s0 - (e.clientX - x0); });
+        const soltar = () => { if (x0 === null) return; x0 = null; ir(0); setTimeout(() => pista.classList.remove('arrastrando'), quieto ? 0 : 450); };
+        pista.addEventListener('pointerup', soltar);
+        pista.addEventListener('pointercancel', soltar);
+        window.addEventListener('resize', marcar);
+        marcar();
+    });
+
     pintar(); luces(); barra();
 })();
 /* =======================================================
