@@ -744,16 +744,18 @@
 .tp-cer-svg { position: relative; width: min(25vw, 40svh); transform-origin: center; opacity: calc(1 - var(--fv, 0)); }
 .tp-cer-svg svg { display: block; width: 100%; height: auto; overflow: visible; }
 .tp-cer-svg path { fill: rgba(255, 255, 255, var(--f)); stroke: #FFFFFF; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-dasharray: var(--len, 4000); stroke-dashoffset: calc(var(--len, 4000) * (1 - var(--d))); }
-.tp-cer-eco { position: absolute; inset: 0; opacity: var(--u); }
+.tp-cer-eco { --persp: perspective(1800px) rotateY(-10deg) rotateX(4deg); position: absolute; inset: 0; opacity: var(--u); }
 
-/* Navegador: ventana de macOS con sus luces, pestañas, barra de dirección y el sitio real de Connect */
-.tp-cer-ventana { position: absolute; left: 0; right: 13%; top: 6%; overflow: hidden; border-radius: 14px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(16, 13, 32, 0.08), 0 2px 4px rgba(16, 13, 32, 0.12), 0 40px 80px -36px rgba(16, 13, 32, 0.7); translate: 0 calc((1 - var(--u)) * 30px); }
+/* Navegador: ventana de macOS con sus luces, pestañas, barra de dirección y el hero real de tapin.cl. Cada pieza
+   lleva su propia perspectiva leve (--persp) y sombras en capas: contacto, media y ambiente */
+.tp-cer-ventana { position: absolute; left: 0; right: 9%; top: 3%; overflow: hidden; border-radius: 14px; background: #FFFFFF; box-shadow: 0 0 0 0.5px rgba(16, 13, 32, 0.25), 0 1px 2px rgba(16, 13, 32, 0.2), 0 12px 24px -10px rgba(16, 13, 32, 0.35), 0 50px 100px -40px rgba(16, 13, 32, 0.75); transform: var(--persp); transform-origin: 30% 50%; translate: 0 calc((1 - var(--u)) * 30px); }
 .tp-cer-cromo { display: flex; align-items: flex-end; gap: 4px; height: 40px; padding: 0 12px; background: #ECEAF3; }
 .tp-cer-luces { display: flex; gap: 7px; align-self: center; margin-right: 10px; }
 .tp-cer-luces i { width: 11px; height: 11px; border-radius: 50%; background: #FF5F57; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.12); } .tp-cer-luces i:nth-child(2) { background: #FEBC2E; } .tp-cer-luces i:nth-child(3) { background: #28C840; }
 .tp-cer-pestana { position: relative; display: flex; align-items: center; gap: 8px; height: 32px; min-width: 0; padding: 0 12px; border-radius: 9px 9px 0 0; background: #FFFFFF; color: var(--tp-tinta); font: 500 12px var(--sans); white-space: nowrap; }
 .tp-cer-pestana small { margin-left: 10px; color: #8A889E; font-size: 13px; }
 .tp-cer-otra { background: transparent; color: #6E6B84; }
+.tp-cer-fav.tp-cer-fav-otro { background: #C9C6D8; }
 .tp-cer-fav { flex: none; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; background: var(--tp-connect); color: #FFFFFF; }
 .tp-cer-fav .tp-marca { width: 11px; aspect-ratio: 622.7 / 597.42; opacity: var(--fv, 0); }
 .tp-cer-url { display: flex; align-items: center; gap: 14px; height: 38px; padding: 0 12px; border-bottom: 1px solid #ECEAF3; }
@@ -763,28 +765,28 @@
 .tp-cer-candado::before { content: ''; position: absolute; left: 1.5px; top: -5px; width: 5px; height: 5px; border: 1.3px solid #6E6B84; border-bottom: 0; border-radius: 4px 4px 0 0; box-sizing: border-box; }
 .tp-cer-ventana img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: 50% 0; }
 
-/* Teléfono: el mismo marco de la decisión 02, con la pantalla de inicio, la notificación y el ícono de Connect */
-.tp-cer-tel { --w: min(13vw, 23svh); position: absolute; right: 0; bottom: 0; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 2px 3px rgba(14, 11, 28, 0.35), 0 40px 70px -26px rgba(14, 11, 28, 0.7); translate: 0 calc((1 - var(--u)) * 50px); }
-.tp-cer-pant { position: relative; width: 100%; height: 100%; overflow: hidden; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); background: radial-gradient(90% 50% at 20% 0%, #A79DF7 0%, transparent 60%), radial-gradient(80% 60% at 100% 100%, #3C2FB0 0%, transparent 70%), #6B5CE7; container-type: size; }
-.tp-cer-estado { position: absolute; inset: 0 0 auto; display: flex; justify-content: space-between; align-items: center; height: 14cqw; padding: 0 8cqw 0 9cqw; color: #FFFFFF; }
+/* Teléfono: el mismo marco de la decisión 02, con botones laterales, brillo de vidrio, el inicio real del sitio
+   móvil y la notificación de Connect */
+.tp-cer-tel { --w: min(14vw, 27svh); position: absolute; right: -3%; bottom: 0; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 2px 3px rgba(14, 11, 28, 0.35), 0 24px 40px -18px rgba(14, 11, 28, 0.55), 0 60px 110px -40px rgba(14, 11, 28, 0.75); transform: var(--persp); translate: 0 calc((1 - var(--u)) * 50px); }
+.tp-cer-tel::before, .tp-cer-tel::after { content: ''; position: absolute; width: 3px; border-radius: 2px; background: linear-gradient(90deg, #2A2735, #5B5670); }
+.tp-cer-tel::before { left: -2px; top: 25%; height: 9%; } .tp-cer-tel::after { right: -2px; top: 29%; height: 14%; background: linear-gradient(270deg, #2A2735, #5B5670); }
+.tp-cer-pant { position: relative; width: 100%; height: 100%; overflow: hidden; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); background: #F7F6FD; container-type: size; }
+.tp-cer-pant::after { content: ''; position: absolute; inset: 0; z-index: 4; background: linear-gradient(120deg, rgba(255, 255, 255, 0.14), transparent 32%); pointer-events: none; }
+.tp-cer-cel { display: block; width: 100%; height: 100%; padding-top: 12cqw; object-fit: cover; object-position: 50% 0; }
+.tp-cer-estado { position: absolute; inset: 0 0 auto; display: flex; justify-content: space-between; align-items: center; z-index: 2; height: 14cqw; padding: 0 8cqw 0 9cqw; color: var(--tp-tinta); }
 .tp-cer-estado b { font: 600 4.4cqw / 1 var(--tp-f); }
 .tp-cer-isla { position: absolute; left: 50%; top: 2.8cqw; width: 29cqw; height: 8.4cqw; margin-left: -14.5cqw; border-radius: 5cqw; background: #050408; }
-.tp-cer-sen { display: flex; align-items: flex-end; gap: 0.8cqw; } .tp-cer-sen i { width: 1.2cqw; border-radius: 0.4cqw; background: #FFFFFF; } .tp-cer-sen i:nth-child(1) { height: 1.6cqw; } .tp-cer-sen i:nth-child(2) { height: 2.4cqw; } .tp-cer-sen i:nth-child(3) { height: 3.2cqw; }
-.tp-cer-notif { position: absolute; left: 4cqw; right: 4cqw; top: 17cqw; display: grid; grid-template-columns: 11cqw 1fr; gap: 3cqw; align-items: center; padding: 3.2cqw; border-radius: 6cqw; background: rgba(255, 255, 255, 0.78); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: var(--tp-tinta); box-shadow: 0 3cqw 8cqw -3cqw rgba(16, 13, 32, 0.45); opacity: clamp(0, (var(--p, 0) - 0.76) / 0.04, 1); translate: 0 calc((1 - clamp(0, (var(--p, 0) - 0.76) / 0.04, 1)) * -6cqw); }
+.tp-cer-sen { display: flex; align-items: flex-end; gap: 0.8cqw; } .tp-cer-sen i { width: 1.2cqw; border-radius: 0.4cqw; background: currentColor; } .tp-cer-sen i:nth-child(1) { height: 1.6cqw; } .tp-cer-sen i:nth-child(2) { height: 2.4cqw; } .tp-cer-sen i:nth-child(3) { height: 3.2cqw; }
+.tp-cer-sen u { position: relative; width: 6cqw; height: 2.8cqw; margin-left: 1cqw; border-radius: 0.9cqw; box-shadow: inset 0 0 0 0.35cqw currentColor; } .tp-cer-sen u::after { content: ''; position: absolute; inset: 0.7cqw 1.6cqw 0.7cqw 0.7cqw; border-radius: 0.3cqw; background: currentColor; }
+.tp-cer-notif { position: absolute; z-index: 3; left: 4cqw; right: 4cqw; top: 17cqw; display: grid; grid-template-columns: 11cqw 1fr; gap: 3cqw; align-items: center; padding: 3.2cqw; border-radius: 6cqw; background: rgba(250, 249, 255, 0.94); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); color: var(--tp-tinta); box-shadow: 0 3cqw 9cqw -3cqw rgba(16, 13, 32, 0.45), inset 0 0 0 0.25cqw rgba(255, 255, 255, 0.6); opacity: clamp(0, (var(--p, 0) - 0.76) / 0.04, 1); translate: 0 calc((1 - clamp(0, (var(--p, 0) - 0.76) / 0.04, 1)) * -6cqw); }
 .tp-cer-ico { display: grid; place-items: center; width: 11cqw; aspect-ratio: 1; border-radius: 2.6cqw; background: linear-gradient(160deg, #8174F0, var(--tp-connect)); color: #FFFFFF; box-shadow: inset 0 0 0 0.3cqw rgba(255, 255, 255, 0.25); }
 .tp-cer-ico .tp-marca { width: 64%; aspect-ratio: 622.7 / 597.42; }
 .tp-cer-app { display: flex; justify-content: space-between; color: #6E6B84; font: 600 2.6cqw / 1.2 var(--sans); letter-spacing: 0.06em; } .tp-cer-app small { font-weight: 400; letter-spacing: 0; }
 .tp-cer-notif b { display: block; margin-top: 0.6cqw; font: 600 3.5cqw / 1.2 var(--sans); } .tp-cer-notif div > span:last-child { display: block; font: 400 3.3cqw / 1.25 var(--sans); color: #3A3850; }
-/* Inicio: íconos de cristal sin marca (para no inventar apps) y el de Connect con su nombre */
-.tp-cer-inicio { position: absolute; left: 7cqw; right: 7cqw; top: 50cqh; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6cqw 5cqw; }
-.tp-cer-inicio > i { aspect-ratio: 1; border-radius: 4cqw; background: linear-gradient(160deg, hsl(var(--h) 60% 86% / 0.55), hsl(var(--h) 40% 70% / 0.3)); box-shadow: inset 0 0 0 0.3cqw rgba(255, 255, 255, 0.25); }
-.tp-cer-mia { position: relative; display: grid; justify-items: center; }
-.tp-cer-mia .tp-cer-ico { width: 100%; border-radius: 4cqw; box-shadow: inset 0 0 0 0.3cqw rgba(255, 255, 255, 0.3), 0 2cqw 5cqw -2cqw rgba(16, 13, 32, 0.5); }
-.tp-cer-mia small { position: absolute; top: calc(100% + 1.4cqw); color: #FFFFFF; font: 500 2.8cqw / 1 var(--sans); white-space: nowrap; }
-.tp-cer-dock { position: absolute; left: 4cqw; right: 4cqw; bottom: 4cqw; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5cqw; padding: 3.4cqw; border-radius: 9cqw; background: rgba(255, 255, 255, 0.2); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
-.tp-cer-dock i { aspect-ratio: 1; border-radius: 4cqw; background: linear-gradient(160deg, hsl(var(--h) 60% 88% / 0.6), hsl(var(--h) 40% 72% / 0.35)); }
-.tp-cer-notas { position: absolute; left: 0; right: calc(min(13vw, 23svh) + 20px); bottom: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; color: rgba(255, 255, 255, 0.74); font-size: 11px; opacity: clamp(0, (var(--p, 0) - 0.82) / 0.06, 1); }
-.tp-cer-notas b { color: #FFFFFF; font-weight: 400; margin-right: 4px; }
+/* Ícono de la app: flota junto al teléfono, con su nombre y su tamaño */
+.tp-cer-flota { position: absolute; z-index: 2; right: calc(min(14vw, 27svh) + 4%); bottom: 9%; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #FFFFFF; font: 500 12px var(--sans); transform: var(--persp); opacity: clamp(0, (var(--p, 0) - 0.82) / 0.06, 1); translate: 0 calc((1 - clamp(0, (var(--p, 0) - 0.82) / 0.06, 1)) * 16px); }
+.tp-cer-flota .tp-cer-ico { width: 64px; border-radius: 15px; box-shadow: inset 0 0 0 0.6px rgba(255, 255, 255, 0.35), 0 16px 30px -12px rgba(16, 13, 32, 0.7); }
+.tp-cer-flota small { margin-top: -6px; font-size: 11px; color: rgba(255, 255, 255, 0.7); }
 
 /* =======================================================
    EL MANUAL EN HORIZONTAL
@@ -978,9 +980,9 @@
     .tp-tira:first-child .tp-tira-iso { width: 84%; }
     .tp-cer .tp-dec, .tp-cer-pasos, .tp-cer-pieza { grid-row: auto; }
     .tp-cer-pasos { order: 2; flex-direction: row; gap: 18px; } .tp-cer-paso b { font-size: 26px; } .tp-cer-paso span { display: none; }
-    .tp-cer-pieza { order: 3; height: 50svh; } .tp-cer-ventana { right: 8%; } .tp-cer-tel { --w: 34vw; } .tp-cer-otra { display: none; }
+    .tp-cer-pieza { order: 3; height: 50svh; } .tp-cer-ventana { right: 8%; } .tp-cer-tel { --w: 34vw; right: 0; } .tp-cer-otra { display: none; }
     .tp-cer-svg { width: 50vw; }
-    .tp-cer-notas { display: none; }
+    .tp-cer-flota { display: none; }
     .tp-manual { --ancho: 84vw; --gap: 4vw; }
     .tp-url { top: 28svh; padding: 14px 22px; }
     .tp-sitio .tp-fijo { display: flex; flex-direction: column; justify-content: center; gap: 18px; padding-top: 64px; }
