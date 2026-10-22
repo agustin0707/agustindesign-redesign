@@ -1,0 +1,156 @@
+<title>Fondo del origen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@600&display=swap">
+<style>
+    /* Tres mejoras sobre el fondo actual de la portada del capítulo 01 (morado de Campus con una luz), para que
+       deje de sentirse plano sin cambiar de idea. Escena a todo el ancho con Forky cruzando en bucle */
+    :root {
+        --papel: #FBFAFF; --tinta: #1C1A2E; --gris: #57556B;
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: clamp(20px, 3.2vw, 48px);
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .forky { aspect-ratio: 1; --svg: url('forky.svg'); }
+    .envoltura { padding-block: clamp(40px, 5vw, 72px); padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+    .cab { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 24px; }
+    .cab h1 { margin: 6px 0 0; font: 600 clamp(26px, 2.6vw, 40px) / 1.05 var(--f-marca); letter-spacing: -0.035em; }
+    .cab .mono { color: var(--gris); }
+    .segmentos { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(45, 37, 96, 0.07); }
+    .segmentos button { padding: 8px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--gris); font: 500 14px var(--f-texto); cursor: pointer; white-space: nowrap; }
+    .segmentos button[aria-pressed="true"] { background: var(--tinta); color: #FFFFFF; }
+    .segmentos button:focus-visible { outline: 2px solid var(--campus); outline-offset: 2px; }
+    .nota { margin: 18px 0 0; max-width: 64ch; color: var(--gris); }
+
+    /* --- ESCENA --- */
+    .portada { --k: 0; --mx: 0; --my: 0; position: relative; height: clamp(520px, 76svh, 760px); border-radius: 24px; overflow: hidden; color: #FFFFFF; isolation: isolate; background: var(--campus); }
+    .capa { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+    .grano { position: absolute; inset: 0; z-index: -1; background-image: var(--grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; pointer-events: none; }
+    /* Lo de cada propuesta solo se ve en ella */
+    .p1, .p2, .p3 { display: none; }
+    [data-f="1"] .p1, [data-f="2"] .p2, [data-f="3"] .p3 { display: block; }
+    [data-f="0"] .luz-fija, [data-f="3"] .luz-fija { display: block; }
+    .luz-fija { display: none; background: radial-gradient(55% 50% at 72% 38%, rgba(129, 116, 242, 0.6), transparent 72%); }
+
+    /* 1 · LUZ QUE ACOMPAÑA: un foco que sigue a Forky, viñeta en los bordes y un piso con horizonte */
+    .p1.foco { background: radial-gradient(32% 46% at calc(var(--fx) * 100%) 44%, rgba(155, 142, 240, 0.65), transparent 70%); }
+    .p1.vineta { background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(30, 22, 80, 0.55)); }
+    .p1.piso { top: auto; height: 46%; background: linear-gradient(180deg, transparent, rgba(45, 37, 96, 0.55)); }
+    .p1.piso::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22) 30%, rgba(255, 255, 255, 0.22) 70%, transparent); }
+    .p1.reflejo { top: auto; height: 46%; background: radial-gradient(18% 30% at calc(var(--fx) * 100%) 0%, rgba(200, 192, 248, 0.25), transparent 70%); }
+
+    /* 2 · PROFUNDIDAD: tres luces de la paleta a distinta profundidad, que derivan y siguen al mouse */
+    .orbe { position: absolute; border-radius: 50%; filter: blur(60px); will-change: transform; }
+    .orbe.a { width: 46%; aspect-ratio: 1; left: 48%; top: -6%; background: var(--connect); opacity: 0.75; transform: translate(calc(var(--mx) * 40px), calc(var(--my) * 30px)); animation: deriva 14s ease-in-out infinite alternate; }
+    .orbe.b { width: 34%; aspect-ratio: 1; left: 6%; top: 40%; background: var(--health); opacity: 0.35; transform: translate(calc(var(--mx) * -26px), calc(var(--my) * -20px)); animation: deriva 18s ease-in-out -6s infinite alternate-reverse; }
+    .orbe.c { width: 60%; aspect-ratio: 1; left: 30%; top: 62%; background: var(--empresa); opacity: 0.8; transform: translate(calc(var(--mx) * 16px), calc(var(--my) * 12px)); animation: deriva 22s ease-in-out -3s infinite alternate; }
+    @keyframes deriva { to { translate: 6% -5%; } }
+    .p2.num-luz { -webkit-mask: none; }
+
+    /* 3 · ECOS DEL TAP: la onda que abrió el capítulo sigue latiendo, en anillos que se expanden muy suave */
+    .p3 { overflow: hidden; }
+    .p3 i { position: absolute; left: 72%; top: 38%; width: 160vmax; aspect-ratio: 1; margin: -80vmax 0 0 -80vmax; border-radius: 50%; border: 2px solid rgba(200, 192, 248, 0.45); transform: scale(0.02); opacity: 0; animation: eco 9s cubic-bezier(0.2, 0.6, 0.35, 1) infinite; }
+    .p3 i:nth-child(2) { animation-delay: -3s; } .p3 i:nth-child(3) { animation-delay: -6s; }
+    @keyframes eco { 0% { transform: scale(0.02); opacity: 0; } 12% { opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+
+    /* --- CONTENIDO DE LA PORTADA (IGUAL EN TODAS) --- */
+    .num { position: absolute; right: 32px; top: 24px; font: 600 clamp(140px, 24vw, 380px) / 0.8 var(--f-marca); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22); }
+    [data-f="2"] .num { -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.3); background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), transparent 60%); -webkit-background-clip: text; background-clip: text; }
+    .txt { position: absolute; left: 32px; bottom: 32px; display: flex; flex-direction: column; gap: 12px; }
+    .txt .mono { opacity: 0.75; }
+    .txt h2 { margin: 0; font: 600 clamp(56px, 9vw, 150px) / 0.86 var(--f-marca); letter-spacing: -0.055em; }
+    .txt p { margin: 0; max-width: 34ch; font-size: 17px; opacity: 0.8; }
+    .pista { position: absolute; left: 0; right: 0; top: 24%; height: 26%; }
+    .corre { position: absolute; bottom: 0; left: 0; width: 100%; display: flex; align-items: flex-end; transform: translateX(calc(-240px + var(--k) * (100% + 480px))); }
+    .cuerpo { position: relative; width: clamp(110px, 14vw, 170px); rotate: 7deg; transform-origin: 50% 100%; }
+    .cuerpo .forky { width: 100%; color: #FFFFFF; transform-origin: 50% 100%; animation: trote 440ms linear infinite; }
+    .sombra { position: absolute; left: 14%; right: 14%; bottom: -10px; height: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgba(16, 13, 32, 0.4), transparent); animation: sombra 440ms linear infinite; }
+    .velocidad { position: relative; width: clamp(120px, 16vw, 200px); height: clamp(80px, 10vw, 120px); margin-right: -18px; }
+    .velocidad i { position: absolute; right: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75)); transform-origin: 100% 50%; animation: rafaga 520ms ease-in-out infinite alternate; }
+    .velocidad i:nth-child(1) { top: 14%; width: 62%; animation-delay: -120ms; }
+    .velocidad i:nth-child(2) { top: 38%; width: 100%; height: 4px; }
+    .velocidad i:nth-child(3) { top: 60%; width: 78%; animation-delay: -300ms; }
+    .velocidad i:nth-child(4) { top: 82%; width: 46%; animation-delay: -420ms; }
+    @keyframes trote { 0%, 100% { translate: 0 0; scale: 1.05 0.94; } 25% { translate: 0 -16px; scale: 0.98 1.03; } 50% { translate: 0 0; scale: 1.04 0.95; } 75% { translate: 0 -11px; scale: 0.99 1.02; } }
+    @keyframes sombra { 0%, 50%, 100% { scale: 1; opacity: 1; } 25% { scale: 0.7; opacity: 0.55; } 75% { scale: 0.8; opacity: 0.7; } }
+    @keyframes rafaga { from { transform: translateX(-12%) scaleX(0.6); opacity: 0.35; } to { transform: translateX(0) scaleX(1); opacity: 1; } }
+
+    @media (max-width: 768px) {
+        .portada { height: 640px; }
+        .txt { left: 20px; bottom: 20px; }
+        .num { right: 16px; }
+        .segmentos button { padding: 7px 11px; font-size: 13px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .cuerpo .forky, .sombra, .velocidad i, .orbe, .p3 i { animation: none; } }
+</style>
+
+<main class="envoltura">
+    <div class="cab">
+        <div><span class="mono">Portada del capítulo 01 · sobre el fondo actual</span><h1>El origen, con más profundidad</h1></div>
+        <div class="segmentos" role="group" aria-label="Fondos">
+            <button type="button" id="f-0" data-ir="0" aria-pressed="false">Actual</button>
+            <button type="button" id="f-1" data-ir="1" aria-pressed="true">1 · Luz que acompaña</button>
+            <button type="button" id="f-2" data-ir="2" aria-pressed="false">2 · Profundidad</button>
+            <button type="button" id="f-3" data-ir="3" aria-pressed="false">3 · Ecos del tap</button>
+        </div>
+    </div>
+    <div class="portada" data-f="1" id="portada">
+        <div class="capa luz-fija"></div>
+        <div class="capa p1 foco"></div><div class="capa p1 piso"></div><div class="capa p1 reflejo"></div><div class="capa p1 vineta"></div>
+        <div class="capa p2"><span class="orbe a"></span><span class="orbe b"></span><span class="orbe c"></span></div>
+        <div class="capa p3"><i></i><i></i><i></i></div>
+        <div class="grano"></div>
+        <span class="num" aria-hidden="true">01</span>
+        <div class="pista" aria-hidden="true"><span class="corre"><span class="velocidad"><i></i><i></i><i></i><i></i></span><span class="cuerpo"><span class="marca forky"></span><i class="sombra"></i></span></span></div>
+        <div class="txt"><span class="mono">Capítulo 01 · 2025</span><h2>El origen</h2><p>Una app para pedir comida sin filas en la universidad</p></div>
+    </div>
+    <p class="nota" id="nota">Un foco que acompaña a Forky mientras cruza, una viñeta suave en los bordes y un piso con horizonte donde cae su sombra. El mismo morado, pero con luz y suelo.</p>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · FONDO DEL ORIGEN
+       ======================================================= */
+    (function () {
+        const portada = document.getElementById('portada');
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const NOTAS = {
+            0: 'El fondo actual: el morado plano de Campus con una luz fija. Limpio, pero plano.',
+            1: 'Un foco que acompaña a Forky mientras cruza, una viñeta suave en los bordes y un piso con horizonte donde cae su sombra. El mismo morado, pero con luz y suelo.',
+            2: 'Tres luces de la paleta a distinta profundidad (Connect arriba, Health al costado, Empresa abajo) que derivan solas y se mueven con el mouse, cada una a su ritmo. El "01" toma un brillo interior.',
+            3: 'La onda de tap que abrió el capítulo sigue latiendo: anillos muy suaves que nacen de la luz y se expanden. Conecta la transición con la portada.'
+        };
+        document.querySelectorAll('[data-ir]').forEach(b => b.addEventListener('click', () => {
+            portada.dataset.f = b.dataset.ir;
+            document.querySelectorAll('[data-ir]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+            document.getElementById('nota').textContent = NOTAS[b.dataset.ir];
+        }));
+        /* Forky cruza en bucle; el foco de la propuesta 1 lo sigue */
+        const t0 = performance.now();
+        const ciclo = ahora => {
+            const k = ((ahora - t0) % 6000) / 6000, r = portada.getBoundingClientRect();
+            portada.style.setProperty('--k', k.toFixed(4));
+            const x = (-240 + k * (r.width + 480) + 200) / r.width;
+            portada.style.setProperty('--fx', Math.min(Math.max(x, -0.2), 1.2).toFixed(4));
+            requestAnimationFrame(ciclo);
+        };
+        if (!quieto) requestAnimationFrame(ciclo); else { portada.style.setProperty('--k', 0.55); portada.style.setProperty('--fx', 0.6); }
+        /* Parallax con el mouse para la propuesta 2, con inercia */
+        let tx = 0, ty = 0, x = 0, y = 0;
+        portada.addEventListener('pointermove', e => { const r = portada.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width - 0.5; ty = (e.clientY - r.top) / r.height - 0.5; });
+        portada.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
+        const inercia = () => { x += (tx - x) * 0.06; y += (ty - y) * 0.06; portada.style.setProperty('--mx', x.toFixed(4)); portada.style.setProperty('--my', y.toFixed(4)); requestAnimationFrame(inercia); };
+        if (!quieto) requestAnimationFrame(inercia);
+    })();
+    /* =======================================================
+       FIN JS · FONDO DEL ORIGEN
+       ======================================================= */
+</script>

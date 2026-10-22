@@ -192,9 +192,18 @@
 
 /* --- CREDENCIAL COLGANTE --- */
 .tp-res-colgante { grid-column: 9 / -1; grid-row: 1; justify-self: center; align-self: start; display: flex; flex-direction: column; align-items: center; width: min(100%, 340px); margin-top: calc(-1 * clamp(72px, 10svh, 120px)); perspective: 1200px; }
-.tp-cinta { position: relative; width: 44px; height: clamp(90px, 16svh, 170px); background: repeating-linear-gradient(180deg, var(--tp-campus) 0 60px, var(--tp-connect) 60px 120px); overflow: hidden; }
-.tp-cinta::after { content: 'tap in · tap in · tap in · tap in'; position: absolute; left: 50%; bottom: 8px; writing-mode: vertical-rl; translate: -50% 0; color: rgba(255, 255, 255, 0.75); font: 600 12px var(--tp-f); white-space: nowrap; }
-.tp-gancho { width: 28px; height: 22px; margin: -2px 0 -6px; border-radius: 6px 6px 10px 10px; background: linear-gradient(#D6D3E4, #9F9BB8); position: relative; z-index: 1; }
+/* Cinta en V: dos tramos tejidos (Campus y Connect) con "tap in" estampado y costuras, que bajan desde fuera
+   de cuadro y se juntan en un mosquetón enganchado a la ranura */
+.tp-v { position: relative; width: 100%; height: clamp(110px, 18svh, 190px); margin-bottom: -6px; z-index: 1; }
+.tp-v-tramo { position: absolute; bottom: 30px; width: 34px; height: 340px; transform-origin: 50% 100%; overflow: hidden; box-shadow: inset 2px 0 0 rgba(255, 255, 255, 0.12);
+    background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.06) 0 2px, transparent 2px 5px), linear-gradient(90deg, rgba(0, 0, 0, 0.18), transparent 22%, transparent 78%, rgba(0, 0, 0, 0.18)), var(--tp-campus); }
+.tp-v-tramo::before, .tp-v-tramo::after { content: ''; position: absolute; top: 0; bottom: 0; border-left: 1px dashed rgba(255, 255, 255, 0.4); }
+.tp-v-tramo::before { left: 4px; } .tp-v-tramo::after { right: 4px; }
+.tp-v-tramo > span { position: absolute; left: 50%; bottom: 6px; writing-mode: vertical-rl; translate: -50% 0; color: rgba(255, 255, 255, 0.85); font: 600 11px var(--tp-f); letter-spacing: 0.02em; white-space: nowrap; }
+.tp-v-tramo.izq { left: calc(50% - 30px); transform: rotate(16deg); }
+.tp-v-tramo.der { left: calc(50% - 4px); transform: rotate(-16deg); background-color: var(--tp-connect); }
+.tp-mosqueton { position: absolute; left: 50%; bottom: 0; width: 30px; height: 46px; margin-left: -15px; }
+.tp-mosqueton svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .tp-cred { --tono: var(--tp-campus); --rx: 0deg; --ry: 0deg; position: relative; width: 100%; aspect-ratio: 0.72; max-height: 60svh; display: flex; flex-direction: column; gap: 16px; padding: 30px 24px 22px; border-radius: 24px; color: #FFFFFF; background: radial-gradient(120% 80% at 80% 0%, color-mix(in srgb, var(--tono) 60%, #FFFFFF), var(--tono) 55%, color-mix(in srgb, var(--tono) 55%, #000000)); box-shadow: 0 40px 70px -36px color-mix(in srgb, var(--tono) 80%, transparent); transform-origin: 50% 0; transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform 600ms var(--ease), background 600ms var(--ease), box-shadow 600ms; overflow: hidden; isolation: isolate; }
 .tp-cred::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: var(--tp-grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; }
 /* Brillo que sigue al mouse sobre el plástico */
@@ -570,7 +579,7 @@
     .tp-res .tp-enunciado { font-size: 25px; }
     .tp-encargo { display: none; }
     .tp-res-colgante { grid-row: 2; width: 100%; margin-top: 0; align-self: stretch; }
-    .tp-cinta, .tp-gancho, .tp-ranura { display: none; }
+    .tp-v, .tp-ranura { display: none; }
     .tp-cred { aspect-ratio: auto; height: 100%; max-height: none; padding: 18px; gap: 8px; }
     .tp-cred-signos { min-height: 80px; }
     .tp-signo { width: 26%; }
