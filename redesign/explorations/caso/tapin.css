@@ -138,7 +138,7 @@
 /* La sección se fija y el scroll recorre el proyecto mes a mes: un cursor avanza por la línea de tiempo (a
    escala real, 22 meses), los hitos se encienden y la credencial colgante cambia al capítulo en curso.
    La credencial se inclina levemente con el mouse, colgada de su cinta */
-.tp-res { --fondo: #FBFAFF; height: 230svh; }
+.tp-res { --fondo: #FBFAFF; --t: 0; height: 300svh; }
 .tp-res-fijo { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 1fr auto; column-gap: var(--medianil); padding: clamp(72px, 10svh, 120px) var(--margen) clamp(40px, 6svh, 72px); }
 .tp-res-txt { grid-column: 1 / span 7; align-self: center; display: flex; flex-direction: column; gap: 32px; }
 .tp-res .tp-etq { padding-top: 0; }
@@ -151,6 +151,17 @@
 .tp-encargo .mono::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
 .tp-encargo p { font: 400 clamp(17px, 1.35vw, 20px) / 1.32 var(--tp-f); letter-spacing: -0.015em; }
 .tp-encargo-flecha { display: grid; place-items: center; width: 40px; height: 40px; margin-top: 22px; border-radius: 50%; border: 1px solid var(--linea); color: var(--acento); font-size: 16px; }
+
+/* --- ONDA DE TAP: EL PASO AL CAPÍTULO 01 --- */
+/* Al terminar el recorrido, la credencial recibe un "tap": dos anillos se adelantan y el morado de Campus se
+   abre en círculo desde ella hasta cubrir la pantalla. El capítulo 01 empieza con ese mismo morado, sin corte.
+   --t (0 a 1) lo publica tapin.js; --ox y --oy son el centro de la credencial */
+.tp-tap { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.tp-tap i { position: absolute; left: var(--ox, 78%); top: var(--oy, 46%); width: 200vmax; aspect-ratio: 1; margin: -100vmax 0 0 -100vmax; border-radius: 50%; border: 2px solid var(--tp-campus); opacity: calc((0.7 - var(--q) * 0.7) * min(1, var(--q) * 40)); transform: scale(var(--q)); }
+.tp-tap i:nth-child(1) { --q: clamp(0, var(--t) / 0.7, 1); }
+.tp-tap i:nth-child(2) { --q: clamp(0, (var(--t) - 0.12) / 0.7, 1); }
+.tp-tap-morado { position: absolute; inset: 0; background: var(--tp-campus); clip-path: circle(calc(clamp(0, (var(--t) - 0.18) / 0.72, 1) * 150%) at var(--ox, 78%) var(--oy, 46%)); }
+.tp-res .tp-cred { scale: calc(1 - clamp(0, var(--t) / 0.08, 1) * 0.05 + clamp(0, (var(--t) - 0.08) / 0.1, 1) * 0.05); }
 
 /* --- CREDENCIAL COLGANTE --- */
 .tp-res-colgante { grid-column: 9 / -1; grid-row: 1; justify-self: center; align-self: start; display: flex; flex-direction: column; align-items: center; width: min(100%, 340px); margin-top: calc(-1 * clamp(72px, 10svh, 120px)); perspective: 1200px; }
@@ -225,7 +236,10 @@
 .tp-cap-txt.visto h2 { transition-delay: 80ms; }
 .tp-cap-txt.visto p { transition-delay: 200ms; }
 
-/* --- CAPÍTULO 01: FORKY CRUZA CORRIENDO --- */
+/* El capítulo 01 nace del morado de la onda de tap: bordes del mismo morado plano y la luz dentro del panel */
+.tp-cap-1 { background: var(--tp-campus); }
+.tp-cap-1 .tp-fijo { background: radial-gradient(55% 50% at 72% 38%, rgba(129, 116, 242, 0.6), transparent 72%); }
+/* Número del capítulo, enorme y calado, detrás de todo */
 /* Número del capítulo, enorme y calado, detrás de todo */
 .tp-cap-num { position: absolute; right: calc(var(--margen) - 0.04em); top: 9svh; font: 600 clamp(180px, 30vw, 520px) / 0.8 var(--tp-f); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22); transform: translateY(calc(var(--p, 0) * -14svh)); }
 .tp-pista-forky { position: absolute; left: 0; right: 0; top: 16svh; height: 36svh; }
@@ -503,7 +517,7 @@
     .tp-hero-pista { display: none; }
     .tp-etq { padding-top: 0; }
     .tp-creditos { grid-template-columns: 1fr; }
-    .tp-res { height: 260svh; }
+    .tp-res { height: 330svh; }
     .tp-res-fijo { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; row-gap: 14px; padding: 72px var(--margen) 28px; }
     .tp-res-fijo > * { grid-column: 1 !important; }
     .tp-res-txt { align-self: start; gap: 14px; }

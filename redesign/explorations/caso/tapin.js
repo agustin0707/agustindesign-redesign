@@ -45,9 +45,18 @@
                 });
                 el.addEventListener('pointerleave', () => ['--rx', '--ry', '--lx', '--ly'].forEach(v => cred.style.removeProperty(v)));
             }
+            const fijo = el.querySelector('.tp-fijo'), tap = el.querySelector('.tp-tap');
             return p => {
-                const mes = fijar(p * 1.15) * 21.68, m = Math.min(Math.floor(mes), 21);
+                /* El recorrido del tiempo ocupa el 70 % de la pista; el resto es la onda de tap */
+                const mes = fijar(p / 0.7) * 21.68, m = Math.min(Math.floor(mes), 21);
                 tiempo.style.setProperty('--mes', mes.toFixed(3));
+                const t = fijar((p - 0.74) / 0.26);
+                el.style.setProperty('--t', t.toFixed(4));
+                if (t > 0) {
+                    const f = fijo.getBoundingClientRect(), c = cred.getBoundingClientRect();
+                    tap.style.setProperty('--ox', ((c.left + c.width / 2 - f.left) / f.width * 100).toFixed(2) + '%');
+                    tap.style.setProperty('--oy', ((c.top + c.height / 2 - f.top) / f.height * 100).toFixed(2) + '%');
+                }
                 let u = -1;
                 hitos.forEach((h, i) => { const on = parseFloat(h.style.getPropertyValue('--m')) <= mes; h.classList.toggle('on', on); if (on) u = i; });
                 hitos.forEach((h, i) => h.classList.toggle('ultimo', i === u));
@@ -176,7 +185,8 @@
         const y = window.scrollY;
         const m = modulos.find(el => { const r = el.getBoundingClientRect(); return r.top <= 32 && r.bottom > 32; });
         const hero = escenas[0];
-        nav.classList.toggle('sobre-claro', !!m && (m.classList.contains('tp-claro') || (m === hero.el && hero.p > 0.62)));
+        const resumen = escenas.find(x => x.el.dataset.escena === 'resumen');
+        nav.classList.toggle('sobre-claro', !!m && ((m.classList.contains('tp-claro') && !(m === resumen.el && resumen.p > 0.86)) || (m === hero.el && hero.p > 0.62)));
         if (Math.abs(y - ultimoY) < 6) return;
         nav.classList.toggle('oculta', y > ultimoY && y > 120);
         ultimoY = y;
