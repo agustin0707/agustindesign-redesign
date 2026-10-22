@@ -1,0 +1,284 @@
+<title>Pasos Tap In</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Cinco pasos de la decisión 01 (el logotipo de Campus) a la decisión 02 (el pendón con el QR), más el actual.
+       Cada uno es una escena fija que avanza con el scroll, sobre la grilla del caso: texto de 4 a 6, pieza de 8 a 12 */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B; --gris-2: #8A889E; --linea: rgba(45, 37, 96, 0.12);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --noche: #100D20;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    img { display: block; max-width: 100%; }
+    .vista { display: none; } [data-v="0"] .v0, [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc, [data-v="d"] .vd, [data-v="e"] .ve { display: block; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .logo { --svg: url('tp-logo-campus.svg'); aspect-ratio: 449.89 / 158; color: var(--campus); }
+    .iso { --svg: url('tp-forky.svg'); aspect-ratio: 142 / 158; color: var(--campus); }
+
+    /* --- ESCENA COMÚN --- */
+    .escena { --p: 0; position: relative; height: 340svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); align-items: center; }
+    .textos { grid-column: 1 / span 6; grid-row: 1; display: grid; }
+    .dec { grid-area: 1 / 1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); column-gap: var(--medianil); row-gap: 14px; align-content: center; }
+    .dec .num { grid-column: 1 / span 3; grid-row: 1; font: 600 clamp(64px, 6.6vw, 112px) / 0.78 var(--f-marca); letter-spacing: -0.06em; color: var(--soft); }
+    .dec .eti { grid-column: 1 / span 3; grid-row: 2; display: inline-flex; align-items: center; gap: 8px; color: var(--gris); }
+    .dec .eti::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--campus); }
+    .dec h3 { grid-column: 4 / span 3; grid-row: 1; margin: 0; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; }
+    .dec p { grid-column: 4 / span 3; grid-row: 2 / 4; margin: 0; font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); color: var(--gris); }
+    .d1 { opacity: calc(1 - var(--t1, 0)); translate: 0 calc(var(--t1, 0) * -24px); }
+    .d2 { opacity: var(--t2, 0); translate: 0 calc((1 - var(--t2, 0)) * 24px); }
+    .zona { grid-column: 8 / -1; grid-row: 1; position: relative; height: min(62svh, 640px); }
+    .zona > * { position: absolute; }
+    .logo-fin { left: 11%; right: 11%; top: 50%; translate: 0 -50%; }
+    .pendon { left: 50%; top: 0; height: 100%; aspect-ratio: 1 / 2; translate: -50% 0; border-radius: 6px; overflow: hidden; box-shadow: 0 30px 60px -34px rgba(45, 37, 96, 0.55); }
+    .pendon img { width: 100%; height: 100%; object-fit: cover; }
+    .pantalla { position: absolute; inset: 0; pointer-events: none; }
+    .rotulo { position: absolute; left: var(--margen); bottom: 28px; color: var(--gris); }
+
+    /* =======================================================
+       0 · ACTUAL: LA FOTO COMO VENTANA
+       ======================================================= */
+    .v0 .foto { inset: 0; z-index: 3; overflow: hidden; clip-path: inset(calc((1 - var(--o, 0)) * 50%) calc((1 - var(--o, 0)) * 30%) round calc((1 - var(--o, 0)) * 32px)); opacity: calc(min(var(--o, 0) * 6, 1) * (1 - var(--c, 0))); }
+    .v0 .foto img { width: 100%; height: 100%; object-fit: cover; scale: calc(1.15 - var(--o, 0) * 0.15); }
+
+    /* =======================================================
+       A · EL LOGO VIAJA AL PENDÓN
+       ======================================================= */
+    /* El logotipo de Campus se achica y viaja al lugar del logo en el pendón; el pendón se abre en círculo desde ahí */
+    .va .viaja { z-index: 2; left: 50%; top: 50%; width: 78%; translate: -50% -50%; transform-origin: 50% 50%; }
+    .va .pendon { clip-path: circle(calc(var(--r, 0) * 120%) at 50% 9%); }
+
+    /* =======================================================
+       B · EL PENDÓN SE DESPLIEGA
+       ======================================================= */
+    /* Como un roll-up de verdad: la base entra, la tela sube desde ella y al final se monta el riel de arriba */
+    .vb .logo-fin { opacity: calc(1 - var(--s, 0)); translate: 0 calc(-50% - var(--s, 0) * 40px); }
+    .vb .base { left: 50%; bottom: -16px; width: calc(min(62svh, 640px) * 0.62); height: 14px; translate: -50% 0; border-radius: 8px 8px 4px 4px; background: linear-gradient(#C9C5DB, #8F8AA8); scale: var(--b, 0) 1; }
+    .vb .pendon { clip-path: inset(calc((1 - var(--u, 0)) * 100%) 0 0 0); box-shadow: none; }
+    .vb .riel { left: 50%; width: calc(min(62svh, 640px) * 0.54); height: 8px; translate: -50% 0; top: calc((1 - var(--u, 0)) * 100% - 6px); border-radius: 4px; background: linear-gradient(#D6D3E4, #9F9BB8); opacity: min(var(--u, 0) * 8, 1); }
+
+    /* =======================================================
+       C · LOS CUBIERTOS CORREN
+       ======================================================= */
+    /* El wordmark se apaga, el isotipo sale corriendo y arrastra el morado de Campus por toda la pantalla; el morado
+       se recoge hasta ser el pendón */
+    .vc .logo-fin { opacity: calc(1 - var(--w, 0)); }
+    .vc .corredor { z-index: 6; width: clamp(80px, 7vw, 120px); color: #FFFFFF; filter: drop-shadow(0 10px 18px rgba(16, 13, 32, 0.25)); opacity: var(--vis, 0); }
+    .vc .corredor .iso { color: inherit; }
+    .vc .morado { position: absolute; inset: 0; z-index: 5; background: radial-gradient(80% 70% at 30% 30%, #6B5CE7, #4A3CAE 60%, #2D2560); clip-path: var(--clip, circle(0 at 50% 50%)); }
+    .vc .zona .pendon { z-index: 7; opacity: var(--pe, 0); }
+
+    /* =======================================================
+       D · SESENTA QR
+       ======================================================= */
+    /* El logotipo se deshace en 60 QR (los del campus) que llenan la pantalla mientras cuenta hasta 60; todos se van
+       menos uno, que viaja y se vuelve el QR del pendón */
+    .vd .logo-fin { opacity: calc(1 - var(--w, 0)); }
+    .vd .mosaico { position: absolute; inset: 0; z-index: 5; display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(6, 1fr); gap: 1.2vw; padding: 8svh var(--margen); background: rgba(244, 243, 250, var(--fondo, 0)); pointer-events: none; }
+    .vd .qr { position: relative; border-radius: 10%; background: url('tp-pendon.jpg') 73% 83.5% / 380% auto no-repeat, var(--campus); aspect-ratio: 1; align-self: center; justify-self: center; width: 100%; max-height: 100%; opacity: 0; scale: 0.6; transition: none; }
+    .vd .cuenta { position: absolute; left: 50%; top: 50%; z-index: 6; translate: -50% -50%; padding: 14px 22px; border-radius: 999px; background: var(--tinta); color: #FFFFFF; font: 500 clamp(18px, 1.6vw, 24px) var(--f-marca); white-space: nowrap; opacity: var(--cn, 0); }
+    .vd .cuenta b { font-weight: 600; font-variant-numeric: tabular-nums; }
+    .vd .zona .pendon { z-index: 4; opacity: var(--pe, 0); }
+    .vd .viajero { position: fixed; z-index: 8; border-radius: 10%; background: url('tp-pendon.jpg') 73% 83.5% / 380% auto no-repeat, var(--campus); opacity: 0; pointer-events: none; }
+
+    /* =======================================================
+       E · DEL CAMPUS AL PENDÓN
+       ======================================================= */
+    /* Una foto real del stand se abre a pantalla completa y entra hacia el logo del pendón que aparece en ella; ahí
+       la foto se funde con el pendón limpio, que baja a su lugar en la decisión 02 */
+    .ve .logo-fin { opacity: calc(1 - var(--w, 0)); }
+    .ve .foto { position: absolute; inset: 0; z-index: 5; overflow: hidden; clip-path: inset(calc((1 - var(--o, 0)) * 40%) calc((1 - var(--o, 0)) * 25%) round calc((1 - var(--o, 0)) * 28px)); opacity: calc(min(var(--o, 0) * 6, 1) * (1 - var(--f, 0))); }
+    .ve .foto img { width: 100%; height: 100%; object-fit: cover; object-position: 68% 14%; transform-origin: 68% 14%; scale: calc(1 + var(--z, 0) * 3.2); }
+    .ve .zona .pendon { z-index: 6; opacity: var(--pe, 0); }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .selector button:focus-visible { outline: 2px solid var(--health); outline-offset: 2px; }
+    .intro { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding: 56px var(--margen) 0; color: var(--gris-2); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .notas { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding: 80px var(--margen) 140px; background: var(--tinta); color: #F4F3FB; row-gap: 48px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 36ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .fijo { grid-template-columns: minmax(0, 1fr); align-content: start; padding-top: 72px; row-gap: 20px; }
+        .textos, .zona { grid-column: 1; grid-row: auto; }
+        .dec { grid-template-columns: minmax(0, 1fr); row-gap: 8px; }
+        .dec .num, .dec p { display: none; }
+        .dec .eti, .dec h3 { grid-column: 1; grid-row: auto; }
+        .dec h3 { font-size: 28px; }
+        .zona { height: 54svh; }
+        .vd .mosaico { grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(10, 1fr); gap: 2.4vw; padding: 10svh var(--margen); }
+        .ops { grid-template-columns: minmax(0, 1fr); }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="intro"><span class="mono">Del 01 al 02</span><p>Baja para ver el paso del logotipo de Campus al pendón de la decisión 02. Cambia de versión con el selector.</p></div>
+</div>
+
+<template id="textos">
+    <div class="textos">
+        <div class="dec d1"><span class="num">01</span><span class="eti mono">Decisión 01</span><h3>Unos cubiertos que corren</h3><p>Antes del isotipo hubo utensilios en las letras y un pin; después vinieron las patas y un brazo</p></div>
+        <div class="dec d2"><span class="num">02</span><span class="eti mono">Decisión 02</span><h3>La marca salió al campus</h3><p>60 QR en los locales de la UC y promociones con Red Bull y Banco de Chile dentro de la app</p></div>
+    </div>
+</template>
+
+<nav class="selector" aria-label="Versiones del paso">
+    <button type="button" data-ir="0" aria-pressed="false"><b>0</b><span>Actual</span></button>
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>Logo viaja</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Se despliega</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Corren</span></button>
+    <button type="button" data-ir="d" aria-pressed="false"><b>D</b><span>60 QR</span></button>
+    <button type="button" data-ir="e" aria-pressed="false"><b>E</b><span>Foto al pendón</span></button>
+</nav>
+
+<main class="notas">
+    <h2>Del 01 al 02</h2>
+    <div class="bloque">
+        <p>Hoy el paso es una foto que se abre como ventana: corta el hilo entre el logotipo y el pendón. Las cinco versiones los unen.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · El logo viaja</span><strong>Del logotipo al pendón</strong><p>El logotipo de Campus se achica y viaja al lugar del logo en el pendón, que se abre en círculo desde ahí. Un solo objeto que cambia de escala: la marca salió al campus, literal.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Se despliega</span><strong>Un roll-up de verdad</strong><p>El logotipo sube y se apaga; entra la base y la tela sube desde ella hasta montar el riel. El gesto físico del pendón, sin salir de la grilla.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Los cubiertos corren</span><strong>El isotipo arrastra el color</strong><p>El isotipo se suelta del logotipo y sale corriendo; detrás deja el morado de Campus en toda la pantalla, que se recoge hasta ser el pendón. Retoma el "corren" de la decisión 01.</p></button>
+            <button type="button" class="op" data-ir="d" aria-pressed="false"><span class="mono">D · Sesenta QR</span><strong>La cifra, en pantalla</strong><p>El logotipo se deshace en 60 QR que llenan la pantalla mientras cuenta hasta 60; todos se van menos uno, que viaja y se vuelve el QR del pendón.</p></button>
+            <button type="button" class="op" data-ir="e" aria-pressed="false"><span class="mono">E · Del campus al pendón</span><strong>Entrar a la foto</strong><p>Una foto real del stand se abre a pantalla completa y la cámara entra hacia el logo del pendón que se ve en ella; ahí se funde con el pendón limpio de la decisión 02.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · PASOS DEL 01 AL 02
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const tramo = (p, a, b) => fijar((p - a) / (b - a));
+        const suave = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        const textos = document.getElementById('textos').content;
+
+        /* --- 1. ARMAR LAS SEIS ESCENAS --- */
+        const piezas = {
+            '0': `<div class="zona"><span class="marca logo logo-fin"></span><div class="pendon"><img src="tp-pendon.jpg" alt=""></div></div><div class="pantalla foto"><img src="ed-foto8.webp" alt=""></div>`,
+            a: `<div class="zona"><div class="pendon"><img src="tp-pendon.jpg" alt=""></div><span class="marca logo viaja"></span></div>`,
+            b: `<div class="zona"><span class="marca logo logo-fin"></span><div class="pendon"><img src="tp-pendon.jpg" alt=""></div><span class="riel"></span><span class="base"></span></div>`,
+            c: `<div class="zona"><span class="marca logo logo-fin"></span><div class="pendon"><img src="tp-pendon.jpg" alt=""></div></div><div class="morado"></div><div class="pantalla corredor-caja"><span class="corredor" style="position:absolute"><span class="marca iso"></span></span></div>`,
+            d: `<div class="zona"><span class="marca logo logo-fin"></span><div class="pendon"><img src="tp-pendon.jpg" alt=""></div></div><div class="mosaico"></div><span class="cuenta"><b>00</b> QR en los locales de la UC</span><span class="viajero"></span>`,
+            e: `<div class="zona"><span class="marca logo logo-fin"></span><div class="pendon"><img src="tp-pendon.jpg" alt=""></div></div><div class="foto"><img src="tp-bc-01.webp" alt=""></div>`
+        };
+        const escenas = {};
+        Object.entries(piezas).forEach(([v, html]) => {
+            const s = document.createElement('section'); s.className = 'vista v' + v;
+            s.innerHTML = `<div class="escena"><div class="fijo"></div></div>`;
+            const fijo = s.querySelector('.fijo'); fijo.appendChild(textos.cloneNode(true)); fijo.insertAdjacentHTML('beforeend', html);
+            raiz.appendChild(s); escenas[v] = s.querySelector('.escena');
+        });
+        const mosaico = escenas.d.querySelector('.mosaico');
+        mosaico.innerHTML = Array.from({ length: 60 }, (_, k) => `<span class="qr" style="--k:${k}"></span>`).join('');
+        const qrs = [...mosaico.children], orden = qrs.map((_, k) => k).sort(() => Math.random() - 0.5);
+
+        /* --- 2. COREOGRAFÍA DE CADA VERSIÓN --- */
+        const textosDe = (el, p, a, b) => { el.style.setProperty('--t1', tramo(p, a, a + 0.12).toFixed(3)); el.style.setProperty('--t2', tramo(p, b, b + 0.12).toFixed(3)); };
+        const rect = el => el.getBoundingClientRect();
+        const coreo = {
+            '0': (el, p) => { textosDe(el, p, 0.1, 0.72); el.style.setProperty('--o', suave(tramo(p, 0.08, 0.45)).toFixed(3)); el.style.setProperty('--c', tramo(p, 0.62, 0.75).toFixed(3)); el.querySelector('.logo-fin').style.opacity = p < 0.5 ? 1 : 0; el.querySelector('.pendon').style.opacity = p > 0.6 ? 1 : 0; },
+            a: (el, p) => {
+                textosDe(el, p, 0.2, 0.55);
+                const zona = el.querySelector('.zona'), h = zona.clientHeight, w = zona.clientWidth, t = suave(tramo(p, 0.12, 0.55));
+                const pw = h / 2, ancho0 = w * 0.78, ancho1 = pw * 0.62;
+                const viaja = el.querySelector('.viaja');
+                viaja.style.transform = `translateY(${(-0.5 * h + 0.095 * h) * t}px) scale(${1 - (1 - ancho1 / ancho0) * t})`;
+                viaja.style.opacity = 1 - tramo(p, 0.6, 0.7);
+                el.style.setProperty('--r', suave(tramo(p, 0.5, 0.85)).toFixed(3));
+            },
+            b: (el, p) => { textosDe(el, p, 0.15, 0.6); el.style.setProperty('--s', suave(tramo(p, 0.08, 0.25)).toFixed(3)); el.style.setProperty('--b', suave(tramo(p, 0.22, 0.38)).toFixed(3)); el.style.setProperty('--u', suave(tramo(p, 0.36, 0.78)).toFixed(3)); },
+            c: (el, p) => {
+                textosDe(el, p, 0.3, 0.75);
+                const fijo = el.querySelector('.fijo'), W = fijo.clientWidth, H = fijo.clientHeight;
+                const logo = el.querySelector('.logo-fin'), rl = rect(logo), rf = rect(fijo), corredor = el.querySelector('.corredor');
+                el.style.setProperty('--w', tramo(p, 0.06, 0.16).toFixed(3));
+                const c = tramo(p, 0.12, 0.5), cw = corredor.offsetWidth;
+                const x0 = rl.left - rf.left, y0 = rl.top - rf.top + rl.height * 0.05, x = x0 + (W + cw - x0) * suave(c) - (c > 0 ? 0 : 0);
+                const bote = Math.abs(Math.sin(c * Math.PI * 9)) * -18 * (c > 0 && c < 1 ? 1 : 0);
+                corredor.style.left = x + 'px'; corredor.style.top = (y0 + bote) + 'px'; corredor.style.rotate = (c > 0 && c < 1 ? 10 : 0) + 'deg';
+                corredor.style.color = c > 0 ? '#FFFFFF' : 'var(--campus)';
+                el.style.setProperty('--vis', p > 0.1 && c < 1 ? 1 : 0);
+                const pendon = el.querySelector('.zona .pendon'), rp = rect(pendon);
+                const r = suave(tramo(p, 0.55, 0.85)), radio = Math.hypot(W, H) * 1.1 * suave(c);
+                const top = (rp.top - rf.top) / H * 100 * r, izq = (rp.left - rf.left) / W * 100 * r, der = (W - (rp.right - rf.left)) / W * 100 * r, abajo = (H - (rp.bottom - rf.top)) / H * 100 * r;
+                /* El morado nace del isotipo y lo sigue mientras corre, hasta cubrir la pantalla */
+                el.style.setProperty('--clip', c < 1 ? `circle(${radio.toFixed(1)}px at ${(x + cw / 2).toFixed(1)}px ${(y0 + cw / 2).toFixed(1)}px)` : `inset(${top.toFixed(2)}% ${der.toFixed(2)}% ${abajo.toFixed(2)}% ${izq.toFixed(2)}% round ${(r * 6).toFixed(1)}px)`);
+                el.style.setProperty('--pe', tramo(p, 0.8, 0.9).toFixed(3));
+                el.querySelector('.morado').style.opacity = 1 - tramo(p, 0.86, 0.92);
+            },
+            d: (el, p) => {
+                textosDe(el, p, 0.15, 0.8);
+                el.style.setProperty('--w', tramo(p, 0.05, 0.15).toFixed(3));
+                const llena = tramo(p, 0.1, 0.42), sale = tramo(p, 0.55, 0.7);
+                const n = Math.round(llena * 60);
+                orden.forEach((k, i) => { const q = qrs[k], on = i < n; const elegido = k === 27; q.style.opacity = on ? (elegido ? (sale > 0 ? 0 : 1) : 1 - sale) : 0; q.style.scale = on ? (1 - sale * 0.4) : 0.6; });
+                el.style.setProperty('--fondo', (llena > 0 ? 0.92 : 0) * (1 - tramo(p, 0.6, 0.72)));
+                el.style.setProperty('--cn', (tramo(p, 0.12, 0.2) * (1 - tramo(p, 0.5, 0.58))).toFixed(3));
+                el.querySelector('.cuenta b').textContent = String(n).padStart(2, '0');
+                const v = el.querySelector('.viajero'), q0 = rect(qrs[27]), pd = rect(el.querySelector('.zona .pendon'));
+                const meta = { l: pd.left + pd.width * 0.585, t: pd.top + pd.height * 0.765, s: pd.width * 0.27 };
+                const m = suave(tramo(p, 0.55, 0.78));
+                Object.assign(v.style, { left: (q0.left + (meta.l - q0.left) * m) + 'px', top: (q0.top + (meta.t - q0.top) * m) + 'px', width: (q0.width + (meta.s - q0.width) * m) + 'px', height: (q0.width + (meta.s - q0.width) * m) + 'px', opacity: sale > 0 && p < 0.84 && el.closest('.vista').offsetParent ? 1 : 0 });
+                el.style.setProperty('--pe', tramo(p, 0.72, 0.84).toFixed(3));
+            },
+            e: (el, p) => {
+                textosDe(el, p, 0.1, 0.8);
+                el.style.setProperty('--w', tramo(p, 0.05, 0.15).toFixed(3));
+                el.style.setProperty('--o', suave(tramo(p, 0.06, 0.35)).toFixed(3));
+                el.style.setProperty('--z', suave(tramo(p, 0.4, 0.66)).toFixed(3));
+                el.style.setProperty('--f', tramo(p, 0.62, 0.74).toFixed(3));
+                el.style.setProperty('--pe', tramo(p, 0.6, 0.72).toFixed(3));
+            }
+        };
+        const pintar = () => {
+            const v = raiz.dataset.v, el = escenas[v], r = el.getBoundingClientRect();
+            const p = fijar(-r.top / (r.height - innerHeight));
+            el.style.setProperty('--p', p.toFixed(4)); coreo[v](el, p);
+        };
+        let pendiente = false;
+        addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } }, { passive: true });
+        addEventListener('resize', pintar);
+
+        /* --- 3. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => {
+            raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v)));
+            try { localStorage.setItem('pasos-tapin', v); } catch (e) { /* sin almacenamiento */ }
+            requestAnimationFrame(pintar);
+        };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) scrollTo({ top: 0, behavior: 'smooth' }); }));
+        let guardado = null;
+        try { guardado = localStorage.getItem('pasos-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1);
+        elegir(['0', 'a', 'b', 'c', 'd', 'e'].includes(h) ? h : guardado || 'a');
+        addEventListener('load', pintar);
+    })();
+    /* =======================================================
+       FIN JS · PASOS DEL 01 AL 02
+       ======================================================= */
+</script>

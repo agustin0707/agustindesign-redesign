@@ -544,8 +544,10 @@
 .tp-galeria-pista { grid-column: 4 / -1; display: flex; gap: 16px; margin-right: calc(var(--margen) * -1); padding-right: var(--margen); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: grab; }
 .tp-galeria-pista::-webkit-scrollbar { display: none; }
 .tp-galeria-pista.arrastrando { cursor: grabbing; scroll-snap-type: none; }
-.tp-galeria-pista figure { flex: none; height: clamp(260px, 30vw, 460px); overflow: hidden; border-radius: 18px; background: var(--tp-tint); scroll-snap-align: start; opacity: 0; translate: 32px 0; transition: opacity 700ms var(--ease), translate 900ms var(--ease); transition-delay: calc(var(--i) * 70ms); }
-.tp-galeria-pista.visto figure { opacity: 1; translate: 0 0; }
+/* Las fotos entran con un barrido (clip-path) y no con un desplazamiento: mover el ancla del snap durante la
+   entrada dejaba el riel corrido y la primera foto cortada */
+.tp-galeria-pista figure { flex: none; height: clamp(260px, 30vw, 460px); overflow: hidden; border-radius: 18px; background: var(--tp-tint); scroll-snap-align: start; clip-path: inset(0 100% 0 0 round 18px); transition: clip-path 1000ms var(--ease); transition-delay: calc(var(--i) * 80ms); }
+.tp-galeria-pista.visto figure { clip-path: inset(0 0 0 0 round 18px); }
 .tp-galeria-pista img { width: auto; height: 100%; user-select: none; -webkit-user-drag: none; pointer-events: none; transition: scale 900ms var(--ease); }
 
 /* =======================================================

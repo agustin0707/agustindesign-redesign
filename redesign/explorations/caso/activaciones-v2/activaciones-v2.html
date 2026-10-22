@@ -1,0 +1,371 @@
+<title>Activaciones Tap In v2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Tres mejoras para las fotos de las activaciones del caso Tap In, sobre la grilla del caso (12 columnas,
+       riel de rótulos de 1 a 3). Las mismas fotos editadas de cada activación; el marco sigue siendo el del caso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B; --gris-2: #8A889E; --linea: rgba(45, 37, 96, 0.12);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --tint: #EEEDFE; --noche: #100D20;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1); --curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    img { display: block; max-width: 100%; }
+    figure { margin: 0; }
+    button { font: inherit; color: inherit; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .vista { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc { display: block; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .intro { padding-block: 56px 48px; color: var(--gris-2); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+
+    /* --- LOCKUP TAP IN × MARCA --- */
+    /* La alianza se dice con un lockup: el wordmark de Tap In, una cruz fina y el logo de la marca, a alturas ópticas */
+    .lockup { display: inline-flex; align-items: center; gap: clamp(10px, 1vw, 16px); }
+    .lockup .wm { --svg: url('tp-wordmark.svg'); height: clamp(22px, 2vw, 30px); aspect-ratio: 389.87 / 150.6; }
+    .lockup .x { width: 12px; height: 12px; background: linear-gradient(45deg, transparent calc(50% - 0.7px), currentColor calc(50% - 0.7px) calc(50% + 0.7px), transparent calc(50% + 0.7px)), linear-gradient(-45deg, transparent calc(50% - 0.7px), currentColor calc(50% - 0.7px) calc(50% + 0.7px), transparent calc(50% + 0.7px)); opacity: 0.7; }
+    .lockup .lg { height: var(--h); aspect-ratio: var(--ar); }
+
+    /* --- GALERÍA COMÚN: RIEL CON PIE DE FOTO, SEGMENTOS Y CAJA DE LUZ --- */
+    .gal { align-items: start; padding-top: var(--medianil); }
+    .gal-riel { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 14px; padding-top: 2px; }
+    .gal-cont { display: flex; align-items: baseline; gap: 8px; }
+    .gal-cont b { font: 600 clamp(36px, 3.2vw, 52px) / 0.9 var(--f-marca); letter-spacing: -0.05em; color: var(--campus); font-variant-numeric: tabular-nums; }
+    .gal-cont span { color: var(--gris-2); }
+    .gal-pie { min-height: 2.9em; max-width: 26ch; color: var(--gris); font: 400 14px / 1.45 var(--f-marca); }
+    .gal-pie span { display: block; animation: pie 400ms var(--ease); }
+    @keyframes pie { from { opacity: 0; translate: 0 6px; } }
+    .segs { display: flex; gap: 4px; max-width: 220px; }
+    .segs i { flex: 1; height: 3px; border-radius: 2px; background: var(--linea); overflow: hidden; position: relative; }
+    .segs i::after { content: ''; position: absolute; inset: 0; background: var(--campus); transform-origin: left; transform: scaleX(var(--f, 0)); }
+    .segs i.ya::after { --f: 1; }
+    .flechas { display: flex; gap: 8px; }
+    .flechas button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--linea); border-radius: 50%; background: transparent; cursor: pointer; transition: background 200ms linear, color 200ms linear, border-color 200ms linear, opacity 200ms linear; }
+    .flechas svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: translate 300ms var(--curva); }
+    .flechas button:disabled { opacity: 0.35; cursor: default; }
+    @media (hover: hover) { .flechas button:not(:disabled):hover { background: var(--campus); border-color: var(--campus); color: #FFFFFF; } .flechas button:first-child:not(:disabled):hover svg { translate: -2px 0; } .flechas button:last-child:not(:disabled):hover svg { translate: 2px 0; } }
+    .pista { grid-column: 4 / -1; display: flex; gap: 16px; margin-right: calc(var(--margen) * -1); padding-right: var(--margen); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: grab; }
+    .pista::-webkit-scrollbar { display: none; }
+    .pista.arrastrando { cursor: grabbing; scroll-snap-type: none; }
+    .pista figure { position: relative; flex: none; height: clamp(260px, 30vw, 460px); overflow: hidden; border-radius: 18px; background: var(--tint); scroll-snap-align: start; cursor: zoom-in; clip-path: inset(0 100% 0 0 round 18px); transition: clip-path 1000ms var(--ease); transition-delay: calc(var(--i) * 80ms); }
+    .pista.visto figure { clip-path: inset(0 0 0 0 round 18px); }
+    .pista img { width: auto; height: 100%; user-select: none; -webkit-user-drag: none; pointer-events: none; transition: scale 900ms var(--ease), filter 400ms linear; }
+    .pista figure.on img { filter: none; }
+    @media (hover: hover) { .pista figure:hover img { scale: 1.03; } }
+    /* Pastilla que sigue al cursor sobre la galería: dice qué se puede hacer */
+    .cursor { position: fixed; left: 0; top: 0; z-index: 40; padding: 8px 12px; border-radius: 999px; background: var(--tinta); color: #FFFFFF; pointer-events: none; opacity: 0; scale: 0.8; transition: opacity 200ms linear, scale 300ms var(--curva); white-space: nowrap; }
+    .cursor.on { opacity: 1; scale: 1; }
+    .caja { position: fixed; inset: 0; z-index: 50; display: grid; grid-template-rows: auto 1fr auto; gap: 16px; padding: 18px var(--margen) 24px; background: rgba(16, 13, 32, 0.96); color: #F4F3FB; opacity: 0; visibility: hidden; transition: opacity 250ms linear, visibility 0s 250ms; }
+    .caja.on { opacity: 1; visibility: visible; transition: opacity 250ms linear; }
+    .caja-cab, .caja-pie { display: flex; justify-content: space-between; align-items: center; gap: 16px; color: rgba(238, 237, 254, 0.72); }
+    .caja img { width: 100%; height: 100%; min-height: 0; object-fit: contain; scale: 0.97; transition: scale 400ms var(--ease); }
+    .caja.on img { scale: 1; }
+    .caja button { padding: 8px 14px; border: 1px solid rgba(238, 237, 254, 0.2); border-radius: 999px; background: none; font: 12px var(--f-mono); cursor: pointer; }
+
+    /* =======================================================
+       A · PLIEGO AFINADO
+       ======================================================= */
+    /* Misma estructura, pero la foto a sangre lleva el lockup de la alianza y un título que no pelea con la foto;
+       la galería gana pie de foto, segmentos, pastilla de cursor y caja de luz */
+    .va .pliego { padding-block: 72px 0; }
+    .va .pliego + .pliego { padding-top: 140px; }
+    .va .sangre { position: relative; height: min(84svh, 56.25vw); overflow: hidden; background: var(--empresa); }
+    .va .sangre img { width: 100%; height: 100%; object-fit: cover; scale: calc(1.08 - var(--z, 0) * 0.08); }
+    .va .sangre::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16, 13, 32, 0.35), transparent 28%, transparent 52%, rgba(16, 13, 32, 0.78)); }
+    .va .arriba { position: absolute; inset: 0 0 auto; z-index: 1; padding-top: clamp(20px, 2.4vw, 36px); color: #FFFFFF; align-items: center; }
+    .va .arriba .lockup { grid-column: 1 / span 6; }
+    .va .arriba .mono { grid-column: 10 / -1; justify-self: end; color: rgba(255, 255, 255, 0.78); }
+    .va .abajo { position: absolute; inset: auto 0 0; z-index: 1; padding-bottom: clamp(24px, 3vw, 44px); color: #FFFFFF; align-items: end; }
+    .va .abajo .mono { grid-column: 1 / span 3; color: rgba(255, 255, 255, 0.78); padding-bottom: 0.4em; }
+    .va .abajo h3 { grid-column: 4 / span 7; margin: 0; font: 600 clamp(48px, 6.4vw, 112px) / 0.86 var(--f-marca); letter-spacing: -0.055em; }
+    .va .abajo p { grid-column: 4 / span 5; grid-row: 2; margin: 14px 0 0; color: rgba(255, 255, 255, 0.82); font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); }
+
+    /* =======================================================
+       B · SELECTOR DE MARCA
+       ======================================================= */
+    /* Las dos activaciones en un solo módulo: un selector con los dos logos cambia la foto, el lockup y la galería.
+       La sección mide la mitad y se pueden comparar */
+    .vb .modulo { padding-block: 48px 120px; row-gap: 20px; }
+    .vb .cab { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: end; padding-bottom: 20px; border-bottom: 1px solid var(--linea); }
+    .vb .cab .eti { grid-column: 1 / span 3; display: inline-flex; align-items: center; gap: 8px; color: var(--gris); }
+    .vb .cab .eti::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--campus); }
+    .vb .tabs { grid-column: 4 / -1; position: relative; display: inline-flex; justify-self: start; gap: 4px; padding: 5px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea); }
+    .vb .tabs button { position: relative; z-index: 1; display: grid; place-items: center; height: 48px; padding: 0 22px; border: 0; border-radius: 999px; background: none; color: var(--gris); cursor: pointer; transition: color 300ms linear; }
+    .vb .tabs button[aria-selected="true"] { color: #FFFFFF; }
+    .vb .tabs .lg { height: var(--h); aspect-ratio: var(--ar); }
+    .vb .tabs .pildora { position: absolute; top: 5px; bottom: 5px; left: 0; border-radius: 999px; background: var(--tinta); transition: translate 500ms var(--curva), width 500ms var(--curva); }
+    .vb .escenario { grid-column: 4 / -1; position: relative; aspect-ratio: 16 / 8; overflow: hidden; border-radius: 22px; background: var(--empresa); }
+    .vb .escenario img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; scale: 1.06; transition: opacity 700ms var(--ease), scale 1400ms var(--ease); }
+    .vb .escenario img.on { opacity: 1; scale: 1; }
+    .vb .escenario::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(16, 13, 32, 0.72)); }
+    .vb .sobre { position: absolute; left: clamp(20px, 2.4vw, 36px); right: clamp(20px, 2.4vw, 36px); bottom: clamp(20px, 2.4vw, 32px); z-index: 1; display: flex; justify-content: space-between; align-items: end; gap: 20px; color: #FFFFFF; }
+    .vb .sobre h3 { margin: 10px 0 0; font: 600 clamp(36px, 4.4vw, 72px) / 0.9 var(--f-marca); letter-spacing: -0.05em; }
+    .vb .sobre .mono { color: rgba(255, 255, 255, 0.8); text-align: right; }
+    .vb .ficha { grid-column: 1 / span 3; grid-row: 2; align-self: end; display: flex; flex-direction: column; gap: 10px; color: var(--gris); font: 400 14px / 1.45 var(--f-marca); }
+    .vb .gal { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; padding-inline: 0; }
+
+    /* =======================================================
+       C · ESCENARIO Y TIRA
+       ======================================================= */
+    /* Cada activación es un escenario: una foto grande que avanza sola (con segmentos, como historias), la tira de
+       miniaturas debajo para saltar y el pie de foto en el riel. Se pausa al pasar el mouse o al salir de pantalla */
+    .vc .act { padding-block: 72px 0; align-items: start; }
+    .vc .act + .act { padding-top: 120px; }
+    .vc .riel { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 16px; color: var(--tinta); }
+    .vc .riel h3 { margin: 4px 0 0; font: 600 clamp(30px, 2.8vw, 46px) / 0.95 var(--f-marca); letter-spacing: -0.045em; }
+    .vc .riel .lugar { color: var(--gris-2); }
+    .vc .riel .gal-riel { margin-top: 18px; gap: 12px; }
+    .vc .pausa { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--linea); border-radius: 999px; background: none; cursor: pointer; }
+    .vc .pausa i { width: 8px; height: 10px; border-inline: 3px solid currentColor; }
+    .vc .pausa.parado i { width: 0; height: 0; border-inline: 0; border-left: 8px solid currentColor; border-block: 5px solid transparent; }
+    .vc .lado { grid-column: 4 / -1; display: flex; flex-direction: column; gap: 14px; }
+    .vc .escenario { position: relative; aspect-ratio: 3 / 2; overflow: hidden; border-radius: 22px; background: var(--empresa); cursor: zoom-in; }
+    .vc .escenario .capa { position: absolute; inset: 0; opacity: 0; transition: opacity 800ms var(--ease); }
+    .vc .escenario .capa.on { opacity: 1; }
+    .vc .escenario .fondo { position: absolute; inset: -40px; background: var(--img) center / cover; filter: blur(28px) saturate(1.1); opacity: 0.8; }
+    .vc .escenario img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .vc .escenario .capa.on img { animation: acerca 6s linear forwards; }
+    @keyframes acerca { from { scale: 1; } to { scale: 1.05; } }
+    .vc .tira { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 2px; }
+    .vc .tira::-webkit-scrollbar { display: none; }
+    .vc .tira button { flex: none; height: clamp(52px, 4.6vw, 72px); padding: 0; border: 0; border-radius: 10px; overflow: hidden; background: none; cursor: pointer; opacity: 0.45; outline: 2px solid transparent; outline-offset: 2px; transition: opacity 300ms linear, outline-color 300ms linear; }
+    .vc .tira button.on { opacity: 1; outline-color: var(--campus); }
+    @media (hover: hover) { .vc .tira button:hover { opacity: 1; } }
+    .vc .tira img { height: 100%; width: auto; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; margin-top: 120px; background: var(--tinta); color: #F4F3FB; row-gap: 48px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 36ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li span:first-child { color: rgba(238, 237, 254, 0.66); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); row-gap: 16px; }
+        .grilla > *, .vb .cab > *, .vb .gal > * { grid-column: 1 / -1 !important; grid-row: auto !important; }
+        .gal-riel { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px; }
+        .gal-pie { order: 5; width: 100%; max-width: none; min-height: 0; }
+        .segs { flex: 1; }
+        .pista { margin-left: calc(var(--margen) * -1); padding-left: var(--margen); scroll-padding-left: var(--margen); gap: 10px; }
+        .pista figure { height: 58vw; border-radius: 14px; }
+        .va .sangre { height: 70svh; }
+        .va .arriba .mono { display: none; }
+        .va .abajo h3 { font-size: 15vw; }
+        .vb .tabs { justify-self: stretch; } .vb .tabs button { flex: 1; padding: 0 12px; }
+        .vb .escenario { aspect-ratio: 4 / 5; }
+        .vb .sobre { flex-direction: column; align-items: flex-start; } .vb .sobre .mono { text-align: left; }
+        .vc .riel .gal-riel { margin-top: 4px; }
+        .ops { grid-template-columns: minmax(0, 1fr); }
+        .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+        .cursor { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { .pista figure { clip-path: none; transition: none; } .vc .escenario .capa.on img { animation: none; } }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Las activaciones</span><p>Tres mejoras para las fotos de Red Bull y Banco de Chile. Haz clic en una foto para ampliarla y arrastra las galerías. Cambia de propuesta con el selector.</p></div>
+    <section class="vista va" data-vista="a"></section>
+    <section class="vista vb" data-vista="b"></section>
+    <section class="vista vc" data-vista="c"></section>
+</div>
+
+<div class="cursor mono" aria-hidden="true">Arrastra · Clic para ampliar</div>
+<div class="caja" role="dialog" aria-modal="true" aria-label="Foto ampliada">
+    <div class="caja-cab"><span class="mono" data-caja-marca></span><button type="button" data-cerrar>Cerrar · Esc</button></div>
+    <img src="" alt="" data-caja-img>
+    <div class="caja-pie"><button type="button" data-ant>← Anterior</button><span class="mono" data-caja-t></span><button type="button" data-sig>Siguiente →</button></div>
+</div>
+
+<nav class="selector" aria-label="Propuestas">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>Pliego afinado</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Selector de marca</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Escenario y tira</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de las activaciones</h2>
+    <div class="bloque">
+        <p>Las fotos son buenas, pero la sección no cuenta qué pasó en cada activación: son dos bloques iguales de fotos sin contexto.</p>
+        <ul class="lista">
+            <li><span>La alianza no se ve: el logo de la marca va solo y chico en una esquina</span><span>Un lockup Tap In × marca, el gesto gráfico de una colaboración</span></li>
+            <li><span>El nombre gigante pelea con la foto (en Banco de Chile tapa los textos del pendón)</span><span>Título más contenido, abajo, sobre un degradado que lo sostiene; o fuera de la foto</span></li>
+            <li><span>Las fotos de la galería no tienen pie: no se sabe qué se está viendo</span><span>Pie de foto que cambia con la galería, en el riel</span></li>
+            <li><span>La barra de avance es una línea sin unidades; no dice cuántas quedan</span><span>Segmentos, uno por foto, como historias</span></li>
+            <li><span>No se pueden ver las fotos en grande, y nada invita a arrastrar</span><span>Caja de luz al hacer clic (con flechas y Esc) y una pastilla que acompaña al cursor</span></li>
+            <li><span>Dos pliegos idénticos seguidos: unas tres pantallas y media para dos activaciones</span><span>Un solo módulo con selector, o un escenario más compacto por activación</span></li>
+        </ul>
+    </div>
+    <h2>Propuestas</h2>
+    <div class="bloque">
+        <p>Tres maneras de mejorar la sección. Elige con el selector.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · Pliego afinado</span><strong>Lo mismo, mucho mejor</strong><p>Se mantiene el pliego, pero la foto lleva el lockup Tap In × marca arriba y un título contenido con una línea de qué pasó. La galería gana pie de foto, segmentos, pastilla de cursor y caja de luz.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Selector de marca</span><strong>Un solo módulo</strong><p>Un selector con los dos logos cambia la foto, el lockup y la galería. La sección mide la mitad, se comparan las dos activaciones y el gesto es el de un producto.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Escenario y tira</span><strong>Como historias</strong><p>Una foto grande que avanza sola con segmentos, la tira de miniaturas para saltar y el pie de foto en el riel. Se pausa al pasar el mouse o al salir de pantalla.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · ACTIVACIONES V2
+       ======================================================= */
+    (function () {
+        const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches, conMouse = matchMedia('(hover: hover)').matches;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b), dos = n => String(n).padStart(2, '0');
+        const F = (f, t, w = 1400, h = 933) => ({ f: f + '.webp', t, w, h });
+        const D = {
+            rb: { nombre: 'Red Bull', logo: 'tp-logo-redbull.svg', ar: '238.71 / 94.06', h: 'clamp(30px, 2.8vw, 42px)', hTab: '26px', lugar: 'Campus UC · 2025', hero: 'ed-foto3.webp', bajada: 'La promo de Red Bull vivía dentro de la app: se pedía con el QR y se retiraba sin fila',
+                fotos: [F('tp-rb-01', 'La lata y el teléfono con la promo'), F('tp-rb-02', 'Un estudiante toma Red Bull con la promo en pantalla'), F('tp-rb-03', 'Dos estudiantes muestran la promo en sus teléfonos'), F('tp-rb-04', 'La promo de Red Bull, en la mano', 933, 1400), F('tp-rb-05', 'Cuatro estudiantes con latas en el campus'), F('tp-rb-06', 'Risas, lata y teléfono', 933, 1400), F('tp-rb-07', 'La lata y la promo sobre una banca'), F('tp-rb-08', 'Una mesa con latas y la app'), F('tp-rb-09', 'Tres estudiantes con latas de Red Bull')] },
+            bc: { nombre: 'Banco de Chile', logo: 'tp-logo-bancochile.svg', ar: '449.84 / 72.37', h: 'clamp(18px, 1.7vw, 26px)', hTab: '16px', lugar: 'Stand en la UC · 2025', hero: 'ed-foto6.webp', bajada: 'Un stand con el pendón, tarjetas de Tap In y una ruleta: la app se descargaba ahí mismo',
+                fotos: [F('tp-bc-05', 'La promotora muestra las tarjetas de Tap In'), F('tp-bc-01', 'Frente al pendón, con la app abierta'), F('tp-bc-02', 'Un estudiante muestra la tarjeta de Tap In'), F('tp-bc-03', 'La promotora frente al pendón', 933, 1400), F('tp-bc-04', 'Teléfono y lata en el stand'), F('tp-bc-06', 'La ruleta del stand'), F('tp-bc-07', 'La app frente al mesón de Banco de Chile', 933, 1400), F('tp-bc-08', 'Promotor y estudiante frente al pendón'), F('tp-bc-09', 'La tarjeta de Tap In, en el stand')] }
+        };
+        const flechas = '<span class="flechas"><button type="button" data-ant aria-label="Foto anterior"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg></button><button type="button" data-sig aria-label="Foto siguiente"><svg viewBox="0 0 16 16"><path d="m6 3 5 5-5 5"/></svg></button></span>';
+        const lockup = (m, color = '') => `<span class="lockup" ${color}><span class="marca wm" aria-label="Tap In"></span><span class="x" aria-hidden="true"></span><span class="marca lg" role="img" aria-label="${D[m].nombre}" style="--svg:url('${D[m].logo}'); --ar:${D[m].ar}; --h:${D[m].h}"></span></span>`;
+        const rielGal = m => `<div class="gal-riel"><span class="gal-cont"><b data-n>01</b><span class="mono">/ ${dos(D[m].fotos.length)}</span></span><span class="segs">${D[m].fotos.map(() => '<i></i>').join('')}</span><p class="gal-pie" data-pie><span>${D[m].fotos[0].t}</span></p>${flechas}</div>`;
+        const pista = m => `<div class="pista" data-pista tabindex="0" role="region" aria-label="Fotos de ${D[m].nombre}">${D[m].fotos.map((x, i) => `<figure style="--i:${i}" data-i="${i}"><img src="${x.f}" alt="${x.t}" width="${x.w}" height="${x.h}" loading="lazy" draggable="false"></figure>`).join('')}</div>`;
+
+        /* --- 1. ARMAR LAS TRES PROPUESTAS --- */
+        document.querySelector('[data-vista="a"]').innerHTML = ['rb', 'bc'].map((m, k) => `
+            <article class="pliego">
+                <figure class="sangre" data-zoom><img src="${D[m].hero}" alt="">
+                    <div class="grilla arriba">${lockup(m)}<span class="mono">Activación ${dos(k + 1)} / 02</span></div>
+                    <figcaption class="grilla abajo"><span class="mono">${D[m].lugar}</span><h3>${D[m].nombre}</h3><p>${D[m].bajada}</p></figcaption>
+                </figure>
+                <div class="grilla gal" data-gal="${m}">${rielGal(m)}${pista(m)}</div>
+            </article>`).join('');
+        document.querySelector('[data-vista="b"]').innerHTML = `
+            <div class="grilla modulo">
+                <div class="cab"><span class="eti mono">Activaciones · 2025</span><div class="tabs" role="tablist"><span class="pildora"></span>${['rb', 'bc'].map((m, k) => `<button type="button" role="tab" aria-selected="${k === 0}" data-tab="${m}"><span class="marca lg" role="img" aria-label="${D[m].nombre}" style="--svg:url('${D[m].logo}'); --ar:${D[m].ar}; --h:${D[m].hTab}"></span></button>`).join('')}</div></div>
+                <div class="ficha" data-ficha><span class="mono">Activación 01 / 02</span><span>${D.rb.bajada}</span></div>
+                <div class="escenario">${['rb', 'bc'].map((m, k) => `<img src="${D[m].hero}" alt="" class="${k === 0 ? 'on' : ''}" data-hero="${m}">`).join('')}<div class="sobre"><div data-sobre>${lockup('rb')}<h3>${D.rb.nombre}</h3></div><span class="mono" data-lugar>${D.rb.lugar}</span></div></div>
+                <div class="grilla gal" data-gal="rb">${rielGal('rb')}${pista('rb')}</div>
+            </div>`;
+        document.querySelector('[data-vista="c"]').innerHTML = ['rb', 'bc'].map((m, k) => `
+            <article class="grilla act" data-act="${m}">
+                <div class="riel">${lockup(m)}<h3>${D[m].nombre}</h3><span class="lugar mono">Activación ${dos(k + 1)} · ${D[m].lugar}</span>
+                    ${rielGal(m)}<button type="button" class="pausa mono" data-pausa><i></i><span>Pausar</span></button></div>
+                <div class="lado">
+                    <div class="escenario" data-escenario>${D[m].fotos.map((x, i) => `<div class="capa${i === 0 ? ' on' : ''}" style="--img:url('${x.f}')"><span class="fondo"></span><img src="${x.f}" alt="${x.t}" loading="lazy"></div>`).join('')}</div>
+                    <div class="tira">${D[m].fotos.map((x, i) => `<button type="button" class="${i === 0 ? 'on' : ''}" data-mini="${i}" aria-label="${x.t}"><img src="${x.f}" alt="" loading="lazy"></button>`).join('')}</div>
+                </div>
+            </article>`).join('');
+
+        /* --- 2. CAJA DE LUZ --- */
+        const caja = document.querySelector('.caja'), cimg = caja.querySelector('[data-caja-img]');
+        let lista = [], marcaCaja = '', actual = 0, origen = null;
+        const mostrar = i => { actual = (i + lista.length) % lista.length; cimg.src = lista[actual].f; cimg.alt = lista[actual].t; caja.querySelector('[data-caja-t]').textContent = `${dos(actual + 1)} / ${dos(lista.length)} · ${lista[actual].t}`; caja.querySelector('[data-caja-marca]').textContent = `Tap In × ${marcaCaja}`; };
+        const abrir = (m, i) => { origen = document.activeElement; lista = D[m].fotos; marcaCaja = D[m].nombre; mostrar(i); caja.classList.add('on'); caja.querySelector('[data-cerrar]').focus(); };
+        const cerrar = () => { caja.classList.remove('on'); if (origen) origen.focus({ preventScroll: true }); };
+        caja.querySelector('[data-cerrar]').addEventListener('click', cerrar);
+        caja.querySelector('[data-ant]').addEventListener('click', () => mostrar(actual - 1));
+        caja.querySelector('[data-sig]').addEventListener('click', () => mostrar(actual + 1));
+        caja.addEventListener('click', e => { if (e.target === caja) cerrar(); });
+        addEventListener('keydown', e => { if (!caja.classList.contains('on')) return; if (e.key === 'Escape') cerrar(); if (e.key === 'ArrowLeft') mostrar(actual - 1); if (e.key === 'ArrowRight') mostrar(actual + 1); });
+
+        /* --- 3. GALERÍAS (A Y B): SNAP, SEGMENTOS, PIE, ARRASTRE, CURSOR Y CLIC --- */
+        const cursor = document.querySelector('.cursor');
+        const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visto'); io.unobserve(e.target); } }), { threshold: 0.2 });
+        const montarGal = gal => {
+            const m = gal.dataset.gal, pista = gal.querySelector('[data-pista]'), figs = [...pista.children], segs = [...gal.querySelectorAll('.segs i')];
+            const n = gal.querySelector('[data-n]'), pie = gal.querySelector('[data-pie]'), ant = gal.querySelector('[data-ant]'), sig = gal.querySelector('[data-sig]');
+            const lugar = f => f.offsetLeft - figs[0].offsetLeft, fin = () => pista.scrollWidth - pista.clientWidth;
+            const cerca = () => figs.reduce((a, f, i) => Math.abs(lugar(f) - pista.scrollLeft) < Math.abs(lugar(figs[a]) - pista.scrollLeft) ? i : a, 0);
+            let ultimo = -1;
+            const marcar = () => {
+                const alFinal = pista.scrollLeft >= fin() - 4, i = alFinal ? figs.length - 1 : cerca();
+                n.textContent = dos(i + 1); segs.forEach((s, k) => s.classList.toggle('ya', k <= i));
+                if (i !== ultimo) { pie.innerHTML = `<span>${D[m].fotos[i].t}</span>`; ultimo = i; }
+                ant.disabled = pista.scrollLeft <= 4; sig.disabled = alFinal;
+            };
+            const ir = d => { const i = fijar(cerca() + d, 0, figs.length - 1); pista.scrollTo({ left: Math.min(lugar(figs[i]), fin()), behavior: quieto ? 'auto' : 'smooth' }); };
+            ant.onclick = () => ir(-1); sig.onclick = () => ir(1);
+            pista.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); ir(e.key === 'ArrowLeft' ? -1 : 1); } });
+            pista.addEventListener('scroll', () => requestAnimationFrame(marcar), { passive: true });
+            let x0 = null, s0 = 0, movido = 0;
+            pista.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; x0 = e.clientX; s0 = pista.scrollLeft; movido = 0; pista.classList.add('arrastrando'); pista.setPointerCapture(e.pointerId); });
+            pista.addEventListener('pointermove', e => { if (conMouse) { cursor.style.translate = `${e.clientX + 16}px ${e.clientY + 16}px`; } if (x0 !== null) { movido = Math.max(movido, Math.abs(e.clientX - x0)); pista.scrollLeft = s0 - (e.clientX - x0); } });
+            const soltar = e => {
+                if (x0 === null) return; x0 = null;
+                if (movido < 6) { const f = document.elementsFromPoint(e.clientX, e.clientY).find(el => el.matches && el.matches('figure[data-i]')); if (f) abrir(m, +f.dataset.i); }
+                ir(0); setTimeout(() => pista.classList.remove('arrastrando'), quieto ? 0 : 450);
+            };
+            pista.addEventListener('pointerup', soltar); pista.addEventListener('pointercancel', () => { x0 = null; pista.classList.remove('arrastrando'); });
+            pista.addEventListener('click', e => { if (e.pointerType === 'mouse' || e.detail === 0) return; const f = e.target.closest('figure[data-i]'); if (f) abrir(m, +f.dataset.i); });
+            if (conMouse) { pista.addEventListener('mouseenter', () => cursor.classList.add('on')); pista.addEventListener('mouseleave', () => cursor.classList.remove('on')); }
+            io.observe(pista); marcar(); addEventListener('resize', marcar);
+        };
+        document.querySelectorAll('[data-gal]').forEach(montarGal);
+
+        /* --- 4. B: SELECTOR DE MARCA --- */
+        const vb = document.querySelector('.vb'), pildora = vb.querySelector('.pildora'), tabs = [...vb.querySelectorAll('[data-tab]')];
+        const ubicar = () => { const t = vb.querySelector('[aria-selected="true"]'); pildora.style.width = t.offsetWidth + 'px'; pildora.style.translate = (t.offsetLeft) + 'px 0'; };
+        tabs.forEach(t => t.addEventListener('click', () => {
+            const m = t.dataset.tab; if (t.getAttribute('aria-selected') === 'true') return;
+            tabs.forEach(x => x.setAttribute('aria-selected', String(x === t))); ubicar();
+            vb.querySelectorAll('[data-hero]').forEach(img => img.classList.toggle('on', img.dataset.hero === m));
+            vb.querySelector('[data-sobre]').innerHTML = `${lockup(m)}<h3>${D[m].nombre}</h3>`; vb.querySelector('[data-lugar]').textContent = D[m].lugar;
+            vb.querySelector('[data-ficha]').innerHTML = `<span class="mono">Activación ${m === 'rb' ? '01' : '02'} / 02</span><span>${D[m].bajada}</span>`;
+            const viejo = vb.querySelector('[data-gal]'), nuevo = document.createElement('div');
+            nuevo.className = 'grilla gal'; nuevo.dataset.gal = m; nuevo.innerHTML = rielGal(m) + pista(m); viejo.replaceWith(nuevo); montarGal(nuevo);
+        }));
+
+        /* --- 5. A: LA FOTO A SANGRE SE ALEJA AL CRUZAR LA PANTALLA --- */
+        const zooms = [...document.querySelectorAll('[data-zoom]')];
+        const pintar = () => zooms.forEach(z => { const r = z.getBoundingClientRect(); z.style.setProperty('--z', fijar((innerHeight - r.top) / (innerHeight + r.height)).toFixed(3)); });
+        addEventListener('scroll', () => requestAnimationFrame(pintar), { passive: true });
+
+        /* --- 6. C: ESCENARIO QUE AVANZA SOLO --- */
+        document.querySelectorAll('[data-act]').forEach(act => {
+            const m = act.dataset.act, capas = [...act.querySelectorAll('.capa')], minis = [...act.querySelectorAll('[data-mini]')], segs = [...act.querySelectorAll('.segs i')];
+            const n = act.querySelector('[data-n]'), pie = act.querySelector('[data-pie]'), pausa = act.querySelector('[data-pausa]'), esc = act.querySelector('[data-escenario]');
+            const DUR = 4200; let i = 0, t0 = performance.now(), avance = 0, parado = quieto, encima = false, visible = false;
+            const ir = k => { i = (k + capas.length) % capas.length; avance = 0; t0 = performance.now(); capas.forEach((c, j) => c.classList.toggle('on', j === i)); minis.forEach((b, j) => b.classList.toggle('on', j === i)); n.textContent = dos(i + 1); pie.innerHTML = `<span>${D[m].fotos[i].t}</span>`; minis[i].scrollIntoView({ block: 'nearest', inline: 'nearest' }); pintarSegs(); };
+            const pintarSegs = () => segs.forEach((s, j) => s.style.setProperty('--f', j < i ? 1 : j === i ? avance : 0));
+            act.querySelector('[data-ant]').onclick = () => ir(i - 1); act.querySelector('[data-sig]').onclick = () => ir(i + 1);
+            minis.forEach((b, j) => b.addEventListener('click', () => ir(j)));
+            esc.addEventListener('click', () => abrir(m, i));
+            pausa.addEventListener('click', () => { parado = !parado; pausa.classList.toggle('parado', parado); pausa.querySelector('span').textContent = parado ? 'Reproducir' : 'Pausar'; t0 = performance.now() - avance * DUR; });
+            esc.addEventListener('mouseenter', () => { encima = true; }); esc.addEventListener('mouseleave', () => { encima = false; t0 = performance.now() - avance * DUR; });
+            new IntersectionObserver(es => { visible = es[0].isIntersecting; t0 = performance.now() - avance * DUR; }, { threshold: 0.4 }).observe(esc);
+            const bucle = ahora => {
+                if (!parado && !encima && visible && !document.querySelector('.vc').hidden && document.getElementById('raiz').dataset.v === 'c') { avance = (ahora - t0) / DUR; if (avance >= 1) ir(i + 1); else pintarSegs(); }
+                else t0 = ahora - avance * DUR;
+                requestAnimationFrame(bucle);
+            };
+            if (parado) { pausa.classList.add('parado'); pausa.querySelector('span').textContent = 'Reproducir'; }
+            requestAnimationFrame(bucle);
+        });
+
+        /* --- 7. SELECTOR DE PROPUESTAS --- */
+        const raiz = document.getElementById('raiz'), botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v))); try { localStorage.setItem('activaciones-v2', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(() => { ubicar(); pintar(); dispatchEvent(new Event('resize')); }); };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) scrollTo({ top: 0, behavior: quieto ? 'auto' : 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('activaciones-v2'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['a', 'b', 'c'].includes(h) ? h : guardado || 'a');
+        addEventListener('load', () => { ubicar(); pintar(); });
+    })();
+    /* =======================================================
+       FIN JS · ACTIVACIONES V2
+       ======================================================= */
+</script>
