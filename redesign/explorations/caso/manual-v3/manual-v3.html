@@ -1,0 +1,446 @@
+<title>Manual en código v3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600;700&display=swap">
+<style>
+    /* La B, tercera vuelta: una sola ventana con el código arriba y la vista previa abajo. Líneas guía unen cada
+       variable con lo que dibuja; pasar el cursor por una enciende la otra. Solo lo que el manual suma al caso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --noche: #100D20; --gris: #57556B;
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8;
+        --n900: #2C2B39; --n500: #6B6A7A; --n300: #BCBAC5; --n50: #F2F1F7; --error: #FF6B5B; --ok: #2FB37A;
+        --texto: #F4F3FB; --texto-2: rgba(238, 237, 254, 0.7); --texto-3: rgba(238, 237, 254, 0.42); --linea: rgba(155, 142, 240, 0.2);
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1); --curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+        color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--noche); color: var(--texto); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    .mono { font-family: var(--f-mono); font-size: 12px; font-weight: 400; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .fk { --svg: url('tp-forky.svg'); aspect-ratio: 142 / 158; } .wm { --svg: url('tp-wordmark.svg'); aspect-ratio: 389.87 / 150.6; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 40px; background: var(--papel); color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .puente { height: 40svh; background: linear-gradient(#5E4FDF, var(--noche)); }
+
+    /* =======================================================
+       ESCENA FIJA
+       ======================================================= */
+    .esc { position: relative; height: 580svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; min-height: 640px; align-content: center; overflow: hidden; }
+    .fijo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(55% 60% at 74% 50%, rgba(107, 92, 231, 0.2), transparent 70%); pointer-events: none; }
+    .riel, .txt, .pieza { position: relative; grid-row: 1; height: min(76svh, 720px); }
+
+    /* --- 1. RIEL Y TEXTO: UN RÓTULO, UNA IDEA Y LA REGLA DEL PASO --- */
+    .riel { grid-column: 1 / span 3; display: flex; flex-direction: column; justify-content: space-between; }
+    .rot { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); }
+    .rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--health); }
+    .pasos { display: flex; flex-direction: column; }
+    .pasos button { display: flex; align-items: baseline; gap: 12px; padding: 0; border: 0; background: none; color: var(--texto-3); text-align: left; cursor: pointer; transition: color 200ms linear; }
+    .pasos b { font: 600 clamp(34px, 3.2vw, 52px) / 1 var(--f-marca); letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+    .pasos span { font: 400 13px var(--f-mono); }
+    .pasos button.on { color: #FFFFFF; } .pasos button:focus-visible { outline: 2px solid var(--health); outline-offset: 3px; border-radius: 4px; }
+    @media (hover: hover) { .pasos button:not(.on):hover { color: var(--texto-2); } }
+    .txt { grid-column: 4 / span 3; display: flex; flex-direction: column; justify-content: space-between; }
+    .txt h3 { margin: 0 0 14px; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; }
+    .txt .bajada { margin: 0; max-width: 26ch; color: var(--texto-2); font: 400 clamp(15px, 1.15vw, 17px) / 1.42 var(--f-marca); }
+    .cambia { position: relative; display: grid; }
+    .cambia > * { grid-area: 1 / 1; opacity: 0; clip-path: inset(0 0 100% 0); translate: 0 14px; transition: opacity 200ms linear, clip-path 420ms var(--ease), translate 420ms var(--ease); }
+    .cambia > .on { opacity: 1; clip-path: inset(0 0 -10% 0); translate: 0 0; }
+    .regla .mono { display: block; margin-bottom: 10px; color: var(--health); }
+    .regla b { display: block; margin-bottom: 10px; font: 600 clamp(28px, 2.9vw, 46px) / 0.98 var(--f-marca); letter-spacing: -0.045em; text-wrap: balance; }
+    .regla p { margin: 0; max-width: 30ch; color: var(--texto-2); font: 400 clamp(15px, 1.1vw, 16px) / 1.42 var(--f-marca); }
+
+    /* --- 2. LA VENTANA: CÓDIGO ARRIBA, VISTA PREVIA ABAJO --- */
+    /* Una sola ventana partida en dos: lo escrito y lo que produce. La barra del medio dice si el bloque compiló */
+    .pieza { grid-column: 8 / -1; }
+    .ide { position: absolute; inset: 0; display: flex; flex-direction: column; border-radius: 18px; background: #17142B; box-shadow: inset 0 0 0 1px var(--linea), 0 0 0 0.5px rgba(0, 0, 0, 0.6), 0 60px 120px -40px rgba(0, 0, 0, 0.95); overflow: hidden; }
+    .ide-cab { flex: none; display: flex; align-items: center; gap: 7px; height: 40px; padding: 0 14px; border-bottom: 1px solid var(--linea); color: var(--texto-3); }
+    .ide-cab i { width: 10px; height: 10px; border-radius: 50%; background: rgba(238, 237, 254, 0.14); }
+    .ide-cab .pest { display: inline-flex; align-items: center; gap: 8px; height: 26px; margin-left: 12px; padding: 0 12px; border-radius: 7px; background: rgba(238, 237, 254, 0.06); color: var(--texto-2); }
+    .ide-cab .pest::before { content: ''; width: 8px; height: 8px; border-radius: 2px; background: var(--health); }
+    .ide-cab em { margin-left: auto; font-style: normal; color: var(--texto-3); }
+    .cod { position: relative; flex: 0 0 43%; overflow: hidden; -webkit-mask-image: linear-gradient(transparent, #000 22%, #000 88%, transparent); mask-image: linear-gradient(transparent, #000 22%, #000 88%, transparent); }
+    .codigo { padding: 18px 0; counter-reset: l; font: 400 clamp(11.5px, 0.92vw, 14px) / 1.9 var(--f-mono); transition: translate 700ms var(--ease); }
+    .codigo div { position: relative; padding: 0 16px 0 50px; white-space: pre; color: #CFCBEA; opacity: 0.18; transition: opacity 300ms linear, background 200ms linear; }
+    .codigo div::before { counter-increment: l; content: counter(l); position: absolute; left: 0; width: 34px; text-align: right; color: rgba(238, 237, 254, 0.24); }
+    .codigo div.activo { opacity: 1; }
+    .codigo div.foco { background: rgba(155, 142, 240, 0.14); } .codigo div.foco::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--health); }
+    .codigo [data-k] { cursor: default; }
+    .tipeo { display: inline-block; vertical-align: top; clip-path: inset(-2px calc((1 - var(--l, 0)) * 100%) -2px 0); }
+    .codigo .cursor .tipeo::after { content: ''; display: inline-block; width: 7px; height: 1.15em; margin: 0 0 -0.2em 2px; background: var(--health); }
+    .codigo .c { color: rgba(238, 237, 254, 0.42); } .codigo .q { color: #B5ABF5; font-style: italic; } .codigo .p { color: #9B8EF0; } .codigo .v { color: #F4F3FB; } .codigo .s { color: #7FD7B5; } .codigo .k { color: #E8A6F2; }
+    .codigo .chip { display: inline-block; vertical-align: -1px; margin-left: 8px; width: 10px; height: 10px; border-radius: 3px; background: var(--c); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); }
+    .codigo .mal { color: var(--error); } .codigo .tachado .tipeo { text-decoration: line-through; text-decoration-color: var(--error); }
+    .codigo .aviso { margin-left: 10px; color: var(--error); opacity: 0; transition: opacity 200ms linear; } .codigo .tachado .aviso { opacity: 1; }
+    .barra-c { flex: none; display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 14px; border-block: 1px solid var(--linea); background: #1D1934; color: var(--texto-3); }
+    .barra-c b { font-weight: 400; color: var(--texto-2); }
+    .estado { display: inline-flex; align-items: center; gap: 8px; } .estado::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--texto-3); transition: background 200ms linear, box-shadow 200ms linear; }
+    .estado.ok { color: var(--ok); } .estado.ok::before { background: var(--ok); box-shadow: 0 0 0 4px rgba(47, 179, 122, 0.2); }
+    .vista { position: relative; flex: 1; background: var(--papel); color: var(--tinta); overflow: hidden; }
+    .prev { position: absolute; inset: 0; display: grid; place-items: center; padding: clamp(14px, 1.6vw, 24px); opacity: 0; scale: 0.98; transition: opacity 260ms linear, scale 600ms var(--ease); pointer-events: none; }
+    .prev.on { opacity: 1; scale: 1; pointer-events: auto; }
+    .entra { opacity: clamp(0, (var(--t, 0) - var(--d, 0)) / 0.08, 1); translate: 0 calc((1 - clamp(0, (var(--t, 0) - var(--d, 0)) / 0.08, 1)) * 12px); }
+    .vista [data-k] { transition: box-shadow 200ms linear, outline-color 200ms linear; outline: 2px solid transparent; outline-offset: 3px; }
+    .vista [data-k].foco { outline-color: var(--health); }
+
+    /* --- 3. LÍNEAS GUÍA ENTRE LOS DOS PANELES --- */
+    .guias { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .guias path { fill: none; stroke: var(--health); stroke-width: 1.2; stroke-dasharray: 3 4; opacity: 0.75; transition: opacity 200ms linear; }
+    .guias path.foco { stroke-dasharray: none; stroke-width: 1.6; opacity: 1; }
+    .guias circle { fill: var(--health); } .guias circle.fin { fill: #FFFFFF; stroke: var(--health); stroke-width: 2; }
+
+    /* --- 4. VISTA 01 · COLOR: EL GRIS PURO FRENTE AL GRIS CON VIOLETA --- */
+    .neu { display: grid; grid-template-columns: 70px repeat(4, minmax(0, 1fr)); grid-template-rows: 1fr 1fr auto; gap: 6px; width: 100%; height: 100%; }
+    .neu .lado { display: flex; align-items: center; color: #8A889E; font: 400 10px / 1.2 var(--f-mono); }
+    .neu .puro, .neu .viol { border-radius: 10px; background: var(--c); } .neu .puro { opacity: 0.9; }
+    .neu .viol { position: relative; box-shadow: inset 0 0 0 1px rgba(28, 26, 46, 0.08); transform-origin: bottom; scale: 1 clamp(0, (var(--t, 0) - var(--d, 0)) / 0.1, 1); }
+    .neu .hex { text-align: center; color: #6E6B84; font: 400 10px var(--f-mono); }
+    .ajeno { position: absolute; right: 16px; top: 14px; display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px; border-radius: 12px; background: #FFFFFF; box-shadow: 0 12px 30px -12px rgba(28, 26, 46, 0.4), inset 0 0 0 1px rgba(255, 107, 91, 0.45); font: 400 11px var(--f-mono); color: var(--tinta); }
+    .ajeno.sacude { animation: sacude 420ms var(--ease); }
+    @keyframes sacude { 20% { translate: -6px 0; } 40% { translate: 5px 0; } 60% { translate: -3px 0; } 80% { translate: 2px 0; } }
+    .ajeno i { position: relative; width: 24px; height: 24px; border-radius: 6px; background: #FF7A00; } .ajeno i::after { content: ''; position: absolute; left: -3px; right: -3px; top: 50%; height: 2px; background: var(--error); rotate: -45deg; box-shadow: 0 0 0 1px #FFFFFF; }
+    .ajeno b { display: block; font-weight: 400; color: var(--error); }
+    .ref { position: absolute; left: 16px; top: 14px; display: flex; align-items: center; gap: 6px; color: #8A889E; font: 400 10px var(--f-mono); }
+    .ref i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+
+    /* --- 5. VISTA 02 · TIPOGRAFÍA: TRES PESOS, TRES NIVELES --- */
+    .tipo { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; width: 100%; }
+    .tipo .aa { position: absolute; right: -4px; top: -26px; font: 700 clamp(110px, 11vw, 190px) / 0.8 var(--f-marca); letter-spacing: -0.05em; color: rgba(74, 60, 174, 0.08); pointer-events: none; }
+    .nivel { position: relative; display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 12px; padding: 10px 12px; border-radius: 12px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.06); }
+    .nivel small { color: #8A889E; font: 400 10px var(--f-mono); white-space: nowrap; }
+    .nivel.t1 span { font: 600 clamp(20px, 1.8vw, 28px) / 1.05 var(--f-marca); letter-spacing: -0.035em; }
+    .nivel.t2 span { font: 400 clamp(14px, 1.1vw, 16px) / 1.35 var(--f-marca); color: #3A3850; }
+    .nivel.t3 span { font: 300 clamp(14px, 1.1vw, 16px) / 1.2 var(--f-marca); color: #57556B; }
+    .publicos { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .publicos span { padding: 4px 10px; border-radius: 999px; background: rgba(74, 60, 174, 0.08); color: var(--campus); font: 500 11px var(--f-marca); }
+
+    /* --- 6. VISTA 03 · ADN: EL ISOTIPO PASA LAS CINCO REGLAS, CON SU PRUEBA --- */
+    .adn { display: grid; grid-template-columns: 44% 1fr; gap: 16px; align-items: stretch; width: 100%; height: 100%; }
+    .placa { position: relative; display: grid; place-items: center; border-radius: 16px; background: radial-gradient(80% 80% at 50% 30%, #5B4DC0, var(--campus)); color: #FFFFFF; overflow: hidden; }
+    .placa > .marca { width: 50%; transform-origin: 50% 90%; }
+    .placa.corre > .marca { animation: zancada 520ms cubic-bezier(0.5, 0, 0.5, 1) infinite alternate; }
+    @keyframes zancada { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(-6%) rotate(3deg); } }
+    .placa .pr { position: absolute; display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 999px; background: rgba(16, 13, 32, 0.32); font: 400 10px var(--f-mono); opacity: 0; translate: 0 6px; transition: opacity 250ms linear, translate 400ms var(--ease); }
+    .placa .pr.on { opacity: 1; translate: 0 0; }
+    .placa .pr-0 { left: 10px; top: 10px; } .placa .pr-1 { left: 10px; top: 38px; } .placa .pr-1 .marca { width: 12px; } .placa .pr-3 { left: 10px; bottom: 10px; } .placa .pr-4 { right: 10px; bottom: 10px; background: #FFFFFF; color: var(--campus); }
+    .placa .escala { position: relative; width: 44px; height: 1px; background: rgba(255, 255, 255, 0.5); } .placa .escala::after { content: ''; position: absolute; left: 50%; top: -3px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: #FFFFFF; }
+    .adn ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+    .adn li { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 10px; font: 500 13px var(--f-marca); }
+    .adn li i { flex: none; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: rgba(45, 37, 96, 0.08); color: transparent; font: 600 11px / 1 var(--f-texto); font-style: normal; transition: background 200ms linear, color 200ms linear, scale 400ms var(--curva); }
+    .adn li.ok i { background: var(--ok); color: #FFFFFF; scale: 1.08; }
+    .adn .total { margin-top: 6px; padding: 8px 8px 0; border-top: 1px solid rgba(45, 37, 96, 0.1); display: flex; justify-content: space-between; color: #6E6B84; font: 400 11px var(--f-mono); } .adn .total b { font-weight: 400; color: var(--ok); }
+
+    /* --- 7. VISTA 04 · INTERFAZ: UNA VARIABLE MUEVE TODO --- */
+    @property --tono { syntax: '<color>'; inherits: true; initial-value: #4A3CAE; }
+    .ui { --tono: var(--campus); --suave: color-mix(in srgb, var(--tono) 18%, var(--n50)); display: grid; gap: 10px; width: 100%; transition: --tono 450ms linear; }
+    .ui .tarjeta { border-radius: 16px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.06), 0 18px 34px -18px rgba(28, 26, 46, 0.35); overflow: hidden; }
+    .ui .band { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--tono); color: #FFFFFF; font: 500 12px var(--f-marca); } .ui .band .wm { width: 54px; } .ui .band span:last-child { margin-left: auto; opacity: 0.8; font: 400 10px var(--f-mono); }
+    .ui .cuerpo { display: grid; gap: 10px; padding: 14px; }
+    .ui .fila { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: baseline; font: 400 12px var(--f-marca); color: #57556B; } .ui .fila b { color: var(--tinta); font: 600 15px var(--f-marca); }
+    .ui .barra { grid-column: 1 / -1; height: 8px; border-radius: 99px; background: var(--n50); overflow: hidden; } .ui .barra i { display: block; height: 100%; width: var(--w); border-radius: inherit; background: var(--tono); } .ui .barra.s i { background: var(--suave); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tono) 30%, transparent); }
+    .ui .pie { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
+    .ui .chip { padding: 5px 10px; border-radius: 999px; background: var(--suave); color: var(--tono); font: 600 11px var(--f-marca); }
+    .ui .boton { padding: 8px 16px; border-radius: 999px; background: var(--tono); color: #FFFFFF; font: 500 12px var(--f-marca); }
+    .ui .prods { display: flex; gap: 6px; }
+    .ui .prods button { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 0; border-radius: 999px; background: rgba(45, 37, 96, 0.06); color: #6E6B84; font: 500 11px var(--f-marca); cursor: pointer; transition: background 200ms linear, color 200ms linear; }
+    .ui .prods button i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+    .ui .prods button.on { background: var(--tinta); color: #FFFFFF; }
+
+    /* --- NOTAS --- */
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .conteo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .conteo div { padding: 18px; border-radius: 16px; border: 1px solid rgba(155, 142, 240, 0.22); }
+    .conteo .mono { color: var(--health); } .conteo b { display: block; margin: 8px 0; font: 600 clamp(40px, 4vw, 64px) / 1 var(--f-marca); letter-spacing: -0.05em; } .conteo p { margin: 0; color: rgba(238, 237, 254, 0.7); font-size: 13px; }
+    .confirmar { margin: 0; padding-left: 18px; color: rgba(238, 237, 254, 0.78); } .confirmar li { margin-bottom: 6px; }
+
+    @media (prefers-reduced-motion: reduce) { .placa.corre > .marca, .ajeno.sacude { animation: none; } .codigo { transition: none; } }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); }
+        .grilla > * { grid-column: 1 !important; }
+        .fijo { align-content: start; padding-top: 9svh; row-gap: 12px; min-height: 0; }
+        .riel, .txt, .pieza { grid-row: auto; height: auto; }
+        .riel { order: 2; } .txt { order: 1; } .pieza { order: 3; height: 60svh; }
+        .rot, .txt > div:first-child { display: none; }
+        .pasos { flex-direction: row; gap: 14px; } .pasos b { font-size: 24px; } .pasos span { display: none; }
+        .regla b { font-size: 28px; }
+        .codigo { font-size: 10.5px; } .codigo div { padding-left: 34px; } .codigo div::before { width: 22px; }
+        .cod { flex-basis: 40%; }
+        .neu { grid-template-columns: 46px repeat(4, minmax(0, 1fr)); }
+        .ref { display: none; } .ajeno { top: auto; bottom: 10px; right: 10px; }
+        .adn li { font-size: 12px; padding: 4px; } .placa .pr-3 { display: none; }
+        .ui { gap: 6px; } .ui .band { padding: 8px 12px; } .ui .cuerpo { padding: 10px 12px; gap: 6px; } .ui .fila b { font-size: 13px; } .ui .boton, .ui .chip { padding: 5px 10px; font-size: 10px; } .ui .prods button { padding: 3px 8px; font-size: 10px; }
+        .neu .hex { display: none; }
+        .conteo { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    }
+</style>
+
+<div class="grilla intro"><span class="mono">Tap In · El manual · v3</span><p>Una sola ventana: el código arriba y lo que dibuja abajo, unidos por líneas guía. Cuatro pasos con lo que el manual suma al caso; lo que ya contaron las decisiones queda como referencia. Abajo, el audit.</p></div>
+<div class="puente"></div>
+
+<section class="esc" data-esc>
+    <div class="fijo grilla">
+        <div class="riel">
+            <span class="rot mono">El manual · Sistema de identidad 2026</span>
+            <div class="pasos">
+                <button type="button" data-ir="0"><b>01</b><span>Color</span></button>
+                <button type="button" data-ir="1"><b>02</b><span>Tipografía</span></button>
+                <button type="button" data-ir="2"><b>03</b><span>ADN</span></button>
+                <button type="button" data-ir="3"><b>04</b><span>Interfaz</span></button>
+            </div>
+        </div>
+        <div class="txt">
+            <div><h3>Las reglas, escritas</h3><p class="bajada">Lo que el manual suma, escrito como código y visto en vivo</p></div>
+            <div class="cambia regla" aria-live="polite">
+                <div data-paso="0"><span class="mono">01 / 04 · Color</span><b>Grises con intención</b><p>Hasta los neutros llevan violeta. Ningún acento entra de afuera.</p></div>
+                <div data-paso="1"><span class="mono">02 / 04 · Tipografía</span><b>Una familia, tres niveles</b><p>Poppins en tres pesos, sin excepciones.</p></div>
+                <div data-paso="2"><span class="mono">03 / 04 · ADN</span><b>Cinco reglas por símbolo</b><p>Por qué funcionan los isotipos, para que el próximo nazca igual.</p></div>
+                <div data-paso="3"><span class="mono">04 / 04 · Interfaz</span><b>Una variable mueve todo</b><p>Cambia --tono y la interfaz completa lo sigue.</p></div>
+            </div>
+        </div>
+        <div class="pieza" data-pieza>
+            <div class="ide">
+                <div class="ide-cab mono"><i></i><i></i><i></i><span class="pest">marca.css</span><em data-cab-paso>01 / 04</em></div>
+                <div class="cod"><div class="codigo" data-codigo>
+                    <div data-s="0"><span class="tipeo"><span class="c">/* 01 · Color */</span></span></div>
+                    <div data-s="0"><span class="tipeo"><span class="q">/* "dentro del mismo rango cromático" */</span></span></div>
+                    <div data-s="0"><span class="tipeo"><span class="p">:root</span> {</span></div>
+                    <div data-s="0"><span class="tipeo">  <span class="c">/* tonos: decisión 03 */</span><i class="chip" style="--c:#2D2560"></i><i class="chip" style="--c:#4A3CAE; margin-left:3px"></i><i class="chip" style="--c:#6B5CE7; margin-left:3px"></i><i class="chip" style="--c:#9B8EF0; margin-left:3px"></i></span></div>
+                    <div data-s="0" data-k="n900"><span class="tipeo">  <span class="p">--n-900</span>: <span class="v">#2C2B39</span>;</span></div>
+                    <div data-s="0" data-k="n500"><span class="tipeo">  <span class="p">--n-500</span>: <span class="v">#6B6A7A</span>;</span></div>
+                    <div data-s="0" data-k="n300"><span class="tipeo">  <span class="p">--n-300</span>: <span class="v">#BCBAC5</span>;</span></div>
+                    <div data-s="0" data-k="n50"><span class="tipeo">  <span class="p">--n-50</span>:  <span class="v">#F2F1F7</span>;</span></div>
+                    <div data-s="0" data-k="acento" data-mal><span class="tipeo">  <span class="p">--acento</span>: <span class="mal">#FF7A00</span>;</span><span class="aviso">✕ fuera del sistema</span></div>
+                    <div data-s="0"><span class="tipeo">}</span></div>
+                    <div data-s="1"><span class="tipeo"> </span></div>
+                    <div data-s="1"><span class="tipeo"><span class="c">/* 02 · Tipografía */</span></span></div>
+                    <div data-s="1"><span class="tipeo"><span class="q">/* "a un director, a un operador y a un usuario final" */</span></span></div>
+                    <div data-s="1"><span class="tipeo"><span class="p">:root</span> {</span></div>
+                    <div data-s="1" data-k="familia"><span class="tipeo">  <span class="p">--familia</span>: <span class="s">'Poppins'</span>;</span></div>
+                    <div data-s="1" data-k="titulo"><span class="tipeo">  <span class="p">--titulo</span>: <span class="v">600</span>;</span></div>
+                    <div data-s="1" data-k="texto"><span class="tipeo">  <span class="p">--texto</span>:  <span class="v">400</span>;</span></div>
+                    <div data-s="1" data-k="dato"><span class="tipeo">  <span class="p">--dato</span>:   <span class="v">300</span>;</span></div>
+                    <div data-s="1"><span class="tipeo">}</span></div>
+                    <div data-s="2"><span class="tipeo"> </span></div>
+                    <div data-s="2"><span class="tipeo"><span class="c">/* 03 · ADN */</span></span></div>
+                    <div data-s="2"><span class="tipeo"><span class="k">test</span>(<span class="s">'isotipo de Campus'</span>, [</span></div>
+                    <div data-s="2" data-k="r0"><span class="tipeo">  <span class="s">'doble lectura'</span>,</span></div>
+                    <div data-s="2" data-k="r1"><span class="tipeo">  <span class="s">'silueta plana'</span>,</span></div>
+                    <div data-s="2" data-k="r2"><span class="tipeo">  <span class="s">'movimiento y actitud'</span>,</span></div>
+                    <div data-s="2" data-k="r3"><span class="tipeo">  <span class="s">'abstracción media'</span>,</span></div>
+                    <div data-s="2" data-k="r4"><span class="tipeo">  <span class="s">'sin ser obvio'</span></span></div>
+                    <div data-s="2"><span class="tipeo">]);</span></div>
+                    <div data-s="3"><span class="tipeo"> </span></div>
+                    <div data-s="3"><span class="tipeo"><span class="c">/* 04 · Interfaz */</span></span></div>
+                    <div data-s="3"><span class="tipeo"><span class="p">.producto</span> {</span></div>
+                    <div data-s="3" data-k="tono"><span class="tipeo">  <span class="p">--tono</span>: <span class="k">var</span>(<span class="p">--<b data-prod-n style="font-weight:400">campus</b></span>);</span></div>
+                    <div data-s="3" data-k="suave"><span class="tipeo">  <span class="p">--suave</span>: <span class="k">color-mix</span>(<span class="k">in</span> srgb, <span class="k">var</span>(<span class="p">--tono</span>) <span class="v">18%</span>, <span class="k">var</span>(<span class="p">--n-50</span>));</span></div>
+                    <div data-s="3"><span class="tipeo">}</span></div>
+                </div></div>
+                <div class="barra-c mono"><span>Vista previa · <b data-prev-n>Color</b></span><span class="estado" data-estado>escribiendo</span></div>
+                <div class="vista">
+                    <div class="prev" data-paso="0">
+                        <div class="neu">
+                            <span class="lado">Con violeta</span>
+                            <span class="viol" data-k="n900" style="--c:#2C2B39; --d:0.2"></span><span class="viol" data-k="n500" style="--c:#6B6A7A; --d:0.27"></span><span class="viol" data-k="n300" style="--c:#BCBAC5; --d:0.34"></span><span class="viol" data-k="n50" style="--c:#F2F1F7; --d:0.41"></span>
+                            <span class="lado">Gris puro</span>
+                            <span class="puro entra" style="--c:#2F2F2F; --d:0.1"></span><span class="puro entra" style="--c:#6E6E6E; --d:0.14"></span><span class="puro entra" style="--c:#BEBEBE; --d:0.18"></span><span class="puro entra" style="--c:#F3F3F3; --d:0.22; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)"></span>
+                            <span></span><span class="hex">#2C2B39</span><span class="hex">#6B6A7A</span><span class="hex">#BCBAC5</span><span class="hex">#F2F1F7</span>
+                        </div>
+                        <div class="ajeno entra" data-k="acento" data-ajeno style="--d:0.5"><i></i><span><b>#FF7A00 · no entra</b>La paleta es 100 % morada</span></div>
+                    </div>
+                    <div class="prev" data-paso="1">
+                        <div class="tipo">
+                            <span class="aa" aria-hidden="true" data-k="familia">Aa</span>
+                            <div class="nivel t1 entra" data-k="titulo" data-lado="izq" style="--d:0.3"><span>Casino · marzo</span><small>Título · 600</small></div>
+                            <div class="nivel t2 entra" data-k="texto" data-lado="izq" style="--d:0.38"><span>El pago ya está conciliado y el apoderado recibió su aviso</span><small>Texto · 400</small></div>
+                            <div class="nivel t3 entra" data-k="dato" data-lado="izq" style="--d:0.46"><span>$12.400 · actualizado 9:41</span><small>Dato · 300</small></div>
+                            <div class="publicos entra" style="--d:0.56"><span>Director</span><span>Operador</span><span>Usuario final</span></div>
+                        </div>
+                    </div>
+                    <div class="prev" data-paso="2">
+                        <div class="adn">
+                            <div class="placa" data-placa>
+                                <span class="marca fk"></span>
+                                <span class="pr pr-0" data-pr="0">cubiertos · alguien corre</span>
+                                <span class="pr pr-1" data-pr="1"><span class="marca fk"></span>16 px</span>
+                                <span class="pr pr-3" data-pr="3">literal <span class="escala"></span> críptico</span>
+                                <span class="pr pr-4" data-pr="4">5 / 5</span>
+                            </div>
+                            <ol data-adn>
+                                <li data-k="r0" data-lado="der"><i>✓</i>Doble lectura</li>
+                                <li data-k="r1" data-lado="der"><i>✓</i>Silueta plana</li>
+                                <li data-k="r2" data-lado="der"><i>✓</i>Movimiento y actitud</li>
+                                <li data-k="r3" data-lado="der"><i>✓</i>Abstracción media</li>
+                                <li data-k="r4" data-lado="der"><i>✓</i>Sin ser obvio</li>
+                                <li class="total"><span>test</span><b data-adn-n>0 / 5</b></li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="prev" data-paso="3">
+                        <div class="ui" data-ui>
+                            <div class="tarjeta">
+                                <div class="band" data-k="tono"><span class="marca wm"></span><span data-ui-n>Campus</span><span>9:41</span></div>
+                                <div class="cuerpo">
+                                    <div class="fila"><span>Consumos hoy</span><b>184</b><span class="barra"><i style="--w:72%"></i></span></div>
+                                    <div class="fila"><span>Suscripciones</span><b>198</b><span class="barra s"><i style="--w:86%"></i></span></div>
+                                    <div class="pie"><span class="chip" data-k="suave" data-lado="izq">Al día</span><span class="boton">Ver detalle</span></div>
+                                </div>
+                            </div>
+                            <div class="prods"><button type="button" data-p="0" style="--c:#4A3CAE"><i></i>Campus</button><button type="button" data-p="1" style="--c:#6B5CE7"><i></i>Connect</button><button type="button" data-p="2" style="--c:#9B8EF0"><i></i>Health</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <svg class="guias" data-guias aria-hidden="true"></svg>
+        </div>
+    </div>
+</section>
+<div class="puente" style="background: var(--noche); height: 30svh"></div>
+
+<main class="grilla notas">
+    <h2>Lo que ya se mostró</h2>
+    <div class="bloque">
+        <p>La v2 repetía cuatro cosas que el caso ya contó. Salen o quedan como una referencia de una línea.</p>
+        <ul class="lista">
+            <li><span class="mono">Cuatro tonos</span><span>Los hex de Empresa, Campus, Connect y Health ya están en las tiras de la decisión 03</span><span>Una línea de referencia en el código ("tonos: decisión 03") y cuatro puntos; el paso 01 se dedica a los neutros</span></li>
+            <li><span class="mono">Lockup</span><span>"Hereda y cambia" es la anatomía de la decisión 04, punto por punto</span><span>Sale el paso completo</span></li>
+            <li><span class="mono">El próximo (+1)</span><span>La serie de la decisión 04 ya tiene el "+1"</span><span>Sale "Nuevo"; la interfaz cambia entre los tres productos reales</span></li>
+            <li><span class="mono">tapin.cl</span><span>El hero es la misma captura del navegador de la decisión 05, y el capítulo 03 empieza justo después</span><span>Sale el paso 06; el capítulo 03 hace de puente solo</span></li>
+            <li><span class="mono">Ícono y aviso</span><span>El cierre de la decisión 05 ya muestra el ícono de la app y una notificación</span><span>La interfaz usa tarjeta, barras, chip y botón</span></li>
+            <li><span class="mono">Doble lectura</span><span>La decisión 01 la nombra en su porqué</span><span>Se queda como una de cinco reglas, con una prueba distinta</span></li>
+        </ul>
+    </div>
+    <h2>Los textos de arriba</h2>
+    <div class="bloque">
+        <p>Arriba a la izquierda se leían más de cien palabras a la vez. Ahora son unas treinta.</p>
+        <div class="conteo">
+            <div><span class="mono">v2</span><b>~105</b><p>Ficha de tres filas, título, una bajada de 33 palabras y un bloque de regla con etiqueta, título, párrafo y cita</p></div>
+            <div><span class="mono">v3</span><b>~30</b><p>Rótulo, título, una bajada de diez palabras y la regla con título y una línea. La cita del manual pasa al código como comentario</p></div>
+        </div>
+    </div>
+    <h2>Audit gráfico</h2>
+    <div class="bloque">
+        <p>Los dos paneles competían en vez de conversar.</p>
+        <ul class="lista">
+            <li><span class="mono">Superposición</span><span>La vista previa tapaba seis a ocho líneas del código</span><span>Una sola ventana partida en dos: nada se tapa</span></li>
+            <li><span class="mono">Relación</span><span>No se veía qué línea producía qué cosa</span><span>Líneas guía de cada variable a lo que dibuja; pasar el cursor por cualquiera de los dos enciende el par</span></li>
+            <li><span class="mono">Estado</span><span>No había un momento de "funcionó"</span><span>Una barra al medio: "escribiendo" y luego "compilado" en verde</span></li>
+            <li><span class="mono">Aire</span><span>Bloques cortos dejaban el editor medio vacío y la vista previa centraba piezas chicas</span><span>El archivo se desplaza al bloque activo; cada vista llena su panel</span></li>
+            <li><span class="mono">Pruebas</span><span>Al terminar de escribirse, la vista previa quedaba quieta</span><span>Cada paso prueba algo: gris puro contra violeta, tres niveles de texto, el isotipo que corre al pasar su test, la interfaz que cambia</span></li>
+            <li><span class="mono">Escala</span><span>Números de los pasos chicos para seis pasos</span><span>Cuatro pasos con el tamaño de la decisión 05</span></li>
+        </ul>
+    </div>
+    <h2>Por confirmar</h2>
+    <div class="bloque">
+        <p>Antes de aplicarla, dos datos.</p>
+        <ul class="confirmar">
+            <li>Los hex de los neutros: los saqué de la lámina (#2C2B39, #6B6A7A, #BCBAC5, #F2F1F7).</li>
+            <li>Si tapin.cl usa estas variables. Si sí, sumo una línea al paso 04 que lo diga.</li>
+        </ul>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · MANUAL EN CÓDIGO V3
+       ======================================================= */
+    (function () {
+        const esc = document.querySelector('[data-esc]'), pieza = esc.querySelector('[data-pieza]'), N = 4;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const codigo = esc.querySelector('[data-codigo]'), lineas = [...codigo.children], guias = esc.querySelector('[data-guias]');
+        const nombres = ['Color', 'Tipografía', 'ADN', 'Interfaz'];
+        const prods = [['#4A3CAE', 'campus', 'Campus'], ['#6B5CE7', 'connect', 'Connect'], ['#9B8EF0', 'health', 'Health']];
+        const ui = esc.querySelector('[data-ui]'), placa = esc.querySelector('[data-placa]'), ajeno = esc.querySelector('[data-ajeno]');
+        let elegido = null, pasoAntes = -1, rechazado = false;
+
+        /* --- 1. INTERFAZ: UN PRODUCTO, UNA VARIABLE --- */
+        const ponerProd = k => {
+            ui.style.setProperty('--tono', prods[k][0]); ui.querySelector('[data-ui-n]').textContent = prods[k][2];
+            ui.querySelectorAll('[data-p]').forEach(b => b.classList.toggle('on', +b.dataset.p === k));
+            esc.querySelector('[data-prod-n]').textContent = prods[k][1];
+        };
+        ui.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => { elegido = +b.dataset.p; ponerProd(elegido); }));
+
+        /* --- 2. FOCO CRUZADO: PASAR POR UNA LÍNEA O POR UNA PIEZA ENCIENDE EL PAR --- */
+        let foco = null;
+        pieza.querySelectorAll('[data-k]').forEach(el => {
+            el.addEventListener('pointerenter', () => { foco = el.dataset.k; marcarFoco(); });
+            el.addEventListener('pointerleave', () => { foco = null; marcarFoco(); });
+        });
+        const marcarFoco = () => { pieza.querySelectorAll('[data-k]').forEach(x => x.classList.toggle('foco', x.dataset.k === foco)); dibujar(); };
+
+        /* --- 3. LÍNEAS GUÍA: DEL FINAL DE CADA VARIABLE ESCRITA A LO QUE DIBUJA --- */
+        let paso = 0;
+        const dibujar = () => {
+            const P = pieza.getBoundingClientRect(), C = codigo.parentElement.getBoundingClientRect();
+            let svg = '';
+            codigo.querySelectorAll(`[data-s="${paso}"][data-k]`).forEach(l => {
+                if (+getComputedStyle(l).getPropertyValue('--l') < 0.99) return;
+                const dest = pieza.querySelector(`.prev[data-paso="${paso}"] [data-k="${l.dataset.k}"]`); if (!dest) return;
+                const a = l.querySelector('.tipeo').getBoundingClientRect(), b = dest.getBoundingClientRect();
+                const y1 = a.top + a.height / 2; if (y1 < C.top + 8 || y1 > C.bottom - 8 || b.width === 0) return;
+                const lado = dest.dataset.lado, W = P.width, yy1 = y1 - P.top, cls = l.dataset.k === foco ? ' class="foco"' : '';
+                let x1, x2, y2, dd;
+                if (lado === 'izq') { x1 = a.left - 6 - P.left; x2 = b.left - P.left - 3; y2 = b.top + b.height / 2 - P.top; dd = `M${x1},${yy1} C14,${yy1} 14,${y2} ${x2},${y2}`; }
+                else if (lado === 'der') { x1 = Math.min(a.right + 10 - P.left, W - 40); x2 = b.right - P.left + 3; y2 = b.top + b.height / 2 - P.top; dd = `M${x1},${yy1} C${W - 12},${yy1} ${W - 12},${y2} ${x2},${y2}`; }
+                else { x1 = Math.min(a.right + 10 - P.left, W - 20); x2 = b.left + b.width / 2 - P.left; y2 = b.top - P.top - 2; dd = `M${x1},${yy1} C${x1 + 40},${yy1} ${x2},${(yy1 + y2) / 2} ${x2},${y2}`; }
+                svg += `<path${cls} d="${dd}"/><circle cx="${x1}" cy="${yy1}" r="2.5"/><circle class="fin" cx="${x2}" cy="${y2}" r="3"/>`;
+            });
+            guias.innerHTML = svg;
+        };
+
+        /* --- 4. CADA FRAME: PASO, TIPEO, DESPLAZAMIENTO, ESTADO Y PRUEBAS --- */
+        const tick = () => {
+            const r = esc.getBoundingClientRect(), pista = esc.offsetHeight - innerHeight, p = fijar(-r.top / pista);
+            const i = Math.min(Math.floor(p * N), N - 1), t = fijar(p * N - i); paso = i;
+            esc.querySelectorAll('[data-paso], [data-ir]').forEach(x => x.classList.toggle('on', +(x.dataset.paso ?? x.dataset.ir) === i));
+            esc.querySelector('[data-cab-paso]').textContent = `0${i + 1} / 04`; esc.querySelector('[data-prev-n]').textContent = nombres[i];
+            esc.querySelectorAll('.prev').forEach(x => x.style.setProperty('--t', +x.dataset.paso === i ? t : (+x.dataset.paso < i ? 1 : 0)));
+            /* Tipeo en el primer 55 % del tramo; las líneas de bloques anteriores quedan escritas y se esfuman */
+            const bloque = lineas.filter(l => +l.dataset.s === i), d = 0.55 / bloque.length;
+            lineas.forEach(l => {
+                const s = +l.dataset.s, k = bloque.indexOf(l), v = s < i ? 1 : s > i ? 0 : fijar((t - k * d) / d);
+                l.style.setProperty('--l', v.toFixed(3)); l.classList.toggle('activo', s === i); l.classList.toggle('cursor', s === i && v > 0 && v < 1);
+            });
+            const estado = esc.querySelector('[data-estado]'), listo = t > 0.56; estado.classList.toggle('ok', listo); estado.textContent = listo ? 'compilado' : 'escribiendo';
+            /* El acento se escribe, se rechaza y sacude su ficha una vez */
+            const mal = codigo.querySelector('[data-mal]'), tachar = i > 0 || t > 0.56; mal.classList.toggle('tachado', tachar);
+            if (tachar && !rechazado && i === 0) { ajeno.classList.remove('sacude'); void ajeno.offsetWidth; ajeno.classList.add('sacude'); } rechazado = tachar;
+            if (i !== pasoAntes) { const top = bloque[0].offsetTop; codigo.style.translate = `0 ${-Math.max(top - 16, 0)}px`; pasoAntes = i; if (i !== 3) elegido = null; }
+            /* ADN: los cinco tests pasan en orden, cada uno con su prueba en la placa */
+            const ok = i > 2 ? 5 : i < 2 ? 0 : Math.min(Math.floor(fijar((t - 0.56) / 0.36) * 5.99), 5);
+            esc.querySelectorAll('[data-adn] li[data-k]').forEach((li, k) => li.classList.toggle('ok', k < ok));
+            esc.querySelector('[data-adn-n]').textContent = `${ok} / 5`;
+            placa.querySelectorAll('[data-pr]').forEach(x => x.classList.toggle('on', +x.dataset.pr < ok));
+            placa.classList.toggle('corre', ok >= 3);
+            if (elegido === null) ponerProd(i < 3 ? 0 : Math.min(Math.floor(fijar((t - 0.56) / 0.44) * 3), 2));
+            requestAnimationFrame(dibujar);
+        };
+        let pedido = false;
+        addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; tick(); }); } }, { passive: true });
+        addEventListener('resize', () => { pasoAntes = -1; tick(); });
+        codigo.addEventListener('transitionend', dibujar);
+        document.fonts.ready.then(tick); tick();
+
+        /* --- 5. PASOS CLICABLES: LLEVAN AL BLOQUE YA COMPILADO --- */
+        esc.querySelectorAll('[data-ir]').forEach(b => b.addEventListener('click', () => {
+            scrollTo({ top: esc.getBoundingClientRect().top + scrollY + ((+b.dataset.ir + 0.8) / N) * (esc.offsetHeight - innerHeight), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        }));
+    })();
+    /* =======================================================
+       FIN JS · MANUAL EN CÓDIGO V3
+       ======================================================= */
+</script>
