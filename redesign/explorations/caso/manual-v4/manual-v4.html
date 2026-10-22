@@ -60,11 +60,25 @@
     /* --- 2. EDITOR: PESTAÑA, RUTA, CÓDIGO Y MINIMAPA --- */
     .pieza { grid-column: 8 / -1; }
     .editor { position: absolute; left: 0; right: 8%; top: 0; height: 55%; display: flex; flex-direction: column; border-radius: 16px; background: linear-gradient(180deg, #1B1733, #151229); box-shadow: inset 0 0 0 1px var(--linea), inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 50px 100px -40px rgba(0, 0, 0, 0.95); overflow: hidden; }
-    .ed-cab { flex: none; display: flex; align-items: flex-end; gap: 0; height: 40px; padding: 0 12px; background: #120F22; border-bottom: 1px solid var(--linea); }
-    .ed-cab .luces { display: flex; gap: 6px; align-self: center; margin-right: 14px; } .ed-cab .luces i { width: 10px; height: 10px; border-radius: 50%; background: rgba(238, 237, 254, 0.14); }
-    .ed-cab .pest { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 9px 9px 0 0; background: #1B1733; color: var(--texto); font: 400 12px var(--f-mono); box-shadow: inset 0 1px 0 var(--health); }
-    .ed-cab .pest::before { content: '#'; color: var(--health); }
-    .ed-cab .pest.otra { background: none; box-shadow: none; color: var(--texto-3); } .ed-cab .pest.otra::before { color: var(--texto-3); }
+    /* Cabecera: luces, la pestaña activa (con un punto mientras hay cambios sin guardar y una × al guardar), el manual
+       como segunda pestaña y, a la derecha, el atajo de guardar que se presiona solo cuando el bloque compila */
+    .ed-cab { flex: none; display: flex; align-items: stretch; height: 42px; padding: 0 12px 0 14px; background: #100D1E; border-bottom: 1px solid var(--linea); }
+    .ed-cab .luces { display: flex; gap: 7px; align-self: center; margin-right: 18px; } .ed-cab .luces i { width: 11px; height: 11px; border-radius: 50%; background: #FF5F57; opacity: 0.85; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.3); } .ed-cab .luces i:nth-child(2) { background: #FEBC2E; } .ed-cab .luces i:nth-child(3) { background: #28C840; }
+    .pests { display: flex; align-items: flex-end; gap: 2px; min-width: 0; }
+    .pest { position: relative; display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 8px 0 10px; border-radius: 9px 9px 0 0; color: var(--texto-3); font: 400 12px var(--f-mono); white-space: nowrap; }
+    .pest.on { background: #1B1733; color: var(--texto); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 1px 0 0 var(--linea), -1px 0 0 var(--linea); }
+    .pest.on::before { content: ''; position: absolute; left: 12px; right: 12px; top: 0; height: 2px; border-radius: 0 0 2px 2px; background: var(--health); }
+    .pest.on::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: #1B1733; }
+    .ico-css, .ico-pdf { display: grid; place-items: center; width: 20px; height: 16px; border-radius: 4px; font: 500 8.5px / 1 var(--f-mono); letter-spacing: -0.02em; }
+    .ico-css { background: rgba(155, 142, 240, 0.16); color: var(--health); } .ico-pdf { background: rgba(255, 91, 77, 0.12); color: #FF8A80; }
+    .cierra { display: grid; place-items: center; width: 16px; height: 16px; margin-left: 2px; border-radius: 4px; color: var(--texto-3); }
+    .cierra::before { content: '×'; font: 400 14px / 1 var(--f-texto); }
+    .sucio .cierra::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--health); }
+    .acciones { margin-left: auto; display: flex; align-items: center; gap: 12px; color: var(--texto-3); font: 400 11px var(--f-mono); }
+    .kbd { padding: 2px 7px; border-radius: 5px; box-shadow: inset 0 0 0 1px var(--linea), inset 0 -1px 0 rgba(155, 142, 240, 0.28); transition: color 200ms linear; }
+    .kbd.pulsa { animation: pulsa 600ms var(--ease); }
+    @keyframes pulsa { 0% { background: var(--health); color: var(--tinta); translate: 0 1px; } 100% { background: transparent; } }
+    .ico-split { position: relative; width: 14px; height: 12px; border: 1.3px solid currentColor; border-radius: 3px; } .ico-split::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1.3px; margin-left: -0.65px; background: currentColor; }
     .ruta { flex: none; display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 16px; color: var(--texto-3); font: 400 11px var(--f-mono); }
     .ruta b { font-weight: 400; color: var(--texto-2); }
     .cuerpo-ed { position: relative; flex: 1; display: flex; min-height: 0; }
@@ -201,7 +215,7 @@
         .pasos { flex-direction: row; gap: 14px; } .pasos b { font-size: 24px; } .pasos span { display: none; }
         .regla b { font-size: 28px; }
         .editor { right: 0; height: 48%; } .vista { left: 6%; height: 58%; }
-        .mapa, .ruta, .ed-cab .pest.otra { display: none; }
+        .mapa, .ruta, .pest.otra, .ico-split { display: none; }
         .codigo { font-size: 10.5px; } .codigo div { padding-left: 34px; } .codigo div::before { width: 22px; }
         .muestras { gap: 6px; } .muestra .info { padding: 6px; } .muestra .info span { display: none; } .leyenda { display: none; }
         .espec { width: 76px; font-size: 40px; } .pesos span { font-size: 22px; }
@@ -237,7 +251,7 @@
         </div>
         <div class="pieza" data-pieza>
             <div class="editor">
-                <div class="ed-cab"><span class="luces"><i></i><i></i><i></i></span><span class="pest">marca.css</span><span class="pest otra">manual.pdf</span></div>
+                <div class="ed-cab"><span class="luces"><i></i><i></i><i></i></span><div class="pests"><span class="pest on sucio" data-pest><span class="ico-css">{ }</span>marca.css<span class="cierra"></span></span><span class="pest otra"><span class="ico-pdf">PDF</span>manual.pdf</span></div><span class="acciones"><span class="kbd" data-kbd>⌘ S</span><i class="ico-split"></i></span></div>
                 <div class="ruta">tapin <span>›</span> marca <span>›</span> <b data-ruta>color</b></div>
                 <div class="cuerpo-ed">
                     <div class="cod"><div class="codigo" data-codigo>
@@ -423,6 +437,10 @@
             });
             lineas.forEach(l => l.classList.toggle('actual', l === actual));
             const vivo = esc.querySelector('[data-vivo]'), listo = t > 0.56; vivo.classList.toggle('ok', listo); vivo.textContent = listo ? 'en vivo' : 'escribiendo';
+            /* Al compilar, la pestaña pierde el punto de cambios y el atajo de guardar se presiona */
+            const pest = esc.querySelector('[data-pest]'), kbd = esc.querySelector('[data-kbd]');
+            if (pest.classList.contains('sucio') && listo) { kbd.classList.remove('pulsa'); void kbd.offsetWidth; kbd.classList.add('pulsa'); }
+            pest.classList.toggle('sucio', !listo);
             const tachar = i > 0 || t > 0.56; codigo.querySelector('[data-mal]').classList.toggle('tachado', tachar); ajena.classList.toggle('fuera', tachar);
             if (i !== pasoAntes) { const top = bloque[0].offsetTop; codigo.style.translate = `0 ${-Math.max(top - 10, 0)}px`; pasoAntes = i; if (i !== 3) elegido = null; }
             const ok = i > 2 ? 5 : i < 2 ? 0 : Math.min(Math.floor(fijar((t - 0.56) / 0.36) * 5.99), 5);
