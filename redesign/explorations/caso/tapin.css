@@ -334,13 +334,13 @@
    DECISIÓN 01 · FORKY, PASO A PASO
    ======================================================= */
 .tp-forky { height: 380svh; }
-.tp-forky .tp-fijo { align-content: center; align-items: start; }
-.tp-forky .tp-dec { grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; row-gap: 16px; max-width: none; align-items: start; }
-.tp-forky .tp-dec-num, .tp-forky .tp-dec-n { grid-column: 1 / span 3; }
-.tp-forky .tp-dec-num { grid-row: 1; }
-.tp-forky .tp-dec-n { grid-row: 2; align-self: start; padding-top: 4px; }
-.tp-forky .tp-dec h3, .tp-forky .tp-dec p { grid-column: 4 / span 3; }
-.tp-forky .tp-dec h3 { grid-row: 1; } .tp-forky .tp-dec p:not(.tp-porque) { grid-row: 2 / 4; } .tp-forky .tp-dec .tp-porque { grid-row: 4; }
+.tp-forky .tp-fijo, .tp-qr .tp-fijo { align-content: center; align-items: start; }
+:is(.tp-forky, .tp-qr) .tp-dec { grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; row-gap: 16px; max-width: none; align-items: start; }
+:is(.tp-forky, .tp-qr) :is(.tp-dec-num, .tp-dec-n) { grid-column: 1 / span 3; }
+:is(.tp-forky, .tp-qr) .tp-dec-num { grid-row: 1; }
+:is(.tp-forky, .tp-qr) .tp-dec-n { grid-row: 2; align-self: start; padding-top: 4px; }
+:is(.tp-forky, .tp-qr) .tp-dec :is(h3, p, .tp-datos) { grid-column: 4 / span 3; }
+:is(.tp-forky, .tp-qr) .tp-dec h3 { grid-row: 1; } :is(.tp-forky, .tp-qr) .tp-dec p:not(.tp-porque) { grid-row: 2 / 4; } :is(.tp-forky, .tp-qr) .tp-dec .tp-porque { grid-row: 4; } .tp-qr .tp-dec .tp-datos { grid-row: 5; }
 /* Las formas que se exploraron, en el orden del proceso: se encienden una a una con el scroll y al final se
    apartan para que aparezca Forky con el wordmark de Campus */
 .tp-formas-zona { grid-column: 8 / -1; position: relative; width: 100%; }
@@ -385,27 +385,80 @@
 .tp-plena-abre img { scale: calc(1.12 - var(--r) * 0.12); }
 .tp-plena-abre .tp-pie { opacity: var(--r); }
 .tp-plena .tp-pie { position: absolute; left: var(--margen); right: var(--margen); bottom: 22px; color: #FFFFFF; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35); }
-.tp-par-fotos { display: grid; grid-template-columns: 1fr 1fr; background: var(--tp-empresa); }
-.tp-par-fotos figure { aspect-ratio: 1; overflow: hidden; clip-path: inset(14% 0 0 0); transition: clip-path 1100ms var(--ease); }
-.tp-par-fotos figure img { height: 100%; object-fit: cover; transform: scale(1.14); transition: transform 1400ms var(--ease); }
-.tp-par-fotos figure:last-child img { object-position: 0% 50%; }
-.tp-par-fotos figure.visto { clip-path: inset(0); }
-.tp-par-fotos figure.visto img { transform: scale(1); }
-.tp-par-fotos figure:last-child { transition-delay: 120ms; }
 
-.tp-campus .tp-grilla { align-items: center; }
-.tp-campus .tp-dec { grid-column: 1 / span 4; }
-.tp-datos { display: flex; gap: 40px; list-style: none; margin-top: 12px; }
+/* =======================================================
+   DECISIÓN 02 · DEL QR AL PEDIDO
+   ======================================================= */
+/* Escena fija: el pendón real, de pie como un roll-up, con su QR marcado. El teléfono lo escanea y su pantalla
+   pasa a las promociones de Red Bull y Banco de Chile dentro de la app. Los pasos usan el mismo detalle que la
+   decisión 01; el texto va en la misma grilla (riel y columnas 4 a 6) */
+.tp-qr { height: 340svh; }
+.tp-qr-zona { grid-column: 8 / -1; position: relative; width: 100%; }
+.tp-qr-palco { position: relative; height: min(62svh, 640px); }
+.tp-rollup { position: absolute; left: 6%; top: 0; bottom: 18px; aspect-ratio: 1 / 2; }
+.tp-rollup img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px 6px 2px 2px; box-shadow: 0 30px 60px -34px rgba(45, 37, 96, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.1); }
+.tp-rollup::before { content: ''; position: absolute; left: -3%; right: -3%; top: -6px; height: 8px; border-radius: 4px; background: linear-gradient(#D6D3E4, #9F9BB8); }
+.tp-rollup-base { position: absolute; left: -10%; right: -10%; bottom: -18px; height: 16px; border-radius: 8px 8px 4px 4px; background: linear-gradient(#C9C5DB, #8F8AA8); }
+.tp-rollup-base::after { content: ''; position: absolute; left: -10%; right: -10%; bottom: -14px; height: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgba(28, 26, 46, 0.25), transparent); }
+/* Visor sobre el QR del pendón (está al 60 %–86 % de ancho y 77 %–90 % de alto) */
+.tp-rollup-mira { position: absolute; left: 57%; top: 75%; width: 32%; aspect-ratio: 1; opacity: 0; transform: scale(1.2); transition: opacity 300ms, transform 500ms var(--tp-curva); }
+.tp-rollup-mira.on { opacity: 1; transform: none; }
+.tp-rollup-mira i, .tp-qr-mira i { position: absolute; width: 22%; aspect-ratio: 1; border: 3px solid #FFFFFF; }
+.tp-rollup-mira i:nth-child(1), .tp-qr-mira i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 8px; }
+.tp-rollup-mira i:nth-child(2), .tp-qr-mira i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 8px; }
+.tp-rollup-mira i:nth-child(3), .tp-qr-mira i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 8px; }
+.tp-rollup-mira i:nth-child(4), .tp-qr-mira i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 8px; }
+.tp-rollup-mira.on i { animation: tpMira 1.4s ease-in-out infinite; }
+@keyframes tpMira { 50% { scale: 0.88; } }
+/* Teléfono: bisel fino, isla y un brillo; en el escaneo se inclina hacia el pendón */
+.tp-qr-tel { position: absolute; right: 2%; top: 50%; width: clamp(170px, 13vw, 230px); aspect-ratio: 9 / 19.5; padding: 8px; border-radius: 40px; background: #121022; box-shadow: 0 40px 70px -30px rgba(14, 11, 28, 0.65), inset 0 0 0 1px rgba(255, 255, 255, 0.08); translate: 0 -50%; rotate: -2deg; transition: rotate 700ms var(--tp-curva), translate 700ms var(--tp-curva); }
+.tp-qr-tel::before { content: ''; position: absolute; left: 50%; top: 16px; z-index: 3; width: 32%; height: 16px; margin-left: -16%; border-radius: 10px; background: #121022; }
+.tp-qr-tel::after { content: ''; position: absolute; inset: 8px; z-index: 3; border-radius: 32px; background: linear-gradient(120deg, rgba(255, 255, 255, 0.18), transparent 35%); pointer-events: none; }
+.tp-qr:has(.tp-qr-camara.on) .tp-qr-tel { rotate: -9deg; translate: -14% -46%; }
+.tp-qr-pant { position: relative; width: 100%; height: 100%; border-radius: 32px; overflow: hidden; background: #FFFFFF; container-type: size; }
+.tp-qr-capa { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; transform: scale(1.04); transition: opacity 450ms var(--ease), transform 700ms var(--ease); }
+.tp-qr-capa.on { opacity: 1; transform: none; }
+/* Cámara: el QR del pendón, de cerca, con el visor, una línea de barrido y el aviso al reconocerlo */
+/* El fondo es el mismo pendón ampliado: el centro del QR (73 % · 83,5 %) cae en el centro del visor */
+.tp-qr-camara { background: #0E0B1C url('media/tp-pendon.jpg') calc(50cqw - 157cqw) calc(33cqh - 327cqw) / 215cqw auto no-repeat; }
+.tp-qr-mira { position: absolute; left: 18%; right: 18%; top: 33%; aspect-ratio: 1; }
+.tp-qr-mira b { position: absolute; left: 6%; right: 6%; top: 10%; height: 2px; background: var(--tp-health); box-shadow: 0 0 12px var(--tp-health); }
+.tp-qr-camara.on .tp-qr-mira b { animation: tpBarrido 1.4s ease-in-out infinite alternate; }
+@keyframes tpBarrido { to { top: 88%; } }
+.tp-qr-aviso { position: absolute; left: 10%; right: 10%; bottom: 14%; padding: 8px 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.92); color: var(--tp-tinta); font-size: 10px; text-align: center; opacity: 0; translate: 0 10px; }
+.tp-qr-camara.on .tp-qr-aviso { animation: tpAviso 500ms var(--ease) 1.1s forwards; }
+@keyframes tpAviso { to { opacity: 1; translate: 0 0; } }
+.tp-qr-aviso { white-space: nowrap; }
+@container (max-width: 150px) { .tp-qr-aviso span { display: none; } }
+.tp-qr-app { display: flex; justify-content: space-between; align-items: center; padding: 34px 14px 10px; color: var(--tp-campus); font: 600 11px var(--tp-f); }
+.tp-qr-app .tp-wm { width: 48px; }
+.tp-qr-promo img { width: calc(100% - 20px); margin: 0 10px; aspect-ratio: 1200 / 1392; height: auto; border-radius: 16px; box-shadow: 0 10px 24px -14px rgba(45, 37, 96, 0.6); }
+/* Debajo de la promo, el menú del local insinuado con dos filas */
+.tp-qr-promo::after { content: ''; margin: 14px 10px 0; height: 64px; border-radius: 12px; background: linear-gradient(#F1EFFA, #F1EFFA) 0 0 / 100% 28px no-repeat, linear-gradient(#F1EFFA, #F1EFFA) 0 100% / 100% 28px no-repeat; }
+.tp-datos { display: flex; gap: 40px; list-style: none; margin-top: 4px; }
 .tp-datos li { display: flex; flex-direction: column; gap: 4px; }
-.tp-datos b { font: 600 clamp(48px, 4.4vw, 72px) / 1 var(--tp-f); letter-spacing: -0.05em; color: #FFFFFF; }
-.tp-datos span { font-size: 14px; color: var(--texto-2); }
-.tp-tels { grid-column: 6 / -1; display: flex; justify-content: center; gap: clamp(20px, 4vw, 64px); padding: 60px 0; }
-.tp-tel { display: flex; flex-direction: column; gap: 14px; width: clamp(190px, 18vw, 290px); transform: translateY(calc(var(--v, 0) * var(--vel) * 1px)); }
-.tp-tel > :not(.mono) { background: #FFFFFF; }
-.tp-tel-app { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; border-radius: 34px 34px 0 0; border: 9px solid #0E0B1C; border-bottom: 0; color: var(--tp-campus); font: 600 12px var(--tp-f); }
-.tp-tel-app .tp-wm { width: 52px; }
-.tp-tel img { aspect-ratio: 9 / 15; object-fit: cover; border: 9px solid #0E0B1C; border-top: 0; border-radius: 0 0 34px 34px; box-shadow: 0 50px 80px -30px rgba(14, 11, 28, 0.6); }
-.tp-tel .mono { color: var(--texto-2); text-align: center; }
+.tp-datos b { font: 600 clamp(40px, 3.6vw, 60px) / 1 var(--tp-f); letter-spacing: -0.05em; color: var(--acento); }
+.tp-datos span { font-size: 13px; color: var(--texto-2); }
+
+/* =======================================================
+   LAS ACTIVACIONES
+   ======================================================= */
+/* Solo las fotos de las activaciones, en dos grupos con su rótulo en el riel. Tres por grupo, escalonadas, con
+   parallax interno a distinta velocidad; cada una se destapa desde abajo al entrar */
+.tp-activ { padding-inline: var(--margen); padding-block: clamp(72px, 8vw, 128px) clamp(96px, 10vw, 160px); }
+.tp-activ-grupo + .tp-activ-grupo { margin-top: clamp(88px, 9vw, 144px); }
+.tp-activ-riel { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 6px; padding-top: 4px; }
+.tp-activ-riel .mono { color: var(--texto-2); }
+.tp-activ-riel b { font: 600 clamp(24px, 2.2vw, 34px) / 1.05 var(--tp-f); letter-spacing: -0.035em; margin-bottom: 6px; }
+.tp-activ-fotos { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--medianil); align-items: start; }
+.tp-activ-foto { display: flex; flex-direction: column; gap: 12px; clip-path: inset(14% 0 0 0 round 20px); transition: clip-path 1100ms var(--ease); }
+.tp-activ-foto.baja { margin-top: 18%; }
+.tp-activ-foto:nth-child(2) { transition-delay: 120ms; } .tp-activ-foto:nth-child(3) { transition-delay: 240ms; }
+.tp-activ-foto.visto { clip-path: inset(0 0 0 0 round 0px); }
+.tp-activ-marco { display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 20px; background: var(--tp-empresa); }
+.tp-activ-marco img { width: 100%; height: 118%; object-fit: cover; transform: translateY(calc(var(--v, 0) * var(--vel) * 1px - 8%)); transition: scale 900ms var(--ease); will-change: transform; }
+.tp-activ-foto figcaption { color: var(--texto-2); }
+@media (hover: hover) { .tp-activ-foto:hover .tp-activ-marco img { scale: 1.04; } }
 
 /* =======================================================
    CAPÍTULO 02 · EL REBIRTH Y LA PALETA
@@ -600,7 +653,7 @@
     .tp { --hy: 30svh; --hrx: 32deg; --hs: 0.88; }
     .tp-grilla { grid-template-columns: 1fr; row-gap: 28px; }
     .tp-grilla > * { grid-column: 1 / -1 !important; }
-    .tp .tp-cap .tp-cap-txt, .tp-forky .tp-dec { display: flex; flex-direction: column; gap: 10px; }
+    .tp .tp-cap .tp-cap-txt, .tp-forky .tp-dec, .tp-qr .tp-dec { display: flex; flex-direction: column; gap: 10px; }
     .tp-cap .tp-cap-n { align-self: flex-start; padding-bottom: 0; }
     .tp-segmentos { display: none; }
     .tp-hero-txt { left: var(--margen); right: var(--margen); top: 84px; gap: 14px; align-items: flex-start; text-align: left; translate: none; }
@@ -642,11 +695,15 @@
     .tp-forky-cuerpo { width: 18svh; }
     .tp-fijo.tp-grilla { align-content: center; padding-top: 64px; }
     .tp-dec { gap: 10px; }
-    .tp-forky .tp-dec p:not(.tp-porque), .tp-cer .tp-dec p, .tp-arq .tp-dec p:not(.tp-porque), .tp-arq .tp-mas, :is(.tp-forky, .tp-cer, .tp-arq) .tp-dec-num { display: none; }
-    .tp-par-fotos { grid-template-columns: 1fr; }
-    .tp-par-fotos figure { aspect-ratio: 4 / 3; }
-    .tp-tels { padding: 24px 0 0; }
-    .tp-tel { width: 40vw; }
+    .tp-forky .tp-dec p:not(.tp-porque), .tp-qr .tp-dec p:not(.tp-porque), .tp-qr .tp-datos, :is(.tp-qr) .tp-dec-num, .tp-cer .tp-dec p, .tp-arq .tp-dec p:not(.tp-porque), .tp-arq .tp-mas, :is(.tp-forky, .tp-cer, .tp-arq) .tp-dec-num { display: none; }
+    .tp-qr-palco { height: 46svh; }
+    .tp-rollup { left: 0; }
+    .tp-qr-tel { right: 0; width: 30vw; }
+    .tp-qr:has(.tp-qr-camara.on) .tp-qr-tel { translate: 0 -46%; }
+    .tp-activ-fotos { grid-template-columns: 1fr 1fr; row-gap: 16px; }
+    .tp-activ-foto:nth-child(3) { grid-column: 1 / -1; }
+    .tp-activ-foto:nth-child(3) .tp-activ-marco { aspect-ratio: 4 / 3; }
+    .tp-activ-foto.baja { margin-top: 12%; }
     .tp-rb-arriba { flex-direction: column; align-items: flex-start; justify-content: flex-end; height: 40svh; gap: 14px; }
     .tp-rb-arriba .tp-cap-txt p, .tp-dec-rb p { display: none; }
     .tp-dec-rb h3 { font-size: 20px; }

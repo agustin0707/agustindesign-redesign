@@ -84,9 +84,13 @@
         /* Decisión 01: el contador de formas sigue al paso en curso */
         forky: el => {
             const n = el.querySelector('[data-fk-n]');
-            /* Cada título se arma palabra por palabra para que suban en cascada */
-            el.querySelectorAll('.tp-rotulo-t span').forEach(t => { t.innerHTML = t.textContent.split(' ').map((w, i) => `<i style="--w:${i}">${w}</i>`).join(' '); });
+
             return p => { n.textContent = `${String(Math.min(Math.floor(p * 7), 6) + 1).padStart(2, '0')} / 07`; };
+        },
+        /* Decisión 02: el contador de pasos del escaneo */
+        qr: el => {
+            const n = el.querySelector('[data-qr-n]');
+            return p => { n.textContent = `${String(Math.min(Math.floor(p * 3), 2) + 1).padStart(2, '0')} / 03`; };
         },
         /* Capítulo 01: Forky corre mientras se scrollea y se inclina según la velocidad; quieto, se detiene */
         cap: el => {
@@ -163,6 +167,9 @@
             };
         }
     };
+
+    /* Los títulos de paso se arman palabra por palabra para que suban en cascada */
+    document.querySelectorAll('.tp-rotulo-t > span').forEach(t => { t.innerHTML = t.textContent.split(' ').map((w, i) => `<i style="--w:${i}">${w}</i>`).join(' '); });
 
     /* --- 2. MOTOR DE ESCENAS Y PARALLAX --- */
     const escenas = [...document.querySelectorAll('[data-escena]')].map(el => ({

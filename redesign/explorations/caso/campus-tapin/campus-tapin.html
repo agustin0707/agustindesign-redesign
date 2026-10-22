@@ -1,0 +1,292 @@
+<title>Campus Tap In</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Tres propuestas para la marca en el campus (fotos y decisión 02) del caso Tap In, sobre la grilla del caso:
+       12 columnas, medianil 24, margen 5vw con 1600 px de máximo y riel de rótulos en las columnas 1 a 3.
+       Un solo aspecto a propósito: los colores son los del caso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B; --gris-2: #8A889E; --linea: rgba(45, 37, 96, 0.12);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --tint: #EEEDFE;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1); --curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+        --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    img { display: block; max-width: 100%; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .vista { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc { display: block; }
+
+    /* --- DECISIÓN 02 (MISMO TEXTO EN LAS TRES) --- */
+    .riel { display: flex; flex-direction: column; gap: 12px; }
+    .riel .num { font: 600 clamp(64px, 6.6vw, 112px) / 0.78 var(--f-marca); letter-spacing: -0.06em; color: var(--soft); }
+    .riel .eti { display: inline-flex; align-items: center; gap: 8px; color: var(--gris); }
+    .riel .eti::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--campus); }
+    .texto { display: flex; flex-direction: column; gap: 14px; }
+    .texto h3 { margin: 0; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; text-wrap: balance; }
+    .texto p { margin: 0; font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); color: var(--gris); }
+    .texto .porque { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--linea); color: var(--tinta); }
+    .texto .porque span { display: inline-flex; align-items: center; gap: 8px; font: 400 12px var(--f-mono); color: var(--gris); }
+    .texto .porque span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--campus); }
+    .datos { display: flex; gap: 32px; margin-top: 8px; }
+    .datos b { display: block; font: 600 clamp(40px, 3.6vw, 60px) / 1 var(--f-marca); letter-spacing: -0.05em; color: var(--campus); }
+    .datos span { font-size: 13px; color: var(--gris); }
+    .pie { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; color: var(--gris); }
+    figure { margin: 0; }
+
+    /* =======================================================
+       A · GALERÍA DEL CAMPUS
+       ======================================================= */
+    /* Las fotos en un mosaico de la grilla, con una jerarquía clara (una grande, dos de apoyo y una ancha) y sus
+       rótulos en el riel; la decisión 02 cierra con la pieza que la prueba: el pendón con el QR y sus tres pasos */
+    .va .mosaico { padding-block: 64px 24px; row-gap: var(--medianil); }
+    .va .rotulo { grid-column: 1 / span 3; grid-row: 1; align-self: end; color: var(--gris); }
+    .va .f { position: relative; overflow: hidden; border-radius: 18px; background: var(--empresa); }
+    .va .f img { width: 100%; height: 100%; object-fit: cover; transition: transform 900ms var(--ease); }
+    @media (hover: hover) { .va .f:hover img { transform: scale(1.04); } }
+    .va .f figcaption { position: absolute; left: 14px; bottom: 12px; color: #FFFFFF; font: 12px var(--f-mono); text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4); }
+    .va .f1 { grid-column: 4 / span 6; grid-row: 1 / 3; aspect-ratio: 4 / 5; }
+    .va .f2 { grid-column: 10 / -1; grid-row: 1; aspect-ratio: 1; }
+    .va .f3 { grid-column: 10 / -1; grid-row: 2; aspect-ratio: 1; }
+    .va .f3 img { object-position: 20% 50%; }
+    .va .f4 { grid-column: 4 / -1; grid-row: 3; aspect-ratio: 21 / 9; }
+    .va .dec { padding-block: 80px 120px; row-gap: 24px; align-items: start; }
+    .va .dec .riel { grid-column: 1 / span 3; }
+    .va .dec .texto { grid-column: 4 / span 3; }
+    .va .piezas { grid-column: 8 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--medianil); align-items: end; }
+    .va .piezas img { width: 100%; border-radius: 14px; box-shadow: 0 30px 60px -36px rgba(45, 37, 96, 0.55); }
+    .va .piezas .p2 { display: flex; flex-direction: column; gap: var(--medianil); }
+
+    /* =======================================================
+       B · DEL QR AL PEDIDO
+       ======================================================= */
+    /* Escena fija: el pendón real con su QR. Al bajar, un teléfono lo escanea y su pantalla pasa a las promociones
+       de Red Bull y Banco de Chile dentro de la app. Los pasos son los del propio pendón */
+    .vb .escena { --p: 0; position: relative; height: 340svh; }
+    .vb .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; align-items: center; align-content: center; }
+    .vb .riel { grid-column: 1 / span 3; align-self: start; }
+    .vb .texto { grid-column: 4 / span 3; align-self: start; }
+    .vb .palco { grid-column: 7 / -1; position: relative; height: min(76svh, 760px); }
+    .vb .pendon { position: absolute; left: 6%; top: 0; height: 100%; aspect-ratio: 1 / 2; border-radius: 10px; overflow: hidden; box-shadow: 0 40px 80px -40px rgba(45, 37, 96, 0.6); }
+    .vb .pendon img { width: 100%; height: 100%; object-fit: cover; }
+    .vb .tel { --t: clamp(0, var(--p) * 3, 1); position: absolute; right: 2%; top: 50%; width: min(34%, 260px); aspect-ratio: 9 / 19; translate: 0 -50%; border-radius: 36px; background: #0E0B1C; padding: 9px; box-shadow: 0 40px 70px -30px rgba(14, 11, 28, 0.7); transform: translateX(calc((1 - var(--t)) * 60%)) rotate(calc((1 - var(--t)) * 10deg)); opacity: clamp(0, var(--p) * 6, 1); }
+    .vb .pantalla { position: relative; width: 100%; height: 100%; border-radius: 28px; overflow: hidden; background: #FFFFFF; }
+    .vb .pantalla > * { position: absolute; inset: 0; opacity: 0; transition: opacity 500ms var(--ease), transform 700ms var(--ease); }
+    .vb .pantalla > .on { opacity: 1; }
+    .vb .camara { background: #111 url('tp-pendon.jpg') 73% 82% / 380% auto no-repeat; }
+    .vb .camara::after { content: ''; position: absolute; left: 22%; right: 22%; top: 34%; aspect-ratio: 1; border: 3px solid rgba(255, 255, 255, 0.9); border-radius: 16px; box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.35); }
+    .vb .camara i { position: absolute; left: 22%; right: 22%; top: 34%; height: 3px; background: var(--health); box-shadow: 0 0 12px var(--health); animation: barrido 1.6s ease-in-out infinite alternate; }
+    @keyframes barrido { to { top: 58%; } }
+    .vb .barra-app { display: flex; justify-content: space-between; align-items: center; padding: 14px 14px 10px; color: var(--campus); font: 600 11px var(--f-marca); background: #FFFFFF; }
+    .vb .barra-app .wm { width: 46px; aspect-ratio: 389.87 / 150.6; background: currentColor; -webkit-mask: url('wordmark.svg') center / contain no-repeat; mask: url('wordmark.svg') center / contain no-repeat; }
+    .vb .promo { display: flex; flex-direction: column; }
+    .vb .promo img { flex: 1; width: 100%; object-fit: cover; }
+    .vb .pasos { grid-column: 7 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--medianil); margin-top: 24px; }
+    .vb .pasos li { list-style: none; padding-top: 10px; border-top: 2px solid var(--linea); color: var(--gris-2); font-size: 13px; transition: color 300ms, border-color 300ms; }
+    .vb .pasos li.on { color: var(--tinta); border-color: var(--campus); }
+    .vb .pasos ol { display: contents; }
+    .vb .fotos { padding-block: 24px 120px; row-gap: var(--medianil); }
+    .vb .fotos figure { grid-column: span 4; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 18px; }
+    .vb .fotos img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* =======================================================
+       C · PIEZAS EN LA CALLE
+       ======================================================= */
+    /* Un riel horizontal que mezcla fotos y piezas reales (pendón, stand, stickers, cartel y promociones), cada una
+       con su rótulo. Avanza con el scroll; después, la decisión con las cifras */
+    .vc .escena { --p: 0; position: relative; height: 360svh; }
+    .vc .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+    .vc .cab { display: flex; justify-content: space-between; padding-inline: var(--margen); color: var(--gris); }
+    .vc .riel-h { display: flex; align-items: flex-end; gap: var(--medianil); width: max-content; padding-inline: var(--margen); transform: translateX(calc(var(--p) * -1 * (var(--ancho-riel, 3000px) - 100vw))); will-change: transform; }
+    .vc .riel-h figure { flex: none; display: flex; flex-direction: column; gap: 10px; }
+    .vc .riel-h img { height: min(58svh, 560px); width: auto; border-radius: 16px; box-shadow: 0 30px 60px -40px rgba(45, 37, 96, 0.55); }
+    .vc .riel-h .baja img { height: min(40svh, 380px); }
+    .vc .riel-h figcaption { color: var(--gris); font: 12px var(--f-mono); }
+    .vc .dec { padding-block: 64px 120px; row-gap: 24px; align-items: start; }
+    .vc .dec .riel { grid-column: 1 / span 3; }
+    .vc .dec .texto { grid-column: 4 / span 6; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 20; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .selector button:focus-visible { outline: 2px solid var(--health); outline-offset: 2px; }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 48px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 36ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li span:first-child { color: rgba(238, 237, 254, 0.66); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); row-gap: 16px; }
+        .grilla > * { grid-column: 1 !important; grid-row: auto !important; }
+        .va .piezas { grid-template-columns: 1fr 1fr; }
+        .vb .fijo { align-content: start; padding-top: 64px; }
+        .vb .texto p:not(.porque), .vb .riel .num { display: none; }
+        .vb .palco { height: 52svh; }
+        .vb .fotos figure { aspect-ratio: 4 / 3; }
+        .vc .riel-h img { height: 46svh; } .vc .riel-h .baja img { height: 32svh; }
+        .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .ops { grid-template-columns: minmax(0, 1fr); }
+        .selector button span { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { .vb .camara i { animation: none; } }
+</style>
+
+<div data-v="a" id="raiz">
+    <!-- =======================================================
+         A · GALERÍA DEL CAMPUS
+         ======================================================= -->
+    <section class="vista va">
+        <div class="grilla mosaico">
+            <span class="rotulo mono">Campus UC · 2025<br>La marca, en la calle</span>
+            <figure class="f f1"><img src="ed-foto8.webp" alt="Estudiante con la app y una lata de Red Bull"><figcaption>La app en la mano</figcaption></figure>
+            <figure class="f f2"><img src="ed-foto3.webp" alt="Estudiante mostrando la app"><figcaption>Promos dentro de la app</figcaption></figure>
+            <figure class="f f3"><img src="ed-foto4.webp" alt="Promotora con tarjetas de Tap In"><figcaption>Tarjetas en el stand</figcaption></figure>
+            <figure class="f f4"><img src="ed-foto6.webp" alt="Stand de Tap In con estudiantes"><figcaption>Stand en la UC</figcaption></figure>
+        </div>
+        <div class="grilla dec">
+            <div class="riel"><span class="num">02</span><span class="eti mono">Decisión 02</span></div>
+            <div class="texto"><h3>La marca salió al campus</h3><p>60 QR en los locales de la UC y promociones con Red Bull y Banco de Chile dentro de la app</p><p class="porque"><span>Por qué</span>La entrada era un QR: tenía que entenderse de pie, con hambre y frente al mesón</p><div class="datos"><div><b>60</b><span>QR en locales de la UC</span></div><div><b>2</b><span>alianzas con marcas</span></div></div></div>
+            <div class="piezas"><figure><img src="tp-pendon.jpg" alt="Pendón con el QR y los tres pasos"><figcaption class="pie mono"><span>Pendón</span><span>QR y tres pasos</span></figcaption></figure><div class="p2"><figure><img src="tp-stickers.jpg" alt="Stickers con QR para los locales"><figcaption class="pie mono"><span>Stickers</span><span>Uno por local</span></figcaption></figure><figure><img src="tp-cartel.jpg" alt="Cartel Sáltate la fila"><figcaption class="pie mono"><span>Cartel</span><span>En el mesón</span></figcaption></figure></div></div>
+        </div>
+    </section>
+
+    <!-- =======================================================
+         B · DEL QR AL PEDIDO
+         ======================================================= -->
+    <section class="vista vb">
+        <div class="escena" data-escena-b>
+            <div class="fijo grilla">
+                <div class="riel"><span class="num">02</span><span class="eti mono">Decisión 02</span></div>
+                <div class="texto"><h3>La marca salió al campus</h3><p>60 QR en los locales de la UC y promociones con Red Bull y Banco de Chile dentro de la app</p><p class="porque"><span>Por qué</span>La entrada era un QR: tenía que entenderse de pie, con hambre y frente al mesón</p><div class="datos"><div><b>60</b><span>QR en locales de la UC</span></div><div><b>2</b><span>alianzas con marcas</span></div></div></div>
+                <div class="palco">
+                    <div class="pendon"><img src="tp-pendon.jpg" alt="Pendón de Tap In con el QR"></div>
+                    <div class="tel" aria-hidden="true"><div class="pantalla">
+                        <div class="camara on" data-s="0"><i></i></div>
+                        <div class="promo" data-s="1"><div class="barra-app"><span class="wm"></span><span>Promos</span></div><img src="tp-redbull-v.jpg" alt=""></div>
+                        <div class="promo" data-s="2"><div class="barra-app"><span class="wm"></span><span>Promos</span></div><img src="tp-bancochile.jpg" alt=""></div>
+                    </div></div>
+                </div>
+                <ol class="pasos"><li data-s="0">01 · Escanea el código QR</li><li data-s="1">02 · Promos de Red Bull en la app</li><li data-s="2">03 · Y de Banco de Chile</li></ol>
+            </div>
+        </div>
+        <div class="grilla fotos">
+            <figure><img src="ed-foto8.webp" alt="Estudiante con la app y una lata"></figure>
+            <figure><img src="ed-foto9.webp" alt="Estudiante con el teléfono y una lata"></figure>
+            <figure><img src="ed-foto5.webp" alt="Promotora frente al pendón"></figure>
+        </div>
+    </section>
+
+    <!-- =======================================================
+         C · PIEZAS EN LA CALLE
+         ======================================================= -->
+    <section class="vista vc">
+        <div class="escena" data-escena-c>
+            <div class="fijo">
+                <div class="cab mono"><span>Campus UC · 2025 · Las piezas y la gente</span><span data-c-n>01 / 08</span></div>
+                <div class="riel-h" data-riel>
+                    <figure><img src="ed-foto8.webp" alt="Estudiante con la app"><figcaption>La app en la mano</figcaption></figure>
+                    <figure><img src="tp-pendon.jpg" alt="Pendón con QR"><figcaption>Pendón · QR y tres pasos</figcaption></figure>
+                    <figure class="baja"><img src="tp-stickers.jpg" alt="Stickers con QR"><figcaption>Stickers · uno por local</figcaption></figure>
+                    <figure><img src="ed-foto6.webp" alt="Stand en la UC"><figcaption>Stand en la UC</figcaption></figure>
+                    <figure class="baja"><img src="tp-redbull-v.jpg" alt="Promo de Red Bull"><figcaption>Promo · Red Bull</figcaption></figure>
+                    <figure class="baja"><img src="tp-bancochile.jpg" alt="Promo de Banco de Chile"><figcaption>Promo · Banco de Chile</figcaption></figure>
+                    <figure><img src="ed-foto7.webp" alt="La promo en la app junto a la lata"><figcaption>La promo en la app</figcaption></figure>
+                    <figure class="baja"><img src="tp-cartel.jpg" alt="Cartel Sáltate la fila"><figcaption>Cartel · en el mesón</figcaption></figure>
+                </div>
+            </div>
+        </div>
+        <div class="grilla dec">
+            <div class="riel"><span class="num">02</span><span class="eti mono">Decisión 02</span></div>
+            <div class="texto"><h3>La marca salió al campus</h3><p>60 QR en los locales de la UC y promociones con Red Bull y Banco de Chile dentro de la app</p><p class="porque"><span>Por qué</span>La entrada era un QR: tenía que entenderse de pie, con hambre y frente al mesón</p><div class="datos"><div><b>60</b><span>QR en locales de la UC</span></div><div><b>2</b><span>alianzas con marcas</span></div></div></div>
+        </div>
+    </section>
+</div>
+
+<nav class="selector" aria-label="Propuestas del campus">
+    <button type="button" id="sel-a" data-ir="a" aria-pressed="true"><b>A</b><span>Galería</span></button>
+    <button type="button" id="sel-b" data-ir="b" aria-pressed="false"><b>B</b><span>Del QR al pedido</span></button>
+    <button type="button" id="sel-c" data-ir="c" aria-pressed="false"><b>C</b><span>Piezas en la calle</span></button>
+</nav>
+
+<main class="notas grilla">
+    <h2>Audit del campus</h2>
+    <div class="bloque">
+        <p>Las fotos tienen fuerza, pero se repiten y la decisión no muestra lo que dice.</p>
+        <ul class="lista">
+            <li><span>Tres fotos casi iguales seguidas (alguien con el teléfono y una lata), sin jerarquía</span><span>Una grande, apoyos más chicos y una ancha; o mezclarlas con las piezas</span></li>
+            <li><span>El par de fotos cuadradas corta mal: el pendón queda partido</span><span>Recortes pensados para cada foto y su proporción</span></li>
+            <li><span>La decisión habla del QR que se entiende de pie, pero ningún QR aparece</span><span>Mostrar las piezas reales: el pendón con el QR y sus tres pasos, los stickers, el cartel</span></li>
+            <li><span>Las promos van recortadas dentro de teléfonos con bordes negros pesados</span><span>Promos completas, o dentro del teléfono solo cuando cuentan algo (el escaneo)</span></li>
+            <li><span>El módulo morado no sigue la grilla nueva y deja un gran vacío abajo</span><span>Número y rótulo en el riel, texto de 4 a 6 y piezas de 8 a 12</span></li>
+            <li><span>Cuatro bloques de foto y un módulo: unas cuatro pantallas para una idea</span><span>Una sección más corta y con un recorrido claro</span></li>
+        </ul>
+    </div>
+    <h2>Propuestas</h2>
+    <div class="bloque">
+        <p>Tres maneras de mostrar la marca en el campus. Elige con el selector.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · Galería</span><strong>Un mosaico con jerarquía</strong><p>Cuatro fotos en la grilla (una grande, dos de apoyo y una ancha) y la decisión con el pendón, los stickers y el cartel al lado. Clásico de Behance, ordenado.</p></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Del QR al pedido</span><strong>La decisión, en acción</strong><p>El pendón real y un teléfono que escanea su QR; al bajar, la pantalla pasa a las promos de Red Bull y Banco de Chile. Después, tres fotos en fila.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Piezas en la calle</span><strong>Un riel de todo</strong><p>Fotos y piezas reales mezcladas en un riel horizontal que avanza con el scroll, cada una con su rótulo, y luego la decisión con las cifras.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · CAMPUS
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const avance = el => { const r = el.getBoundingClientRect(); return fijar(-r.top / (r.height - window.innerHeight)); };
+        const eb = document.querySelector('[data-escena-b]'), pantallas = [...eb.querySelectorAll('.pantalla [data-s]')], pasos = [...eb.querySelectorAll('.pasos [data-s]')];
+        const ec = document.querySelector('[data-escena-c]'), riel = ec.querySelector('[data-riel]'), figs = [...riel.querySelectorAll('figure')], contador = ec.querySelector('[data-c-n]');
+        const medirRiel = () => ec.style.setProperty('--ancho-riel', riel.scrollWidth + 'px');
+        const pintar = () => {
+            if (raiz.dataset.v === 'b') {
+                const p = avance(eb); eb.style.setProperty('--p', p.toFixed(4));
+                const k = p < 0.4 ? 0 : p < 0.7 ? 1 : 2;
+                pantallas.forEach(s => s.classList.toggle('on', +s.dataset.s === k)); pasos.forEach(s => s.classList.toggle('on', +s.dataset.s <= k));
+            }
+            if (raiz.dataset.v === 'c') {
+                const p = avance(ec); ec.style.setProperty('--p', p.toFixed(4));
+                contador.textContent = `${String(Math.min(Math.floor(p * figs.length), figs.length - 1) + 1).padStart(2, '0')} / ${String(figs.length).padStart(2, '0')}`;
+            }
+        };
+        let pendiente = false;
+        window.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } }, { passive: true });
+        window.addEventListener('resize', () => { medirRiel(); pintar(); });
+        window.addEventListener('load', () => { medirRiel(); pintar(); });
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => {
+            raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v)));
+            try { localStorage.setItem('campus-tapin', v); } catch (e) { /* sin almacenamiento */ }
+            requestAnimationFrame(() => { medirRiel(); pintar(); });
+        };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) window.scrollTo({ top: 0, behavior: quieto ? 'auto' : 'smooth' }); }));
+        let guardado = null;
+        try { guardado = localStorage.getItem('campus-tapin'); } catch (e) { /* sin almacenamiento */ }
+        elegir(['a', 'b', 'c'].includes(location.hash.slice(1)) ? location.hash.slice(1) : guardado || 'a');
+    })();
+    /* =======================================================
+       FIN JS · CAMPUS
+       ======================================================= */
+</script>
