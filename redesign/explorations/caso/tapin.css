@@ -626,28 +626,33 @@
 .tp-tira-camino { position: relative; display: block; width: 70%; aspect-ratio: 1; margin: 0 auto; border: 1.5px solid currentColor; border-radius: 50%; opacity: 0.5; animation: tpOrbita 7s linear infinite; }
 .tp-tira-camino::after { content: ''; position: absolute; top: -5px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: currentColor; }
 @keyframes tpOrbita { to { rotate: 360deg; } }
-.tp-tira-pie { margin-top: auto; display: flex; flex-direction: column; gap: 6px; opacity: var(--t); translate: 0 calc((1 - var(--t)) * 14px); }
-.tp-tira-escala { display: flex; gap: 3px; margin-bottom: 8px; opacity: var(--d); }
-.tp-tira-escala i { flex: 1; height: 6px; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(16, 13, 32, 0.06); }
-.tp-tira-escala i:nth-child(1) { background: color-mix(in srgb, var(--tono) 100%, #FFFFFF); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 40%, transparent); }
-.tp-tira-escala i:nth-child(2) { background: color-mix(in srgb, var(--tono) 70%, #FFFFFF); }
-.tp-tira-escala i:nth-child(3) { background: color-mix(in srgb, var(--tono) 42%, #FFFFFF); }
-.tp-tira-escala i:nth-child(4) { background: color-mix(in srgb, var(--tono) 18%, #FFFFFF); }
+.tp-tira-pie { margin-top: auto; display: flex; flex-direction: column; opacity: var(--t); translate: 0 calc((1 - var(--t)) * 14px); }
 .tp-tira-pie b { font: 600 clamp(17px, 1.45vw, 24px) / 1 var(--tp-f); letter-spacing: -0.03em; }
-/* El uso, el RGB y la cifra del contraste se ven en la portada (tiras anchas) y, en la pieza, al pasar el mouse */
-.tp-tira-uso, .tp-tira-spec span { display: inline-block; max-height: calc((1 - var(--b, 0)) * 3em); overflow: hidden; opacity: calc((1 - var(--b, 0)) * 0.82); transition: max-height 400ms var(--ease), opacity 300ms linear; }
-.tp-tira-uso { font: 400 13px / 1.35 var(--tp-f); }
-.tp-tira-ctr span { display: inline-block; max-width: calc((1 - var(--b, 0)) * 7em); overflow: hidden; vertical-align: bottom; opacity: calc(1 - var(--b, 0)); transition: max-width 400ms var(--ease), opacity 300ms linear; }
-.tp-tira-spec { font-size: 11px; opacity: 0.8; white-space: nowrap; }
-.tp-tira-ctr { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; white-space: pre; margin-top: 4px; padding: 4px 9px 4px 4px; border-radius: 999px; background: color-mix(in srgb, var(--c) 15%, transparent); font-size: 10px; white-space: nowrap; opacity: var(--d); }
+/* Detalle que se despliega: alto animado con grid (de 0fr a 1fr) y cada línea sube en cascada */
+.tp-tira-mas { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 500ms var(--ease); }
+.tp-tira-mas > div { min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 6px; }
+.tp-tira-mas > div > * { transition: opacity 400ms var(--ease), translate 500ms var(--ease); }
+.tp-tira-uso { margin-top: 10px; font: 400 13px / 1.35 var(--tp-f); opacity: 0.82; }
+.tp-tira-spec { font-size: 11px; line-height: 1.5; opacity: 0.8; white-space: nowrap; }
+.tp-tira-ctr { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; padding: 4px 9px 4px 4px; border-radius: 999px; background: color-mix(in srgb, var(--c) 15%, transparent); font-size: 10px; white-space: nowrap; }
 .tp-tira-ctr i { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--c); color: var(--tono); font: 600 9px var(--tp-f); font-style: normal; }
-@media (hover: hover) and (min-width: 769px) {
-    .tp-tiras:hover .tp-tira { flex-grow: 0.8; }
-    .tp-tiras .tp-tira:hover { flex-grow: 2.1; }
-    .tp-tira:hover .tp-tira-uso, .tp-tira:hover .tp-tira-spec span { max-height: 3em; opacity: 0.82; }
-    .tp-tira:hover .tp-tira-ctr span { max-width: 7em; opacity: 1; }
-}
-}
+.tp-tira-iso { transition: top 600ms var(--ease), scale 600ms var(--ease); }
+.tp-tira-cab { transition: opacity 400ms var(--ease); }
+.tp-tira:focus-visible { outline: 2px solid var(--tp-health); outline-offset: 4px; }
+
+/* En la pieza (columnas 8 a 12) cada tira queda limpia: isotipo y nombre. Al pasar el mouse, con el foco del
+   teclado o con un toque, se ensancha, el isotipo sube y aparecen el número, el uso, el código y el contraste */
+.tp-rb-pieza .tp-tira:not(:hover, :focus-visible, .abierta) .tp-tira-mas { grid-template-rows: 0fr; }
+.tp-rb-pieza .tp-tira:not(:hover, :focus-visible, .abierta) .tp-tira-mas > div > * { opacity: 0; translate: 0 10px; }
+.tp-rb-pieza .tp-tira:not(:hover, :focus-visible, .abierta) .tp-tira-cab span:first-child { opacity: 0; }
+.tp-rb-pieza .tp-tira:is(:hover, :focus-visible, .abierta) .tp-tira-iso { top: 32%; scale: 0.86; }
+.tp-rb-pieza .tp-tira:is(:hover, :focus-visible, .abierta) .tp-tira-mas > div > :nth-child(2) { transition-delay: 60ms; }
+.tp-rb-pieza .tp-tira:is(:hover, :focus-visible, .abierta) .tp-tira-mas > div > :nth-child(3) { transition-delay: 120ms; }
+.tp-rb-pieza .tp-tiras:has(.tp-tira:is(:hover, :focus-visible, .abierta)) .tp-tira { flex-grow: 0.8; }
+.tp-rb-pieza .tp-tiras:has(.tp-tira:is(:hover, :focus-visible, .abierta)) .tp-tira:is(:hover, :focus-visible, .abierta) { flex-grow: 2.2; }
+/* Las otras se angostan: su nombre y la etiqueta se apagan para no quedar cortados */
+.tp-tira-pie b, .tp-tira-tag { transition: opacity 300ms linear; }
+.tp-rb-pieza .tp-tiras:has(.tp-tira:is(:hover, :focus-visible, .abierta)) .tp-tira:not(:hover, :focus-visible, .abierta) :is(.tp-tira-pie b, .tp-tira-tag) { opacity: 0; }
 
 /* =======================================================
    DECISIÓN 03 · ARQUITECTURA
@@ -881,7 +886,8 @@
     .tp-tiras { --base: 56svh; left: calc(var(--margen) * (1 - var(--alto))); width: calc(100% - 2 * var(--margen) * (1 - var(--alto))); bottom: 0; height: calc((var(--base) + var(--alto) * (100svh - var(--base))) * (1 - var(--b, 0)) + 50svh * var(--b, 0)); }
     .tp-principal { flex-grow: 1; }
     .tp-tira { padding: 10px 8px; }
-    .tp-tira-cab span:first-child, .tp-tira-tag, .tp-tira-uso, .tp-tira-spec { display: none; }
+    .tp-tira-tag { display: none; }
+    .tp-rb-pieza .tp-tiras:has(.tp-tira:is(:hover, :focus-visible, .abierta)) .tp-tira.abierta { flex-grow: 3; }
     .tp-tira-pie b { font-size: 14px; letter-spacing: -0.02em; }
     .tp-tira-ctr { padding: 3px 6px; font-size: 9px; } .tp-tira-ctr i { display: none; }
     .tp-tira-iso { top: 36%; width: 56%; }

@@ -91,7 +91,16 @@
             };
         },
         /* El Rebirth: las tiras viajan de la portada a las columnas 8 a 12 */
-        rebirth: el => p => { el.style.setProperty('--b', curva(fijar((p - 0.56) / 0.16)).toFixed(4)); },
+        rebirth: el => {
+            /* En la pieza, un toque abre o cierra el detalle de cada tira (con mouse lo hace el hover) */
+            const tiras = [...el.querySelectorAll('.tp-tira')];
+            tiras.forEach(t => t.addEventListener('click', () => { if (window.matchMedia('(hover: hover)').matches) return; const abre = !t.classList.contains('abierta'); tiras.forEach(x => x.classList.remove('abierta')); t.classList.toggle('abierta', abre); }));
+            return p => {
+                el.style.setProperty('--b', curva(fijar((p - 0.56) / 0.16)).toFixed(4));
+                el.classList.toggle('tp-rb-pieza', p > 0.64);
+                if (p <= 0.64) tiras.forEach(x => x.classList.remove('abierta'));
+            };
+        },
         /* Decisión 02: el contador de pasos del escaneo */
         qr: el => {
             const n = el.querySelector('[data-qr-n]');

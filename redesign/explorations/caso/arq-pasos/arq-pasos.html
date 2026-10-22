@@ -1,0 +1,279 @@
+<title>Paso a la arquitectura</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Cinco pasos de El Rebirth (la paleta en las columnas 8 a 12, sobre noche) a la decisión 03 (la marca madre
+       y sus productos, sobre claro). Cada uno es una escena fija que avanza con el scroll, sobre la grilla del caso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --noche: #100D20; --gris: #57556B; --gris-n: rgba(238, 237, 254, 0.68); --linea: rgba(45, 37, 96, 0.12); --linea-n: rgba(155, 142, 240, 0.2);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px; --radio: 22px;
+        color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--noche); color: #F4F3FB; font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    .vista { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc, [data-v="d"] .vd, [data-v="e"] .ve { display: block; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .wm { --svg: url('tp-wordmark.svg'); aspect-ratio: 389.87 / 150.6; }
+    .forky { --svg: url('tp-forky.svg'); aspect-ratio: 142 / 158; }
+    .cerebro { --svg: url('tp-cerebro.svg'); aspect-ratio: 622.7 / 597.42; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 32px; color: var(--gris-n); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+
+    /* --- ESCENA --- */
+    .escena { position: relative; height: 340svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--noche); }
+    .capa { position: absolute; inset: 0; }
+
+    /* --- FINAL DE EL REBIRTH --- */
+    .rb .dec { position: absolute; inset: 0; align-content: center; row-gap: 16px; opacity: var(--o4, 1); }
+    .dec .num { grid-column: 1 / span 3; grid-row: 1; font: 600 clamp(64px, 6.6vw, 112px) / 0.78 var(--f-marca); letter-spacing: -0.06em; }
+    .dec .eti { grid-column: 1 / span 3; grid-row: 2; align-self: start; display: inline-flex; align-items: center; gap: 8px; }
+    .dec .eti::before, .dec .porque span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+    .dec h3 { grid-column: var(--txt); grid-row: 1; margin: 0; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; }
+    .dec p { grid-column: var(--txt); grid-row: 2; margin: 0; font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); }
+    .dec .porque { grid-row: 3; display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--lin); }
+    .dec .porque span { display: inline-flex; align-items: center; gap: 8px; font: 400 12px var(--f-mono); }
+    .rb .dec { --txt: 4 / span 3; --acento: var(--health); --lin: var(--linea-n); }
+    .rb .dec .num { color: rgba(155, 142, 240, 0.42); } .rb .dec .eti, .rb .dec .porque span, .rb .dec p:not(.porque) { color: var(--gris-n); }
+    .barra { position: absolute; display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; overflow: hidden; border-radius: var(--radio); color: #FFFFFF; background: radial-gradient(110% 42% at 50% 0%, color-mix(in srgb, var(--tono) 84%, #FFFFFF) 0%, transparent 70%), var(--tono); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22); will-change: left, top, width, height; }
+    .barra.claro { color: var(--noche); }
+    .barra .iso { position: absolute; top: 40%; left: 50%; width: 38%; max-width: 120px; translate: -50% -50%; opacity: var(--bi, 1); }
+    .barra:first-child .iso { width: 66%; max-width: 200px; }
+    .barra .orbita { display: block; width: 70%; aspect-ratio: 1; margin: 0 auto; border: 1.5px solid currentColor; border-radius: 50%; opacity: 0.5; }
+    .barra b { font: 600 clamp(16px, 1.4vw, 22px) / 1 var(--f-marca); letter-spacing: -0.03em; opacity: var(--bi, 1); white-space: nowrap; }
+
+    /* --- INICIO DE LA DECISIÓN 03 --- */
+    .claro-fondo { position: absolute; inset: 0; background: var(--papel); }
+    .arq { position: absolute; inset: 0; align-content: center; align-items: center; color: var(--tinta); }
+    .escenario { grid-column: 1 / span 8; display: flex; flex-direction: column; align-items: center; }
+    .madre { width: 58%; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: clamp(24px, 2.6vw, 40px); border-radius: 28px; color: #FFFFFF; background: radial-gradient(80% 120% at 50% 0%, var(--campus), var(--empresa) 70%); box-shadow: 0 30px 60px -30px rgba(45, 37, 96, 0.6); opacity: var(--om, 1); translate: 0 calc((1 - var(--om, 1)) * -20px); }
+    .madre .wm { width: 46%; } .madre .mono { color: rgba(255, 255, 255, 0.72); }
+    .ramas { position: relative; width: 75%; height: 46px; opacity: var(--or, 1); }
+    .ramas::before { content: ''; position: absolute; left: 50%; top: 0; width: 1px; height: 22px; background: var(--soft); }
+    .ramas::after { content: ''; position: absolute; left: 0; right: 0; top: 22px; height: 1px; background: var(--soft); transform: scaleX(var(--or, 1)); }
+    .hijos { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 0; padding: 0; list-style: none; }
+    .hijos li { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: clamp(22px, 2.2vw, 32px) 12px 20px; border-radius: 24px; color: #FFFFFF; background: radial-gradient(90% 80% at 50% 0%, color-mix(in srgb, var(--tono) 80%, #FFFFFF), var(--tono) 70%); box-shadow: 0 20px 40px -26px rgba(45, 37, 96, 0.6); text-align: center; opacity: var(--oh, 1); translate: 0 calc((1 - var(--oh, 1)) * 24px); transition: none; }
+    .hijos li:nth-child(4) { background: #FFFFFF; color: var(--tinta); box-shadow: inset 0 0 0 1.5px var(--soft); }
+    .hijos .iso { width: 34%; max-width: 60px; } .hijos .orbita { display: block; width: 100%; aspect-ratio: 1; border: 1.5px dashed currentColor; border-radius: 50%; opacity: 0.55; }
+    .hijos b { font: 600 14px var(--f-marca); } .hijos span:last-child { font: 400 12px / 1.35 var(--f-marca); opacity: 0.8; }
+    .arq .dec { grid-column: 10 / -1; display: flex; flex-direction: column; gap: 14px; opacity: var(--o3, 1); translate: 0 calc((1 - var(--o3, 1)) * 24px); --acento: var(--campus); --lin: var(--linea); }
+    .arq .dec .num { color: var(--soft); } .arq .dec .eti, .arq .dec .porque span { color: var(--gris); } .arq .dec p:not(.porque) { color: var(--gris); }
+
+    /* --- PIEZAS PROPIAS DE CADA PASO --- */
+    .telon { position: absolute; inset: 0; background: var(--papel); clip-path: inset(calc((1 - var(--t, 0)) * 100%) 0 0 0 round calc((1 - var(--t, 0)) * 48px) calc((1 - var(--t, 0)) * 48px) 0 0); }
+    .iris { position: absolute; inset: 0; background: var(--papel); clip-path: circle(var(--r, 0px) at var(--cx, 50%) var(--cy, 50%)); }
+    .persiana { position: absolute; inset: 0; }
+    .persiana i { position: absolute; inset: 0; background: var(--c); transform: translateY(calc((1 - var(--s, 0)) * 101%)); border-radius: calc((1 - var(--s, 0)) * 40px) calc((1 - var(--s, 0)) * 40px) 0 0; }
+    .lente { position: absolute; z-index: 3; background: radial-gradient(80% 120% at 50% 0%, var(--campus), var(--empresa) 70%); opacity: 0; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08); }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--papel); color: var(--tinta); row-gap: 48px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: var(--gris); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 38ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid var(--linea); background: #FFFFFF; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--campus); box-shadow: 0 0 0 1px var(--campus); }
+    .op .mono { color: var(--campus); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: var(--gris); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--campus); color: #FFFFFF; font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); }
+        .grilla > *, .dec > * { grid-column: 1 !important; grid-row: auto !important; }
+        .rb .dec { align-content: start; padding-top: 11svh; row-gap: 8px; }
+        .dec .num, .dec p:not(.porque) { display: none; }
+        .arq { align-content: start; padding-top: 9svh; row-gap: 22px; }
+        .arq .dec { order: -1; gap: 8px; } .escenario { order: 2; }
+        .madre { width: 100%; } .hijos { grid-template-columns: 1fr 1fr; } .hijos span:last-child { display: none; }
+        .barra { padding: 10px 8px; } .barra b { font-size: 13px; }
+        .ops { grid-template-columns: minmax(0, 1fr); }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">De El Rebirth a la decisión 03</span><p>Baja para ver el paso de la paleta a la marca madre y sus productos. Cambia de versión con el selector.</p></div>
+</div>
+
+<template id="escena">
+    <div class="escena"><div class="fijo">
+        <div class="capa claro-fondo" style="opacity:0"></div>
+        <div class="grilla arq">
+            <div class="escenario">
+                <div class="madre"><span class="marca wm"></span><span class="mono">Marca madre · lidera siempre</span></div>
+                <div class="ramas"></div>
+                <ul class="hijos">
+                    <li style="--tono:#4A3CAE"><span class="marca forky iso"></span><b>Campus</b><span>Pedir comida sin filas en la universidad</span></li>
+                    <li style="--tono:#6B5CE7"><span class="marca cerebro iso"></span><b>Connect</b><span>El sistema del colegio, producto principal</span></li>
+                    <li style="--tono:#9B8EF0"><span class="iso"><i class="orbita"></i></span><b>Health</b><span>Servicios internos de salud, en camino</span></li>
+                    <li><span class="iso"><i class="orbita"></i></span><b>+1</b><span>El próximo producto, cuando llegue</span></li>
+                </ul>
+            </div>
+            <aside class="dec"><span class="num">03</span><span class="eti mono">Decisión 03</span><h3>Una madre que lidera</h3><p>tap in arriba; Campus, Connect y Health cuelgan de ella con su nombre y su tono</p><p class="porque"><span>Por qué</span>Si mañana hay un cuarto producto, entra solo</p></aside>
+        </div>
+        <div class="capa rb">
+            <div class="grilla dec"><span class="num">04</span><span class="eti mono">Decisión 04</span><h3>Un tono por producto</h3><p>Una sola familia morada, un tono por cada producto del ecosistema</p><p class="porque"><span>Por qué</span>Connect, el principal, no lleva el más oscuro: su público es escolar</p></div>
+            <div class="barras">
+                <div class="barra" style="--tono:#2D2560"><span class="iso"><span class="marca wm"></span></span><b>Empresa</b></div>
+                <div class="barra" style="--tono:#4A3CAE"><span class="iso"><span class="marca forky"></span></span><b>Campus</b></div>
+                <div class="barra" style="--tono:#6B5CE7"><span class="iso"><span class="marca cerebro"></span></span><b>Connect</b></div>
+                <div class="barra claro" style="--tono:#9B8EF0"><span class="iso"><i class="orbita"></i></span><b>Health</b></div>
+            </div>
+        </div>
+    </div></div>
+</template>
+
+<nav class="selector" aria-label="Versiones del paso">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>La familia se arma</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Telón claro</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Al wordmark</span></button>
+    <button type="button" data-ir="d" aria-pressed="false"><b>D</b><span>Iris de Connect</span></button>
+    <button type="button" data-ir="e" aria-pressed="false"><b>E</b><span>Persiana de tonos</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Del 04 al 03</h2>
+    <div class="bloque">
+        <p>Hoy El Rebirth se va hacia arriba y la arquitectura entra en blanco, con un corte de oscuro a claro. Las cinco versiones lo vuelven un solo movimiento.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · La familia se arma</span><strong>Las tiras son la arquitectura</strong><p>La tira de Empresa viaja y se vuelve la marca madre; Campus, Connect y Health bajan a ser sus hijos; la noche se aclara y aparecen las ramas y el +1. La paleta y la arquitectura son el mismo sistema, y se ve.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Telón claro</span><strong>El espejo del telón</strong><p>El claro sube desde abajo con el borde redondeado, como el telón de la paleta pero al revés, y la arquitectura se arma encima: madre, ramas e hijos en cascada.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Al wordmark</span><strong>La madre, de cerca</strong><p>La cámara entra al wordmark de la tira de Empresa hasta que su tono llena la pantalla; ese tono se recoge hasta ser la tarjeta de la marca madre sobre el claro.</p></button>
+            <button type="button" class="op" data-ir="d" aria-pressed="false"><span class="mono">D · Iris de Connect</span><strong>Desde el principal</strong><p>El claro se abre en círculo desde el cerebro de Connect, el producto principal, con el mismo gesto del tap que abrió el capítulo 01, y la arquitectura aparece.</p></button>
+            <button type="button" class="op" data-ir="e" aria-pressed="false"><span class="mono">E · Persiana de tonos</span><strong>La paleta, en movimiento</strong><p>Los cuatro tonos suben en franjas de pantalla completa, uno sobre otro, y la última es el claro donde se arma la arquitectura. Rápido y editorial.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · PASO A LA ARQUITECTURA
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz'), plantilla = document.getElementById('escena').content;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b), tramo = (p, a, b) => fijar((p - a) / (b - a));
+        const suave = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, mezcla = (a, b, t) => a + (b - a) * t;
+        const extra = {
+            a: '', b: '<div class="capa telon"></div>', c: '<div class="lente"></div>', d: '<div class="capa iris"></div>',
+            e: '<div class="capa persiana"><i style="--c:#2D2560"></i><i style="--c:#4A3CAE"></i><i style="--c:#6B5CE7"></i><i style="--c:#9B8EF0"></i><i style="--c:#F4F3FA"></i></div>'
+        };
+        const escenas = {};
+        ['a', 'b', 'c', 'd', 'e'].forEach(v => {
+            const s = document.createElement('section'); s.className = 'vista v' + v; s.appendChild(plantilla.cloneNode(true));
+            /* La pieza propia de cada paso va entre El Rebirth y la arquitectura (salvo A, que transforma las tiras) */
+            const fijo = s.querySelector('.fijo'), arq = fijo.querySelector('.arq');
+            if (extra[v]) { const t = document.createElement('template'); t.innerHTML = extra[v]; fijo.insertBefore(t.content, v === 'c' ? null : fijo.querySelector('.rb').nextSibling); }
+            if (v !== 'a') fijo.appendChild(arq);
+            raiz.appendChild(s); escenas[v] = s.querySelector('.escena');
+        });
+
+        /* --- 1. GEOMETRÍA DE LA GRILLA Y RECTÁNGULOS --- */
+        const columnas = W => { const m = Math.max(Math.min(Math.max(24, W * 0.05), 96), (W - 1600) / 2), cw = (W - 2 * m - 11 * 24) / 12; return { m, x: c => m + (c - 1) * (cw + 24), fin: c => m + c * cw + (c - 1) * 24 }; };
+        const rel = (el, base) => { const a = el.getBoundingClientRect(), b = base.getBoundingClientRect(); return { l: a.left - b.left, t: a.top - b.top, w: a.width, h: a.height }; };
+        const rectBarras = (W, H, g, movil) => movil ? { l: g.m, t: H * 0.44, w: W - 2 * g.m, h: H * 0.5 } : { l: g.x(8), t: H * 0.17, w: g.fin(12) - g.x(8), h: H * 0.66 };
+        const ubicarBarras = (el, R, pesos = [1, 1, 1.5, 1], gap = 8) => {
+            const total = pesos.reduce((a, b) => a + b, 0), util = R.w - gap * 3; let x = R.l;
+            return [...el.querySelectorAll('.barra')].map((b, i) => { const w = util * pesos[i] / total, r = { l: x, t: R.t, w, h: R.h }; x += w + gap; return r; });
+        };
+        const poner = (b, r, rad) => Object.assign(b.style, { left: r.l + 'px', top: r.t + 'px', width: r.w + 'px', height: r.h + 'px', borderRadius: rad + 'px' });
+        const entradaArq = (el, p, a) => {
+            el.style.setProperty('--om', suave(tramo(p, a, a + 0.1)).toFixed(3));
+            el.style.setProperty('--or', suave(tramo(p, a + 0.08, a + 0.18)).toFixed(3));
+            el.querySelectorAll('.hijos li').forEach((li, i) => li.style.setProperty('--oh', suave(tramo(p, a + 0.12 + i * 0.04, a + 0.24 + i * 0.04)).toFixed(3)));
+            el.style.setProperty('--o3', tramo(p, a + 0.14, a + 0.26).toFixed(3));
+        };
+
+        /* --- 2. COREOGRAFÍA --- */
+        const coreo = {
+            a: (el, p, W, H, g, movil) => {
+                const fijo = el.querySelector('.fijo'), barras = [...el.querySelectorAll('.barra')], R0 = ubicarBarras(el, rectBarras(W, H, g, movil));
+                /* Destinos: la tarjeta madre y los tres primeros hijos (se miden con su estado final) */
+                el.style.setProperty('--om', 1); el.querySelectorAll('.hijos li').forEach(li => li.style.setProperty('--oh', 1));
+                const madre = rel(el.querySelector('.madre'), fijo), hijos = [...el.querySelectorAll('.hijos li')].map(li => rel(li, fijo));
+                const destinos = [madre, hijos[0], hijos[1], hijos[2]];
+                const t = suave(tramo(p, 0.2, 0.6));
+                barras.forEach((b, i) => { const a = R0[i], d = destinos[i]; poner(b, { l: mezcla(a.l, d.l, t), t: mezcla(a.t, d.t, t), w: mezcla(a.w, d.w, t), h: mezcla(a.h, d.h, t) }, mezcla(22, i === 0 ? 28 : 24, t)); b.style.opacity = 1 - tramo(p, 0.6, 0.66); });
+                el.style.setProperty('--bi', (1 - tramo(p, 0.16, 0.26)).toFixed(3));
+                el.style.setProperty('--o4', (1 - tramo(p, 0.06, 0.18)).toFixed(3));
+                /* El claro sube desde abajo mientras las tiras viajan, sin pasar por un gris */
+                const cl = el.querySelector('.claro-fondo'), k = suave(tramo(p, 0.22, 0.52));
+                cl.style.opacity = k > 0 ? 1 : 0; cl.style.clipPath = `inset(${((1 - k) * 100).toFixed(2)}% 0 0 0)`;
+                el.style.setProperty('--om', tramo(p, 0.58, 0.64).toFixed(3));
+                el.style.setProperty('--or', suave(tramo(p, 0.62, 0.74)).toFixed(3));
+                el.querySelectorAll('.hijos li').forEach((li, i) => li.style.setProperty('--oh', i < 3 ? tramo(p, 0.58, 0.64).toFixed(3) : suave(tramo(p, 0.68, 0.8)).toFixed(3)));
+                el.style.setProperty('--o3', tramo(p, 0.66, 0.78).toFixed(3));
+            },
+            b: (el, p, W, H, g, movil) => {
+                ubicarBarras(el, rectBarras(W, H, g, movil)).forEach((r, i) => { const b = el.querySelectorAll('.barra')[i]; poner(b, { ...r, t: r.t + suave(tramo(p, 0.1, 0.45)) * H * 0.4 }, 22); });
+                el.style.setProperty('--o4', (1 - tramo(p, 0.06, 0.2)).toFixed(3));
+                el.style.setProperty('--t', suave(tramo(p, 0.12, 0.48)).toFixed(3));
+                entradaArq(el, p, 0.5);
+            },
+            c: (el, p, W, H, g, movil) => {
+                const fijo = el.querySelector('.fijo'), R0 = ubicarBarras(el, rectBarras(W, H, g, movil)), barras = [...el.querySelectorAll('.barra')];
+                barras.forEach((b, i) => poner(b, R0[i], 22));
+                const rb = el.querySelector('.rb'), iso = barras[0].querySelector('.iso').getBoundingClientRect(), base = fijo.getBoundingClientRect();
+                const cx = iso.left - base.left + iso.width / 2, cy = iso.top - base.top + iso.height / 2, z = suave(tramo(p, 0.08, 0.4));
+                rb.style.transformOrigin = `${cx}px ${cy}px`; rb.style.transform = `scale(${1 + z * 14})`;
+                rb.style.opacity = 1 - tramo(p, 0.36, 0.42);
+                el.style.setProperty('--o4', (1 - tramo(p, 0.04, 0.14)).toFixed(3));
+                /* El tono de Empresa llena la pantalla y se recoge hasta la tarjeta madre */
+                el.style.setProperty('--om', 1); const madre = rel(el.querySelector('.madre'), fijo);
+                const k = suave(tramo(p, 0.42, 0.64)), lente = el.querySelector('.lente');
+                poner(lente, { l: mezcla(0, madre.l, k), t: mezcla(0, madre.t, k), w: mezcla(W, madre.w, k), h: mezcla(H, madre.h, k) }, mezcla(0, 28, k));
+                lente.style.opacity = p > 0.34 && p < 0.66 ? 1 : 0;
+                el.querySelector('.claro-fondo').style.opacity = p > 0.42 ? 1 : 0;
+                el.style.setProperty('--om', p >= 0.64 ? 1 : 0);
+                el.style.setProperty('--or', suave(tramo(p, 0.64, 0.74)).toFixed(3));
+                el.querySelectorAll('.hijos li').forEach((li, i) => li.style.setProperty('--oh', suave(tramo(p, 0.68 + i * 0.04, 0.8 + i * 0.04)).toFixed(3)));
+                el.style.setProperty('--o3', tramo(p, 0.72, 0.84).toFixed(3));
+            },
+            d: (el, p, W, H, g, movil) => {
+                const fijo = el.querySelector('.fijo'), barras = [...el.querySelectorAll('.barra')];
+                ubicarBarras(el, rectBarras(W, H, g, movil)).forEach((r, i) => poner(barras[i], r, 22));
+                const iso = barras[2].querySelector('.iso').getBoundingClientRect(), base = fijo.getBoundingClientRect();
+                el.style.setProperty('--cx', (iso.left - base.left + iso.width / 2) + 'px'); el.style.setProperty('--cy', (iso.top - base.top + iso.height / 2) + 'px');
+                el.style.setProperty('--r', (suave(tramo(p, 0.1, 0.46)) * Math.hypot(W, H) * 1.05).toFixed(1) + 'px');
+                el.style.setProperty('--o4', (1 - tramo(p, 0.04, 0.14)).toFixed(3));
+                entradaArq(el, p, 0.48);
+            },
+            e: (el, p, W, H, g, movil) => {
+                const barras = [...el.querySelectorAll('.barra')];
+                ubicarBarras(el, rectBarras(W, H, g, movil)).forEach((r, i) => poner(barras[i], r, 22));
+                el.style.setProperty('--o4', (1 - tramo(p, 0.04, 0.14)).toFixed(3));
+                el.querySelectorAll('.persiana i').forEach((f, i) => f.style.setProperty('--s', suave(tramo(p, 0.08 + i * 0.07, 0.24 + i * 0.07)).toFixed(3)));
+                entradaArq(el, p, 0.52);
+            }
+        };
+        const pintar = () => {
+            const v = raiz.dataset.v, el = escenas[v], r = el.getBoundingClientRect(), p = fijar(-r.top / (r.height - innerHeight));
+            const W = innerWidth, H = innerHeight;
+            coreo[v](el, p, W, H, columnas(W), W <= 768);
+        };
+        let pendiente = false;
+        addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } }, { passive: true });
+        addEventListener('resize', pintar);
+
+        /* --- 3. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v))); try { localStorage.setItem('arq-pasos', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(pintar); };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) scrollTo({ top: 0, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('arq-pasos'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['a', 'b', 'c', 'd', 'e'].includes(h) ? h : guardado || 'a');
+        addEventListener('load', pintar);
+    })();
+    /* =======================================================
+       FIN JS · PASO A LA ARQUITECTURA
+       ======================================================= */
+</script>
