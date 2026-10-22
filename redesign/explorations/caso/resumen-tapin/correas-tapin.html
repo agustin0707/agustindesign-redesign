@@ -1,0 +1,296 @@
+<title>Correa y origen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@400;600&display=swap">
+<style>
+    /* Dos decisiones en una página: la correa de la credencial (tres propuestas) y el fondo de la portada del
+       capítulo 01 (la actual y tres propuestas), con Forky ya ajustado: más chico, trote y líneas nuevas.
+       Un solo aspecto a propósito: los colores son los del caso */
+    :root {
+        --papel: #FBFAFF; --tinta: #1C1A2E; --gris: #57556B; --linea: rgba(45, 37, 96, 0.12);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --tint: #EEEDFE;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: clamp(20px, 3.2vw, 48px);
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .wm { aspect-ratio: 389.87 / 150.6; --svg: url('wordmark.svg'); }
+    .forky { aspect-ratio: 1; --svg: url('forky.svg'); }
+    .bloque { padding-block: clamp(56px, 7vw, 96px); padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+    .cab { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 28px; }
+    .cab h2 { margin: 6px 0 0; font: 600 clamp(26px, 2.6vw, 40px) / 1.05 var(--f-marca); letter-spacing: -0.035em; }
+    .cab .mono { color: var(--gris); }
+    .segmentos { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(45, 37, 96, 0.07); }
+    .segmentos button { padding: 8px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--gris); font: 500 14px var(--f-texto); cursor: pointer; white-space: nowrap; transition: background-color 200ms, color 200ms; }
+    .segmentos button[aria-pressed="true"] { background: var(--tinta); color: #FFFFFF; }
+    .segmentos button:focus-visible { outline: 2px solid var(--campus); outline-offset: 2px; }
+    .nota { margin: 18px 0 0; max-width: 62ch; color: var(--gris); }
+
+    /* =======================================================
+       1 · CORREAS
+       ======================================================= */
+    .escenario-c { position: relative; display: grid; place-items: start center; height: clamp(620px, 76svh, 760px); border-radius: 24px; background: radial-gradient(70% 60% at 50% 30%, #FFFFFF, var(--tint)); overflow: hidden; perspective: 1200px; }
+    .colgante { --rx: 0deg; --ry: 0deg; position: relative; display: flex; flex-direction: column; align-items: center; width: 300px; transform-origin: 50% 0; transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform 600ms var(--ease); }
+    .colgante > * { flex: none; }
+    .tarjeta { position: relative; width: 300px; aspect-ratio: 0.72; display: flex; flex-direction: column; gap: 14px; padding: 34px 24px 22px; border-radius: 24px; color: #FFFFFF; background: radial-gradient(120% 80% at 80% 0%, #8174F2, var(--campus) 55%, #2A2163); box-shadow: 0 40px 70px -36px rgba(74, 60, 174, 0.75); overflow: hidden; isolation: isolate; }
+    .tarjeta::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: var(--grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; }
+    .tarjeta::after { content: ''; position: absolute; inset: -50%; z-index: -1; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.22), transparent); transform: translate(var(--lx, 0%), var(--ly, 0%)); transition: transform 600ms var(--ease); }
+    .tarjeta .fila { display: flex; justify-content: space-between; align-items: center; }
+    .tarjeta .fila .wm { width: 36%; }
+    .tarjeta .forky { width: 40%; margin: auto; }
+    .tarjeta b { font: 600 26px / 1 var(--f-marca); letter-spacing: -0.04em; }
+    .tarjeta p { margin: 0; font-size: 14px; line-height: 1.4; opacity: 0.85; }
+    .tarjeta .datos { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.22); }
+    .correa { display: none; }
+    [data-c="1"] .c1, [data-c="2"] .c2, [data-c="3"] .c3 { display: contents; }
+    .ranura, .ojal { display: none; }
+    [data-c="1"] .ranura, [data-c="2"] .ranura { display: block; position: absolute; top: 12px; left: 50%; width: 56px; height: 9px; margin-left: -28px; border-radius: 9px; background: var(--tint); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.28); }
+
+    /* --- 1. CINTA EN V: dos tramos tejidos que bajan desde fuera de cuadro y se juntan en un mosquetón --- */
+    .v { position: relative; width: 300px; height: 210px; margin-bottom: -6px; }
+    .v-tramo { position: absolute; bottom: 30px; width: 34px; height: 260px; transform-origin: 50% 100%; background:
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.06) 0 2px, transparent 2px 5px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.18), transparent 22%, transparent 78%, rgba(0, 0, 0, 0.18)), var(--campus);
+        box-shadow: inset 2px 0 0 rgba(255, 255, 255, 0.12); overflow: hidden; }
+    .v-tramo::before, .v-tramo::after { content: ''; position: absolute; top: 0; bottom: 0; width: 1px; border-left: 1px dashed rgba(255, 255, 255, 0.4); }
+    .v-tramo::before { left: 4px; } .v-tramo::after { right: 4px; }
+    .v-tramo span { position: absolute; left: 50%; top: 0; writing-mode: vertical-rl; translate: -50% 0; color: rgba(255, 255, 255, 0.85); font: 600 11px var(--f-marca); white-space: nowrap; letter-spacing: 0.02em; }
+    .v-tramo.izq { left: calc(50% - 30px); transform: rotate(16deg); }
+    .v-tramo.der { left: calc(50% - 4px); transform: rotate(-16deg); background-color: var(--connect); }
+    .mosqueton { position: absolute; left: 50%; bottom: 0; width: 30px; height: 46px; margin-left: -15px; }
+    .mosqueton svg { width: 100%; height: 100%; overflow: visible; }
+
+    /* --- 2. CARRETE RETRÁCTIL: un yoyó de credencial con Forky; el cordón baja hasta una pestaña con broche --- */
+    .carrete-zona { position: relative; display: flex; flex-direction: column; align-items: center; height: 210px; margin-bottom: -10px; padding-top: 40px; }
+    .carrete { position: relative; width: 78px; height: 78px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FFFFFF, #E7E4F6 60%, #C9C4E2); box-shadow: inset 0 0 0 4px #FFFFFF, inset 0 0 0 6px rgba(45, 37, 96, 0.1), 0 14px 26px -12px rgba(28, 26, 46, 0.5); display: grid; place-items: center; transform: rotate(calc(var(--ry) * 4)); transition: transform 600ms var(--ease); }
+    .carrete .forky { width: 46%; color: var(--campus); }
+    .carrete::after { content: ''; position: absolute; top: -18px; left: 50%; width: 22px; height: 26px; margin-left: -11px; border-radius: 8px 8px 4px 4px; background: linear-gradient(#DAD7E8, #A9A4C2); z-index: -1; }
+    .cordon { width: 2px; flex: 1; background: linear-gradient(#8E8AA6, #B9B5CF); }
+    .pestana { position: relative; width: 22px; height: 56px; margin-bottom: -20px; border-radius: 6px; background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.25)); border: 1px solid rgba(45, 37, 96, 0.18); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); z-index: 2; }
+    .pestana::after { content: ''; position: absolute; left: 50%; bottom: 8px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #FFFFFF, #A9A4C2); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
+
+    /* --- 3. CORDÓN CON OJAL: un cordón redondo con el degradado de la paleta, pasado por un ojal metálico --- */
+    .cordon-zona { position: relative; width: 300px; height: 210px; margin-bottom: -40px; z-index: 2; }
+    .cordon-zona svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    [data-c="3"] .ojal { display: block; position: absolute; top: 12px; left: 50%; width: 22px; height: 22px; margin-left: -11px; border-radius: 50%; background: var(--tint); box-shadow: 0 0 0 4px #D8D4EA, 0 0 0 5px rgba(45, 37, 96, 0.25), inset 0 2px 3px rgba(0, 0, 0, 0.35); }
+
+    /* =======================================================
+       2 · FONDOS DE LA PORTADA DEL CAPÍTULO 01
+       ======================================================= */
+    .portada { --k: 0; position: relative; height: clamp(520px, 72svh, 720px); border-radius: 24px; overflow: hidden; color: #FFFFFF; isolation: isolate; background: var(--campus); }
+    .fondo { position: absolute; inset: 0; z-index: -1; display: none; }
+    [data-f="0"] .f0, [data-f="1"] .f1, [data-f="2"] .f2, [data-f="3"] .f3 { display: block; }
+    .grano::after { content: ''; position: absolute; inset: 0; background-image: var(--grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; pointer-events: none; }
+    /* 0 · Actual: morado plano con una luz */
+    .f0 { background: radial-gradient(55% 50% at 72% 38%, rgba(129, 116, 242, 0.6), transparent 72%), var(--campus); }
+    /* 1 · Pista: los carriles de una pista de atletismo en perspectiva; Forky corre por el suyo */
+    .f1 { background: linear-gradient(180deg, #5A4BC6 0%, var(--campus) 48%, #3B2F94 100%); }
+    .f1 svg { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 62%; }
+    .f1 .carriles line { stroke: rgba(255, 255, 255, 0.22); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+    .f1 .numeros text { fill: rgba(255, 255, 255, 0.28); font: 600 46px var(--f-marca); text-anchor: middle; }
+    .f1 .meta { stroke: rgba(255, 255, 255, 0.5); stroke-width: 3; stroke-dasharray: 10 8; vector-effect: non-scaling-stroke; }
+    .f1 .horizonte { position: absolute; left: 0; right: 0; top: 38%; height: 30%; background: radial-gradient(60% 100% at 50% 0%, rgba(155, 142, 240, 0.45), transparent 70%); }
+    /* 2 · Campus en duotono: la foto del stand en la UC, teñida en la familia morada */
+    .f2 img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.15) brightness(0.9); mix-blend-mode: luminosity; opacity: 0.42; }
+    .f2 { background: var(--campus); }
+    .f2::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(45, 37, 96, 0.85), rgba(74, 60, 174, 0.35) 60%, rgba(107, 92, 231, 0.2)), linear-gradient(0deg, rgba(45, 37, 96, 0.7), transparent 50%); }
+    /* 3 · Mosaico de QR: la entrada de Tap In en el campus, en módulos que titilan */
+    .f3 { background: radial-gradient(60% 55% at 70% 40%, rgba(129, 116, 242, 0.45), transparent 72%), var(--campus); }
+    .f3 canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+    /* Forky ajustado: más chico, trote con rebote y aplastado, sombra y líneas de velocidad afinadas */
+    .num { position: absolute; right: 32px; top: 24px; font: 600 clamp(140px, 22vw, 340px) / 0.8 var(--f-marca); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22); }
+    .txt { position: absolute; left: 32px; bottom: 32px; display: flex; flex-direction: column; gap: 12px; }
+    .txt .mono { opacity: 0.75; }
+    .txt h3 { margin: 0; font: 600 clamp(56px, 9vw, 150px) / 0.86 var(--f-marca); letter-spacing: -0.055em; }
+    .txt p { margin: 0; max-width: 34ch; font-size: 17px; opacity: 0.8; }
+    .pista-f { position: absolute; left: 0; right: 0; top: 22%; height: 26%; }
+    .corre { position: absolute; bottom: 0; left: 0; display: flex; align-items: flex-end; transform: translateX(calc(-220px + var(--k) * (100% + 440px))); }
+    .portada .corre { left: 0; width: 100%; }
+    .cuerpo { position: relative; width: clamp(110px, 14vw, 170px); rotate: 7deg; transform-origin: 50% 100%; }
+    .cuerpo .forky { width: 100%; color: #FFFFFF; transform-origin: 50% 100%; animation: trote 440ms linear infinite; }
+    .sombra { position: absolute; left: 14%; right: 14%; bottom: -10px; height: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgba(16, 13, 32, 0.4), transparent); animation: sombra 440ms linear infinite; }
+    .velocidad { position: relative; width: clamp(120px, 16vw, 200px); height: clamp(80px, 10vw, 120px); margin-right: -18px; }
+    .velocidad i { position: absolute; right: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75)); transform-origin: 100% 50%; animation: rafaga 520ms ease-in-out infinite alternate; }
+    .velocidad i:nth-child(1) { top: 14%; width: 62%; animation-delay: -120ms; }
+    .velocidad i:nth-child(2) { top: 38%; width: 100%; height: 4px; }
+    .velocidad i:nth-child(3) { top: 60%; width: 78%; animation-delay: -300ms; }
+    .velocidad i:nth-child(4) { top: 82%; width: 46%; animation-delay: -420ms; }
+    @keyframes trote { 0%, 100% { translate: 0 0; scale: 1.05 0.94; } 25% { translate: 0 -16px; scale: 0.98 1.03; } 50% { translate: 0 0; scale: 1.04 0.95; } 75% { translate: 0 -11px; scale: 0.99 1.02; } }
+    @keyframes sombra { 0%, 50%, 100% { scale: 1; opacity: 1; } 25% { scale: 0.7; opacity: 0.55; } 75% { scale: 0.8; opacity: 0.7; } }
+    @keyframes rafaga { from { transform: translateX(-12%) scaleX(0.6); opacity: 0.35; } to { transform: translateX(0) scaleX(1); opacity: 1; } }
+
+    @media (max-width: 768px) {
+        .escenario-c { height: 640px; }
+        .txt { left: 20px; bottom: 20px; }
+        .num { right: 16px; }
+        .segmentos button { padding: 7px 11px; font-size: 13px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .cuerpo .forky, .sombra, .velocidad i { animation: none; } }
+</style>
+
+<!-- =======================================================
+     CORREAS
+     ======================================================= -->
+<section class="bloque" aria-labelledby="t-correa">
+    <div class="cab">
+        <div><span class="mono">Credencial del resumen · pasa el mouse sobre el escenario</span><h2 id="t-correa">Tres correas</h2></div>
+        <div class="segmentos" role="group" aria-label="Correas">
+            <button type="button" id="c-1" data-ir-c="1" aria-pressed="true">1 · Cinta en V</button>
+            <button type="button" id="c-2" data-ir-c="2" aria-pressed="false">2 · Carrete retráctil</button>
+            <button type="button" id="c-3" data-ir-c="3" aria-pressed="false">3 · Cordón con ojal</button>
+        </div>
+    </div>
+    <div class="escenario-c" data-c="1" id="escenario-c">
+        <div class="colgante" data-colgante>
+            <div class="correa c1">
+                <div class="v" aria-hidden="true">
+                    <span class="v-tramo izq"><span>tap in · tap in · tap in · tap in · tap in</span></span>
+                    <span class="v-tramo der"><span>tap in · tap in · tap in · tap in · tap in</span></span>
+                    <span class="mosqueton"><svg viewBox="0 0 30 46"><defs><linearGradient id="metal" x1="0" x2="1"><stop offset="0" stop-color="#F4F2FA"/><stop offset="0.5" stop-color="#B9B4CF"/><stop offset="1" stop-color="#8E89A8"/></linearGradient></defs><rect x="6" y="0" width="18" height="10" rx="3" fill="url(#metal)"/><path d="M15 10 C4 12 4 30 9 38 C12 44 20 44 23 38 C26 32 25 20 19 16" fill="none" stroke="url(#metal)" stroke-width="4" stroke-linecap="round"/><path d="M19 16 L21 30" stroke="#8E89A8" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+                </div>
+            </div>
+            <div class="correa c2">
+                <div class="carrete-zona" aria-hidden="true"><span class="carrete"><span class="marca forky"></span></span><span class="cordon"></span><span class="pestana"></span></div>
+            </div>
+            <div class="correa c3">
+                <div class="cordon-zona" aria-hidden="true">
+                    <svg viewBox="0 0 300 210"><defs><linearGradient id="paleta" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2D2560"/><stop offset="0.4" stop-color="#4A3CAE"/><stop offset="0.75" stop-color="#6B5CE7"/><stop offset="1" stop-color="#9B8EF0"/></linearGradient></defs>
+                        <path d="M128 -40 C128 80 140 150 146 196" fill="none" stroke="url(#paleta)" stroke-width="7" stroke-linecap="round"/>
+                        <path d="M172 -40 C172 80 160 150 154 196" fill="none" stroke="url(#paleta)" stroke-width="7" stroke-linecap="round"/>
+                        <path d="M146 196 C148 206 152 206 154 196" fill="none" stroke="#9B8EF0" stroke-width="7" stroke-linecap="round"/>
+                        <rect x="141" y="150" width="18" height="14" rx="4" fill="#E4E1F2" stroke="rgba(45,37,96,0.25)"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="tarjeta">
+                <span class="ranura" aria-hidden="true"></span><span class="ojal" aria-hidden="true"></span>
+                <div class="fila"><span class="marca wm"></span><span class="mono">01 / 03</span></div>
+                <span class="marca forky"></span>
+                <span class="mono">2025</span><b>El origen</b>
+                <p>Una app para pedir comida sin filas en la universidad, con Forky al centro</p>
+                <div class="datos mono"><span>Diseñador fundador</span><span>HTML, CSS y JS</span></div>
+            </div>
+        </div>
+    </div>
+    <p class="nota" id="nota-c">Cinta tejida en dos tramos, del morado de Campus y el de Connect, con "tap in" estampado, costuras y un mosquetón. Es la más fiel a una credencial de evento.</p>
+</section>
+
+<!-- =======================================================
+     FONDOS DEL CAPÍTULO 01
+     ======================================================= -->
+<section class="bloque" aria-labelledby="t-fondo">
+    <div class="cab">
+        <div><span class="mono">Portada del capítulo 01 · con Forky ya ajustado</span><h2 id="t-fondo">Tres fondos y el actual</h2></div>
+        <div class="segmentos" role="group" aria-label="Fondos">
+            <button type="button" id="f-0" data-ir-f="0" aria-pressed="false">Actual</button>
+            <button type="button" id="f-1" data-ir-f="1" aria-pressed="true">1 · Pista</button>
+            <button type="button" id="f-2" data-ir-f="2" aria-pressed="false">2 · Campus en duotono</button>
+            <button type="button" id="f-3" data-ir-f="3" aria-pressed="false">3 · Mosaico de QR</button>
+        </div>
+    </div>
+    <div class="portada" data-f="1" id="portada">
+        <div class="fondo f0 grano"></div>
+        <div class="fondo f1 grano"><span class="horizonte"></span>
+            <svg viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+                <g class="carriles"><line x1="470" y1="0" x2="-500" y2="400"/><line x1="480" y1="0" x2="-150" y2="400"/><line x1="490" y1="0" x2="200" y2="400"/><line x1="500" y1="0" x2="500" y2="400"/><line x1="510" y1="0" x2="800" y2="400"/><line x1="520" y1="0" x2="1150" y2="400"/><line x1="530" y1="0" x2="1500" y2="400"/><line x1="0" y1="0" x2="1000" y2="0"/></g>
+                <line class="meta" x1="300" y1="230" x2="700" y2="230"/>
+                <g class="numeros"><text x="-40" y="390">1</text><text x="290" y="390">2</text><text x="650" y="390">3</text><text x="990" y="390">4</text></g>
+            </svg>
+        </div>
+        <div class="fondo f2"><img src="campus.webp" alt=""></div>
+        <div class="fondo f3"><canvas data-qr aria-hidden="true"></canvas></div>
+        <span class="num" aria-hidden="true">01</span>
+        <div class="pista-f" aria-hidden="true"><span class="corre"><span class="velocidad"><i></i><i></i><i></i><i></i></span><span class="cuerpo"><span class="marca forky"></span><i class="sombra"></i></span></span></div>
+        <div class="txt"><span class="mono">Capítulo 01 · 2025</span><h3>El origen</h3><p>Una app para pedir comida sin filas en la universidad</p></div>
+    </div>
+    <p class="nota" id="nota-f">Los carriles de una pista de atletismo en perspectiva, con números y una línea de meta: Forky corre por la suya. Le da un suelo y un sentido al movimiento.</p>
+</section>
+
+<script>
+    /* =======================================================
+       INICIO JS · CORREAS Y FONDOS
+       ======================================================= */
+    (function () {
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const fijar = (v, a = -1, b = 1) => Math.min(Math.max(v, a), b);
+
+        /* --- 1. CORREAS: selector e inclinación leve con el mouse --- */
+        const esc = document.getElementById('escenario-c'), colg = esc.querySelector('[data-colgante]'), tarjeta = esc.querySelector('.tarjeta');
+        const NOTAS_C = {
+            1: 'Cinta tejida en dos tramos, del morado de Campus y el de Connect, con "tap in" estampado, costuras y un mosquetón. Es la más fiel a una credencial de evento.',
+            2: 'Un carrete retráctil con Forky, de los que se usan en el trabajo: cordón fino y una pestaña transparente con broche. Gira apenas cuando la credencial se inclina.',
+            3: 'Un cordón redondo con el degradado de la paleta, pasado por un ojal metálico con un pasador. Es la más liviana y deja todo el protagonismo a la credencial.'
+        };
+        document.querySelectorAll('[data-ir-c]').forEach(b => b.addEventListener('click', () => {
+            esc.dataset.c = b.dataset.irC;
+            document.querySelectorAll('[data-ir-c]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+            document.getElementById('nota-c').textContent = NOTAS_C[b.dataset.irC];
+        }));
+        if (!quieto && window.matchMedia('(hover: hover)').matches) {
+            esc.addEventListener('pointermove', e => {
+                const r = tarjeta.getBoundingClientRect(), x = fijar((e.clientX - r.left) / r.width - 0.5), y = fijar((e.clientY - r.top) / r.height - 0.5);
+                colg.style.setProperty('--ry', (x * 7).toFixed(2) + 'deg'); colg.style.setProperty('--rx', (-y * 5).toFixed(2) + 'deg');
+                tarjeta.style.setProperty('--lx', (x * 36).toFixed(1) + '%'); tarjeta.style.setProperty('--ly', (y * 36).toFixed(1) + '%');
+            });
+            esc.addEventListener('pointerleave', () => { colg.style.removeProperty('--rx'); colg.style.removeProperty('--ry'); });
+        }
+
+        /* --- 2. FONDOS: selector y Forky que cruza en bucle --- */
+        const lienzo = document.querySelector('[data-qr]'), ctx = lienzo.getContext('2d');
+        const portada = document.getElementById('portada');
+        const NOTAS_F = {
+            0: 'El fondo actual: el morado plano de Campus con una luz. Limpio, pero sin nada propio del capítulo.',
+            1: 'Los carriles de una pista de atletismo en perspectiva, con números y una línea de meta: Forky corre por la suya. Le da un suelo y un sentido al movimiento.',
+            2: 'La foto del stand de Tap In en la UC, teñida en la familia morada y oscurecida hacia el texto. Ancla el capítulo en el lugar real donde nació la marca.',
+            3: 'Un mosaico de módulos de QR, como los 60 que se pegaron en los locales de la UC, en morados suaves que titilan. Es textura con significado.'
+        };
+        document.querySelectorAll('[data-ir-f]').forEach(b => b.addEventListener('click', () => {
+            portada.dataset.f = b.dataset.irF;
+            document.querySelectorAll('[data-ir-f]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+            document.getElementById('nota-f').textContent = NOTAS_F[b.dataset.irF];
+            if (b.dataset.irF === '3') armar();
+        }));
+        let t0 = performance.now();
+        const ciclo = ahora => { const k = ((ahora - t0) % 6000) / 6000; portada.style.setProperty('--k', k.toFixed(4)); requestAnimationFrame(ciclo); };
+        if (!quieto) requestAnimationFrame(ciclo); else portada.style.setProperty('--k', 0.55);
+
+        /* --- 3. MOSAICO DE QR (CANVAS) --- */
+        let celdas = [], tam = 22;
+        function armar() {
+            const r = lienzo.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+            lienzo.width = r.width * dpr; lienzo.height = r.height * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            tam = r.width < 600 ? 16 : 22;
+            celdas = [];
+            for (let y = 0; y < r.height / tam; y++) for (let x = 0; x < r.width / tam; x++) if (Math.random() < 0.42) celdas.push({ x, y, a: 0.05 + Math.random() * 0.1, f: Math.random() < 0.06 ? Math.random() * Math.PI * 2 : null });
+        }
+        const pintarQR = ahora => {
+            if (portada.dataset.f === '3') {
+                const r = lienzo.getBoundingClientRect();
+                ctx.clearRect(0, 0, r.width, r.height);
+                celdas.forEach(c => {
+                    const a = c.f === null ? c.a : c.a + (Math.sin(ahora / 600 + c.f) + 1) * 0.12;
+                    ctx.fillStyle = `rgba(200, 192, 248, ${a.toFixed(3)})`;
+                    ctx.beginPath(); ctx.roundRect(c.x * tam + 2, c.y * tam + 2, tam - 4, tam - 4, 4); ctx.fill();
+                });
+                /* Los tres cuadros de esquina de un QR, a gran escala */
+                [[1, 1], [Math.floor(r.width / tam) - 8, 1], [1, Math.floor(r.height / tam) - 8]].forEach(([x, y]) => {
+                    ctx.strokeStyle = 'rgba(200, 192, 248, 0.22)'; ctx.lineWidth = tam * 0.8;
+                    ctx.strokeRect((x + 0.4) * tam, (y + 0.4) * tam, tam * 6.2, tam * 6.2);
+                    ctx.fillStyle = 'rgba(200, 192, 248, 0.2)'; ctx.fillRect((x + 2) * tam, (y + 2) * tam, tam * 3, tam * 3);
+                });
+            }
+            if (!quieto) requestAnimationFrame(pintarQR);
+        };
+        armar(); window.addEventListener('resize', armar); requestAnimationFrame(pintarQR);
+    })();
+    /* =======================================================
+       FIN JS · CORREAS Y FONDOS
+       ======================================================= */
+</script>

@@ -20,19 +20,27 @@
         resumen: el => {
             const cred = el.querySelector('[data-cred]'), tiempo = el.querySelector('[data-tiempo]');
             const hitos = [...el.querySelectorAll('.tp-hito')], signos = [...el.querySelectorAll('[data-signo]')];
-            const lectura = el.querySelector('.tp-lectura'), lFecha = el.querySelector('[data-l-fecha]'), lTexto = el.querySelector('[data-l-texto]');
+            const pies = [...el.querySelectorAll('.tp-pie-t')];
             const CAPS = [
                 { tono: '#4A3CAE', per: '2025', nom: 'El origen', txt: 'Una app para pedir comida sin filas en la universidad, con Forky al centro' },
                 { tono: '#6B5CE7', per: 'Feb a abr 2026', nom: 'El Rebirth', txt: 'De la comida a los colegios: arquitectura, paleta y el cerebro de Connect' },
                 { tono: '#2D2560', per: 'Abr a sep 2026', nom: 'La web', txt: 'tapin.cl, diseñada y programada para que un director entienda en segundos' }
             ];
-            const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-            let capActual = -1, ultimo = -1, encima = null;
-            /* La lectura muestra el mes en curso y el último hito; al pasar el mouse por un hito, muestra ese */
-            const leer = (fecha, texto, tono) => { lFecha.textContent = fecha; lTexto.textContent = texto; lectura.style.setProperty('--l-tono', tono); };
-            hitos.forEach(h => {
-                const ver = () => { encima = h; leer(h.dataset.f, h.dataset.t, h.style.getPropertyValue('--tono')); };
-                const soltar = () => { encima = null; ultimo = -2; };
+            let capActual = -1, ultimo = -1, mostrado = 0, encima = null, visible = 0;
+            /* El texto del hito se ancla a su punto: dos capas que se alternan para fundir el cambio */
+            const mostrar = i => {
+                if (i === mostrado) return;
+                mostrado = i;
+                const h = hitos[i], m = parseFloat(h.style.getPropertyValue('--m'));
+                const sale = pies[visible], entra = pies[1 - visible];
+                entra.querySelector('b').textContent = h.dataset.f; entra.querySelector('span').textContent = h.dataset.t;
+                entra.style.setProperty('--x', (m + 0.5).toFixed(2)); entra.style.setProperty('--ancla', (m / 21).toFixed(3));
+                sale.style.setProperty('--x', (m + 0.5).toFixed(2)); sale.style.setProperty('--ancla', (m / 21).toFixed(3));
+                sale.classList.remove('on'); entra.classList.add('on'); visible = 1 - visible;
+            };
+            hitos.forEach((h, i) => {
+                const ver = () => { encima = i; mostrar(i); };
+                const soltar = () => { encima = null; mostrar(Math.max(ultimo, 0)); };
                 h.addEventListener('pointerenter', ver); h.addEventListener('focus', ver);
                 h.addEventListener('pointerleave', soltar); h.addEventListener('blur', soltar);
             });
@@ -48,7 +56,7 @@
             const fijo = el.querySelector('.tp-fijo'), tap = el.querySelector('.tp-tap');
             return p => {
                 /* El recorrido del tiempo ocupa el 70 % de la pista; el resto es la onda de tap */
-                const mes = fijar(p / 0.7) * 21.68, m = Math.min(Math.floor(mes), 21);
+                const mes = fijar(p / 0.7) * 21.68;
                 tiempo.style.setProperty('--mes', mes.toFixed(3));
                 const t = fijar((p - 0.74) / 0.26);
                 el.style.setProperty('--t', t.toFixed(4));
@@ -61,10 +69,7 @@
                 hitos.forEach((h, i) => { const on = parseFloat(h.style.getPropertyValue('--m')) <= mes; h.classList.toggle('on', on); if (on) u = i; });
                 hitos.forEach((h, i) => h.classList.toggle('ultimo', i === u));
                 const cap = mes < 13 ? 0 : mes < 15.5 ? 1 : 2;
-                if (!encima) {
-                    const fecha = mes >= 21.6 ? 'Hoy' : `${MESES[m % 12]} ${m < 12 ? 2025 : 2026}`;
-                    if (u !== ultimo || lFecha.textContent !== fecha) { ultimo = u; const h = hitos[Math.max(u, 0)]; leer(fecha, h.dataset.t, CAPS[cap].tono); }
-                }
+                if (u !== ultimo) { ultimo = u; if (encima === null) mostrar(Math.max(u, 0)); }
                 if (cap === capActual) return;
                 capActual = cap;
                 const c = CAPS[cap];
@@ -74,6 +79,18 @@
                 cred.querySelector('[data-c-nom]').textContent = c.nom;
                 cred.querySelector('[data-c-txt]').textContent = c.txt;
                 signos.forEach((sg, i) => sg.classList.toggle('on', i === cap));
+            };
+        },
+        /* Capítulo 01: Forky corre mientras se scrollea y se inclina según la velocidad; quieto, se detiene */
+        cap: el => {
+            let antes = 0, espera = null;
+            return p => {
+                const v = p - antes; antes = p;
+                if (quieto) return;
+                el.style.setProperty('--lean', fijar(v * 120, -1, 1).toFixed(3));
+                el.classList.add('corriendo');
+                clearTimeout(espera);
+                espera = setTimeout(() => { el.classList.remove('corriendo'); el.style.setProperty('--lean', 0); }, 180);
             };
         },
         /* Capítulo 03: la dirección se escribe con el scroll y la página empieza a cargar */
@@ -180,23 +197,28 @@
     /* Sin mezcla por diferencia (sobre morado se volvía verde): tinta sobre lo claro, blanco sobre lo demás.
        En el hero, cuando el navegador ya llenó la pantalla, lo de abajo es el sitio claro */
     const nav = document.querySelector('[data-barra]'), modulos = [...document.querySelector('main').children];
-    let ultimoY = window.scrollY;
+    let ultimoY = window.scrollY, subida = 0;
+    /* Letras de los links separadas, para que rueden con el hover */
+    nav.querySelectorAll('ul a').forEach(a => { const t = a.textContent.trim(); a.setAttribute('aria-label', t); a.innerHTML = [...t].map((c, i) => `<span class="c" aria-hidden="true" style="--i:${i}">${c}</span>`).join(''); });
     const barra = () => {
-        const y = window.scrollY;
+        const y = window.scrollY, dy = y - ultimoY;
+        ultimoY = y;
         const m = modulos.find(el => { const r = el.getBoundingClientRect(); return r.top <= 32 && r.bottom > 32; });
         const hero = escenas[0];
         const resumen = escenas.find(x => x.el.dataset.escena === 'resumen');
         nav.classList.toggle('sobre-claro', !!m && ((m.classList.contains('tp-claro') && !(m === resumen.el && resumen.p > 0.86)) || (m === hero.el && hero.p > 0.62)));
-        if (Math.abs(y - ultimoY) < 6) return;
-        nav.classList.toggle('oculta', y > ultimoY && y > 120);
-        ultimoY = y;
+        /* Se esconde al bajar; vuelve solo con una subida clara (90 px seguidos) o cerca del inicio */
+        if (dy > 0) { subida = 0; if (y > 120) nav.classList.add('oculta'); }
+        else if (dy < 0) { subida -= dy; if (subida > 90 || y < 120) nav.classList.remove('oculta'); }
+        nav.classList.toggle('flota', y > 120);
     };
     /* La línea de tiempo del resumen lleva a cada capítulo con un desplazamiento suave */
     document.querySelectorAll('.tp-etapa').forEach(a => a.addEventListener('click', e => {
         const destino = document.querySelector(a.getAttribute('href'));
         if (!destino) return;
         e.preventDefault();
-        window.scrollTo({ top: destino.getBoundingClientRect().top + window.scrollY, behavior: quieto ? 'auto' : 'smooth' });
+        const extra = destino.matches('.tp-cap-1') ? window.innerHeight : 0;
+        window.scrollTo({ top: destino.getBoundingClientRect().top + window.scrollY + extra, behavior: quieto ? 'auto' : 'smooth' });
     }));
 
     /* --- 4. TEXTO QUE SE ENCIENDE PALABRA POR PALABRA --- */
@@ -314,6 +336,7 @@
         new IntersectionObserver(es => es.forEach(e => { sitio.style.visibility = e.isIntersecting ? '' : 'hidden'; })).observe(heroEl);
     }
     const wm = heroEl.querySelector('.tp-wm-vivo');
+    wm.querySelectorAll('[data-letra]').forEach((l, i) => l.style.setProperty('--l', i));
     if (!quieto && window.matchMedia('(hover: hover)').matches) {
         const letras = [...wm.querySelectorAll('[data-letra]')];
         let tx = 0, ty = 0, x = 0, y = 0, cx = -9999, cy = -9999, corre = false, centros = [];

@@ -23,8 +23,22 @@
     --c-fondo: var(--tp-papel);
     background: var(--tp-noche);
 }
-.tp .barra { mix-blend-mode: normal; color: #FFFFFF; transition: transform 400ms var(--ease), color 250ms linear; }
+.tp .barra { mix-blend-mode: normal; color: #FFFFFF; isolation: isolate; transition: transform 450ms var(--ease), color 250ms linear; }
 .tp .barra.sobre-claro { color: var(--tp-tinta); }
+/* Cuando vuelve a mitad de página, lleva un vidrio del tono de lo que hay debajo para no pisar el contenido */
+.tp .barra::before { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(16, 13, 32, 0.42); -webkit-backdrop-filter: blur(16px) saturate(1.4); backdrop-filter: blur(16px) saturate(1.4); opacity: 0; transition: opacity 300ms, background-color 250ms; }
+.tp .barra.sobre-claro::before { background: rgba(251, 250, 255, 0.78); box-shadow: 0 1px 0 rgba(45, 37, 96, 0.08); }
+.tp .barra.flota::before { opacity: 1; }
+/* Hover como en el home: las letras ruedan y su copia toma el lugar */
+.tp .barra ul a { display: inline-flex; overflow: hidden; padding: 0 0.12em; margin: 0 -0.12em; }
+.tp .barra .c { display: inline-block; white-space: pre; text-shadow: 0 1.3em currentColor; transition: translate 800ms var(--hover-lento); transition-delay: calc(var(--i) * 35ms); }
+.tp .barra .logo span { transition: opacity 300ms, color 300ms; }
+.tp .barra .der i { display: inline-block; font-style: normal; transition: transform 400ms var(--tp-curva); }
+@media (hover: hover) {
+    .tp .barra ul a:hover .c { translate: 0 -1.3em; }
+    .tp .barra .logo:hover span { opacity: 1; color: var(--tp-health); }
+    .tp .barra .der:hover i { transform: translateX(-4px); }
+}
 .tp .barra.oculta { transform: translateY(-110%); }
 
 /* --- 2. FONDOS DE CADA MÓDULO --- */
@@ -96,6 +110,8 @@
 .tp-hero-pantalla { position: relative; flex: 1; overflow: hidden; background: radial-gradient(70% 60% at 50% 30%, #FFFFFF, #EEEDFE); }
 .tp-hero-pantalla iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; opacity: 0; transition: opacity 400ms; }
 .tp-hero-pantalla.listo iframe { opacity: 1; }
+/* Al llenar la pantalla, el pie del sitio se funde con el fondo del resumen: no queda corte horizontal */
+.tp-hero-funde { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; height: 38%; background: linear-gradient(transparent, #FBFAFF 92%); opacity: clamp(0, (var(--h) - 0.55) / 0.4, 1); pointer-events: none; }
 .tp-hero-txt { position: absolute; z-index: 3; left: 50%; top: 13svh; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; translate: -50% 0; opacity: calc(1 - var(--h) * 2.2); transform: translate3d(calc(var(--mx, 0) * -18px), calc(var(--h) * -10svh + var(--my, 0) * -10px), 0); }
 .tp-hero-txt .mono { display: flex; gap: 10px; color: rgba(255, 255, 255, 0.78); }
 .tp-hero-txt .mono i { font-style: normal; opacity: 0.5; }
@@ -112,18 +128,28 @@
 @keyframes tpOnda { 0% { opacity: 0.9; transform: scale(0.6); } 100% { opacity: 0; transform: scale(2.6); } }
 .tp-hero-txt p { max-width: 30ch; font: 300 clamp(19px, 1.65vw, 26px) / 1.14 var(--tp-f); letter-spacing: -0.02em; text-wrap: balance; }
 .tp-hero-txt p b { font-weight: 600; }
-.tp-hero-link { padding-bottom: 2px; border-bottom: 1px solid rgba(255, 255, 255, 0.35); color: #FFFFFF; }
-@media (hover: hover) { .tp-hero-link:hover { border-color: #FFFFFF; } }
+.tp-hero-link { padding-bottom: 2px; border-bottom: 1px solid rgba(255, 255, 255, 0.35); color: #FFFFFF; transition: border-color 300ms; }
+.tp-hero-link i { display: inline-block; font-style: normal; transition: transform 400ms var(--tp-curva); }
+@media (hover: hover) { .tp-hero-link:hover { border-color: #FFFFFF; } .tp-hero-link:hover i { transform: translate(2px, -2px); } }
 .tp-hero-pista { position: absolute; z-index: 3; left: var(--margen); bottom: 4.5svh; display: flex; align-items: center; gap: 12px; color: rgba(255, 255, 255, 0.85); opacity: calc(0.9 - var(--h) * 2.4); }
 .tp-hero-pista i { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.4); font-style: normal; animation: tpPista 1.8s var(--ease) infinite; }
 @keyframes tpPista { 0%, 100% { translate: 0 0; } 50% { translate: 0 6px; } }
-/* Entrada: cada pieza aparece con translate (no con transform, que lo usa el scroll) */
-.tp-hero.entra .tp-hero-nav { animation: tpEntra 1100ms var(--ease) 100ms both; }
-.tp-hero.entra .tp-hero-txt > * { animation: tpEntra 900ms var(--ease) both; }
-.tp-hero.entra .tp-hero-txt > :nth-child(2) { animation-delay: 80ms; }
-.tp-hero.entra .tp-hero-txt > :nth-child(3) { animation-delay: 160ms; }
-.tp-hero.entra .tp-hero-txt > :nth-child(4) { animation-delay: 240ms; }
+/* Entrada: el fondo se enciende, los datos y el wordmark suben letra por letra, el lema y el enlace después,
+   y al final tapin.cl se desliza desde abajo hasta quedar recostado. Se anima el envoltorio (el mundo), no el
+   navegador, que ya usa transform con el scroll; las letras usan transform, porque su ola usa translate */
+.tp-hero.entra .tp-hero-fondo { animation: tpFondo 1400ms ease-out both; }
+.tp-hero.entra .tp-hero-txt > * { animation: tpEntra 1000ms var(--ease) both; }
+.tp-hero.entra .tp-hero-txt > :nth-child(1) { animation-delay: 150ms; }
+.tp-hero.entra .tp-hero-txt > :nth-child(2) { animation: none; }
+.tp-hero.entra .tp-hero-txt > :nth-child(3) { animation-delay: 620ms; }
+.tp-hero.entra .tp-hero-txt > :nth-child(4) { animation-delay: 740ms; }
+.tp-hero.entra .tp-wm-vivo :is([data-letra] > :not(.tp-wm-punto), .tp-wm-punto > rect) { transform-box: fill-box; animation: tpLetra 1000ms var(--ease) both; animation-delay: calc(250ms + var(--l) * 70ms); }
+.tp-hero.entra .tp-hero-mundo { animation: tpDesliza 1700ms cubic-bezier(0.22, 1, 0.36, 1) 700ms both; }
+.tp-hero.entra .tp-hero-pista { animation: tpEntra 900ms var(--ease) 1800ms both; }
 @keyframes tpEntra { from { opacity: 0; translate: 0 40px; } }
+@keyframes tpLetra { from { opacity: 0; transform: translateY(70px); } }
+@keyframes tpDesliza { from { opacity: 0; translate: 0 60svh; } 40% { opacity: 1; } }
+@keyframes tpFondo { from { opacity: 0.6; filter: saturate(0.6); } }
 
 /* --- MOCKUP EN VIVO (PÓSTER HASTA QUE CARGA) --- */
 .tp-mk { position: relative; aspect-ratio: 3 / 2; }
@@ -138,7 +164,8 @@
 /* La sección se fija y el scroll recorre el proyecto mes a mes: un cursor avanza por la línea de tiempo (a
    escala real, 22 meses), los hitos se encienden y la credencial colgante cambia al capítulo en curso.
    La credencial se inclina levemente con el mouse, colgada de su cinta */
-.tp-res { --fondo: #FBFAFF; --t: 0; height: 300svh; }
+.tp-res { --fondo: #FBFAFF; --t: 0; position: relative; z-index: 2; height: 300svh; background: transparent; }
+.tp-res-fijo { background: var(--fondo); }
 .tp-res-fijo { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 1fr auto; column-gap: var(--medianil); padding: clamp(72px, 10svh, 120px) var(--margen) clamp(40px, 6svh, 72px); }
 .tp-res-txt { grid-column: 1 / span 7; align-self: center; display: flex; flex-direction: column; gap: 32px; }
 .tp-res .tp-etq { padding-top: 0; }
@@ -149,7 +176,7 @@
 .tp-encargo div { display: flex; flex-direction: column; gap: 10px; }
 .tp-encargo .mono { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); }
 .tp-encargo .mono::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
-.tp-encargo p { font: 400 clamp(17px, 1.35vw, 20px) / 1.32 var(--tp-f); letter-spacing: -0.015em; }
+.tp-encargo p { font: 400 clamp(15px, 1.15vw, 17px) / 1.38 var(--tp-f); letter-spacing: -0.01em; }
 .tp-encargo-flecha { display: grid; place-items: center; width: 40px; height: 40px; margin-top: 22px; border-radius: 50%; border: 1px solid var(--linea); color: var(--acento); font-size: 16px; }
 
 /* --- ONDA DE TAP: EL PASO AL CAPÍTULO 01 --- */
@@ -186,34 +213,38 @@
 .tp-cred-datos { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.22); }
 
 /* --- LÍNEA DE TIEMPO A ESCALA --- */
-/* Tres filas sin solaparse: capítulos (barras que se llenan con el cursor), hitos sobre un eje y meses. La
-   fecha y el hito en curso se leen arriba a la derecha, nunca encima de la información */
+/* Cuatro filas sin solaparse: nombres de capítulo, barras finas con el degradado de la paleta (continuo de punta
+   a punta, cortado en tres capítulos), hitos sobre su eje y, debajo, el texto del hito en curso, anclado a su
+   punto. El cursor es una línea con un punto; nada se pone encima de la información */
 .tp-tiempo { --mes: 0; grid-column: 1 / -1; grid-row: 2; position: relative; margin-top: 28px; }
-.tp-tiempo-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 18px; color: var(--texto-2); }
-.tp-lectura { display: inline-flex; align-items: center; gap: 10px; min-width: 0; color: var(--texto); font-size: 14px; }
-.tp-lectura i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--l-tono, var(--tp-campus)); transition: background-color 300ms; }
-.tp-lectura b { font-weight: 400; color: var(--texto-2); }
-.tp-lectura span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tp-pista { position: relative; height: 96px; }
-.tp-etapa { position: absolute; top: 22px; left: calc(var(--a) / 22 * 100%); width: calc((var(--b) - var(--a)) / 22 * 100% - 3px); height: 30px; border-radius: 9px; background: color-mix(in srgb, var(--tono) 14%, var(--fondo)); color: var(--tono); transition: transform 400ms var(--tp-curva); }
-/* Relleno: lo recorrido del capítulo, según el mes del cursor */
-.tp-etapa::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: var(--tono); transform-origin: 0 50%; transform: scaleX(clamp(0, (var(--mes) - var(--a)) / (var(--b) - var(--a)), 1)); }
+.tp-tiempo-cab { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 14px; color: var(--texto-2); }
+.tp-tiempo-cab .mono:last-child { color: var(--texto-3); }
+.tp-pista { position: relative; height: 122px; }
+.tp-etapa { position: absolute; top: 26px; left: calc(var(--a) / 22 * 100%); width: calc((var(--b) - var(--a)) / 22 * 100% - 3px); height: 8px; border-radius: 8px; color: var(--tono);
+    background: linear-gradient(90deg, #2D2560 0%, #4A3CAE 34%, #6B5CE7 68%, #9B8EF0 100%); background-size: calc(2200% / (var(--b) - var(--a))) 100%; background-position: calc(var(--a) / (22 - (var(--b) - var(--a))) * 100%) 0; transition: transform 400ms var(--tp-curva); }
+/* Lo que el cursor aún no recorre queda velado; el velo se retira de izquierda a derecha */
+.tp-etapa::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: var(--fondo); opacity: 0.78; transform-origin: 100% 50%; transform: scaleX(calc(1 - clamp(0, (var(--mes) - var(--a)) / (var(--b) - var(--a)), 1))); }
 .tp-etapa-web { box-shadow: -3px 0 0 var(--fondo); }
-.tp-etapa-n, .tp-etapa-t { position: absolute; bottom: calc(100% + 6px); white-space: nowrap; }
+.tp-etapa-n, .tp-etapa-t { position: absolute; bottom: calc(100% + 7px); white-space: nowrap; }
 .tp-etapa-n { left: 0; color: var(--tono); }
 .tp-etapa-t { left: 26px; font: 600 14px var(--tp-f); letter-spacing: -0.02em; color: var(--texto); }
-@media (hover: hover) { .tp-etapa:hover { transform: translateY(-3px); } }
-.tp-hitos { position: absolute; left: 0; right: 0; top: 66px; height: 14px; }
+@media (hover: hover) { .tp-etapa:hover { transform: scaleY(1.6); } }
+.tp-hitos { position: absolute; left: 0; right: 0; top: 50px; height: 14px; }
 .tp-eje { position: absolute; left: 0; right: 0; top: 6px; height: 2px; background: var(--linea); }
 .tp-hito { position: absolute; top: 0; left: calc((var(--m) + 0.5) / 22 * 100%); width: 14px; height: 14px; margin-left: -7px; padding: 0; border-radius: 50%; background: var(--fondo); border: 2px solid var(--tono); cursor: pointer; transition: transform 300ms var(--tp-curva), background-color 300ms, box-shadow 400ms; }
 .tp-hito.on { background: var(--tono); }
 .tp-hito.ultimo { box-shadow: 0 0 0 5px color-mix(in srgb, var(--tono) 22%, transparent); }
 .tp-hito:focus-visible { outline: 2px solid var(--tono); outline-offset: 3px; }
 @media (hover: hover) { .tp-hito:hover { transform: scale(1.3); } }
-.tp-hoy { position: absolute; left: calc(21.68 / 22 * 100%); top: 18px; bottom: 6px; border-left: 1.5px dashed var(--texto-3); }
-/* Cursor: una línea con un punto sobre el eje de hitos, sin texto */
-.tp-cursor { position: absolute; top: 14px; bottom: 6px; left: calc(var(--mes) / 22 * 100%); width: 2px; margin-left: -1px; background: var(--tp-tinta); border-radius: 2px; }
-.tp-cursor::after { content: ''; position: absolute; left: 50%; top: 52px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--tp-tinta); box-shadow: 0 0 0 3px var(--fondo); }
+/* Texto del hito, anclado a su punto: se desliza con suavidad de un hito al otro y se funde al cambiar */
+.tp-hito-pie { position: absolute; left: 0; right: 0; top: 76px; height: 40px; }
+.tp-pie-t { --x: 0.5; --ancla: 0; position: absolute; top: 0; left: calc(var(--x) / 22 * 100%); display: flex; align-items: baseline; gap: 10px; padding-top: 12px; white-space: nowrap; font-size: 14px; color: var(--texto); opacity: 0; transform: translate(calc(var(--ancla) * -100% + (var(--ancla) - 0.5) * -24px), 6px); transition: opacity 350ms var(--ease), transform 500ms var(--ease), left 600ms var(--ease); }
+.tp-pie-t.on { opacity: 1; transform: translate(calc(var(--ancla) * -100% + (var(--ancla) - 0.5) * -24px), 0); }
+.tp-pie-t::before { content: ''; position: absolute; top: 0; left: calc(var(--ancla) * 100% + (var(--ancla) - 0.5) * 24px); width: 1px; height: 8px; background: var(--texto-3); }
+.tp-pie-t b { font-weight: 400; color: var(--texto-2); }
+.tp-hoy { position: absolute; left: calc(21.68 / 22 * 100%); top: 18px; bottom: 58px; border-left: 1.5px dashed var(--texto-3); }
+.tp-cursor { position: absolute; top: 18px; height: 46px; left: calc(var(--mes) / 22 * 100%); width: 2px; margin-left: -1px; background: var(--tp-tinta); border-radius: 2px; }
+.tp-cursor::after { content: ''; position: absolute; left: 50%; top: 34px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--tp-tinta); box-shadow: 0 0 0 3px var(--fondo); }
 .tp-meses { display: grid; grid-template-columns: repeat(22, 1fr); height: 10px; }
 .tp-meses i { border-left: 1px solid var(--linea); }
 .tp-meses i:nth-child(1), .tp-meses i:nth-child(13) { border-left-color: var(--texto-3); }
@@ -237,20 +268,33 @@
 .tp-cap-txt.visto p { transition-delay: 200ms; }
 
 /* El capítulo 01 nace del morado de la onda de tap: bordes del mismo morado plano y la luz dentro del panel */
-.tp-cap-1 { background: var(--tp-campus); }
+/* Empieza 100svh antes, detrás del resumen: cuando la onda termina ya está fijo y el resumen se va como un
+   telón que sube; el título aparece primero (desde abajo) y no hay un tramo de morado vacío */
+.tp-cap-1 { position: relative; z-index: 1; height: 210svh; margin-top: -100svh; background: var(--tp-campus); }
 .tp-cap-1 .tp-fijo { background: radial-gradient(55% 50% at 72% 38%, rgba(129, 116, 242, 0.6), transparent 72%); }
 /* Número del capítulo, enorme y calado, detrás de todo */
 /* Número del capítulo, enorme y calado, detrás de todo */
 .tp-cap-num { position: absolute; right: calc(var(--margen) - 0.04em); top: 9svh; font: 600 clamp(180px, 30vw, 520px) / 0.8 var(--tp-f); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22); transform: translateY(calc(var(--p, 0) * -14svh)); }
-.tp-pista-forky { position: absolute; left: 0; right: 0; top: 16svh; height: 36svh; }
-/* Forky cruza la pantalla con el scroll (el envoltorio) y corre en su lugar (la marca) */
-.tp-corre { position: absolute; bottom: 0; left: 0; display: flex; align-items: center; transform: translateX(calc(-60svh + var(--p, 0) * (100vw + 80svh))); }
-.tp-forky-corre { width: 36svh; color: #FFFFFF; animation: tpCorre 420ms ease-in-out infinite alternate; }
-.tp-velocidad { display: flex; flex-direction: column; align-items: flex-end; gap: 3svh; width: 22svh; margin-right: -2svh; }
-.tp-velocidad i { height: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.5); animation: tpRafaga 700ms ease-in-out infinite alternate; }
-.tp-velocidad i:nth-child(1) { width: 70%; } .tp-velocidad i:nth-child(2) { width: 100%; animation-delay: -250ms; } .tp-velocidad i:nth-child(3) { width: 50%; animation-delay: -480ms; }
-@keyframes tpRafaga { from { transform: scaleX(0.55); transform-origin: right; opacity: 0.4; } to { transform: scaleX(1); transform-origin: right; opacity: 1; } }
-@keyframes tpCorre { from { translate: 0 0; rotate: -3deg; } to { translate: 0 -10px; rotate: 3deg; } }
+.tp-pista-forky { position: absolute; left: 0; right: 0; top: 24svh; height: 26svh; }
+/* Forky cruza la pantalla con el scroll (el envoltorio) y corre mientras se scrollea: rebota, se aplasta al pisar
+   y se inclina según la velocidad (--lean). Quieto, se detiene y las líneas se apagan */
+.tp-corre { position: absolute; bottom: 0; left: 0; display: flex; align-items: flex-end; transform: translateX(calc(-46svh + var(--p, 0) * (100vw + 60svh))); }
+.tp-forky-cuerpo { position: relative; width: 22svh; rotate: calc(var(--lean, 0) * 9deg); transform-origin: 50% 100%; transition: rotate 350ms var(--ease); }
+.tp-forky-corre { width: 100%; color: #FFFFFF; transform-origin: 50% 100%; }
+.tp-sombra { position: absolute; left: 14%; right: 14%; bottom: -10px; height: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgba(16, 13, 32, 0.38), transparent); transform-origin: center; }
+.tp-cap-1.corriendo .tp-forky-corre { animation: tpTrote 440ms linear infinite; }
+.tp-cap-1.corriendo .tp-sombra { animation: tpSombra 440ms linear infinite; }
+@keyframes tpTrote { 0%, 100% { translate: 0 0; scale: 1.05 0.94; } 25% { translate: 0 -16px; scale: 0.98 1.03; } 50% { translate: 0 0; scale: 1.04 0.95; } 75% { translate: 0 -11px; scale: 0.99 1.02; } }
+@keyframes tpSombra { 0%, 50%, 100% { scale: 1; opacity: 1; } 25% { scale: 0.7; opacity: 0.55; } 75% { scale: 0.8; opacity: 0.7; } }
+/* Líneas de velocidad: trazos que se afinan hacia atrás y titilan desfasados; solo mientras corre */
+.tp-velocidad { position: relative; width: 26svh; height: 18svh; margin-right: -3svh; opacity: 0; transition: opacity 300ms; }
+.tp-cap-1.corriendo .tp-velocidad { opacity: 1; }
+.tp-velocidad i { position: absolute; right: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75)); transform-origin: 100% 50%; animation: tpRafaga 520ms ease-in-out infinite alternate; }
+.tp-velocidad i:nth-child(1) { top: 14%; width: 62%; animation-delay: -120ms; }
+.tp-velocidad i:nth-child(2) { top: 38%; width: 100%; height: 4px; }
+.tp-velocidad i:nth-child(3) { top: 60%; width: 78%; animation-delay: -300ms; }
+.tp-velocidad i:nth-child(4) { top: 82%; width: 46%; animation-delay: -420ms; }
+@keyframes tpRafaga { from { transform: translateX(-12%) scaleX(0.6); opacity: 0.35; } to { transform: translateX(0) scaleX(1); opacity: 1; } }
 
 /* --- CAPÍTULO 03: LA DIRECCIÓN SE ESCRIBE --- */
 .tp-cap-3 { background: radial-gradient(80% 60% at 50% 0%, rgba(107, 92, 231, 0.32), transparent 70%), var(--tp-noche); }
@@ -520,6 +564,8 @@
     .tp-res { height: 330svh; }
     .tp-res-fijo { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; row-gap: 14px; padding: 72px var(--margen) 28px; }
     .tp-res-fijo > * { grid-column: 1 !important; }
+    /* La onda no es un elemento de la grilla: con columna asignada perdería el padding y dejaría un borde blanco */
+    .tp-res-fijo > .tp-tap { grid-column: auto !important; }
     .tp-res-txt { align-self: start; gap: 14px; }
     .tp-res .tp-enunciado { font-size: 25px; }
     .tp-encargo { display: none; }
@@ -531,21 +577,21 @@
     .tp-signo-nav { width: 40%; }
     .tp-cred-cap { min-height: 0; }
     .tp-tiempo { grid-row: 3; margin-top: 0; }
-    .tp-tiempo-cab > .mono, .tp-anios span:nth-child(2), .tp-anios span:nth-child(4), .tp-etapa-t { display: none; }
-    .tp-tiempo-cab { margin-bottom: 10px; }
-    .tp-lectura { font-size: 13px; }
+    .tp-tiempo-cab, .tp-anios span:nth-child(2), .tp-anios span:nth-child(4), .tp-etapa-t { display: none; }
+    .tp-pie-t { flex-direction: column; gap: 2px; font-size: 12px; white-space: normal; width: 62vw; }
+    .tp-pista { height: 136px; }
     .tp-encargo { grid-template-columns: 1fr; }
     .tp-encargo-flecha { display: none; }
     .tp-cap-num { top: 12svh; font-size: 52vw; }
-    .tp-velocidad { width: 14svh; }
+    .tp-velocidad { width: 16svh; }
     .tp-dec-num { font-size: 56px; margin-bottom: 0; }
     .tp-fk-escenario { margin-top: 0; }
     .tp-fk-regla .tp-marca { width: 22px; }
     .tp-fk-regla li { flex-direction: column; align-items: flex-start; gap: 6px; }
     .tp-fk-regla li span:last-child { display: none; }
     .tp-arq-madre { width: 100%; }
-        .tp-pista-forky { top: 16svh; height: 26svh; }
-    .tp-forky-corre { width: 26svh; }
+    .tp-pista-forky { top: 18svh; height: 22svh; }
+    .tp-forky-cuerpo { width: 18svh; }
     .tp-fijo.tp-grilla { align-content: center; padding-top: 64px; }
     .tp-dec { gap: 10px; }
     .tp-forky .tp-dec p:not(.tp-porque), .tp-cer .tp-dec p, .tp-arq .tp-dec p:not(.tp-porque), .tp-arq .tp-mas, :is(.tp-forky, .tp-cer, .tp-arq) .tp-dec-num { display: none; }
@@ -594,6 +640,6 @@
    MOVIMIENTO REDUCIDO
    ======================================================= */
 @media (prefers-reduced-motion: reduce) {
-    .tp-wm-vivo.tap *, .tp-forky-corre, .tp-hero-pista i, .tp-url-cursor, .tp-velocidad i, .tp-giro-linea::after { animation: none; }
+    .tp-wm-vivo.tap *, .tp-hero.entra *, .tp-forky-corre, .tp-sombra, .tp-hero-pista i, .tp-url-cursor, .tp-velocidad i, .tp-giro-linea::after { animation: none; }
     .tp-hero.entra * { animation: none !important; }
 }
