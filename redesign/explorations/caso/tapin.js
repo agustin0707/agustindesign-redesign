@@ -18,15 +18,24 @@
         /* Resumen: el cursor recorre el proyecto mes a mes; la credencial cambia al capítulo en curso y los
            hitos se encienden. El cursor llega a "Hoy" un poco antes del final, para que se lea quieto */
         resumen: el => {
-            const cred = el.querySelector('[data-cred]'), cursor = el.querySelector('[data-cursor]'), cursorTxt = cursor.querySelector('span');
-            const etapas = [...el.querySelectorAll('[data-et]')], hitos = [...el.querySelectorAll('.tp-hito')], signos = [...el.querySelectorAll('[data-signo]')];
+            const cred = el.querySelector('[data-cred]'), tiempo = el.querySelector('[data-tiempo]');
+            const hitos = [...el.querySelectorAll('.tp-hito')], signos = [...el.querySelectorAll('[data-signo]')];
+            const lectura = el.querySelector('.tp-lectura'), lFecha = el.querySelector('[data-l-fecha]'), lTexto = el.querySelector('[data-l-texto]');
             const CAPS = [
-                { tono: '#4A3CAE', per: '2025', nom: 'El origen', txt: 'Una app para pedir comida sin filas en la universidad: identidad, Forky y la web app de Campus.' },
-                { tono: '#6B5CE7', per: 'Feb a abr 2026', nom: 'El Rebirth', txt: 'De la comida a los colegios. Diagnóstico con los socios, arquitectura, paleta y el cerebro de Connect.' },
-                { tono: '#2D2560', per: 'Abr a sep 2026', nom: 'La web', txt: 'tapin.cl, diseñada y programada por mí, para que un director entienda en segundos.' }
+                { tono: '#4A3CAE', per: '2025', nom: 'El origen', txt: 'Una app para pedir comida sin filas en la universidad, con Forky al centro' },
+                { tono: '#6B5CE7', per: 'Feb a abr 2026', nom: 'El Rebirth', txt: 'De la comida a los colegios: arquitectura, paleta y el cerebro de Connect' },
+                { tono: '#2D2560', per: 'Abr a sep 2026', nom: 'La web', txt: 'tapin.cl, diseñada y programada para que un director entienda en segundos' }
             ];
             const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-            let capActual = -1;
+            let capActual = -1, ultimo = -1, encima = null;
+            /* La lectura muestra el mes en curso y el último hito; al pasar el mouse por un hito, muestra ese */
+            const leer = (fecha, texto, tono) => { lFecha.textContent = fecha; lTexto.textContent = texto; lectura.style.setProperty('--l-tono', tono); };
+            hitos.forEach(h => {
+                const ver = () => { encima = h; leer(h.dataset.f, h.dataset.t, h.style.getPropertyValue('--tono')); };
+                const soltar = () => { encima = null; ultimo = -2; };
+                h.addEventListener('pointerenter', ver); h.addEventListener('focus', ver);
+                h.addEventListener('pointerleave', soltar); h.addEventListener('blur', soltar);
+            });
             /* Inclinación leve con el mouse, desde el gancho, con el brillo del plástico */
             if (!quieto && window.matchMedia('(hover: hover)').matches) {
                 el.addEventListener('pointermove', e => {
@@ -38,10 +47,15 @@
             }
             return p => {
                 const mes = fijar(p * 1.15) * 21.68, m = Math.min(Math.floor(mes), 21);
-                cursor.style.setProperty('--mes', mes.toFixed(3));
-                cursorTxt.textContent = mes >= 21.6 ? 'Hoy' : `${MESES[m % 12]} ${m < 12 ? 2025 : 2026}`;
-                hitos.forEach(h => h.classList.toggle('on', parseFloat(h.style.getPropertyValue('--m')) <= mes));
+                tiempo.style.setProperty('--mes', mes.toFixed(3));
+                let u = -1;
+                hitos.forEach((h, i) => { const on = parseFloat(h.style.getPropertyValue('--m')) <= mes; h.classList.toggle('on', on); if (on) u = i; });
+                hitos.forEach((h, i) => h.classList.toggle('ultimo', i === u));
                 const cap = mes < 13 ? 0 : mes < 15.5 ? 1 : 2;
+                if (!encima) {
+                    const fecha = mes >= 21.6 ? 'Hoy' : `${MESES[m % 12]} ${m < 12 ? 2025 : 2026}`;
+                    if (u !== ultimo || lFecha.textContent !== fecha) { ultimo = u; const h = hitos[Math.max(u, 0)]; leer(fecha, h.dataset.t, CAPS[cap].tono); }
+                }
                 if (cap === capActual) return;
                 capActual = cap;
                 const c = CAPS[cap];
@@ -51,7 +65,6 @@
                 cred.querySelector('[data-c-nom]').textContent = c.nom;
                 cred.querySelector('[data-c-txt]').textContent = c.txt;
                 signos.forEach((sg, i) => sg.classList.toggle('on', i === cap));
-                etapas.forEach((et, i) => et.classList.toggle('on', i <= cap));
             };
         },
         /* Capítulo 03: la dirección se escribe con el scroll y la página empieza a cargar */
@@ -269,6 +282,27 @@
        fondo lo sigue, las letras del wordmark cercanas suben y el punto de la i hace "tap" al pasar sobre él */
     const heroEl = document.querySelector('.tp-hero');
     requestAnimationFrame(() => heroEl.classList.add('entra'));
+    /* El navegador del hero carga tapin.cl de verdad, sin scroll; deja de pintarse cuando el hero sale */
+    const pantalla = heroEl.querySelector('[data-sitio]');
+    if (pantalla) {
+        const sitio = document.createElement('iframe');
+        sitio.title = 'tapin.cl'; sitio.setAttribute('tabindex', '-1'); sitio.setAttribute('aria-hidden', 'true'); sitio.setAttribute('scrolling', 'no');
+        sitio.onload = () => {
+            try {
+                const d = sitio.contentDocument, st = d.createElement('style');
+                st.textContent = 'html,body{overflow:hidden!important;scrollbar-width:none}html::-webkit-scrollbar{display:none}';
+                d.head.appendChild(st);
+                /* El sitio pausa las animaciones de las secciones que cree fuera de pantalla; dentro del navegador
+                   inclinado su detector se equivoca con el hero, así que el hero queda siempre activo */
+                const hero = d.querySelector('section'), soltar = () => { if (hero.classList.contains('is-offscreen')) hero.classList.remove('is-offscreen'); };
+                if (hero) { soltar(); new sitio.contentWindow.MutationObserver(soltar).observe(hero, { attributes: true, attributeFilter: ['class'] }); }
+            } catch (err) { /* sin acceso */ }
+            pantalla.classList.add('listo');
+        };
+        sitio.src = pantalla.dataset.sitio;
+        pantalla.appendChild(sitio);
+        new IntersectionObserver(es => es.forEach(e => { sitio.style.visibility = e.isIntersecting ? '' : 'hidden'; })).observe(heroEl);
+    }
     const wm = heroEl.querySelector('.tp-wm-vivo');
     if (!quieto && window.matchMedia('(hover: hover)').matches) {
         const letras = [...wm.querySelectorAll('[data-letra]')];

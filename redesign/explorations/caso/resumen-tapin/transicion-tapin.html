@@ -1,0 +1,221 @@
+<title>Transición al origen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;600&display=swap">
+<style>
+    /* Cinco maneras de pasar del resumen (casi blanco) a la apertura del capítulo 01 (morado de Campus) sin un
+       corte horizontal. Una escena fija: arriba el resumen, al bajar se hace la transición y termina en la
+       apertura real. Un solo aspecto a propósito: los colores son los del caso */
+    :root {
+        --papel: #FBFAFF; --tinta: #1C1A2E; --gris: #57556B; --linea: rgba(45, 37, 96, 0.12);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: clamp(20px, 3.2vw, 48px);
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .wm { aspect-ratio: 389.87 / 150.6; --svg: url('wordmark.svg'); }
+    .forky { aspect-ratio: 1; --svg: url('forky.svg'); }
+
+    /* --- ESCENA --- */
+    .escena { --p: 0; position: relative; height: 320svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--papel); }
+
+    /* El resumen, como queda en el caso (simplificado) */
+    .res { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: 1fr auto; column-gap: 16px; padding: 12svh max(var(--margen), env(safe-area-inset-right, 0px)) 6svh max(var(--margen), env(safe-area-inset-left, 0px)); }
+    .res-txt { grid-column: 1 / span 7; align-self: center; display: flex; flex-direction: column; gap: 22px; }
+    .res-txt p { margin: 0; font: 300 clamp(28px, 3.4vw, 54px) / 1.06 var(--f-marca); letter-spacing: -0.035em; text-wrap: balance; }
+    .res-txt b { font-weight: 600; } .res-txt em { font-style: normal; font-weight: 600; color: var(--campus); }
+    .cred { grid-column: 9 / -1; align-self: center; justify-self: center; width: min(100%, 300px); aspect-ratio: 0.72; display: flex; flex-direction: column; gap: 14px; padding: 26px 22px 20px; border-radius: 22px; color: #FFFFFF; background: radial-gradient(120% 80% at 80% 0%, #8174F2, var(--campus) 55%, #2A2163); box-shadow: 0 40px 70px -36px rgba(74, 60, 174, 0.8); }
+    .cred .wm { width: 38%; }
+    .cred .forky { width: 40%; margin: auto; }
+    .cred b { font: 600 24px / 1 var(--f-marca); letter-spacing: -0.04em; }
+    .cred p { margin: 0; font-size: 13px; opacity: 0.85; }
+    .linea-t { grid-column: 1 / -1; display: grid; grid-template-columns: 12fr 1fr 2.5fr 6fr; gap: 4px; margin-top: 24px; }
+    .linea-t i { height: 26px; border-radius: 8px; background: var(--campus); }
+    .linea-t i:nth-child(2) { background: transparent; } .linea-t i:nth-child(3) { background: var(--connect); } .linea-t i:nth-child(4) { background: var(--health); }
+
+    /* La apertura del capítulo 01: la misma en las cinco; cada propuesta cambia cómo aparece */
+    .cap { position: absolute; inset: 0; color: #FFFFFF; isolation: isolate; }
+    .cap-fondo { position: absolute; inset: 0; z-index: -1; background: radial-gradient(120% 90% at 80% 0%, var(--connect), var(--campus) 45%, var(--empresa)); }
+    .cap-fondo::after { content: ''; position: absolute; inset: 0; background-image: var(--grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; }
+    .cap-num { position: absolute; right: var(--margen); top: 9svh; font: 600 clamp(160px, 28vw, 480px) / 0.8 var(--f-marca); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22); }
+    .cap-txt { position: absolute; left: max(var(--margen), env(safe-area-inset-left, 0px)); bottom: 9svh; display: flex; flex-direction: column; gap: 16px; }
+    .cap-txt .mono { opacity: 0.75; }
+    .cap-txt h2 { margin: 0; font: 600 clamp(64px, 11vw, 190px) / 0.86 var(--f-marca); letter-spacing: -0.055em; }
+    .cap-txt p { margin: 0; max-width: 32ch; font-size: clamp(16px, 1.3vw, 20px); opacity: 0.8; }
+    .cap-forky { position: absolute; top: 18svh; left: 0; width: 34svh; color: #FFFFFF; transform: translateX(calc(-40svh + var(--k, 0.5) * (100vw + 80svh))); }
+    /* La apertura y su texto entran al final de la transición */
+    .cap-txt, .cap-num { opacity: clamp(0, (var(--p) - 0.72) / 0.14, 1); translate: 0 calc((1 - clamp(0, (var(--p) - 0.72) / 0.14, 1)) * 40px); }
+
+    /* =======================================================
+       1 · FUNDIDO CONTINUO
+       ======================================================= */
+    /* No hay borde: el fondo entero cambia de color con el scroll, del blanco del resumen al morado de Campus */
+    [data-t="1"] .fijo { background: color-mix(in srgb, var(--campus) calc(clamp(0, (var(--p) - 0.12) / 0.5, 1) * 100%), var(--papel)); }
+    [data-t="1"] .res { opacity: calc(1 - clamp(0, (var(--p) - 0.1) / 0.3, 1)); transform: translateY(calc(clamp(0, (var(--p) - 0.1) / 0.3, 1) * -6svh)); }
+    [data-t="1"] .cap-fondo { opacity: clamp(0, (var(--p) - 0.55) / 0.2, 1); }
+    [data-t="1"] .cap-forky { opacity: clamp(0, (var(--p) - 0.5) / 0.15, 1); }
+
+    /* =======================================================
+       2 · LA CREDENCIAL SE EXPANDE
+       ======================================================= */
+    /* La credencial de Campus crece desde su lugar hasta ser el fondo del capítulo; Forky sale de ella */
+    [data-t="2"] .cap { clip-path: inset(var(--ct, 0) var(--cr, 0) var(--cb, 0) var(--cl, 0) round var(--cra, 0)); }
+    [data-t="2"] .res-txt, [data-t="2"] .linea-t { opacity: calc(1 - clamp(0, (var(--p) - 0.08) / 0.25, 1)); }
+    [data-t="2"] .res { z-index: 2; pointer-events: none; }
+    [data-t="2"] .cred { opacity: calc(1 - clamp(0, (var(--p) - 0.2) / 0.14, 1)); box-shadow: none; }
+
+    /* =======================================================
+       3 · ONDA DE TAP
+       ======================================================= */
+    /* Un "tap" sobre la credencial: dos anillos se adelantan y el morado se abre en círculo desde ese punto */
+    [data-t="3"] .cap { clip-path: circle(calc(clamp(0, (var(--p) - 0.14) / 0.5, 1) * 150%) at var(--ox, 78%) var(--oy, 46%)); }
+    [data-t="3"] .anillos { position: absolute; inset: 0; pointer-events: none; }
+    [data-t="3"] .anillos i { position: absolute; left: var(--ox, 78%); top: var(--oy, 46%); width: 200vmax; aspect-ratio: 1; margin: -100vmax 0 0 -100vmax; border-radius: 50%; border: 2px solid var(--campus); opacity: calc(0.7 - var(--q) * 0.7); transform: scale(var(--q)); }
+    [data-t="3"] .anillos i:nth-child(1) { --q: clamp(0, (var(--p) - 0.04) / 0.45, 1); }
+    [data-t="3"] .anillos i:nth-child(2) { --q: clamp(0, (var(--p) - 0.09) / 0.45, 1); }
+    [data-t="3"] .cred { transform: scale(calc(1 - clamp(0, (var(--p) - 0.03) / 0.06, 1) * 0.04 + clamp(0, (var(--p) - 0.09) / 0.06, 1) * 0.04)); }
+    :not([data-t="3"]) > .fijo > .anillos { display: none; }
+
+    /* =======================================================
+       4 · TIRAS DE LA PALETA
+       ======================================================= */
+    /* Las cuatro tiras de la paleta suben una tras otra, como la apertura del capítulo 02, y se funden en Campus */
+    [data-t="4"] .tiras { position: absolute; inset: 0; z-index: -2; display: flex; }
+    [data-t="4"] .tiras i { flex: 1; background: var(--tono); transform: translateY(calc((1 - clamp(0, (var(--p) - 0.08 - var(--i) * 0.07) / 0.26, 1)) * 102%)); border-radius: 24px 24px 0 0; }
+    [data-t="4"] .cap-fondo { opacity: clamp(0, (var(--p) - 0.56) / 0.14, 1); }
+    [data-t="4"] .cap-forky { opacity: clamp(0, (var(--p) - 0.6) / 0.1, 1); }
+    :not([data-t="4"]) > .fijo > .cap > .tiras { display: none; }
+
+    /* =======================================================
+       5 · FORKY PINTA
+       ======================================================= */
+    /* Forky cruza corriendo y deja una estela morada que se ensancha hasta cubrir la pantalla */
+    [data-t="5"] .cap { clip-path: inset(calc((1 - var(--g)) * 50% - 1px) calc((1 - var(--x)) * 100%) calc((1 - var(--g)) * 50% - 1px) 0 round calc((1 - var(--g)) * 200px)); }
+    [data-t="5"] .escena, [data-t="5"].escena { --x: clamp(0, (var(--p) - 0.06) / 0.34, 1); --g: clamp(0.12, (var(--p) - 0.3) / 0.35 + 0.12, 1); }
+    [data-t="5"] .corredor { position: absolute; z-index: 3; top: calc(50% - 15svh); left: 0; width: 30svh; color: var(--campus); transform: translateX(calc(var(--x) * 100vw - 24svh)); opacity: calc(1 - clamp(0, (var(--p) - 0.42) / 0.06, 1)); animation: corre 420ms ease-in-out infinite alternate; }
+    @keyframes corre { from { rotate: -3deg; translate: 0 0; } to { rotate: 3deg; translate: 0 -8px; } }
+    :not([data-t="5"]) > .fijo > .corredor { display: none; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 20; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.5); }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .selector button:focus-visible { outline: 2px solid var(--health); outline-offset: 2px; }
+    .despues { padding-block: 80px 160px; padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); background: var(--campus); color: rgba(255, 255, 255, 0.8); }
+    .despues .ops { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.04); color: #FFFFFF; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: #FFFFFF; background: rgba(255, 255, 255, 0.12); }
+    .op strong { font: 600 19px / 1.1 var(--f-marca); letter-spacing: -0.03em; }
+    .op p { margin: 0; font-size: 14px; color: rgba(255, 255, 255, 0.75); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: #FFFFFF; color: var(--campus); font: 500 11px var(--f-mono); }
+    .op:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
+    .despues h2 { margin: 0; max-width: 30ch; font: 600 clamp(24px, 2.4vw, 36px) / 1.1 var(--f-marca); letter-spacing: -0.035em; color: #FFFFFF; }
+
+    @media (max-width: 768px) {
+        .res { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; row-gap: 18px; padding-top: 72px; }
+        .res > * { grid-column: 1 !important; }
+        .res-txt p { font-size: 25px; }
+        .cred { width: 62%; align-self: center; }
+        .despues .ops { grid-template-columns: minmax(0, 1fr); }
+        .selector button span { display: none; }
+        [data-t="3"] { --ox: 50%; --oy: 55%; }
+    }
+    @media (prefers-reduced-motion: reduce) { .corredor { animation: none; } }
+</style>
+
+<section class="escena" data-t="1" id="escena" aria-label="Transición del resumen al capítulo 01">
+    <div class="fijo">
+        <div class="res">
+            <div class="res-txt"><span class="mono" style="color: var(--gris)">Resumen</span><p>Diseñé la marca de Tap In <b>desde el día uno</b>. Cuando la empresa se reinventó, <em>rehice la marca y programé su web</em></p></div>
+            <div class="cred" data-cred><span class="marca wm"></span><span class="marca forky"></span><span class="mono">2025</span><b>El origen</b><p>Una app para pedir comida sin filas en la universidad, con Forky al centro</p></div>
+            <div class="linea-t" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="anillos" aria-hidden="true"><i></i><i></i></div>
+        <div class="cap">
+            <div class="tiras" aria-hidden="true"><i style="--tono:#2D2560; --i:0"></i><i style="--tono:#4A3CAE; --i:1"></i><i style="--tono:#6B5CE7; --i:2"></i><i style="--tono:#9B8EF0; --i:3"></i></div>
+            <div class="cap-fondo"></div>
+            <span class="cap-num" aria-hidden="true">01</span>
+            <span class="marca forky cap-forky" aria-hidden="true"></span>
+            <div class="cap-txt"><span class="mono">Capítulo 01 · 2025</span><h2>El origen</h2><p>Una app para pedir comida sin filas en la universidad.</p></div>
+        </div>
+        <span class="marca forky corredor" aria-hidden="true"></span>
+    </div>
+</section>
+
+<section class="despues">
+    <h2>Cinco maneras de entrar al capítulo 01 sin un corte horizontal. Elige con el selector y vuelve a bajar.</h2>
+    <div class="ops">
+        <button type="button" class="op" id="op-1" data-ir="1" aria-pressed="true"><span class="mono">1</span><strong>Fundido continuo</strong><p>El fondo entero cambia de color con el scroll. No hay borde: el blanco se vuelve morado.</p></button>
+        <button type="button" class="op" id="op-2" data-ir="2" aria-pressed="false"><span class="mono">2</span><strong>La credencial se expande</strong><p>La credencial de Campus crece hasta ser el fondo del capítulo. El resumen entrega el relato.</p><span class="rec">Recomendada</span></button>
+        <button type="button" class="op" id="op-3" data-ir="3" aria-pressed="false"><span class="mono">3</span><strong>Onda de tap</strong><p>Un "tap" sobre la credencial: dos anillos y el morado se abre en círculo desde ahí.</p></button>
+        <button type="button" class="op" id="op-4" data-ir="4" aria-pressed="false"><span class="mono">4</span><strong>Tiras de la paleta</strong><p>Las cuatro tiras suben una tras otra y se funden en el morado de Campus.</p></button>
+        <button type="button" class="op" id="op-5" data-ir="5" aria-pressed="false"><span class="mono">5</span><strong>Forky pinta</strong><p>Forky cruza corriendo y deja una estela que se ensancha hasta cubrir la pantalla.</p></button>
+    </div>
+</section>
+
+<nav class="selector" aria-label="Transiciones">
+    <button type="button" id="sel-1" data-ir="1" aria-pressed="true"><b>1</b><span>Fundido</span></button>
+    <button type="button" id="sel-2" data-ir="2" aria-pressed="false"><b>2</b><span>Credencial</span></button>
+    <button type="button" id="sel-3" data-ir="3" aria-pressed="false"><b>3</b><span>Tap</span></button>
+    <button type="button" id="sel-4" data-ir="4" aria-pressed="false"><b>4</b><span>Tiras</span></button>
+    <button type="button" id="sel-5" data-ir="5" aria-pressed="false"><b>5</b><span>Forky</span></button>
+</nav>
+
+<script>
+    /* =======================================================
+       INICIO JS · TRANSICIONES AL CAPÍTULO 01
+       ======================================================= */
+    (function () {
+        const escena = document.getElementById('escena'), fijo = escena.querySelector('.fijo'), cred = escena.querySelector('[data-cred]');
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const suave = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+        let caja = null;
+        const medir = () => { const f = fijo.getBoundingClientRect(), r = cred.getBoundingClientRect(); caja = { t: r.top - f.top, l: r.left - f.left, r: f.right - r.right, b: f.bottom - r.bottom }; };
+        const pintar = () => {
+            const r = escena.getBoundingClientRect(), p = fijar(-r.top / (r.height - window.innerHeight));
+            escena.style.setProperty('--p', p.toFixed(4));
+            /* Forky de la apertura cruza durante la última parte */
+            escena.style.setProperty('--k', (0.15 + fijar((p - 0.6) / 0.4) * 0.55).toFixed(4));
+            if (escena.dataset.t === '2') {
+                if (!caja) medir();
+                const e = suave(fijar((p - 0.12) / 0.5)), q = 1 - e;
+                escena.style.setProperty('--ct', (caja.t * q).toFixed(1) + 'px'); escena.style.setProperty('--cl', (caja.l * q).toFixed(1) + 'px');
+                escena.style.setProperty('--cr', (caja.r * q).toFixed(1) + 'px'); escena.style.setProperty('--cb', (caja.b * q).toFixed(1) + 'px');
+                escena.style.setProperty('--cra', (22 * q).toFixed(1) + 'px');
+            }
+            if (escena.dataset.t === '3' && cred.offsetWidth) {
+                const f = fijo.getBoundingClientRect(), c = cred.getBoundingClientRect();
+                escena.style.setProperty('--ox', ((c.left + c.width / 2 - f.left) / f.width * 100).toFixed(2) + '%');
+                escena.style.setProperty('--oy', ((c.top + c.height / 2 - f.top) / f.height * 100).toFixed(2) + '%');
+            }
+        };
+        let pendiente = false;
+        window.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } }, { passive: true });
+        window.addEventListener('resize', () => { caja = null; pintar(); });
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => {
+            escena.dataset.t = v; caja = null;
+            botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v)));
+            try { localStorage.setItem('transicion-tapin', v); } catch (e) { /* sin almacenamiento */ }
+            pintar();
+        };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) window.scrollTo({ top: 0, behavior: quieto ? 'auto' : 'smooth' }); }));
+        let guardado = null;
+        try { guardado = localStorage.getItem('transicion-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const inicial = ['1', '2', '3', '4', '5'].includes(location.hash.slice(1)) ? location.hash.slice(1) : guardado;
+        elegir(inicial || '1');
+    })();
+    /* =======================================================
+       FIN JS · TRANSICIONES AL CAPÍTULO 01
+       ======================================================= */
+</script>
