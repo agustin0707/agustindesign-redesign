@@ -1,0 +1,244 @@
+<title>Rebirth Tap In v2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Tres mejoras para la sección El Rebirth (portada del capítulo 02 y decisión 04, la paleta), sobre la grilla del
+       caso: 12 columnas, medianil 24, riel de rótulos de 1 a 3, texto desde la 4 y piezas de 8 a 12. Cada escena
+       parte donde termina el telón de la paleta (las cuatro tiras cubriendo la pantalla) */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --noche: #100D20; --gris-n: rgba(238, 237, 254, 0.68); --linea-n: rgba(155, 142, 240, 0.2);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px; --radio: 22px;
+        color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--noche); color: #F4F3FB; font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    img { display: block; max-width: 100%; }
+    .vista { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc { display: block; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .wm { --svg: url('tp-wordmark.svg'); aspect-ratio: 389.87 / 150.6; }
+    .forky { --svg: url('tp-forky.svg'); aspect-ratio: 142 / 158; }
+    .cerebro { --svg: url('tp-cerebro.svg'); aspect-ratio: 622.7 / 597.42; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 32px; color: var(--gris-n); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+
+    /* --- ESCENA --- */
+    .escena { position: relative; height: 380svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+
+    /* --- PORTADA DEL CAPÍTULO EN LA GRILLA (COMO LAS DEMÁS APERTURAS) --- */
+    /* Rótulo en el riel, título desde la 4 y bajada de 4 a 9 */
+    .cap { position: absolute; inset: 0 0 auto; height: 38svh; align-content: end; row-gap: 14px; padding-bottom: 3svh; opacity: var(--ti, 0); translate: 0 calc((1 - var(--ti, 0)) * 30px); }
+    .cap .mono { grid-column: 1 / span 3; grid-row: 1; align-self: end; padding-bottom: 0.9em; color: var(--gris-n); }
+    .cap h2 { grid-column: 4 / -1; grid-row: 1; margin: 0; font: 600 clamp(56px, 8.4vw, 148px) / 0.84 var(--f-marca); letter-spacing: -0.055em; }
+    .cap p { grid-column: 4 / span 6; grid-row: 2; margin: 0; color: var(--gris-n); font: 400 clamp(15px, 1.15vw, 18px) / 1.45 var(--f-marca); }
+
+    /* --- DECISIÓN 04 CON EL PATRÓN DE LAS DEMÁS --- */
+    .dec { position: absolute; inset: 0; align-content: center; row-gap: 16px; opacity: var(--de, 0); translate: 0 calc((1 - var(--de, 0)) * 24px); pointer-events: none; }
+    .dec .num { grid-column: 1 / span 3; grid-row: 1; font: 600 clamp(64px, 6.6vw, 112px) / 0.78 var(--f-marca); letter-spacing: -0.06em; color: rgba(155, 142, 240, 0.45); }
+    .dec .eti { grid-column: 1 / span 3; grid-row: 2; align-self: start; display: inline-flex; align-items: center; gap: 8px; color: var(--gris-n); }
+    .dec .eti::before, .dec .porque span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--health); }
+    .dec h3 { grid-column: 4 / span 3; grid-row: 1; margin: 0; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; }
+    .dec p { grid-column: 4 / span 3; grid-row: 2; margin: 0; color: var(--gris-n); font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); }
+    .dec .porque { grid-row: 3; display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--linea-n); color: #F4F3FB; }
+    .dec .porque span { display: inline-flex; align-items: center; gap: 8px; font: 400 12px var(--f-mono); color: var(--gris-n); }
+    /* En B y C la decisión va arriba, de 4 a 9, y la pieza abajo a todo el ancho de la 4 a la 12 */
+    .vb .dec, .vc .dec { align-content: start; padding-top: 12svh; }
+    .vb .dec h3, .vc .dec h3 { grid-column: 4 / span 4; } .vb .dec p, .vc .dec p { grid-column: 4 / span 4; grid-row: 2 / 4; } .vb .dec .porque, .vc .dec .porque { grid-column: 9 / span 4; grid-row: 1 / 3; align-self: start; }
+
+    /* --- TIRAS --- */
+    .tiras { position: absolute; display: flex; gap: var(--gap, 8px); }
+    .tira { --c: #FFFFFF; position: relative; flex: var(--g, 1) 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding: clamp(14px, 1.5vw, 22px); overflow: hidden; border-radius: var(--rad, var(--radio)) var(--rad, var(--radio)) var(--radb, 0) var(--radb, 0); background: linear-gradient(180deg, color-mix(in srgb, var(--tono) 84%, #FFFFFF), var(--tono) 55%); color: var(--c); }
+    .tira.claro { --c: var(--noche); }
+    .tira .iso { position: absolute; top: 42%; left: 50%; width: 36%; max-width: 140px; translate: -50% -50%; color: var(--c); transition: none; }
+    .tira:first-child .iso { width: 62%; max-width: 220px; }
+    .tira .pend { display: block; width: 64%; aspect-ratio: 1; margin: 0 auto; border: 1.5px dashed currentColor; border-radius: 50%; opacity: 0.45; }
+    .tira b { font: 600 clamp(18px, 1.6vw, 26px) / 1 var(--f-marca); letter-spacing: -0.03em; opacity: var(--et, 0); }
+    .tira .uso { font: 400 clamp(12px, 0.9vw, 14px) / 1.35 var(--f-marca); opacity: calc(var(--et, 0) * 0.82); }
+    .tira .hex { font: 400 11px var(--f-mono); opacity: calc(var(--et, 0) * 0.8); }
+    .tira .ctr { align-self: flex-start; margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; background: color-mix(in srgb, var(--c) 16%, transparent); font: 500 11px var(--f-mono); opacity: var(--ba, 0); white-space: nowrap; }
+    .tira .ctr i { width: 14px; height: 14px; border-radius: 50%; background: var(--c); color: var(--tono); display: grid; place-items: center; font: 600 9px var(--f-marca); font-style: normal; }
+    .tira.principal::after { content: 'Producto principal'; position: absolute; top: 18px; right: 16px; padding: 5px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.22); font: 600 10px var(--f-marca); letter-spacing: 0.06em; text-transform: uppercase; opacity: var(--et, 0); }
+
+    .tira .foto { display: none; }
+    /* A · En las columnas 8 a 12 cada tira es angosta: nombre, código y contraste, sin la línea de uso */
+    .va .tira .uso { opacity: calc(var(--et, 0) * 0.82 * (1 - var(--ba, 0))); }
+    .va .tira .ctr { font-size: 10px; padding: 4px 7px; } .va .tira .ctr i { display: none; }
+    /* B · Cada tira muestra su tono en uso: una pieza real del producto entra desde arriba */
+    .vb .tira .foto { display: block; position: absolute; left: 10px; right: 10px; top: 10px; height: 52%; border-radius: 14px; overflow: hidden; background: rgba(16, 13, 32, 0.25); opacity: var(--fo, 0); translate: 0 calc((1 - var(--fo, 0)) * -16px); }
+    .vb .tira .foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+    .vb .tira .foto.vacia { display: grid; place-items: center; border: 1.5px dashed rgba(16, 13, 32, 0.35); background: none; color: var(--noche); font: 500 12px var(--f-mono); }
+    .vb .tira .iso { opacity: calc(1 - var(--fo, 0)); }
+
+    /* C · Una sola familia: las tiras se funden en una escala continua; cada producto queda marcado en su tono */
+    .vc .tira .iso { opacity: calc(1 - var(--m, 0)); }
+    .vc .tira b, .vc .tira .uso, .vc .tira .hex, .vc .tira .ctr { opacity: calc(var(--et, 0) * (1 - var(--m, 0))); }
+    .vc .tira.principal::after { opacity: calc(var(--et, 0) * (1 - var(--m, 0))); }
+    .vc .escala { position: absolute; border-radius: var(--radio); background: linear-gradient(90deg, var(--empresa), var(--campus) 36%, var(--connect) 66%, var(--health)); opacity: var(--m, 0); }
+    .vc .marcas { position: absolute; display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--medianil); opacity: var(--mk, 0); translate: 0 calc((1 - var(--mk, 0)) * 16px); }
+    .vc .marca-p { position: relative; display: flex; flex-direction: column; gap: 6px; padding-top: 20px; }
+    .vc .marca-p::before { content: ''; position: absolute; top: -34px; left: 0; width: 2px; height: 40px; border-radius: 2px; background: #F4F3FB; }
+    .vc .marca-p::after { content: ''; position: absolute; top: -40px; left: -5px; width: 12px; height: 12px; border-radius: 50%; background: var(--tono); box-shadow: 0 0 0 3px #F4F3FB; }
+    .vc .marca-p .mini { width: 34px; color: #F4F3FB; } .vc .marca-p:first-child .mini { width: 64px; }
+    .vc .marca-p:last-child { padding-right: 0; } .vc .marca-p:last-child span:not(.mono) { white-space: nowrap; }
+    .vc .marca-p b { font: 600 clamp(18px, 1.5vw, 24px) / 1 var(--f-marca); letter-spacing: -0.03em; }
+    .vc .marca-p span { color: var(--gris-n); font: 400 13px / 1.35 var(--f-marca); }
+    .vc .marca-p .mono { font-size: 11px; }
+    .vc .marca-p.principal b::after { content: ' · principal'; color: var(--health); font: 400 11px var(--f-mono); letter-spacing: 0; }
+    .vc .nota { position: absolute; color: var(--gris-n); opacity: var(--mk, 0); }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(244, 243, 250, 0.14); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--papel); color: var(--tinta); row-gap: 48px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: #57556B; padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 38ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(45, 37, 96, 0.12); }
+    .lista li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(45, 37, 96, 0.12); }
+    .lista li span:first-child { color: #57556B; }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(45, 37, 96, 0.12); background: #FFFFFF; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--campus); box-shadow: 0 0 0 1px var(--campus); }
+    .op .mono { color: var(--campus); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: #57556B; }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--campus); color: #FFFFFF; font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); }
+        .grilla > *, .cap > *, .dec > * { grid-column: 1 !important; grid-row: auto !important; }
+        .cap { height: 40svh; row-gap: 8px; } .cap p { display: none; }
+        .dec, .vb .dec, .vc .dec { align-content: start; padding-top: 10svh; row-gap: 8px; }
+        .dec .num, .dec p:not(.porque) { display: none; }
+        .tira { padding: 10px; } .tira .uso, .tira .hex { display: none; } .tira b { font-size: 14px; } .tira .ctr { font-size: 9px; padding: 3px 6px; } .tira .ctr i { display: none; }
+        .tira.principal::after { display: none; }
+        .vc .marcas { grid-template-columns: repeat(2, 1fr); row-gap: 40px; } .vc .marca-p span:not(.mono) { display: none; }
+        .ops { grid-template-columns: minmax(0, 1fr); }
+        .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">El Rebirth</span><p>Baja para ver cada propuesta. Todas parten donde termina el telón de la paleta. Cambia de propuesta con el selector.</p></div>
+</div>
+
+<template id="escena">
+    <div class="escena"><div class="fijo">
+        <div class="grilla cap"><span class="mono">Capítulo 02 · Feb a abr 2026</span><h2>El Rebirth</h2><p>De app de comida a sistema para colegios. Antes de diseñar, un cuestionario a los socios</p></div>
+        <div class="grilla dec"><span class="num">04</span><span class="eti mono">Decisión 04</span><h3>Un tono por producto</h3><p>Una sola familia morada, un tono por cada producto del ecosistema</p><p class="porque"><span>Por qué</span>Connect, el principal, no lleva el más oscuro: su público es escolar</p></div>
+        <div class="tiras">
+            <div class="tira" style="--tono:#2D2560"><span class="foto"><img src="empresa.webp" alt="Sitio de Tap In Empresa"></span><span class="iso"><span class="marca wm"></span></span><b>Empresa</b><span class="uso">Corporativo y fondos</span><span class="hex">#2D2560</span><span class="ctr"><i>A</i>Blanco 13,6:1 · AAA</span></div>
+            <div class="tira" style="--tono:#4A3CAE"><span class="foto"><img src="campus.webp" alt="Pantallas de la app de Campus"></span><span class="iso"><span class="marca forky"></span></span><b>Campus</b><span class="uso">Comida sin filas</span><span class="hex">#4A3CAE</span><span class="ctr"><i>A</i>Blanco 8,2:1 · AAA</span></div>
+            <div class="tira principal" style="--tono:#6B5CE7"><span class="foto"><img src="connect.webp" alt="Módulo de gestión de Connect"></span><span class="iso"><span class="marca cerebro"></span></span><b>Connect</b><span class="uso">El sistema del colegio</span><span class="hex">#6B5CE7</span><span class="ctr"><i>A</i>Blanco 4,9:1 · AA</span></div>
+            <div class="tira claro" style="--tono:#9B8EF0"><span class="foto vacia">En camino</span><span class="iso"><i class="pend"></i></span><b>Health</b><span class="uso">En camino</span><span class="hex">#9B8EF0</span><span class="ctr"><i>A</i>Noche 6,8:1 · AAA</span></div>
+        </div>
+    </div></div>
+</template>
+
+<nav class="selector" aria-label="Propuestas">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>Grilla y sistema</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Tonos en uso</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Una sola escala</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de El Rebirth</h2>
+    <div class="bloque">
+        <p>La paleta es buena y el telón le da entrada, pero la sección no sigue la grilla y la decisión 04 queda chica al lado del título.</p>
+        <ul class="lista">
+            <li><span>Título y decisión van con un "space-between", fuera de la grilla de 12 y sin riel</span><span>Portada como las demás aperturas (rótulo en el riel, título desde la 4) y decisión con su patrón: 04 grande, rótulo, texto y "Por qué"</span></li>
+            <li><span>La decisión 04 aparece en una esquina, en el mismo cuadro que el título gigante: se pierde</span><span>Dos tiempos en la misma escena: primero la portada, después la decisión con la paleta como pieza</span></li>
+            <li><span>El texto blanco sobre Health mide 2,79:1 y no pasa AA, justo en la decisión de los tonos</span><span>Texto noche sobre Health (6,8:1, AAA) y el contraste de cada tono a la vista, como dato verificable</span></li>
+            <li><span>Las cuatro tiras miden lo mismo aunque Connect es el principal; la etiqueta "Producto principal" es mínima</span><span>Connect más ancho en la pieza final</span></li>
+            <li><span>Los textos de las tiras son de 11 px (9 px en móvil) y solo dicen el código</span><span>Nombre, uso, código y contraste con jerarquía; en móvil, solo nombre y contraste</span></li>
+            <li><span>Las tiras muestran el isotipo, pero no el tono en uso</span><span>Una pieza real de cada producto en su tono, o la escala completa con cada producto marcado</span></li>
+        </ul>
+    </div>
+    <h2>Propuestas</h2>
+    <div class="bloque">
+        <p>Tres maneras de mejorar la sección. Elige con el selector.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · Grilla y sistema</span><strong>La paleta como pieza de la decisión</strong><p>Portada en la grilla; después las tiras viajan a las columnas 8 a 12 y la decisión 04 entra con su patrón. Connect más ancho, Health con texto oscuro y el contraste de cada tono a la vista.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Tonos en uso</span><strong>Cada tono, en su producto</strong><p>La decisión va arriba y las tiras se vuelven tarjetas de la 4 a la 12: en cada una entra una pieza real del producto (el sitio de Empresa, la app de Campus, un módulo de Connect).</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Una sola escala</span><strong>Una familia, literal</strong><p>Las tiras se funden en una escala continua de la 4 a la 12 y cada producto queda marcado en su punto, con su isotipo, uso y código. Dice "una sola familia morada" sin palabras.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · EL REBIRTH V2
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz'), plantilla = document.getElementById('escena').content;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b), tramo = (p, a, b) => fijar((p - a) / (b - a));
+        const suave = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        const mezcla = (a, b, t) => a + (b - a) * t;
+        const escenas = {};
+        ['a', 'b', 'c'].forEach(v => {
+            const s = document.createElement('section'); s.className = 'vista v' + v; s.appendChild(plantilla.cloneNode(true));
+            if (v === 'c') s.querySelector('.fijo').insertAdjacentHTML('beforeend', `<div class="escala"></div><div class="marcas">
+                <div class="marca-p" style="--tono:#2D2560"><span class="marca wm mini"></span><b>Empresa</b><span>Corporativo y fondos</span><span class="mono">#2D2560 · blanco 13,6:1</span></div>
+                <div class="marca-p" style="--tono:#4A3CAE"><span class="marca forky mini"></span><b>Campus</b><span>Comida sin filas</span><span class="mono">#4A3CAE · blanco 8,2:1</span></div>
+                <div class="marca-p principal" style="--tono:#6B5CE7"><span class="marca cerebro mini"></span><b>Connect</b><span>El sistema del colegio</span><span class="mono">#6B5CE7 · blanco 4,9:1</span></div>
+                <div class="marca-p" style="--tono:#9B8EF0"><span class="mini" style="display:block;aspect-ratio:1;border:1.5px dashed #F4F3FB;border-radius:50%;opacity:.5"></span><b>Health</b><span>En camino</span><span class="mono">#9B8EF0 · noche 6,8:1</span></div></div>`);
+            raiz.appendChild(s); escenas[v] = s.querySelector('.escena');
+        });
+
+        /* --- 1. RECTÁNGULOS: TELÓN, PORTADA Y PIEZA FINAL DE CADA PROPUESTA --- */
+        const columnas = W => { const m = Math.max(Math.min(Math.max(24, W * 0.05), 96), (W - 1600) / 2), cw = (W - 2 * m - 11 * 24) / 12; return { m, cw, x: c => m + (c - 1) * (cw + 24), fin: c => m + c * cw + (c - 1) * 24 }; };
+        const finales = {
+            a: (W, H, g, movil) => movil ? { l: g.m, t: H * 0.44, w: W - 2 * g.m, h: H * 0.5 } : { l: g.x(8), t: H * 0.17, w: g.fin(12) - g.x(8), h: H * 0.66 },
+            b: (W, H, g, movil) => movil ? { l: g.m, t: H * 0.4, w: W - 2 * g.m, h: H * 0.54 } : { l: g.x(4), t: H * 0.38, w: g.fin(12) - g.x(4), h: H * 0.56 },
+            c: (W, H, g, movil) => movil ? { l: g.m, t: H * 0.42, w: W - 2 * g.m, h: H * 0.12 } : { l: g.x(4), t: H * 0.44, w: g.fin(12) - g.x(4), h: H * 0.16 }
+        };
+        const pintar = () => {
+            const v = raiz.dataset.v, el = escenas[v], r = el.getBoundingClientRect(), p = fijar(-r.top / (r.height - innerHeight));
+            const W = innerWidth, H = innerHeight, g = columnas(W), movil = W <= 768;
+            const R0 = { l: 0, t: 0, w: W, h: H }, R1 = { l: g.m, t: H * (movil ? 0.44 : 0.38), w: W - 2 * g.m, h: H * (movil ? 0.56 : 0.62) }, R2 = finales[v](W, H, g, movil);
+            const a = suave(tramo(p, 0.04, 0.22)), b = suave(tramo(p, 0.46, 0.7));
+            const R = k => mezcla(mezcla(R0[k], R1[k], a), R2[k], b);
+            const tiras = el.querySelector('.tiras');
+            Object.assign(tiras.style, { left: R('l') + 'px', top: R('t') + 'px', width: R('w') + 'px', height: R('h') + 'px' });
+            el.style.setProperty('--gap', (mezcla(mezcla(4, 8, a), v === 'c' ? 0 : 8, b)).toFixed(1) + 'px');
+            el.style.setProperty('--rad', (mezcla(mezcla(8, 22, a), v === 'c' ? 0 : 22, b)).toFixed(1) + 'px');
+            el.style.setProperty('--radb', (v === 'a' || v === 'b' ? b * 22 : 0).toFixed(1) + 'px');
+            el.style.setProperty('--ti', (tramo(p, 0.16, 0.28) * (1 - tramo(p, 0.44, 0.54))).toFixed(3));
+            el.style.setProperty('--de', tramo(p, 0.6, 0.72).toFixed(3));
+            el.style.setProperty('--et', (v === 'c' ? tramo(p, 0.2, 0.3) : tramo(p, 0.22, 0.32)).toFixed(3));
+            el.style.setProperty('--ba', tramo(p, 0.72, 0.82).toFixed(3));
+            const tirasEl = [...tiras.children];
+            tirasEl[2].style.setProperty('--g', v === 'c' ? 1 : mezcla(1, 1.5, b).toFixed(3));
+            if (v === 'b') el.style.setProperty('--fo', tramo(p, 0.72, 0.84).toFixed(3));
+            if (v === 'c') {
+                const m = tramo(p, 0.62, 0.7); el.style.setProperty('--m', m.toFixed(3)); el.style.setProperty('--mk', tramo(p, 0.72, 0.84).toFixed(3));
+                Object.assign(el.querySelector('.escala').style, { left: R2.l + 'px', top: R2.t + 'px', width: R2.w + 'px', height: R2.h + 'px' });
+                Object.assign(el.querySelector('.marcas').style, { left: R2.l + 'px', top: (R2.t + R2.h + 48) + 'px', width: R2.w + 'px' });
+                /* Cada marca se ubica bajo su tono en la escala */
+                el.querySelector('.marcas').style.gridTemplateColumns = movil ? '' : '34fr 30fr 20fr 16fr';
+            }
+        };
+        let pendiente = false;
+        addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } }, { passive: true });
+        addEventListener('resize', pintar);
+
+        /* --- 2. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v))); try { localStorage.setItem('rebirth-v2', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(pintar); };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) scrollTo({ top: 0, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('rebirth-v2'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['a', 'b', 'c'].includes(h) ? h : guardado || 'a');
+        addEventListener('load', pintar);
+    })();
+    /* =======================================================
+       FIN JS · EL REBIRTH V2
+       ======================================================= */
+</script>

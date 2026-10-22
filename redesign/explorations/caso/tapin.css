@@ -583,25 +583,30 @@
    CAPÍTULO 02 · EL REBIRTH Y LA PALETA
    ======================================================= */
 /* Las cuatro tiras suben una tras otra con el scroll; al completarse, cada una dice quién es */
-.tp-rebirth { height: 280svh; }
+/* Telón de la paleta: la escena se monta (transparente) sobre el final de las activaciones. Las cuatro tiras suben
+   de a una hasta cubrir la pantalla; recién ahí se enciende la noche, y las tiras bajan su borde hasta su altura
+   para dejar ver el título. Fondo claro donde monta, para que lo que se va hacia arriba no deje un hueco oscuro */
+.tp-rebirth { position: relative; z-index: 2; height: 380svh; margin-top: -100svh; }
+.tp-rebirth.tp-oscuro { background: linear-gradient(transparent 100svh, var(--tp-papel) 100svh); }
+.tp-rb-noche { position: absolute; inset: 0; background: var(--tp-noche); opacity: clamp(0, (var(--p, 0) - 0.3) * 60, 1); }
+.tp-rb-arriba .tp-cap-txt { opacity: clamp(0, (var(--p, 0) - 0.52) / 0.12, 1); translate: 0 calc((1 - clamp(0, (var(--p, 0) - 0.52) / 0.12, 1)) * 30px); }
 .tp-rb-arriba { position: absolute; left: var(--margen); right: var(--margen); top: 0; height: 36svh; display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; padding-bottom: 3svh; }
 .tp-rb-arriba .tp-cap-txt { position: static; gap: 12px; }
 .tp-rb-arriba .tp-cap-txt h2 { font-size: clamp(56px, 8.4vw, 148px); }
 .tp-rb-arriba .tp-cap-txt p { font-size: clamp(15px, 1.15vw, 18px); }
 .tp-dec-rb { gap: 10px; opacity: 0; translate: 0 24px; transition: opacity 600ms var(--ease), translate 600ms var(--ease); }
 .tp-dec-rb.on { opacity: 1; translate: 0 0; }
-.tp-tiras { position: absolute; left: var(--margen); right: var(--margen); bottom: 0; height: 62svh; display: flex; gap: 8px; }
-.tp-tira { --k: clamp(0, (var(--p, 0) - 0.04 - var(--i) * 0.1) / 0.22, 1); position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 22px; border-radius: var(--tp-radio) var(--tp-radio) 0 0; background: linear-gradient(180deg, color-mix(in srgb, var(--tono) 84%, #FFFFFF), var(--tono) 55%); color: #FFFFFF; transform: translateY(calc((1 - var(--k)) * 104%)); transition: flex-grow 700ms var(--tp-curva); }
+.tp-tiras { --base: 62svh; --alto: calc(1 - clamp(0, (var(--p, 0) - 0.42) / 0.18, 1)); position: absolute; left: calc(var(--margen) * (1 - var(--alto))); right: calc(var(--margen) * (1 - var(--alto))); bottom: 0; height: calc(var(--base) + var(--alto) * (100svh - var(--base))); display: flex; gap: calc(8px - var(--alto) * 4px); }
+.tp-tira { --k: clamp(0, (var(--p, 0) - 0.02 - var(--i) * 0.05) / 0.2, 1); position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 22px; border-radius: var(--tp-radio) var(--tp-radio) 0 0; background: linear-gradient(180deg, color-mix(in srgb, var(--tono) 84%, #FFFFFF), var(--tono) 55%); color: #FFFFFF; transform: translateY(calc((1 - var(--k)) * 104%)); transition: flex-grow 700ms var(--tp-curva); }
 .tp-tira b { font: 600 clamp(18px, 1.7vw, 28px) var(--tp-f); letter-spacing: -0.03em; }
 .tp-tira .mono { font-size: 11px; color: rgba(255, 255, 255, 0.8); }
 .tp-tira-iso { position: absolute; top: 44%; left: 50%; width: 36%; max-width: 150px; translate: -50% -50%; }
 .tp-tira:first-child .tp-tira-iso { width: 62%; max-width: 240px; }
-.tp-tira > :not(.tp-tira-iso) { opacity: 0; translate: 0 14px; transition: opacity 500ms var(--ease), translate 500ms var(--ease); }
-.tp-tiras.on .tp-tira > :not(.tp-tira-iso) { opacity: 1; translate: 0 0; transition-delay: calc(var(--i) * 70ms); }
+/* Nombres y códigos aparecen cuando las tiras ya bajaron a su altura */
+.tp-tira > :not(.tp-tira-iso) { opacity: clamp(0, (var(--p, 0) - 0.58) / 0.1, 1); }
 .tp-tira-iso { opacity: 0; scale: 0.8; transition: opacity 600ms var(--ease), scale 700ms var(--tp-curva); }
 .tp-tiras.on .tp-tira-iso { opacity: 1; scale: 1; transition-delay: calc(80ms + var(--i) * 80ms); }
-.tp-principal::after { content: 'Producto principal'; position: absolute; top: 24px; right: 18px; padding: 5px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.2); font: 600 10px var(--tp-f); letter-spacing: 0.06em; text-transform: uppercase; opacity: 0; transition: opacity 500ms; }
-.tp-tiras.on .tp-principal::after { opacity: 1; }
+.tp-principal::after { content: 'Producto principal'; position: absolute; top: 24px; right: 18px; padding: 5px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.2); font: 600 10px var(--tp-f); letter-spacing: 0.06em; text-transform: uppercase; opacity: clamp(0, (var(--p, 0) - 0.6) / 0.1, 1); }
 @media (hover: hover) and (min-width: 769px) {
     .tp-tiras.on:hover .tp-tira { flex-grow: 0.7; }
     .tp-tiras.on .tp-tira:hover { flex-grow: 2.2; }
@@ -836,7 +841,7 @@
     .tp-rb-arriba { flex-direction: column; align-items: flex-start; justify-content: flex-end; height: 40svh; gap: 14px; }
     .tp-rb-arriba .tp-cap-txt p, .tp-dec-rb p { display: none; }
     .tp-dec-rb h3 { font-size: 20px; }
-    .tp-tiras { height: 56svh; gap: 5px; }
+    .tp-tiras { --base: 56svh; }
     .tp-tira { padding: 12px 10px; }
     .tp-tira .mono { font-size: 9px; }
     .tp-tira b { font-size: 14px; letter-spacing: -0.02em; }
