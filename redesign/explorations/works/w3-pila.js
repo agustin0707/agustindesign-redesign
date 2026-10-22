@@ -240,16 +240,19 @@
     }
 
     /* --- 8. ENTRAR AL CASO --- */
-    /* La escena completa viaja y se abre a sangre como portada del caso */
+    /* La escena completa viaja y se abre a sangre como portada del caso. Si el proyecto ya tiene su página
+       (data-url), al terminar el viaje se entra a ella; al volver con el navegador, el caso se cierra solo */
     paneles.forEach(p => {
         const lamina = p.querySelector('.lamina');
         const abrir = () => {
             cancelAnimationFrame(lamina._raf);
             window.abrirCaso(p.dataset.id, lamina, p.querySelector('.nombre'), { clonar: true });
+            if (p.dataset.url) setTimeout(() => { window.location.href = p.dataset.url; }, quieto ? 0 : 950);
         };
         lamina.addEventListener('click', abrir);
         lamina.addEventListener('keydown', e => { if (e.key === 'Enter') abrir(); });
     });
+    window.addEventListener('pageshow', e => { if (e.persisted && document.querySelector('.caso.abierto')) document.querySelector('.caso-volver').click(); });
 })();
 /* =======================================================
    FIN JS · WORKS 3 PILA
