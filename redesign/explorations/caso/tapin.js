@@ -81,6 +81,11 @@
                 signos.forEach((sg, i) => sg.classList.toggle('on', i === cap));
             };
         },
+        /* Decisión 01: el contador de formas sigue al paso en curso */
+        forky: el => {
+            const n = el.querySelector('[data-fk-n]');
+            return p => { n.textContent = `${String(Math.min(Math.floor(p * 7), 6) + 1).padStart(2, '0')} / 07`; };
+        },
         /* Capítulo 01: Forky corre mientras se scrollea y se inclina según la velocidad; quieto, se detiene */
         cap: el => {
             let antes = 0, espera = null;

@@ -320,26 +320,28 @@
 /* =======================================================
    DECISIÓN 01 · FORKY, PASO A PASO
    ======================================================= */
-.tp-forky { height: 360svh; }
+.tp-forky { height: 380svh; }
 .tp-forky .tp-dec { grid-column: 1 / span 4; }
-.tp-fk-escenario { grid-column: 6 / -1; justify-self: center; position: relative; width: min(100%, 64svh); aspect-ratio: 1; margin-top: -6svh; border-radius: 50%; background: radial-gradient(closest-side, #FFFFFF, var(--tp-tint) 72%, transparent 73%); }
-/* Guías de construcción: la lámina de un manual, que gira despacio con el avance */
-.tp-fk-guias { position: absolute; inset: -6%; width: 112%; height: 112%; overflow: visible; transform: rotate(calc(var(--p, 0) * 45deg)); }
-.tp-fk-guias circle, .tp-fk-guias path { fill: none; stroke: rgba(74, 60, 174, 0.22); stroke-width: 1; stroke-dasharray: 3 5; vector-effect: non-scaling-stroke; }
-.tp-fk-capa { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; color: var(--tp-campus); opacity: 0; transform: scale(0.86); transition: opacity 450ms var(--ease), transform 700ms var(--tp-curva); }
-.tp-fk-capa .tp-marca { width: 56%; }
-.tp-fk-capa.on { opacity: 1; transform: scale(1); }
-.tp-fk-capa.ya { transform: scale(1.1); }
-.tp-fk-final > .tp-marca { width: 46%; }
-.tp-fk-final .tp-lockup .tp-wm { width: clamp(70px, 7vw, 110px); }
-.tp-fk-final .tp-lockup b { font-size: clamp(18px, 1.6vw, 24px); }
-.tp-fk-regla { position: absolute; left: var(--margen); right: var(--margen); bottom: 6svh; display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--medianil); list-style: none; }
-.tp-fk-regla li { display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 2px solid var(--linea); color: var(--texto-3); transition: color 300ms, border-color 300ms; }
-.tp-fk-regla .tp-marca { flex: none; width: 34px; color: var(--tp-soft); transition: color 300ms, transform 500ms var(--tp-curva); }
-.tp-fk-regla li.ya { border-color: var(--tp-soft); color: var(--texto-2); }
-.tp-fk-regla li.ya .tp-marca { color: var(--tp-health); }
-.tp-fk-regla li.on { border-color: var(--acento); color: var(--texto); }
-.tp-fk-regla li.on .tp-marca { color: var(--acento); transform: scale(1.15); }
+/* Las formas que se exploraron, en el orden del proceso: se encienden una a una con el scroll y al final se
+   apartan para que aparezca Forky con el wordmark de Campus */
+.tp-formas-zona { grid-column: 6 / -1; position: relative; }
+.tp-formas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; transition: opacity 600ms var(--ease), transform 700ms var(--ease); }
+.tp-forma { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: 20px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea); color: var(--texto-3); opacity: 0.45; transform: scale(0.95); transition: opacity 400ms, transform 600ms var(--tp-curva), color 400ms, box-shadow 400ms; }
+.tp-forma .tp-marca { width: 66%; }
+.tp-forma .mono { position: absolute; left: 14px; top: 12px; color: var(--texto-3); }
+.tp-forma.ya { opacity: 0.8; transform: none; color: var(--tp-soft); }
+.tp-forma.on { opacity: 1; transform: scale(1.03); color: var(--tp-campus); box-shadow: 0 0 0 2px var(--tp-campus), 0 26px 44px -26px rgba(74, 60, 174, 0.6); }
+.tp-rotulo { display: flex; align-items: baseline; gap: 14px; margin-top: 24px; }
+.tp-rotulo b { font-weight: 400; color: var(--acento); }
+.tp-rotulo-t { position: relative; flex: 1; height: 1.4em; overflow: hidden; font: 600 clamp(20px, 1.8vw, 28px) var(--tp-f); letter-spacing: -0.03em; color: var(--texto); }
+.tp-rotulo-t span { position: absolute; inset: 0; white-space: nowrap; opacity: 0; transform: translateY(100%); transition: opacity 300ms, transform 500ms var(--ease); }
+.tp-rotulo-t span.on { opacity: 1; transform: none; }
+.tp-fk-final { position: absolute; left: 0; right: 0; top: 0; aspect-ratio: 3 / 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; color: var(--tp-campus); opacity: 0; transform: scale(0.85); transition: opacity 600ms var(--ease), transform 800ms var(--tp-curva); pointer-events: none; }
+.tp-fk-forky { width: 30%; aspect-ratio: 142 / 158; }
+.tp-fk-final .tp-lockup .tp-wm { width: clamp(80px, 7vw, 120px); }
+.tp-fk-final .tp-lockup b { font-size: clamp(18px, 1.6vw, 26px); }
+.tp-fk-final.on { opacity: 1; transform: none; }
+.tp-formas-zona:has(.tp-fk-final.on) .tp-formas { opacity: 0.07; transform: scale(0.96); }
 
 /* =======================================================
    LA MARCA EN EL CAMPUS
@@ -594,18 +596,15 @@
     .tp-cap-num { top: 12svh; font-size: 52vw; }
     .tp-velocidad { width: 16svh; }
     .tp-dec-num { font-size: 56px; margin-bottom: 0; }
-    .tp-fk-escenario { margin-top: 0; }
-    .tp-fk-regla .tp-marca { width: 22px; }
-    .tp-fk-regla li { flex-direction: column; align-items: flex-start; gap: 6px; }
-    .tp-fk-regla li span:last-child { display: none; }
+    .tp-formas { gap: 8px; }
+    .tp-forma { border-radius: 14px; }
+    .tp-forma .mono { display: none; }
     .tp-arq-madre { width: 100%; }
     .tp-pista-forky { top: 18svh; height: 22svh; }
     .tp-forky-cuerpo { width: 18svh; }
     .tp-fijo.tp-grilla { align-content: center; padding-top: 64px; }
     .tp-dec { gap: 10px; }
     .tp-forky .tp-dec p:not(.tp-porque), .tp-cer .tp-dec p, .tp-arq .tp-dec p:not(.tp-porque), .tp-arq .tp-mas, :is(.tp-forky, .tp-cer, .tp-arq) .tp-dec-num { display: none; }
-    .tp-fk-escenario { width: min(78vw, 40svh); }
-    .tp-fk-regla { font-size: 10px; bottom: 4svh; }
     .tp-par-fotos { grid-template-columns: 1fr; }
     .tp-par-fotos figure { aspect-ratio: 4 / 3; }
     .tp-tels { padding: 24px 0 0; }
