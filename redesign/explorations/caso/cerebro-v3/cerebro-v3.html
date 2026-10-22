@@ -1,0 +1,303 @@
+<title>Cerebro Tap In v3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Tres variantes de la decisión 05 (la lámina de construcción del cerebro de Connect), sobre la grilla del
+       caso. Las tres corrigen el vacío de abajo a la izquierda y el choque del cerebro con la línea, rehacen el
+       avance de los pasos y cambian la regla de tamaños por el isotipo en uso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B; --noche: #100D20;
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1); --curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    .vista { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc { display: block; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .wm { --svg: url('tp-wordmark.svg'); aspect-ratio: 389.87 / 150.6; }
+    .cm { --svg: url('tp-cerebro.svg'); aspect-ratio: 622.7 / 597.42; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 32px; color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+
+    /* --- ESCENA --- */
+    .escena { --p: 0; position: relative; height: 360svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; color: #FFFFFF; align-content: center; align-items: stretch; }
+    .fondo { position: absolute; inset: 0; background: radial-gradient(70% 70% at 70% 45%, #8174F0 0%, var(--connect) 45%, #5546D6 100%); }
+    .fondo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px); background-size: 28px 28px; -webkit-mask-image: radial-gradient(60% 60% at 72% 50%, #000, transparent); mask-image: radial-gradient(60% 60% at 72% 50%, #000, transparent); opacity: 0.7; }
+    /* Texto a la izquierda, a lo alto de la escena: arriba la decisión, abajo el índice de pasos (sin vacío) */
+    .izq { position: relative; grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; grid-template-rows: auto 1fr auto; height: min(76svh, 720px); }
+    .dec { grid-column: 1 / -1; grid-row: 1; display: grid; grid-template-columns: subgrid; row-gap: 16px; align-items: start; }
+    .dec .num { grid-column: 1 / span 3; grid-row: 1; font: 600 clamp(64px, 6.6vw, 112px) / 0.78 var(--f-marca); letter-spacing: -0.06em; color: rgba(255, 255, 255, 0.42); }
+    .dec .eti { grid-column: 1 / span 3; grid-row: 2; display: inline-flex; align-items: center; gap: 8px; color: rgba(255, 255, 255, 0.8); }
+    .dec .eti::before, .dec .porque span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #FFFFFF; }
+    .dec h3 { grid-column: 4 / span 3; grid-row: 1; margin: 0; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; }
+    .dec p { grid-column: 4 / span 3; grid-row: 2; margin: 0; color: rgba(255, 255, 255, 0.82); font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); }
+    .dec .porque { grid-row: 3; display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.24); color: #FFFFFF; }
+    .dec .porque span { display: inline-flex; align-items: center; gap: 8px; font: 400 12px var(--f-mono); color: rgba(255, 255, 255, 0.8); }
+    .der { position: relative; grid-column: 8 / -1; height: min(76svh, 720px); }
+    .lienzo { position: absolute; left: 0; right: 0; top: 0; height: 100%; display: grid; place-items: center; }
+    .constr { position: absolute; inset: 6% 0; width: 100%; height: 88%; overflow: visible; opacity: calc(1 - var(--k, 0)); pointer-events: none; }
+    .constr * { fill: none; stroke: rgba(255, 255, 255, 0.35); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--g, 0)); }
+    .cer { width: min(25vw, 40svh); overflow: visible; }
+    .cer path { fill: rgba(255, 255, 255, var(--f, 0)); stroke: #FFFFFF; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-dasharray: var(--len, 4000); stroke-dashoffset: calc(var(--len, 4000) * (1 - var(--d, 0))); }
+
+    /* --- MAQUETAS DE USO (COMPARTIDAS) --- */
+    .uso { display: flex; flex-direction: column; gap: 10px; }
+    .uso .mono { color: rgba(255, 255, 255, 0.78); font-size: 11px; }
+    .uso .mono b { color: #FFFFFF; font-weight: 400; }
+    .caja { position: relative; height: clamp(120px, 16svh, 156px); border-radius: 16px; background: rgba(255, 255, 255, 0.1); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); overflow: hidden; }
+    .tab { position: absolute; left: 12px; right: 12px; top: 16px; height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 10px 10px 0 0; background: #FFFFFF; color: var(--tinta); font: 500 12px var(--f-texto); }
+    .tab .fav { width: 16px; height: 16px; border-radius: 4px; background: var(--connect); display: grid; place-items: center; color: #FFFFFF; flex: none; } .tab .fav .marca { width: 11px; }
+    .tab small { margin-left: auto; color: var(--gris); }
+    .tab-cuerpo { position: absolute; left: 12px; right: 12px; top: 50px; bottom: 0; background: #F1F0F8; }
+    .tab-cuerpo i { position: absolute; left: 14px; top: 14px; width: 46%; height: 8px; border-radius: 4px; background: #DCD9EC; } .tab-cuerpo i + i { top: 30px; width: 30%; }
+    .home { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(4, 44px); justify-content: center; align-content: center; gap: 14px 12px; }
+    .home > span { width: 44px; height: 44px; border-radius: 11px; background: rgba(255, 255, 255, 0.22); }
+    .home > .app { position: relative; display: grid; place-items: center; background: linear-gradient(160deg, #8174F0, var(--connect)); box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.85), 0 8px 18px -8px rgba(16, 13, 32, 0.6); }
+    .home > .app .marca { width: 27px; color: #FFFFFF; }
+    .home > .app small { position: absolute; top: calc(100% + 4px); font: 500 9px var(--f-texto); white-space: nowrap; }
+    .notif { position: absolute; left: 12px; right: 12px; top: 50%; translate: 0 -50%; display: grid; grid-template-columns: 38px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 16px; background: rgba(255, 255, 255, 0.92); color: var(--tinta); box-shadow: 0 10px 24px -14px rgba(16, 13, 32, 0.6); }
+    .notif .ic { width: 38px; height: 38px; border-radius: 9px; background: linear-gradient(160deg, #8174F0, var(--connect)); display: grid; place-items: center; } .notif .ic .marca { width: 24px; color: #FFFFFF; }
+    .notif b { display: block; font: 600 12px var(--f-texto); } .notif span { font: 400 11px / 1.3 var(--f-texto); color: var(--gris); } .notif small { align-self: start; font: 400 10px var(--f-texto); color: var(--gris); }
+    .navb { position: absolute; left: 12px; right: 12px; top: 50%; translate: 0 -50%; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #FFFFFF; color: var(--tinta); }
+    .navb .marca.cm { width: 30px; color: var(--connect); } .navb b { font: 600 13px var(--f-marca); } .navb i { margin-left: auto; width: 34px; height: 6px; border-radius: 3px; background: #E4E2F0; } .navb i + i { margin-left: 0; width: 22px; }
+
+    /* =======================================================
+       A · ÍNDICE DE PASOS Y USOS EN FILA
+       ======================================================= */
+    /* Abajo a la izquierda, un índice de los tres pasos con una línea que se llena; a la derecha el cerebro centrado
+       y, en el paso 3, se achica arriba y debajo entran tres usos en fila */
+    .indice { grid-column: 4 / span 3; grid-row: 3; position: relative; display: flex; flex-direction: column; padding-left: 18px; }
+    .indice::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 1.5px; border-radius: 2px; background: rgba(255, 255, 255, 0.22); }
+    .indice::after { content: ''; position: absolute; left: 0; top: 6px; width: 1.5px; height: calc((100% - 12px) * var(--av, 0)); border-radius: 2px; background: #FFFFFF; }
+    .indice li { list-style: none; display: grid; grid-template-columns: 32px 1fr; gap: 2px 8px; padding: 9px 0; color: rgba(255, 255, 255, 0.5); transition: color 300ms linear; }
+    .indice li b { grid-row: 1 / 3; font: 400 12px var(--f-mono); padding-top: 2px; }
+    .indice li strong { font: 600 16px / 1.2 var(--f-marca); letter-spacing: -0.02em; }
+    .indice li span { font: 400 12px / 1.35 var(--f-texto); max-height: 0; overflow: hidden; opacity: 0; transition: max-height 400ms var(--ease), opacity 300ms linear; }
+    .indice li.on { color: #FFFFFF; } .indice li.on span { max-height: 3em; opacity: 0.8; }
+    .indice ol { margin: 0; padding: 0; }
+    .va .usos { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: 1.15fr 0.9fr 1.1fr; gap: 12px; opacity: var(--u, 0); translate: 0 calc((1 - var(--u, 0)) * 20px); }
+
+    /* =======================================================
+       B · EL ISOTIPO EN SU ECOSISTEMA
+       ======================================================= */
+    /* En el paso 3 el cerebro vuela a la pestaña de un navegador; detrás, la ventana con la barra de Connect y, al
+       frente, un teléfono con el ícono de la app y una notificación. Los pasos van en un riel horizontal */
+    .riel { grid-column: 4 / span 3; grid-row: 3; display: grid; grid-template-columns: repeat(3, 1fr); position: relative; padding-top: 22px; }
+    .riel::before { content: ''; position: absolute; left: 6px; right: 6px; top: 5px; height: 1.5px; background: rgba(255, 255, 255, 0.22); }
+    .riel::after { content: ''; position: absolute; left: 6px; top: 5px; width: calc((100% - 12px) * var(--av, 0)); height: 1.5px; background: #FFFFFF; }
+    .riel span { position: relative; display: flex; flex-direction: column; gap: 4px; color: rgba(255, 255, 255, 0.5); font: 600 13px / 1.2 var(--f-marca); transition: color 300ms linear; }
+    .riel span::before { content: ''; position: absolute; left: 0; top: -21px; z-index: 1; width: 12px; height: 12px; border-radius: 50%; background: #5B4CE0; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.5); transition: background 300ms, box-shadow 300ms; }
+    .riel span small { font: 400 11px var(--f-mono); }
+    .riel span.on { color: #FFFFFF; } .riel span.on::before { background: #FFFFFF; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2); }
+    .vb .eco { position: absolute; inset: 0; opacity: var(--u, 0); }
+    .vb .ventana { position: absolute; left: 0; right: 14%; top: 8%; height: 62%; border-radius: 14px; overflow: hidden; background: #FFFFFF; box-shadow: 0 30px 60px -30px rgba(16, 13, 32, 0.7); translate: 0 calc((1 - var(--u, 0)) * 30px); }
+    .vb .pestanas { display: flex; align-items: flex-end; gap: 6px; height: 40px; padding: 0 12px; background: #E9E7F3; }
+    .vb .pestana { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border-radius: 9px 9px 0 0; background: #FFFFFF; color: var(--tinta); font: 500 12px var(--f-texto); }
+    .vb .pestana .hueco { width: 16px; height: 16px; border-radius: 4px; background: var(--connect); display: grid; place-items: center; opacity: var(--fv, 0); } .vb .pestana .hueco .marca { width: 11px; color: #FFFFFF; }
+    .vb .pestana.otra { background: transparent; color: var(--gris); }
+    .vb .barra-s { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #ECEAF4; color: var(--tinta); }
+    .vb .barra-s .marca.cm { width: 30px; color: var(--connect); } .vb .barra-s b { font: 600 14px var(--f-marca); } .vb .barra-s i { margin-left: auto; width: 60px; height: 8px; border-radius: 4px; background: #E4E2F0; }
+    .vb .lineas { padding: 18px; display: grid; gap: 10px; } .vb .lineas i { height: 10px; border-radius: 5px; background: #EFEDF7; } .vb .lineas i:nth-child(1) { width: 60%; background: #DCD9EC; height: 16px; } .vb .lineas i:nth-child(2) { width: 85%; } .vb .lineas i:nth-child(3) { width: 72%; }
+    .vb .tel { position: absolute; right: 0; bottom: 4%; width: 34%; aspect-ratio: 9 / 18; padding: 8px; border-radius: 30px; background: #121022; box-shadow: 0 30px 60px -24px rgba(16, 13, 32, 0.75); translate: 0 calc((1 - var(--u, 0)) * 50px); }
+    .vb .tel-p { position: relative; width: 100%; height: 100%; border-radius: 23px; overflow: hidden; background: radial-gradient(90% 60% at 50% 0%, #8E83F4, #5546D6); }
+    .vb .tel-p .notif { top: 14%; left: 8px; right: 8px; translate: none; grid-template-columns: 30px 1fr; padding: 8px; border-radius: 12px; } .vb .tel-p .notif .ic { width: 30px; height: 30px; border-radius: 8px; } .vb .tel-p .notif .ic .marca { width: 19px; } .vb .tel-p .notif small { display: none; }
+    .vb .tel-p .home { top: 40%; grid-template-columns: repeat(3, 38px); gap: 12px 10px; } .vb .tel-p .home > span { width: 38px; height: 38px; border-radius: 10px; } .vb .tel-p .home > .app .marca { width: 22px; }
+    .vb .volador { position: absolute; z-index: 3; pointer-events: none; }
+    .vb .notas-eco { position: absolute; left: 0; bottom: 0; display: flex; gap: 18px; opacity: var(--u, 0); }
+    .vb .notas-eco .mono { color: rgba(255, 255, 255, 0.78); font-size: 11px; } .vb .notas-eco .mono b { color: #FFFFFF; font-weight: 400; }
+
+    /* =======================================================
+       C · CUATRO USOS Y NÚMEROS GRANDES
+       ======================================================= */
+    /* Los pasos son tres números grandes en el riel (el actual en blanco); en el paso 3 el cerebro se va y entran
+       cuatro usos en una grilla de 2 × 2, cada uno con su tamaño */
+    .pasos { grid-column: 1 / span 3; grid-row: 3; display: flex; flex-direction: column; gap: 6px; }
+    .pasos div { display: flex; align-items: baseline; gap: 12px; color: rgba(255, 255, 255, 0.32); transition: color 300ms linear; }
+    .pasos div b { font: 600 clamp(28px, 2.6vw, 40px) / 1 var(--f-marca); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+    .pasos div span { font: 400 12px var(--f-mono); }
+    .pasos div.on { color: #FFFFFF; }
+    .vc .lienzo { opacity: calc(1 - var(--k, 0)); }
+    .vc .cuatro { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 14px; align-content: center; opacity: var(--u, 0); }
+    .vc .cuatro .uso { justify-content: center; }
+    .vc .cuatro .caja { height: auto; flex: 1; min-height: 120px; }
+    .vc .cuatro .uso:nth-child(n) { translate: 0 calc((1 - var(--u, 0)) * 24px); }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 40ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 110px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); }
+        .grilla > *, .dec > *, .izq > * { grid-column: 1 !important; grid-row: auto !important; }
+        .fijo { align-content: start; padding-top: 8svh; row-gap: 18px; }
+        .izq { display: flex; flex-direction: column; gap: 14px; height: auto; } .dec { display: flex; flex-direction: column; gap: 8px; } .dec .num, .dec p:not(.porque) { display: none; }
+        .indice li span { display: none; } .indice li { padding: 4px 0; } .indice { flex-direction: row; } .indice ol { display: flex; gap: 12px; } .indice::before, .indice::after { display: none; } .indice li strong { font-size: 13px; }
+        .pasos { flex-direction: row; gap: 16px; } .pasos div b { font-size: 24px; } .pasos div span { display: none; }
+        .der { height: 52svh; } .cer { width: 44vw; }
+        .va .usos { grid-template-columns: 1fr 1fr; } .va .usos .uso:nth-child(3) { display: none; }
+        .vb .tel { width: 40%; } .vb .notas-eco { display: none; }
+        .vc .cuatro { gap: 8px; } .vc .cuatro .caja { min-height: 92px; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Decisión 05</span><p>Tres variantes de la lámina del cerebro. Baja para ver cada una; cambia con el selector. Abajo, el audit.</p></div>
+</div>
+
+<template id="base">
+    <div class="escena"><div class="grilla fijo"><div class="fondo"></div>
+        <div class="izq">
+            <div class="dec"><span class="num">05</span><span class="eti mono">Decisión 05</span><h3>Un cerebro hecho de piezas</h3><p>La silueta habla de inteligencia; el interior, de conexión. Connect une los servicios del colegio</p><p class="porque"><span>Aprobado</span>El 24 de marzo de 2026, con la paleta</p></div>
+        </div>
+        <div class="der"><div class="lienzo"><svg class="constr" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"><circle cx="50" cy="50" r="40" pathLength="1"/><circle cx="50" cy="50" r="27" pathLength="1"/><line x1="0" y1="50" x2="100" y2="50" pathLength="1"/><line x1="50" y1="0" x2="50" y2="100" pathLength="1"/><line x1="15" y1="15" x2="85" y2="85" pathLength="1"/><line x1="85" y1="15" x2="15" y2="85" pathLength="1"/></svg></div></div>
+    </div></div>
+</template>
+
+<nav class="selector" aria-label="Variantes">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>Índice y usos</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Ecosistema</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Cuatro usos</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de la decisión 05</h2>
+    <div class="bloque">
+        <p>La lámina funciona, pero la composición se carga arriba, el avance casi no se ve y el cierre muestra datos técnicos en vez del isotipo vivo.</p>
+        <ul class="lista">
+            <li><span class="mono">Composición</span><span>Texto y pieza alineados arriba: la mitad de abajo queda vacía, sobre todo a la izquierda</span><span>Texto a lo alto de la escena: la decisión arriba y los pasos abajo, alineados con el fondo de la pieza</span></li>
+            <li><span class="mono">Choque</span><span>El cerebro, centrado en su lienzo bajo el rótulo, toca la línea del rótulo; la grilla de construcción se sale</span><span>Sin rótulo sobre la pieza: el lienzo usa todo el alto y la grilla queda dentro con aire</span></li>
+            <li><span class="mono">Avance</span><span>Tres segmentos de 18 × 3 px en la esquina: no dicen cuáles son los pasos ni en cuál vas</span><span>Un índice de pasos con nombre y una línea que se llena, un riel con puntos o números grandes en el riel</span></li>
+            <li><span class="mono">Cierre</span><span>La regla de 128 a 16 px es técnica y poco atractiva; los íconos chicos se pierden</span><span>El isotipo en uso: pestaña del navegador, ícono de la app, notificación y barra del sitio</span></li>
+            <li><span class="mono">Ritmo</span><span>El paso 3 entra tarde y el cerebro se achica sin destino</span><span>El cerebro se achica hacia un lugar (arriba, o vuela a la pestaña) y los usos entran en cascada</span></li>
+            <li><span class="mono">Interacción</span><span>No hay nada que tocar</span><span>Pasos clicables (llevan al paso) y, en los usos, hover que acerca cada maqueta</span></li>
+            <li><span class="mono">Texto</span><span>"Aprobado el 24 de marzo" no es un porqué</span><span>Pendiente: la razón del cerebro frente a los cubiertos (por confirmar contigo)</span></li>
+        </ul>
+    </div>
+    <h2>Variantes</h2>
+    <div class="bloque">
+        <p>Tres maneras de resolverlo. Elige con el selector.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · Índice y usos</span><strong>Ordenada y clara</strong><p>Abajo a la izquierda, un índice de los tres pasos con su descripción y una línea que se llena. El cerebro centrado a la derecha; en el paso 3 sube y entran en fila la pestaña, el ícono de la app y una notificación.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Ecosistema</span><strong>El isotipo, en su lugar</strong><p>En el paso 3 el cerebro vuela a la pestaña de un navegador con la barra de Connect, y al frente aparece un teléfono con el ícono de la app y una notificación. Los pasos van en un riel con puntos.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Cuatro usos</span><strong>Lámina de aplicaciones</strong><p>Los pasos son tres números grandes en el riel. En el paso 3 el cerebro se va y entran cuatro usos en una grilla de 2 × 2: pestaña, ícono, notificación y barra del sitio, cada uno con su tamaño.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · CEREBRO V3
+       ======================================================= */
+    (function () {
+        const D = ["M298.51,175.57h29.55c8.05,0,21.61-16.17,36.18-17.63,63.98-6.42,64.01,90.39.89,84.66-17.96-1.63-26.72-18.51-43.24-18.51h-23.38v117.32h-83.8c2.16-4.75,6.04-8.45,8.65-12.96,28.9-50.03-16.35-110.51-72.34-97.04-40.98,9.86-62.25,55.94-43.2,93.84l10.74,16.16H36.96c-11.37,0-25.97-11.14-30.91-21.14-17.98-36.39,6.09-83.55,46.35-89.13-9.79-44.36,16.54-92.96,59.98-106.74-2.47-6.61-5.67-13.01-6.84-20.06-6-36.1,23.41-69.99,60.21-67.33,23.46,1.69,40.36,18.75,38.35,42.83-.72,8.61-12.22,25.77,2.28,25.98,8.72.13,15.15-2.21,25.48.98,7.01,2.17,17.02,13.08,23.03,7.06,10.2-10.23-11.61-20.14-19.23-22.33-5.62-1.61-11.6-2.48-17.43-2.42,6.36-23.23-4.22-48.82-25.48-60.08-1.33-2.27,7.23-10.51,9.19-12.22,23.75-20.78,70.72-25.42,89.35,4.1,3.07,4.87,7.21,16.3,7.21,21.9v132.76ZM147.47,156.4c-21.6,2.43-42.89,17.83-53.44,36.54-3.7,6.56-16.44,34.24-.71,33.75,8.44-.26,8.94-12.86,11.59-19.34,10.32-25.22,34.84-37.88,61.61-35.21,5.91.59,15.09,5.54,19.73,3.63,6.06-2.49,6.44-9.99,1.04-13.82-8.42-5.97-29.74-6.69-39.83-5.55Z", "M324.97,36.63c4.61-34.06,46.39-42.08,74.06-32.6,17.91,6.14,30.7,20.13,39.43,36.49,52.29-18.72,98.25,35.06,71.75,83.88,37.92,11.93,64.02,51.23,61.75,90.87,0,0-13.05-.63-23.18,2.85-17.1,5.87-31.65,24.7-32.4,43.02-21.89-9.86-48.75-8.58-67.84,6.69-5.57,4.46-16.52,13.68-8.22,20.67,7.36,6.19,13.76-5.15,19.67-9.21,16.76-11.51,36.67-11.26,54.03-1.23,5.14,2.97,7.22,8.13,14.77,5.63,7.26-2.41,2.6-12.9,2.59-17.69-.03-27.01,27.3-40.95,51.14-31.74,32.88,12.7,49.92,53.31,34.31,85.44-5.08,10.45-19.27,21.72-31.21,21.72h-140.7v26.02c0,15.99,20.69,24.2,18.51,50.27-4.92,58.67-99.47,45.22-83.53-15.61,2.85-10.89,16.5-24.12,16.5-32.01v-28.67h-71.45v-92.62c3.93,1.68,6.96,5.16,10.66,7.43,63.44,38.94,132.69-41.98,85.06-98.3-24.75-29.26-67.08-30.59-95.72-6.16V36.63ZM434.93,128.5c4.39-4.46,2.95-17.79,1.83-23.71-3.44-18.18-18.37-35.56-35.7-41.93-8.44-3.1-35.16-9.24-29.82,7.78,1.87,5.98,8.72,3.78,13.17,4.47,20.2,3.13,36.1,17.09,37.58,38.28.34,4.79-1.84,9.67.53,13.6,2.53,4.2,8.96,5.02,12.41,1.52Z", "M190.89,366.99h94.39c5.65,8.51,7.7,15.09,4.46,25.19-6.29,19.61-26.8,24.81-45.46,23.32-6.64-.53-21.09-6.93-22.49,4.06-.52,4.09,5.53,14.9,6.15,21.1,2.14,21.26-6.79,37.72-24.42,48.78-5.59,3.51-12.58,3.22-10.82,12.91,2.14,11.76,20.78-.15,25.83-4.07,20.34-15.81,29.84-41.63,23.53-66.89,0,0,10.7.22,18.08,0,23.72-.7,37.91-19.62,38.37-19.4l.04,112.5c-1.84,54.12-51.4,84.86-102.17,68.58-27.91-8.95-54.36-38.39-54.9-68.65-.1-5.34,2.84-11.11-.85-15.86-4.41-5.69-12.67-3.16-14.07,3.6-2.72,13.17.86,26.6,4.35,39.19-38.16,2.3-70.17-32.47-62.54-70.47,25.75,4.73,56.91-6.11,65.88-32.49,2.89-8.5,5.99-33.47-8.88-30.05-8.82,2.03-4.16,11.36-4.36,16.73-.45,12.19-11.03,24.16-22.25,28.1-42.69,15-81.28-34.65-73.29-75.06,1.92-9.72,12.63-21.13,22.98-21.13h93.95v-26.02c0-9.6-8.24-16.45-12.5-23.67-21.36-36.23,16.19-77.74,54.56-60.73,22.14,9.81,31.1,37.6,19.85,58.98-3.66,6.96-13.39,14.97-13.39,23.66v27.79Z", "M371.72,366.99c-25.11,28.62-21.22,73.87,9.78,96.52,54.69,39.95,125.52-16.93,99.76-78.59l-10.74-17.93h103.65c8.63,0,18.9,9.14,21.78,17.04,8.39,23.07-4.23,52.96-22.21,68.1-7.29,6.14-15.31,9.28-23.78,13.33,9.34,22.52,6.79,47.73-9.73,66.07-15.12,16.79-41.71,25.17-63.25,16.45-19.26-7.8-22.44-34.17-5.87-46.75,5.41-4.11,14.25-5.02,11.36-14.32-4.09-13.12-23.55,3.1-28.19,8.94-14.77,18.6-12.92,44.42,5.24,59.88,1.6,1.36,8.62,5.23,8.31,6.57-.39,1.67-13.16,14.48-15.42,16.36-31.25,26.11-83.71,25.41-110.65-6.62-6.45-7.67-16.79-27.12-16.79-37.02v-168.04h46.75Z"];
+        const raiz = document.getElementById('raiz'), base = document.getElementById('base').content;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b), tramo = (p, a, b) => fijar((p - a) / (b - a));
+        const suave = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, mezcla = (a, b, t) => a + (b - a) * t;
+        const cm = '<span class="marca cm"></span>';
+        const USOS = {
+            tab: `<div class="uso"><div class="caja"><div class="tab"><span class="fav">${cm}</span>Connect · Comedor<small>×</small></div><div class="tab-cuerpo"><i></i><i></i></div></div><span class="mono"><b>Pestaña</b> · 16 px</span></div>`,
+            app: `<div class="uso"><div class="caja"><div class="home"><span></span><span class="app">${cm}<small>Connect</small></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div><span class="mono"><b>Ícono de la app</b> · 60 px</span></div>`,
+            notif: `<div class="uso"><div class="caja"><div class="notif"><span class="ic">${cm}</span><div><b>Connect</b><span>El pago del casino de marzo ya está conciliado</span></div><small>ahora</small></div></div><span class="mono"><b>Notificación</b> · 38 px</span></div>`,
+            nav: `<div class="uso"><div class="caja"><div class="navb">${cm}<b>Connect</b><i></i><i></i></div></div><span class="mono"><b>Barra del sitio</b> · 32 px</span></div>`
+        };
+        const PASOS = [['Construcción', 'La grilla y el trazo'], ['Relleno', 'La silueta completa'], ['En uso', 'De la pestaña a la app']];
+        const escenas = {};
+        ['a', 'b', 'c'].forEach(v => {
+            const s = document.createElement('section'); s.className = 'vista v' + v; s.appendChild(base.cloneNode(true));
+            const izq = s.querySelector('.izq'), der = s.querySelector('.der'), lienzo = s.querySelector('.lienzo');
+            lienzo.insertAdjacentHTML('beforeend', `<svg class="cer" viewBox="0 0 622.7 597.42" aria-hidden="true">${D.map(d => `<path d="${d}"/>`).join('')}</svg>`);
+            if (v === 'a') {
+                izq.insertAdjacentHTML('beforeend', `<nav class="indice" aria-label="Pasos"><ol>${PASOS.map(([t, d], i) => `<li data-i="${i}"><b>0${i + 1}</b><strong>${t}</strong><span>${d}</span></li>`).join('')}</ol></nav>`);
+                der.insertAdjacentHTML('beforeend', `<div class="usos">${USOS.tab}${USOS.app}${USOS.notif}</div>`);
+            }
+            if (v === 'b') {
+                izq.insertAdjacentHTML('beforeend', `<div class="riel">${PASOS.map(([t], i) => `<span data-i="${i}">${t}<small>0${i + 1}</small></span>`).join('')}</div>`);
+                der.insertAdjacentHTML('beforeend', `<div class="eco"><div class="ventana"><div class="pestanas"><div class="pestana"><span class="hueco" data-hueco>${cm}</span>Connect · Comedor</div><div class="pestana otra">Correo</div></div><div class="barra-s">${cm}<b>Connect</b><i></i></div><div class="lineas"><i></i><i></i><i></i></div></div>
+                    <div class="tel"><div class="tel-p"><div class="notif"><span class="ic">${cm}</span><div><b>Connect</b><span>El pago del casino ya está conciliado</span></div></div><div class="home"><span></span><span class="app">${cm}<small>Connect</small></span><span></span><span></span><span></span><span></span></div></div></div></div>
+                    <div class="notas-eco"><span class="mono"><b>Pestaña</b> · 16 px</span><span class="mono"><b>Barra</b> · 32 px</span><span class="mono"><b>Notificación</b> · 38 px</span><span class="mono"><b>Ícono</b> · 60 px</span></div>`);
+            }
+            if (v === 'c') {
+                izq.insertAdjacentHTML('beforeend', `<div class="pasos">${PASOS.map(([t], i) => `<div data-i="${i}"><b>0${i + 1}</b><span>${t}</span></div>`).join('')}</div>`);
+                der.insertAdjacentHTML('beforeend', `<div class="cuatro">${USOS.tab}${USOS.app}${USOS.notif}${USOS.nav}</div>`);
+            }
+            raiz.appendChild(s); escenas[v] = s.querySelector('.escena');
+        });
+
+        /* --- 1. MEDIDAS DEL TRAZO (CUANDO LA VISTA ESTÁ VISIBLE) --- */
+        const listo = {};
+        const medir = v => { const ps = escenas[v].querySelectorAll('.cer path'); if (!ps[0].getTotalLength()) return; ps.forEach(p => p.style.setProperty('--len', Math.ceil(p.getTotalLength()))); listo[v] = true; };
+
+        /* --- 2. COREOGRAFÍA COMÚN Y PROPIA --- */
+        const pintar = () => {
+            const v = raiz.dataset.v, el = escenas[v], r = el.getBoundingClientRect(), p = fijar(-r.top / (r.height - innerHeight));
+            if (!listo[v]) medir(v);
+            el.style.setProperty('--p', p.toFixed(4));
+            el.style.setProperty('--g', suave(tramo(p, 0.03, 0.22)).toFixed(3));
+            el.style.setProperty('--d', suave(tramo(p, 0.08, 0.32)).toFixed(3));
+            el.style.setProperty('--f', tramo(p, 0.38, 0.5).toFixed(3));
+            const k = suave(tramo(p, 0.62, 0.74)); el.style.setProperty('--k', k.toFixed(3));
+            el.style.setProperty('--u', tramo(p, 0.7, 0.82).toFixed(3));
+            const paso = p < 0.34 ? 0 : p < 0.62 ? 1 : 2;
+            el.style.setProperty('--av', fijar(p / 0.85).toFixed(3));
+            el.querySelectorAll('[data-i]').forEach(x => x.classList.toggle('on', +x.dataset.i === paso || (v === 'b' && x.matches('.riel span') && +x.dataset.i <= paso)));
+            const cer = el.querySelector('.cer');
+            if (v === 'a') cer.style.transform = `translateY(${mezcla(0, -30, k)}%) scale(${mezcla(1, 0.62, k)})`;
+            if (v === 'c') cer.style.transform = `scale(${mezcla(1, 0.8, k)})`;
+            if (v === 'b') {
+                /* El cerebro vuela al hueco de la pestaña y se vuelve el favicon */
+                const hueco = el.querySelector('[data-hueco]'), H = hueco.getBoundingClientRect(), C = cer.getBoundingClientRect();
+                const t = suave(tramo(p, 0.66, 0.8));
+                if (!cer.dataset.base) { cer.dataset.base = '1'; }
+                const lienzo = el.querySelector('.lienzo').getBoundingClientRect();
+                const w0 = lienzo.width ? Math.min(lienzo.width, cer.clientWidth) : cer.clientWidth;
+                const cx0 = lienzo.left + lienzo.width / 2, cy0 = lienzo.top + lienzo.height / 2, cx1 = H.left + H.width / 2, cy1 = H.top + H.height / 2, s1 = 11 / cer.clientWidth;
+                cer.style.transform = `translate(${(cx1 - cx0) * t}px, ${(cy1 - cy0) * t}px) scale(${mezcla(1, s1, t)})`;
+                cer.style.opacity = 1 - tramo(p, 0.79, 0.82);
+                el.style.setProperty('--fv', tramo(p, 0.79, 0.82).toFixed(3));
+                el.querySelector('.constr').style.opacity = 1 - k;
+            }
+        };
+        let pendiente = false;
+        addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } }, { passive: true });
+        addEventListener('resize', pintar);
+
+        /* --- 3. LOS PASOS SON CLICABLES: LLEVAN A SU TRAMO DE LA ESCENA --- */
+        Object.values(escenas).forEach(el => el.querySelectorAll('.indice li, .riel span, .pasos div').forEach(x => { x.style.cursor = 'pointer'; x.addEventListener('click', () => { const r = el.getBoundingClientRect(), top = r.top + scrollY, alto = el.offsetHeight - innerHeight; scrollTo({ top: top + [0.2, 0.48, 0.9][+x.dataset.i] * alto, behavior: 'smooth' }); }); }));
+
+        /* --- 4. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')].filter(b => b.closest('.selector, .ops'));
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v))); try { localStorage.setItem('cerebro-v3', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(() => requestAnimationFrame(pintar)); };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) scrollTo({ top: 0, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('cerebro-v3'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['a', 'b', 'c'].includes(h) ? h : guardado || 'a');
+        addEventListener('load', pintar);
+    })();
+    /* =======================================================
+       FIN JS · CEREBRO V3
+       ======================================================= */
+</script>
