@@ -22,7 +22,7 @@
             const hitos = [...el.querySelectorAll('.tp-hito')], signos = [...el.querySelectorAll('[data-signo]')];
             const pies = [...el.querySelectorAll('.tp-pie-t')];
             const CAPS = [
-                { tono: '#4A3CAE', per: '2025', nom: 'El origen', txt: 'Una app para pedir comida sin filas en la universidad, con Forky al centro' },
+                { tono: '#4A3CAE', per: '2025', nom: 'El origen', txt: 'Pedir comida sin filas en la universidad, con unos cubiertos que corren' },
                 { tono: '#6B5CE7', per: 'Feb a abr 2026', nom: 'El Rebirth', txt: 'De la comida a los colegios: arquitectura, paleta y el cerebro de Connect' },
                 { tono: '#2D2560', per: 'Abr a sep 2026', nom: 'La web', txt: 'tapin.cl, diseñada y programada para que un director entienda en segundos' }
             ];
@@ -58,7 +58,7 @@
                 /* El recorrido del tiempo ocupa el 70 % de la pista; el resto es la onda de tap */
                 const mes = fijar(p / 0.7) * 21.68;
                 tiempo.style.setProperty('--mes', mes.toFixed(3));
-                const t = fijar((p - 0.74) / 0.26);
+                const t = fijar((p - 0.7) / 0.24);
                 el.style.setProperty('--t', t.toFixed(4));
                 if (t > 0) {
                     const f = fijo.getBoundingClientRect(), c = cred.getBoundingClientRect();
@@ -84,6 +84,8 @@
         /* Decisión 01: el contador de formas sigue al paso en curso */
         forky: el => {
             const n = el.querySelector('[data-fk-n]');
+            /* Cada título se arma palabra por palabra para que suban en cascada */
+            el.querySelectorAll('.tp-rotulo-t span').forEach(t => { t.innerHTML = t.textContent.split(' ').map((w, i) => `<i style="--w:${i}">${w}</i>`).join(' '); });
             return p => { n.textContent = `${String(Math.min(Math.floor(p * 7), 6) + 1).padStart(2, '0')} / 07`; };
         },
         /* Capítulo 01: Forky corre mientras se scrollea y se inclina según la velocidad; quieto, se detiene */
