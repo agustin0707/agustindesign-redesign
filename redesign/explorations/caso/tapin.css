@@ -566,7 +566,7 @@
 .tp-galeria-pista figure { flex: none; height: clamp(260px, 30vw, 460px); overflow: hidden; cursor: zoom-in; border-radius: 18px; background: var(--tp-tint); scroll-snap-align: start; clip-path: inset(0 100% 0 0 round 18px); transition: clip-path 1000ms var(--ease); transition-delay: calc(var(--i) * 80ms); }
 .tp-galeria-pista.visto figure { clip-path: inset(0 0 0 0 round 18px); }
 .tp-galeria-pista img { width: auto; height: 100%; user-select: none; -webkit-user-drag: none; pointer-events: none; transition: scale 900ms var(--ease); }
-/* Caja de luz: la foto en grande con su pie, flechas y Esc. Pastilla que acompaña al cursor sobre la galería */
+/* Caja de luz: la foto en grande con su pie, flechas y Esc */
 .tp-caja { position: fixed; inset: 0; z-index: 90; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 16px; padding: 18px var(--margen) 24px; background: rgba(16, 13, 32, 0.96); color: #F4F3FB; opacity: 0; visibility: hidden; transition: opacity 250ms linear, visibility 0s 250ms; }
 .tp-caja.on { opacity: 1; visibility: visible; transition: opacity 250ms linear; }
 .tp-caja-cab, .tp-caja-pie { display: flex; justify-content: space-between; align-items: center; gap: 16px; color: rgba(238, 237, 254, 0.72); }
@@ -575,8 +575,6 @@
 .tp-caja button { padding: 8px 14px; border: 1px solid rgba(238, 237, 254, 0.2); border-radius: 999px; background: none; color: inherit; cursor: pointer; transition: background 200ms linear, color 200ms linear; }
 .tp-caja button:focus-visible { outline: 2px solid var(--tp-health); outline-offset: 2px; }
 @media (hover: hover) { .tp-caja button:hover { background: #F4F3FB; color: var(--tp-tinta); } }
-.tp-cursor { position: fixed; left: 0; top: 0; z-index: 80; padding: 8px 12px; border-radius: 999px; background: var(--tp-tinta); color: #FFFFFF; pointer-events: none; white-space: nowrap; opacity: 0; scale: 0.8; transition: opacity 200ms linear, scale 300ms var(--tp-curva); }
-.tp-cursor.on { opacity: 1; scale: 1; }
 
 /* =======================================================
    CAPÍTULO 02 · EL REBIRTH Y LA PALETA
@@ -822,7 +820,6 @@
     .tp-pliego-sobre h3 { font-size: 15vw; }
     .tp-pliego-sobre p { grid-row: auto; }
     .tp-pliego-arriba .mono { display: none; }
-    .tp-cursor { display: none; }
     .tp-pliego-galeria { row-gap: 16px; }
     .tp-pliego-galeria > * { grid-column: 1 / -1 !important; }
     .tp-galeria-riel { flex-direction: row; align-items: center; gap: 14px; }

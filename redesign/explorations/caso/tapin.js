@@ -397,8 +397,8 @@
 
     /* --- 11. GALERÍAS DE LAS ACTIVACIONES --- */
     /* Riel con snap: flechas, contador, un segmento por foto y el pie de la foto en pantalla. Con el mouse se
-       arrastra (una pastilla acompaña al cursor) y un clic abre la caja de luz; con el teclado, las flechas */
-    const caja = document.querySelector('[data-caja]'), cajaImg = caja.querySelector('[data-caja-img]'), cursor = document.querySelector('.tp-cursor');
+       arrastra y un clic abre la caja de luz; con el teclado, las flechas */
+    const caja = document.querySelector('[data-caja]'), cajaImg = caja.querySelector('[data-caja-img]');
     let fotosCaja = [], marcaCaja = '', enCaja = 0, focoAntes = null, scrollCaja = 0;
     const verEnCaja = i => {
         enCaja = (i + fotosCaja.length) % fotosCaja.length;
@@ -446,10 +446,7 @@
         pista.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; marcar(); }); } }, { passive: true });
         let x0 = null, s0 = 0, movido = 0;
         pista.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; x0 = e.clientX; s0 = pista.scrollLeft; movido = 0; pista.classList.add('arrastrando'); pista.setPointerCapture(e.pointerId); });
-        pista.addEventListener('pointermove', e => {
-            if (e.pointerType === 'mouse') cursor.style.translate = `${e.clientX + 16}px ${e.clientY + 16}px`;
-            if (x0 !== null) { movido = Math.max(movido, Math.abs(e.clientX - x0)); pista.scrollLeft = s0 - (e.clientX - x0); }
-        });
+        pista.addEventListener('pointermove', e => { if (x0 !== null) { movido = Math.max(movido, Math.abs(e.clientX - x0)); pista.scrollLeft = s0 - (e.clientX - x0); } });
         const soltar = e => {
             if (x0 === null) return; x0 = null;
             /* Sin arrastre es un clic: abre la foto que estaba bajo el cursor */
@@ -459,7 +456,6 @@
         pista.addEventListener('pointerup', soltar);
         pista.addEventListener('pointercancel', () => { x0 = null; pista.classList.remove('arrastrando'); });
         pista.addEventListener('click', e => { if (e.pointerType === 'mouse') return; const f = e.target.closest('figure'); if (f) abrirCaja(figs, car.dataset.marca, figs.indexOf(f)); });
-        if (window.matchMedia('(hover: hover)').matches) { pista.addEventListener('mouseenter', () => cursor.classList.add('on')); pista.addEventListener('mouseleave', () => cursor.classList.remove('on')); }
         window.addEventListener('resize', marcar);
         marcar();
     });
