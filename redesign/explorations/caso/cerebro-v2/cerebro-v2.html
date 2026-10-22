@@ -1,0 +1,346 @@
+<title>Cerebro Tap In</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Audit y mejoras de la decisión 05 (el cerebro de Connect) del caso Tap In. Tres direcciones como escenas que
+       avanzan con el scroll, sobre la grilla del caso (riel 1 a 3, texto 4 a 6, pieza 8 a 12), y un catálogo de
+       mejoras sueltas para elegir */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B; --noche: #100D20;
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1); --curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    .vista { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc { display: block; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .wm { --svg: url('tp-wordmark.svg'); aspect-ratio: 389.87 / 150.6; }
+    .cer-m { --svg: url('tp-cerebro.svg'); aspect-ratio: 622.7 / 597.42; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 32px; color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+
+    /* --- ESCENA DE CONNECT --- */
+    .escena { --p: 0; position: relative; height: 340svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; align-content: center; align-items: center; color: #FFFFFF; }
+    .fondo { position: absolute; inset: 0; background: radial-gradient(70% 70% at 70% 45%, #8174F0 0%, var(--connect) 45%, #5546D6 100%); }
+    .fondo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px); background-size: 28px 28px; mask-image: radial-gradient(60% 60% at 70% 50%, #000, transparent); opacity: 0.6; }
+    .dec { position: relative; grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; row-gap: 16px; align-items: start; }
+    .dec .num { grid-column: 1 / span 3; grid-row: 1; font: 600 clamp(64px, 6.6vw, 112px) / 0.78 var(--f-marca); letter-spacing: -0.06em; color: rgba(255, 255, 255, 0.42); }
+    .dec .eti { grid-column: 1 / span 3; grid-row: 2; display: inline-flex; align-items: center; gap: 8px; color: rgba(255, 255, 255, 0.8); }
+    .dec .eti::before, .dec .porque span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #FFFFFF; }
+    .dec h3 { grid-column: 4 / span 3; grid-row: 1; margin: 0; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; }
+    .dec p { grid-column: 4 / span 3; grid-row: 2; margin: 0; color: rgba(255, 255, 255, 0.82); font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); }
+    .dec .porque { grid-row: 3; display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.24); color: #FFFFFF; }
+    .dec .porque span { display: inline-flex; align-items: center; gap: 8px; font: 400 12px var(--f-mono); color: rgba(255, 255, 255, 0.8); }
+    .pieza { position: relative; grid-column: 8 / -1; height: min(72svh, 680px); display: flex; flex-direction: column; }
+    .rotulo { display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.24); }
+    .rotulo b { font: 400 12px var(--f-mono); color: rgba(255, 255, 255, 0.72); }
+    .rotulo .t { flex: 1; display: grid; font: 500 14px var(--f-texto); }
+    .rotulo .t span { grid-area: 1 / 1; opacity: 0; translate: 0 8px; transition: opacity 300ms, translate 400ms var(--ease); }
+    .rotulo .t span.on { opacity: 1; translate: 0 0; }
+    .rotulo .segs { display: flex; gap: 4px; } .rotulo .segs i { width: 18px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.3); transition: background 300ms; } .rotulo .segs i.on { background: #FFFFFF; }
+    .lienzo { position: relative; flex: 1; display: grid; place-items: center; }
+    .cer { width: min(30vw, 46svh); overflow: visible; }
+    .cer path { fill: #FFFFFF; transform-box: fill-box; transform-origin: center; }
+
+    /* =======================================================
+       A · DEL LOCKUP AL CEREBRO
+       ======================================================= */
+    /* La placa de Connect de la decisión 04 se abre hasta ser el fondo y su isotipo crece hasta ser el cerebro.
+       Tres pasos con el rótulo de las demás decisiones; el último muestra el isotipo en uso, no en fichas */
+    .va .placa { position: absolute; z-index: 1; border-radius: 24px; background: radial-gradient(90% 70% at 85% 0%, color-mix(in srgb, var(--connect) 72%, #FFFFFF) 0%, transparent 70%), var(--connect); pointer-events: none; }
+    .va .usos { display: grid; grid-template-columns: 1.2fr 0.8fr 1fr; gap: 12px; opacity: var(--u, 0); translate: 0 calc((1 - var(--u, 0)) * 20px); }
+    .uso { display: flex; flex-direction: column; gap: 8px; }
+    .uso .mono { color: rgba(255, 255, 255, 0.78); font-size: 11px; }
+    .uso .caja { height: 104px; border-radius: 14px; background: rgba(255, 255, 255, 0.12); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); overflow: hidden; position: relative; }
+    .pest { position: absolute; left: 10px; right: 10px; top: 14px; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px 10px 0 0; background: #FFFFFF; color: var(--tinta); font: 500 12px var(--f-texto); }
+    .pest .ic { width: 16px; height: 16px; border-radius: 4px; background: var(--connect); color: #FFFFFF; display: grid; place-items: center; } .pest .ic .marca { width: 12px; }
+    .pest small { margin-left: auto; color: var(--gris); }
+    .pest + .barra-u { position: absolute; left: 10px; right: 10px; top: 46px; bottom: 0; background: #F1F0F8; }
+    .app { position: absolute; inset: 0; display: grid; place-items: center; }
+    .app .ic { width: 60px; height: 60px; border-radius: 15px; background: linear-gradient(160deg, #8174F0, var(--connect)); display: grid; place-items: center; color: #FFFFFF; box-shadow: 0 10px 20px -8px rgba(16, 13, 32, 0.5); } .app .ic .marca { width: 36px; }
+    .app small { position: absolute; bottom: 8px; font: 500 10px var(--f-texto); }
+    .nav { position: absolute; left: 10px; right: 10px; top: 50%; translate: 0 -50%; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: #FFFFFF; color: var(--tinta); }
+    .nav .marca.cer-m { width: 32px; color: var(--connect); } .nav b { font: 600 13px var(--f-marca); } .nav i { margin-left: auto; width: 40px; height: 6px; border-radius: 3px; background: #E4E2F0; }
+
+    /* =======================================================
+       B · LAS PIEZAS SON LOS MÓDULOS
+       ======================================================= */
+    /* Al separarse, cada pieza se nombra: un módulo de Connect, con una línea guía hasta su rótulo. Con el mouse,
+       la pieza se enciende y las demás se apagan */
+    .vb .rot-m { position: absolute; display: flex; flex-direction: column; gap: 4px; max-width: 180px; opacity: var(--m, 0); transition: opacity 300ms; }
+    .vb .rot-m b { font: 600 15px / 1.15 var(--f-marca); letter-spacing: -0.02em; }
+    .vb .rot-m span { color: rgba(255, 255, 255, 0.78); font: 400 12px / 1.35 var(--f-marca); }
+    .vb .rot-m .mono { color: rgba(255, 255, 255, 0.6); font-size: 11px; }
+    .vb .guias { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .vb .guias line { stroke: rgba(255, 255, 255, 0.55); stroke-width: 1; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--m, 0)); }
+    .vb .guias circle { fill: #FFFFFF; opacity: var(--m, 0); }
+    .vb .cer path { cursor: pointer; transition: opacity 300ms; }
+    .vb .lienzo.foco path:not(.on) { opacity: 0.32; }
+    .vb .lienzo.foco .rot-m:not(.on) { opacity: calc(var(--m, 0) * 0.35); }
+    .vb .aviso { margin-top: 10px; color: rgba(255, 255, 255, 0.7); font: 400 11px var(--f-mono); }
+
+    /* =======================================================
+       C · CONSTRUCCIÓN Y LEGIBILIDAD
+       ======================================================= */
+    /* Lámina técnica: la grilla de construcción y el contorno del cerebro se dibujan, se rellena, y después una regla
+       de tamaños de 128 a 16 px marca el mínimo */
+    .vc .constr { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .vc .constr * { fill: none; stroke: rgba(255, 255, 255, 0.35); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--g, 0)); }
+    .vc .cer path { fill: rgba(255, 255, 255, var(--f, 0)); stroke: #FFFFFF; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-dasharray: var(--len); stroke-dashoffset: calc(var(--len) * (1 - var(--d, 0))); }
+    .vc .regla { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; padding-top: 18px; opacity: var(--r, 0); translate: 0 calc((1 - var(--r, 0)) * 20px); }
+    .vc .t-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .vc .t-col .marca { color: #FFFFFF; }
+    .vc .t-col .mono { font-size: 11px; color: rgba(255, 255, 255, 0.78); text-align: center; line-height: 1.35; }
+    .vc .t-col.no .marca { opacity: 0.45; } .vc .t-col.no .mono { color: rgba(255, 255, 255, 0.5); }
+    .vc .umbral { position: relative; height: 2px; margin-top: 14px; background: rgba(255, 255, 255, 0.25); opacity: var(--r, 0); }
+    .vc .umbral i { position: absolute; left: 0; width: 61%; height: 100%; background: #FFFFFF; }
+    .vc .umbral span { position: absolute; left: 61%; top: 8px; translate: -50% 0; font: 400 11px var(--f-mono); white-space: nowrap; }
+
+    /* --- SELECTOR, AUDIT Y CATÁLOGO --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 40ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 110px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; }
+    .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+    .catalogo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .mejora { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 16px; border-radius: 14px; border: 1px solid rgba(155, 142, 240, 0.22); }
+    .mejora b { font: 400 12px var(--f-mono); color: var(--health); padding-top: 2px; }
+    .mejora strong { display: block; font: 600 15px / 1.25 var(--f-marca); margin-bottom: 4px; }
+    .mejora p { margin: 0; color: rgba(238, 237, 254, 0.7); font-size: 13px; line-height: 1.45; }
+    .mejora .en { display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 999px; background: rgba(155, 142, 240, 0.16); color: var(--soft); font: 400 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); }
+        .grilla > *, .dec > * { grid-column: 1 !important; grid-row: auto !important; }
+        .fijo { align-content: start; padding-top: 9svh; row-gap: 22px; }
+        .dec { display: flex; flex-direction: column; gap: 8px; } .dec .num, .dec p:not(.porque) { display: none; }
+        .pieza { height: 58svh; } .cer { width: 52vw; }
+        .va .usos { grid-template-columns: 1fr 1fr; } .va .uso:nth-child(3) { display: none; }
+        .vb .rot-m { max-width: 120px; } .vb .rot-m span { display: none; }
+        .vc .t-col:nth-child(1) { display: none; }
+        .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .ops, .catalogo { grid-template-columns: minmax(0, 1fr); }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Decisión 05</span><p>Tres direcciones para el cerebro de Connect; baja para ver cada una. Abajo, el audit y un catálogo de mejoras sueltas para elegir.</p></div>
+</div>
+
+<template id="base">
+    <div class="escena"><div class="grilla fijo"><div class="fondo"></div>
+        <div class="dec"><span class="num">05</span><span class="eti mono">Decisión 05</span><h3>Un cerebro hecho de piezas</h3><p>La silueta habla de inteligencia; el interior, de conexión. Connect une los servicios del colegio</p><p class="porque"><span>Aprobado</span>El 24 de marzo de 2026, con la paleta</p></div>
+        <div class="pieza"><div class="rotulo"><b class="mono" data-n>01 / 03</b><span class="t" data-t></span><span class="segs"><i></i><i></i><i></i></span></div><div class="lienzo"></div></div>
+    </div></div>
+</template>
+
+<nav class="selector" aria-label="Direcciones">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>Del lockup al cerebro</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Piezas y módulos</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Construcción</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de la decisión 05</h2>
+    <div class="bloque">
+        <p>La pieza tiene una buena idea (un cerebro que es cuatro piezas), pero la cuenta como un tutorial y llega con un corte.</p>
+        <ul class="lista">
+            <li><span class="mono">Grilla</span><span>Texto de la 1 a la 4 y pieza de la 6 a la 12, sin el riel de las demás decisiones</span><span>Número y rótulo en el riel, texto de 4 a 6 y pieza de 8 a 12</span></li>
+            <li><span class="mono">Paso</span><span>Del claro de la decisión 04 al morado de Connect hay un corte seco</span><span>La placa de Connect (que ya existe en la 04) se abre hasta ser el fondo y su isotipo crece hasta el cerebro</span></li>
+            <li><span class="mono">Ritmo</span><span>El lema cambia en el centro, chico y sin contador, distinto de los pasos de las decisiones 01 y 02</span><span>El mismo rótulo de pasos (01 / 03, nombre y segmentos) sobre la pieza</span></li>
+            <li><span class="mono">Gráfica</span><span>Los números en círculos oscuros sobre las piezas se leen como instrucciones de armado</span><span>Nombrar las piezas con líneas guía, o no numerarlas y dejar que la separación hable</span></li>
+            <li><span class="mono">Gráfica</span><span>La grilla de cuadros del fondo es genérica y compite con el isotipo</span><span>Un fondo con luz y una trama de puntos que se apaga hacia los bordes, o la grilla de construcción real del isotipo</span></li>
+            <li><span class="mono">Animación</span><span>Las piezas se separan en línea recta y vuelven igual, sin peso</span><span>Separación con un leve giro y vuelta con rebote, como piezas que encajan</span></li>
+            <li><span class="mono">Contenido</span><span>"Cuatro piezas" no dice qué son las piezas</span><span>Si representan los cuatro módulos (comedor, centro de padres, gestión, talleres), nombrarlos. Por confirmar</span></li>
+            <li><span class="mono">Prueba</span><span>La prueba de escala son tres fichas blancas chicas; "riesgo" en naranja sale de la paleta</span><span>El isotipo en uso (pestaña del navegador, ícono de la app, barra del sitio) o una regla de 128 a 16 px con el mínimo marcado</span></li>
+            <li><span class="mono">Interacción</span><span>No hay nada que tocar: se mira y pasa</span><span>Con el mouse sobre una pieza, se enciende y dice qué es</span></li>
+            <li><span class="mono">Contenido</span><span>"Aprobado el 24 de marzo" es un dato del proceso, no un porqué</span><span>Un "Por qué" real: qué problema resolvía el cerebro frente a Forky. Por confirmar contigo</span></li>
+            <li><span class="mono">Móvil</span><span>Las tres fichas de escala quedan apretadas y el texto en 12 px</span><span>Dos usos o la regla corta, con textos de 11 a 13 px</span></li>
+        </ul>
+    </div>
+    <h2>Direcciones</h2>
+    <div class="bloque">
+        <p>Tres direcciones que juntan varias mejoras. Elige con el selector.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · Del lockup al cerebro</span><strong>Continuidad y uso real</strong><p>La placa de Connect de la 04 se abre hasta ser el fondo y su isotipo crece hasta el cerebro. Tres pasos con el rótulo de las decisiones; las piezas se separan con un leve giro; al final, el isotipo en una pestaña, en el ícono de la app y en la barra del sitio.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Piezas y módulos</span><strong>Cada pieza, un servicio</strong><p>Al separarse, cada pieza se nombra con una línea guía: comedor escolar, centro de padres, gestión interna, talleres y ligas. Con el mouse, la pieza se enciende y las demás se apagan. Depende de confirmar que esa es la lectura.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Construcción</span><strong>La lámina técnica</strong><p>La grilla de construcción y el contorno del cerebro se dibujan, se rellena, y una regla de tamaños de 128 a 16 px marca el mínimo de 32 px. Sobria y de manual.</p></button>
+        </div>
+    </div>
+    <h2>Catálogo de mejoras</h2>
+    <div class="bloque">
+        <p>Mejoras sueltas. Puedes armar tu propia combinación: dime los números que quieres.</p>
+        <div class="catalogo" data-catalogo></div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · CEREBRO V2
+       ======================================================= */
+    (function () {
+        const D = ["M298.51,175.57h29.55c8.05,0,21.61-16.17,36.18-17.63,63.98-6.42,64.01,90.39.89,84.66-17.96-1.63-26.72-18.51-43.24-18.51h-23.38v117.32h-83.8c2.16-4.75,6.04-8.45,8.65-12.96,28.9-50.03-16.35-110.51-72.34-97.04-40.98,9.86-62.25,55.94-43.2,93.84l10.74,16.16H36.96c-11.37,0-25.97-11.14-30.91-21.14-17.98-36.39,6.09-83.55,46.35-89.13-9.79-44.36,16.54-92.96,59.98-106.74-2.47-6.61-5.67-13.01-6.84-20.06-6-36.1,23.41-69.99,60.21-67.33,23.46,1.69,40.36,18.75,38.35,42.83-.72,8.61-12.22,25.77,2.28,25.98,8.72.13,15.15-2.21,25.48.98,7.01,2.17,17.02,13.08,23.03,7.06,10.2-10.23-11.61-20.14-19.23-22.33-5.62-1.61-11.6-2.48-17.43-2.42,6.36-23.23-4.22-48.82-25.48-60.08-1.33-2.27,7.23-10.51,9.19-12.22,23.75-20.78,70.72-25.42,89.35,4.1,3.07,4.87,7.21,16.3,7.21,21.9v132.76ZM147.47,156.4c-21.6,2.43-42.89,17.83-53.44,36.54-3.7,6.56-16.44,34.24-.71,33.75,8.44-.26,8.94-12.86,11.59-19.34,10.32-25.22,34.84-37.88,61.61-35.21,5.91.59,15.09,5.54,19.73,3.63,6.06-2.49,6.44-9.99,1.04-13.82-8.42-5.97-29.74-6.69-39.83-5.55Z", "M324.97,36.63c4.61-34.06,46.39-42.08,74.06-32.6,17.91,6.14,30.7,20.13,39.43,36.49,52.29-18.72,98.25,35.06,71.75,83.88,37.92,11.93,64.02,51.23,61.75,90.87,0,0-13.05-.63-23.18,2.85-17.1,5.87-31.65,24.7-32.4,43.02-21.89-9.86-48.75-8.58-67.84,6.69-5.57,4.46-16.52,13.68-8.22,20.67,7.36,6.19,13.76-5.15,19.67-9.21,16.76-11.51,36.67-11.26,54.03-1.23,5.14,2.97,7.22,8.13,14.77,5.63,7.26-2.41,2.6-12.9,2.59-17.69-.03-27.01,27.3-40.95,51.14-31.74,32.88,12.7,49.92,53.31,34.31,85.44-5.08,10.45-19.27,21.72-31.21,21.72h-140.7v26.02c0,15.99,20.69,24.2,18.51,50.27-4.92,58.67-99.47,45.22-83.53-15.61,2.85-10.89,16.5-24.12,16.5-32.01v-28.67h-71.45v-92.62c3.93,1.68,6.96,5.16,10.66,7.43,63.44,38.94,132.69-41.98,85.06-98.3-24.75-29.26-67.08-30.59-95.72-6.16V36.63ZM434.93,128.5c4.39-4.46,2.95-17.79,1.83-23.71-3.44-18.18-18.37-35.56-35.7-41.93-8.44-3.1-35.16-9.24-29.82,7.78,1.87,5.98,8.72,3.78,13.17,4.47,20.2,3.13,36.1,17.09,37.58,38.28.34,4.79-1.84,9.67.53,13.6,2.53,4.2,8.96,5.02,12.41,1.52Z", "M190.89,366.99h94.39c5.65,8.51,7.7,15.09,4.46,25.19-6.29,19.61-26.8,24.81-45.46,23.32-6.64-.53-21.09-6.93-22.49,4.06-.52,4.09,5.53,14.9,6.15,21.1,2.14,21.26-6.79,37.72-24.42,48.78-5.59,3.51-12.58,3.22-10.82,12.91,2.14,11.76,20.78-.15,25.83-4.07,20.34-15.81,29.84-41.63,23.53-66.89,0,0,10.7.22,18.08,0,23.72-.7,37.91-19.62,38.37-19.4l.04,112.5c-1.84,54.12-51.4,84.86-102.17,68.58-27.91-8.95-54.36-38.39-54.9-68.65-.1-5.34,2.84-11.11-.85-15.86-4.41-5.69-12.67-3.16-14.07,3.6-2.72,13.17.86,26.6,4.35,39.19-38.16,2.3-70.17-32.47-62.54-70.47,25.75,4.73,56.91-6.11,65.88-32.49,2.89-8.5,5.99-33.47-8.88-30.05-8.82,2.03-4.16,11.36-4.36,16.73-.45,12.19-11.03,24.16-22.25,28.1-42.69,15-81.28-34.65-73.29-75.06,1.92-9.72,12.63-21.13,22.98-21.13h93.95v-26.02c0-9.6-8.24-16.45-12.5-23.67-21.36-36.23,16.19-77.74,54.56-60.73,22.14,9.81,31.1,37.6,19.85,58.98-3.66,6.96-13.39,14.97-13.39,23.66v27.79Z", "M371.72,366.99c-25.11,28.62-21.22,73.87,9.78,96.52,54.69,39.95,125.52-16.93,99.76-78.59l-10.74-17.93h103.65c8.63,0,18.9,9.14,21.78,17.04,8.39,23.07-4.23,52.96-22.21,68.1-7.29,6.14-15.31,9.28-23.78,13.33,9.34,22.52,6.79,47.73-9.73,66.07-15.12,16.79-41.71,25.17-63.25,16.45-19.26-7.8-22.44-34.17-5.87-46.75,5.41-4.11,14.25-5.02,11.36-14.32-4.09-13.12-23.55,3.1-28.19,8.94-14.77,18.6-12.92,44.42,5.24,59.88,1.6,1.36,8.62,5.23,8.31,6.57-.39,1.67-13.16,14.48-15.42,16.36-31.25,26.11-83.71,25.41-110.65-6.62-6.45-7.67-16.79-27.12-16.79-37.02v-168.04h46.75Z"];
+        const raiz = document.getElementById('raiz'), base = document.getElementById('base').content;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b), tramo = (p, a, b) => fijar((p - a) / (b - a));
+        const suave = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, mezcla = (a, b, t) => a + (b - a) * t;
+        const svg = () => `<svg class="cer" viewBox="0 0 622.7 597.42" aria-hidden="true">${D.map((d, i) => `<path d="${d}" data-k="${i}"/>`).join('')}</svg>`;
+        const PASOS = {
+            a: ['Un cerebro', 'Cuatro piezas', 'En uso, de 60 a 16 px'],
+            b: ['Un cerebro', 'Cuatro piezas', 'Cuatro módulos'],
+            c: ['Construcción', 'Relleno', 'Legibilidad']
+        };
+        const MOD = [['Comedor escolar', 'Pagos y consumos del casino'], ['Centro de padres', 'Cuotas y rendiciones'], ['Gestión interna', 'Solicitudes y mantención'], ['Talleres y ligas', 'Inscripciones y horarios']];
+        const escenas = {};
+        ['a', 'b', 'c'].forEach(v => {
+            const s = document.createElement('section'); s.className = 'vista v' + v; s.appendChild(base.cloneNode(true));
+            s.querySelector('[data-t]').innerHTML = PASOS[v].map((t, i) => `<span class="${i === 0 ? 'on' : ''}">${t}</span>`).join('');
+            const lienzo = s.querySelector('.lienzo'); lienzo.innerHTML = svg();
+            if (v === 'a') {
+                s.querySelector('.pieza').insertAdjacentHTML('beforeend', `<div class="usos">
+                    <div class="uso"><div class="caja"><div class="pest"><span class="ic"><span class="marca cer-m"></span></span>Connect · Comedor<small>×</small></div><div class="barra-u"></div></div><span class="mono">Pestaña · 16 px</span></div>
+                    <div class="uso"><div class="caja"><div class="app"><span class="ic"><span class="marca cer-m"></span></span><small>Connect</small></div></div><span class="mono">Ícono de la app · 60 px</span></div>
+                    <div class="uso"><div class="caja"><div class="nav"><span class="marca cer-m"></span><b>Connect</b><i></i></div></div><span class="mono">Barra del sitio · 32 px</span></div></div>`);
+                s.querySelector('.fijo').insertAdjacentHTML('afterbegin', '<div class="placa"></div>');
+            }
+            if (v === 'b') {
+                lienzo.insertAdjacentHTML('beforeend', `<svg class="guias">${MOD.map((_, i) => `<line pathLength="1" data-l="${i}"/><circle r="3" data-c="${i}"/>`).join('')}</svg>` + MOD.map((m, i) => `<div class="rot-m" data-m="${i}"><span class="mono">Módulo 0${i + 1}</span><b>${m[0]}</b><span>${m[1]}</span></div>`).join(''));
+                s.querySelector('.pieza').insertAdjacentHTML('beforeend', '<p class="aviso">Lectura por confirmar: ¿las cuatro piezas son los cuatro módulos?</p>');
+            }
+            if (v === 'c') {
+                lienzo.insertAdjacentHTML('afterbegin', `<svg class="constr" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"><circle cx="50" cy="50" r="34" pathLength="1"/><circle cx="50" cy="50" r="22" pathLength="1"/><line x1="0" y1="50" x2="100" y2="50" pathLength="1"/><line x1="50" y1="0" x2="50" y2="100" pathLength="1"/><line x1="12" y1="12" x2="88" y2="88" pathLength="1"/><line x1="88" y1="12" x2="12" y2="88" pathLength="1"/></svg>`);
+                s.querySelector('.pieza').insertAdjacentHTML('beforeend', `<div class="regla">${[[128, 'Ideal'], [64, 'Pasa'], [32, 'Mínimo'], [24, 'Riesgo'], [16, 'No']].map(([px, t], i) => `<div class="t-col${px < 32 ? ' no' : ''}"><span class="marca cer-m" style="width:${Math.min(px, 96)}px"></span><span class="mono">${px} px<br>${t}</span></div>`).join('')}</div><div class="umbral"><i></i><span>Mínimo · 32 px</span></div>`);
+            }
+            raiz.appendChild(s); escenas[v] = s.querySelector('.escena');
+        });
+
+        /* --- 1. VECTORES DE SEPARACIÓN DE CADA PIEZA (DESDE EL CENTRO DEL ISOTIPO) --- */
+        const vectores = {};
+        Object.entries(escenas).forEach(([v, el]) => {
+            const paths = [...el.querySelectorAll('.cer path')];
+
+            if (v === 'b') paths.forEach((p, i) => {
+                p.addEventListener('mouseenter', () => { el.querySelector('.lienzo').classList.add('foco'); p.classList.add('on'); el.querySelector(`[data-m="${i}"]`).classList.add('on'); });
+                p.addEventListener('mouseleave', () => { el.querySelector('.lienzo').classList.remove('foco'); p.classList.remove('on'); el.querySelector(`[data-m="${i}"]`).classList.remove('on'); });
+            });
+        });
+        const separar = (el, v, s, escala) => { const ps = el.querySelectorAll('.cer path'); (vectores[v] || []).forEach((q, i) => { const d = 46 * s; ps[i].style.transform = `translate(${(q.x * d).toFixed(1)}px, ${(q.y * d).toFixed(1)}px) rotate(${(q.giro * s).toFixed(2)}deg)`; }); };
+        const pasos = (el, v, k) => { el.querySelector('[data-n]').textContent = `0${k + 1} / 03`; el.querySelectorAll('[data-t] span').forEach((x, i) => x.classList.toggle('on', i === k)); el.querySelectorAll('.segs i').forEach((x, i) => x.classList.toggle('on', i <= k)); };
+
+        /* --- 2. COREOGRAFÍA --- */
+        const coreo = {
+            a: (el, p) => {
+                /* La placa de Connect (en su lugar de la decisión 04) se abre hasta cubrir la pantalla */
+                const fijo = el.querySelector('.fijo'), W = fijo.clientWidth, H = fijo.clientHeight, pieza = el.querySelector('.pieza').getBoundingClientRect(), f = fijo.getBoundingClientRect();
+                const r0 = { l: pieza.left - f.left, t: pieza.top - f.top + pieza.height * 0.3, w: pieza.width, h: H * 0.36 }, k = suave(tramo(p, 0.02, 0.2));
+                const placa = el.querySelector('.placa');
+                Object.assign(placa.style, { left: mezcla(r0.l, 0, k) + 'px', top: mezcla(r0.t, 0, k) + 'px', width: mezcla(r0.w, W, k) + 'px', height: mezcla(r0.h, H, k) + 'px', borderRadius: mezcla(24, 0, k) + 'px', opacity: 1 - tramo(p, 0.2, 0.24) });
+                el.querySelector('.fondo').style.opacity = p > 0.19 ? 1 : 0;
+                el.querySelector('.fijo').style.background = p < 0.02 ? 'var(--papel)' : '';
+                const dec = el.querySelector('.dec'), piezaEl = el.querySelector('.pieza');
+                dec.style.opacity = tramo(p, 0.2, 0.3); piezaEl.querySelector('.rotulo').style.opacity = tramo(p, 0.22, 0.3);
+                const cer = el.querySelector('.cer'), cr = suave(tramo(p, 0.08, 0.28));
+                cer.style.transform = `scale(${mezcla(0.22, 1, cr) * mezcla(1, 0.62, suave(tramo(p, 0.66, 0.78)))}) translateY(${mezcla(0, -18, suave(tramo(p, 0.66, 0.78)))}%)`;
+                cer.style.opacity = tramo(p, 0.04, 0.1);
+                separar(el, 'a', suave(tramo(p, 0.38, 0.5)) * (1 - suave(tramo(p, 0.58, 0.66))));
+                pasos(el, 'a', p < 0.36 ? 0 : p < 0.64 ? 1 : 2);
+                el.style.setProperty('--u', tramo(p, 0.7, 0.82).toFixed(3));
+            },
+            b: (el, p) => {
+                const s = suave(tramo(p, 0.3, 0.46)); separar(el, 'b', s);
+                pasos(el, 'b', p < 0.28 ? 0 : p < 0.56 ? 1 : 2);
+                el.style.setProperty('--m', tramo(p, 0.58, 0.72).toFixed(3));
+                /* Rótulos en las esquinas del lienzo y líneas desde cada pieza */
+                const lienzo = el.querySelector('.lienzo'), L = lienzo.getBoundingClientRect(), cer = el.querySelector('.cer'), C = cer.getBoundingClientRect(), esc = C.width / 622.7;
+                const esquinas = [[0, 0.06], [1, 0.06], [0, 0.94], [1, 0.94]];
+                (vectores.b || []).forEach((q, i) => {
+                    const rot = el.querySelector(`[data-m="${i}"]`), [ex, ey] = esquinas[i];
+                    rot.style.left = ex ? '' : '0px'; rot.style.right = ex ? '0px' : ''; rot.style.top = ey < 0.5 ? (L.height * ey) + 'px' : ''; rot.style.bottom = ey > 0.5 ? (L.height * (1 - ey)) + 'px' : '';
+                    rot.style.textAlign = ex ? 'right' : 'left'; rot.style.alignItems = ex ? 'flex-end' : 'flex-start';
+                    const d = 46 * s, px = C.left - L.left + (q.cx * esc) + q.x * d, py = C.top - L.top + (q.cy * esc) + q.y * d;
+                    const R = rot.getBoundingClientRect(), tx = ex ? R.left - L.left - 10 : R.right - L.left + 10, ty = (ey < 0.5 ? R.top : R.bottom) - L.top + (ey < 0.5 ? 26 : -20);
+                    const ln = el.querySelector(`[data-l="${i}"]`), ci = el.querySelector(`[data-c="${i}"]`);
+                    ln.setAttribute('x1', px); ln.setAttribute('y1', py); ln.setAttribute('x2', tx); ln.setAttribute('y2', ty); ci.setAttribute('cx', px); ci.setAttribute('cy', py);
+                });
+            },
+            c: (el, p) => {
+                el.style.setProperty('--g', suave(tramo(p, 0.04, 0.26)).toFixed(3));
+                el.style.setProperty('--d', suave(tramo(p, 0.1, 0.36)).toFixed(3));
+                el.style.setProperty('--f', tramo(p, 0.4, 0.52).toFixed(3));
+                pasos(el, 'c', p < 0.38 ? 0 : p < 0.6 ? 1 : 2);
+                const cer = el.querySelector('.cer'), k = suave(tramo(p, 0.62, 0.74));
+                cer.style.transform = `scale(${mezcla(1, 0.64, k)}) translateY(${mezcla(0, -22, k)}%)`;
+                el.querySelector('.constr').style.opacity = 1 - k;
+                el.style.setProperty('--r', tramo(p, 0.7, 0.82).toFixed(3));
+            }
+        };
+        /* Las medidas se toman cuando la vista está visible (getBBox no mide lo que está oculto) */
+        const medir = v => {
+            const paths = [...escenas[v].querySelectorAll('.cer path')];
+            const b0 = paths[0].getBBox(); if (!b0.width) return;
+            vectores[v] = paths.map((p, i) => { const b = p.getBBox(), dx = b.x + b.width / 2 - 311, dy = b.y + b.height / 2 - 299, l = Math.hypot(dx, dy) || 1; return { x: dx / l, y: dy / l, giro: [-6, 5, -4, 7][i], cx: b.x + b.width / 2, cy: b.y + b.height / 2 }; });
+            if (v === 'c') paths.forEach(p => p.style.setProperty('--len', p.getTotalLength().toFixed(0)));
+        };
+        const pintar = () => {
+            const v = raiz.dataset.v, el = escenas[v], r = el.getBoundingClientRect(), p = fijar(-r.top / (r.height - innerHeight));
+            if (!vectores[v]) medir(v);
+            el.style.setProperty('--p', p.toFixed(4)); coreo[v](el, p);
+        };
+        let pendiente = false;
+        addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } }, { passive: true });
+        addEventListener('resize', pintar);
+
+        /* --- 3. CATÁLOGO --- */
+        const CAT = [
+            ['Grilla de las decisiones', 'Número y rótulo en el riel, texto de 4 a 6 y pieza de 8 a 12.', 'A · B · C'],
+            ['Paso desde la placa de Connect', 'La placa de la decisión 04 se abre hasta ser el fondo y su isotipo crece hasta el cerebro.', 'A'],
+            ['Rótulo de pasos', 'El mismo detalle de las decisiones 01 y 02: 01 / 03, nombre y segmentos.', 'A · B · C'],
+            ['Separación con giro y rebote', 'Las piezas se separan con un leve giro y vuelven con rebote, como si encajaran.', 'A'],
+            ['Piezas con nombre', 'Cada pieza se nombra con una línea guía (módulos de Connect, por confirmar).', 'B'],
+            ['Hover por pieza', 'Con el mouse, la pieza se enciende, las demás se apagan y aparece qué es.', 'B'],
+            ['Sin números de armado', 'Quitar los círculos numerados: la separación ya dice "piezas".', 'A · C'],
+            ['Fondo con luz y trama', 'Una luz que sigue al isotipo y una trama de puntos que se apaga hacia los bordes, en vez de la grilla de cuadros.', 'A · B'],
+            ['Grilla de construcción', 'Los círculos y ejes de construcción del isotipo se dibujan detrás.', 'C'],
+            ['Contorno que se dibuja', 'El cerebro aparece trazado y después se rellena.', 'C'],
+            ['Isotipo en uso', 'Pestaña del navegador, ícono de la app y barra del sitio, cada uno a su tamaño real.', 'A'],
+            ['Regla de legibilidad', 'De 128 a 16 px con el mínimo de 32 px marcado, sin colores fuera de la paleta.', 'C'],
+            ['Un "Por qué" real', 'Reemplazar "Aprobado el 24 de marzo" por la razón del cerebro frente a Forky (por confirmar contigo).', 'Texto'],
+            ['Paso al manual', 'El cerebro se encoge y se vuelve el isotipo de la portada del manual que viene después.', 'Siguiente'],
+            ['Móvil más claro', 'Dos usos o la regla corta, textos de 11 a 13 px, la pieza bajo el texto.', 'A · B · C'],
+            ['Movimiento reducido', 'Sin separación ni dibujo: estados finales directos para quien lo pide en su sistema.', 'A · B · C']
+        ];
+        document.querySelector('[data-catalogo]').innerHTML = CAT.map(([t, d, en], i) => `<div class="mejora"><b>${String(i + 1).padStart(2, '0')}</b><div><strong>${t}</strong><p>${d}</p><span class="en">${en}</span></div></div>`).join('');
+
+        /* --- 4. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v))); try { localStorage.setItem('cerebro-v2', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(() => requestAnimationFrame(pintar)); };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) scrollTo({ top: 0, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('cerebro-v2'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['a', 'b', 'c'].includes(h) ? h : guardado || 'a');
+        addEventListener('load', pintar);
+    })();
+    /* =======================================================
+       FIN JS · CEREBRO V2
+       ======================================================= */
+</script>
