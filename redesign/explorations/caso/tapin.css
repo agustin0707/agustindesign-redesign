@@ -173,9 +173,9 @@
 .tp-res { --fondo: #FBFAFF; --t: 0; position: relative; z-index: 2; height: 300svh; background: transparent; }
 .tp-res-fijo { background: var(--fondo); opacity: calc(1 - clamp(0, (var(--p, 0) - 0.95) / 0.05, 1)); }
 .tp-res-fijo { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 1fr auto; column-gap: var(--medianil); padding: clamp(72px, 10svh, 120px) var(--margen) clamp(40px, 6svh, 72px); }
-.tp-res-txt { grid-column: 1 / span 9; align-self: center; display: grid; grid-template-columns: subgrid; row-gap: 32px; align-items: start; }
-.tp-res-txt .tp-etq { grid-column: 1 / span 3; padding-top: 0.9em; }
-.tp-res-txt .tp-enunciado, .tp-res-txt .tp-encargo { grid-column: 4 / span 6; }
+/* El resumen usa la ubicación editorial: la primera y la última columna quedan libres, texto de 2 a 7,
+   credencial de 9 a 11 y línea de tiempo de 2 a 11 */
+.tp-res-txt { grid-column: 2 / span 6; align-self: center; display: flex; flex-direction: column; gap: 32px; }
 .tp-res .tp-etq { padding-top: 0; }
 .tp-res .tp-enunciado { font-size: clamp(28px, 3vw, 52px); font-weight: 300; line-height: 1.06; letter-spacing: -0.035em; text-wrap: balance; }
 .tp-res .tp-enunciado :is(b, em) { font-weight: 600; letter-spacing: -0.04em; }
@@ -199,7 +199,7 @@
 .tp-res .tp-cred { scale: calc(1 - clamp(0, var(--t) / 0.08, 1) * 0.05 + clamp(0, (var(--t) - 0.08) / 0.1, 1) * 0.05); }
 
 /* --- CREDENCIAL COLGANTE --- */
-.tp-res-colgante { grid-column: 10 / -1; grid-row: 1; justify-self: center; align-self: start; display: flex; flex-direction: column; align-items: center; width: min(100%, 340px); margin-top: calc(-1 * clamp(72px, 10svh, 120px)); perspective: 1200px; }
+.tp-res-colgante { grid-column: 9 / span 3; grid-row: 1; justify-self: center; align-self: start; display: flex; flex-direction: column; align-items: center; width: min(100%, 340px); margin-top: calc(-1 * clamp(72px, 10svh, 120px)); perspective: 1200px; }
 /* Cinta en V: dos tramos tejidos (Campus y Connect) con "tap in" estampado y costuras, que bajan desde fuera
    de cuadro y se juntan en un mosquetón enganchado a la ranura */
 .tp-v { position: relative; width: 100%; height: clamp(110px, 18svh, 190px); margin-bottom: -6px; z-index: 1; }
@@ -233,7 +233,7 @@
 /* Cuatro filas sin solaparse: nombres de capítulo, barras finas con el degradado de la paleta (continuo de punta
    a punta, cortado en tres capítulos), hitos sobre su eje y, debajo, el texto del hito en curso, anclado a su
    punto. El cursor es una línea con un punto; nada se pone encima de la información */
-.tp-tiempo { --mes: 0; grid-column: 4 / -1; grid-row: 2; position: relative; margin-top: 28px; }
+.tp-tiempo { --mes: 0; grid-column: 2 / span 10; grid-row: 2; position: relative; margin-top: 28px; }
 .tp-tiempo-cab { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 14px; color: var(--texto-2); }
 .tp-tiempo-cab .mono:last-child { color: var(--texto-3); }
 .tp-pista { position: relative; height: 122px; }
