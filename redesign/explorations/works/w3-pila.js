@@ -38,14 +38,16 @@
 
     /* --- 3. TÍTULOS QUE ENTRAN LETRA A LETRA --- */
     /* Mismo gesto del nombre del hero, disparado cuando el título entra en pantalla (sin la ola del cursor) */
-    document.querySelectorAll('[data-letras]').forEach(el => {
+    /* Las letras del hero (cuando works vive en el home) las arma hero-base.js */
+    const titulos = [...document.querySelectorAll('[data-letras]')].filter(el => !el.closest('.hero'));
+    titulos.forEach(el => {
         const texto = el.textContent.trim();
         el.setAttribute('aria-label', texto);
         let i = 0;
         el.innerHTML = texto.split(/(\s+)/).map(p => /^\s+$/.test(p) ? ' ' : '<span class="palabra" aria-hidden="true">' + [...p].map(c => `<span class="l" style="animation-delay:${(i++) * 32}ms">${c}</span>`).join('') + '</span>').join('');
     });
     const ioLetras = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('entra'); ioLetras.unobserve(e.target); } }), { threshold: 0.4 });
-    document.querySelectorAll('[data-letras]').forEach(el => ioLetras.observe(el));
+    titulos.forEach(el => ioLetras.observe(el));
 
     /* --- 4. SITIOS EN VIVO DENTRO DEL NAVEGADOR --- */
     /* Solo con mouse o teclado. El sitio se carga en segundo plano cuando el panel queda quieto en pantalla y

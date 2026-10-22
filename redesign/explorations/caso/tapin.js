@@ -381,7 +381,7 @@
     /* --- 10. SIGUIENTE PROYECTO --- */
     const C = window.CASO = {
         nombre: 'Tap In',
-        siguiente: { id: 'mend', nombre: 'Mend', numero: '03', disciplinas: ['Investigación', 'Marca', 'Web app', '2026'], bajada: 'Salud articular para Atención Primaria, de la investigación al producto.', tinte: '#0D2024', url: '../works/w3-pila.html' }
+        siguiente: { id: 'mend', nombre: 'Mend', numero: '03', disciplinas: ['Investigación', 'Marca', 'Web app', '2026'], bajada: 'Salud articular para Atención Primaria, de la investigación al producto.', tinte: '#0D2024', url: '../works/inicio.html#works' }
     };
     const hueco = document.querySelector('[data-siguiente]');
     if (hueco && window.CASO_SIGUIENTE) {

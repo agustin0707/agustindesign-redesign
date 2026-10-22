@@ -12,7 +12,7 @@
 
     /* --- 2. LETRAS QUE SUBEN --- */
     /* Envuelve palabras y letras para animarlas en cascada sin perder accesibilidad */
-    document.querySelectorAll('[data-letras]').forEach(el => {
+    document.querySelectorAll('.hero [data-letras]').forEach(el => {
         const texto = el.textContent.trim();
         const inicio = parseInt(el.dataset.letras, 10) || 120;
         el.setAttribute('aria-label', texto);
