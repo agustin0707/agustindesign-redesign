@@ -140,10 +140,20 @@
                 });
             };
         },
-        /* Decisión 05: el contador de pasos de la lámina */
+        /* Decisión 05: en el paso 3 el cerebro vuela hasta la pestaña del navegador y se vuelve su favicon. Los pasos
+           son botones que llevan a su tramo de la escena */
         cerebro: el => {
-            const n = el.querySelector('[data-cer-n]');
-            return p => { n.textContent = `${String(Math.min(Math.floor(p * 3), 2) + 1).padStart(2, '0')} / 03`; };
+            const svg = el.querySelector('.tp-cer-svg'), lienzo = el.querySelector('.tp-cer-lienzo'), fav = el.querySelector('[data-fav]');
+            el.querySelectorAll('[data-ir-paso]').forEach(b => b.addEventListener('click', () => {
+                const top = el.getBoundingClientRect().top + window.scrollY, alto = el.offsetHeight - vh;
+                window.scrollTo({ top: top + [0.2, 0.48, 0.9][+b.dataset.irPaso] * alto, behavior: quieto ? 'auto' : 'smooth' });
+            }));
+            return p => {
+                const t = curva(fijar((p - 0.66) / 0.14)), L = lienzo.getBoundingClientRect(), F = fav.getBoundingClientRect(), w = svg.offsetWidth || 1;
+                const dx = F.left + F.width / 2 - (L.left + L.width / 2), dy = F.top + F.height / 2 - (L.top + L.height / 2);
+                svg.style.transform = t > 0 ? `translate(${(dx * t).toFixed(1)}px, ${(dy * t).toFixed(1)}px) scale(${(1 + (F.width * 0.7 / w - 1) * t).toFixed(4)})` : '';
+                el.style.setProperty('--fv', fijar((p - 0.79) / 0.03).toFixed(3));
+            };
         },
         /* Decisión 02: el contador de pasos del escaneo */
         qr: el => {
