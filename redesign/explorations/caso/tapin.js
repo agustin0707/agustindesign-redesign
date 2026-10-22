@@ -95,25 +95,46 @@
             /* En la pieza, un toque abre o cierra el detalle de cada tira (con mouse lo hace el hover) */
             const tiras = [...el.querySelectorAll('.tp-tira')];
             tiras.forEach(t => t.addEventListener('click', () => { if (window.matchMedia('(hover: hover)').matches) return; const abre = !t.classList.contains('abierta'); tiras.forEach(x => x.classList.remove('abierta')); t.classList.toggle('abierta', abre); }));
-            /* Cuarto tiempo: cada tira viaja de su lugar en la pieza a su nodo del árbol (Empresa a la madre) */
-            const cont = el.querySelector('.tp-tiras'), nodos = [el.querySelector('.tp-ar-madre'), ...el.querySelectorAll('.tp-ar-hijos li')].slice(0, 4);
+            /* Cuarto tiempo: las cuatro tiras viajan a la placa de la anatomía; después la placa cambia de producto */
+            const cont = el.querySelector('.tp-tiras'), placa = el.querySelector('.tp-ar-placa'), ar = el.querySelector('[data-ar]');
+            const PROD = [['Campus', '#4A3CAE', 'Comida sin filas'], ['Connect', '#6B5CE7', 'El sistema del colegio'], ['Health', '#9B8EF0', 'En camino'], ['+1', '#1C1A2E', 'El próximo, cuando llegue']];
+            const partes = [...ar.querySelectorAll('[data-i]')], nAr = ar.querySelector('[data-ar-n]'), hexAr = ar.querySelector('[data-ar-hex]');
+            let elegido = null, mostrado = -1, p4Actual = 0;
+            const porScroll = () => Math.min(Math.floor(fijar((p4Actual - 0.5) / 0.48) * 4), 3);
+            const mostrar = i => {
+                if (i === mostrado) return; mostrado = i;
+                partes.forEach(x => x.classList.toggle('on', +x.dataset.i === i));
+                placa.style.setProperty('--tono-sel', PROD[i][1]);
+                nAr.textContent = `0${i + 1} / 04 · ${PROD[i][2]}`; hexAr.textContent = i === 3 ? 'Tono por definir' : PROD[i][1];
+            };
+            ar.querySelectorAll('.tp-ar-serie button').forEach(btn => {
+                const i = +btn.dataset.i;
+                btn.addEventListener('mouseenter', () => { elegido = i; mostrar(i); });
+                btn.addEventListener('focus', () => { elegido = i; mostrar(i); });
+                btn.addEventListener('click', () => { elegido = i; mostrar(i); });
+                btn.addEventListener('mouseleave', () => { elegido = null; mostrar(porScroll()); });
+                btn.addEventListener('blur', () => { elegido = null; mostrar(porScroll()); });
+            });
             const relativo = (x, base) => { const a = x.getBoundingClientRect(), b = base.getBoundingClientRect(); return { l: a.left - b.left, t: a.top - b.top, w: a.width, h: a.height }; };
             return p => {
-                /* Los tres primeros tiempos usan el avance de los primeros 380svh de la pista */
-                const pr = fijar(p / 0.655);
-                el.style.setProperty('--pr', pr.toFixed(4));
+                /* Los tres primeros tiempos corren en los primeros 380svh de la pista; el cuarto, en el resto */
+                const pista = el.offsetHeight - vh, s = p * pista, base = 3.8 * vh;
+                const pr = fijar(s / base), p4 = fijar((s - base) / (pista - base));
+                el.style.setProperty('--pr', pr.toFixed(4)); el.style.setProperty('--p4', p4.toFixed(4));
                 el.style.setProperty('--b', curva(fijar((pr - 0.56) / 0.16)).toFixed(4));
-                const pieza = pr > 0.64 && p < 0.72;
+                const pieza = pr > 0.64 && p4 < 0.12;
                 el.classList.toggle('tp-rb-pieza', pieza);
                 if (!pieza) tiras.forEach(x => x.classList.remove('abierta'));
-                el.classList.toggle('tp-rb-fin', p > 0.9);
-                const viaja = p > 0.72;
+                el.classList.toggle('tp-rb-fin', p4 > 0.46);
+                p4Actual = p4;
+                if (elegido === null) mostrar(porScroll());
+                const viaja = p4 > 0.12;
                 el.classList.toggle('tp-rb-morph', viaja);
                 if (!viaja) { tiras.forEach(t => { t.style.left = t.style.top = t.style.width = t.style.height = ''; }); return; }
-                const ancho = cont.clientWidth, alto = cont.clientHeight, pesos = [1, 1, 1.5, 1], util = ancho - 24, k = curva(fijar((p - 0.73) / 0.11));
+                const ancho = cont.clientWidth, alto = cont.clientHeight, pesos = [1, 1, 1.5, 1], util = ancho - 24, k = curva(fijar((p4 - 0.14) / 0.26)), d = relativo(placa, cont);
                 let x = 0;
                 tiras.forEach((t, i) => {
-                    const w = util * pesos[i] / 4.5, a = { l: x, t: 0, w, h: alto }, d = relativo(nodos[i], cont); x += w + 8;
+                    const w = util * pesos[i] / 4.5, a = { l: x, t: 0, w, h: alto }; x += w + 8;
                     t.style.left = (a.l + (d.l - a.l) * k) + 'px'; t.style.top = (a.t + (d.t - a.t) * k) + 'px';
                     t.style.width = (a.w + (d.w - a.w) * k) + 'px'; t.style.height = (a.h + (d.h - a.h) * k) + 'px';
                 });
@@ -256,7 +277,7 @@
         const m = modulos.find(el => { const r = el.getBoundingClientRect(); return r.top <= 32 && r.bottom > 32; });
         const hero = escenas[0];
         const resumen = escenas.find(x => x.el.dataset.escena === 'resumen');
-        nav.classList.toggle('sobre-claro', !!m && ((m.classList.contains('tp-claro') && !(m === resumen.el && resumen.p > 0.86)) || (m === hero.el && hero.p > 0.62) || (m.id === 'cap-2' && parseFloat(m.style.getPropertyValue('--p')) > 0.8)));
+        nav.classList.toggle('sobre-claro', !!m && ((m.classList.contains('tp-claro') && !(m === resumen.el && resumen.p > 0.86)) || (m === hero.el && hero.p > 0.62) || (m.id === 'cap-2' && parseFloat(m.style.getPropertyValue('--p4')) > 0.3)));
         /* Se esconde al bajar; vuelve solo con una subida clara (90 px seguidos) o cerca del inicio */
         if (dy > 0) { subida = 0; if (y > 120) nav.classList.add('oculta'); }
         else if (dy < 0) { subida -= dy; if (subida > 90 || y < 120) nav.classList.remove('oculta'); }

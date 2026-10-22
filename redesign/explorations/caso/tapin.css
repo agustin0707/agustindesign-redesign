@@ -582,23 +582,23 @@
 /* =======================================================
    CAPÍTULO 02 · EL REBIRTH Y LA PALETA
    ======================================================= */
-/* Una sola escena de 680svh con cuatro tiempos. Los tres primeros corren sobre --pr (el avance de los primeros
-   380svh, lo escribe el JS) y el cuarto sobre --p:
+/* Una sola escena de 820svh con cuatro tiempos. Los tres primeros corren sobre --pr (el avance de los primeros
+   380svh) y el cuarto sobre --p4 (el resto de la pista); los dos los escribe el JS:
    1. Telón: se monta (transparente) sobre el final de las activaciones; las cuatro tiras suben hasta cubrir la
       pantalla, se enciende la noche y las tiras bajan a su altura para dejar ver la portada.
    2. Portada en la grilla, como las demás aperturas: rótulo en el riel, título desde la 4 y bajada de 4 a 9.
    3. Decisión 04: la portada se apaga, las tiras viajan a las columnas 8 a 12 (--b, lo escribe el JS) y entra la
       decisión con su patrón; Connect se ensancha y cada tira muestra su detalle al pasar el mouse.
-   4. Decisión 04, la familia se arma: el claro sube desde abajo, la tira de Empresa se vuelve la marca madre y las
-      otras tres sus hijos (el JS mueve cada tira a su nodo); se dibujan las ramas y el +1 entra solo */
-.tp-rebirth { position: relative; z-index: 2; height: 680svh; margin-top: -100svh; }
+   4. Decisión 04, la familia se reúne en un lockup: el claro sube desde abajo, las cuatro tiras viajan a la placa
+      de la anatomía (el JS mueve cada una) y, al bajar, la placa cambia de producto con el wordmark quieto */
+.tp-rebirth { position: relative; z-index: 2; height: 820svh; margin-top: -100svh; }
 .tp-rebirth.tp-oscuro { background: linear-gradient(transparent 100svh, var(--tp-papel) 100svh); }
 .tp-rb-noche { position: absolute; inset: 0; background: var(--tp-noche); opacity: clamp(0, (var(--pr, 0) - 0.24) * 60, 1); }
 .tp-rb-cap { --ent: calc(clamp(0, (var(--pr, 0) - 0.38) / 0.1, 1) * (1 - clamp(0, (var(--pr, 0) - 0.56) / 0.06, 1))); position: absolute; inset: 0 0 auto; height: 38svh; padding: 0 var(--margen) 3svh; align-content: end; row-gap: 14px; opacity: var(--ent); translate: 0 calc((1 - var(--ent)) * 30px); pointer-events: none; }
 .tp-rb-cap .tp-cap-n { grid-column: 1 / span 3; grid-row: 1; align-self: end; padding-bottom: 1.1em; }
 .tp-rb-cap h2 { grid-column: 4 / -1; grid-row: 1; font: 600 clamp(56px, 8.4vw, 148px) / 0.84 var(--tp-f); letter-spacing: -0.055em; margin-left: -0.04em; }
 .tp-rb-cap p { grid-column: 4 / span 6; grid-row: 2; max-width: 40ch; color: var(--texto-2); font-size: clamp(15px, 1.15vw, 18px); line-height: 1.45; }
-.tp-rb-dec { --ent: calc(clamp(0, (var(--pr, 0) - 0.68) / 0.1, 1) * (1 - clamp(0, (var(--p, 0) - 0.72) / 0.04, 1))); position: absolute; inset: 0; padding: 0 var(--margen); align-content: center; align-items: start; opacity: var(--ent); translate: 0 calc((1 - var(--ent)) * 24px); }
+.tp-rb-dec { --ent: calc(clamp(0, (var(--pr, 0) - 0.68) / 0.1, 1) * (1 - clamp(0, (var(--p4, 0) - 0.12) / 0.08, 1))); position: absolute; inset: 0; padding: 0 var(--margen); align-content: center; align-items: start; opacity: var(--ent); translate: 0 calc((1 - var(--ent)) * 24px); }
 .tp-rb-dec .tp-dec-num { color: rgba(155, 142, 240, 0.42); }
 
 /* --- TIRAS: POSICIÓN EN CADA TIEMPO --- */
@@ -658,56 +658,59 @@
 .tp-rb-pieza .tp-tiras:has(.tp-tira:is(:hover, :focus-visible, .abierta)) .tp-tira:not(:hover, :focus-visible, .abierta) :is(.tp-tira-pie b, .tp-tira-tag) { opacity: 0; }
 
 /* =======================================================
-   DECISIÓN 04 · LA FAMILIA (CUARTO TIEMPO DE EL REBIRTH)
+   DECISIÓN 04 · LA MADRE QUE LIDERA (CUARTO TIEMPO DE EL REBIRTH)
    ======================================================= */
-/* El claro sube desde abajo mientras las tiras viajan a sus nodos; la decisión entra en el mismo lugar que la 03 */
-.tp-rb-claro { position: absolute; inset: 0; background: var(--tp-papel); clip-path: inset(calc((1 - clamp(0, (var(--p, 0) - 0.73) / 0.13, 1)) * 100%) 0 0 0); }
-.tp-rb-dec-arq { --ent: clamp(0, (var(--p, 0) - 0.84) / 0.06, 1); --texto: var(--tp-tinta); --texto-2: #57556B; --linea: rgba(45, 37, 96, 0.12); --acento: var(--tp-campus); color: var(--tp-tinta); pointer-events: none; }
+/* El claro sube desde abajo mientras las tiras viajan a la placa; la decisión entra en el mismo lugar que la 03 */
+.tp-rb-claro { position: absolute; inset: 0; background: var(--tp-papel); clip-path: inset(calc((1 - clamp(0, (var(--p4, 0) - 0.14) / 0.28, 1)) * 100%) 0 0 0); }
+.tp-rb-dec-arq { --ent: clamp(0, (var(--p4, 0) - 0.4) / 0.1, 1); --texto: var(--tp-tinta); --texto-2: #57556B; --linea: rgba(45, 37, 96, 0.12); --acento: var(--tp-campus); color: var(--tp-tinta); pointer-events: none; }
 .tp-rb-dec-arq .tp-dec-num { color: var(--tp-soft); }
 .tp-rb-dec-arq .tp-mas { grid-column: 4 / span 3; grid-row: 5; pointer-events: auto; }
 .tp-rebirth:not(.tp-rb-fin) .tp-rb-dec-arq .tp-mas { visibility: hidden; }
 
-/* --- 1. EL ÁRBOL, EN LAS COLUMNAS 8 A 12 --- */
-/* Los nodos aparecen justo cuando las tiras llegan a ellos (las tiras se apagan encima) */
-.tp-ar { --nodo: clamp(0, (var(--p, 0) - 0.845) / 0.02, 1); --ramas: clamp(0, (var(--p, 0) - 0.85) / 0.05, 1); --nv: clamp(0, (var(--p, 0) - 0.9) / 0.06, 1); --nota: clamp(0, (var(--p, 0) - 0.93) / 0.05, 1);
+/* --- 1. ANATOMÍA DEL LOCKUP, EN LAS COLUMNAS 8 A 12 --- */
+/* Una placa en el tono del producto con el lockup en blanco, como se usa la marca. Al bajar (o al pasar por la
+   serie) cambian el tono, el isotipo y el nombre; el wordmark no se mueve. Debajo, las cotas de cada parte con las
+   mismas columnas del lockup, y la serie de los cuatro productos */
+@property --tono-ar { syntax: '<color>'; inherits: true; initial-value: #4A3CAE; }
+.tp-ar { --placa: clamp(0, (var(--p4, 0) - 0.4) / 0.03, 1); --cotas: clamp(0, (var(--p4, 0) - 0.46) / 0.08, 1);
+    --iso-ar: clamp(56px, 4.8vw, 80px); --wm-ar: clamp(130px, 11vw, 188px); --gap-ar: clamp(14px, 1.3vw, 22px); --pad-ar: clamp(24px, 2.6vw, 40px);
     position: absolute; inset: 0; padding: 0 var(--margen); align-content: center; pointer-events: none; }
-.tp-ar-arbol { grid-column: 8 / -1; display: flex; flex-direction: column; }
-.tp-ar-madre { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; height: 19svh; border-radius: 22px; color: #FFFFFF; opacity: var(--nodo);
-    background: radial-gradient(110% 70% at 50% 0%, color-mix(in srgb, #2D2560 80%, #FFFFFF) 0%, transparent 70%), #2D2560; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 30px 60px -34px rgba(45, 37, 96, 0.6); }
-.tp-ar-madre .tp-wm { width: clamp(120px, 11vw, 190px); }
-.tp-ar-madre .mono { font-size: 11px; color: rgba(255, 255, 255, 0.66); }
-/* Ramas: el tronco baja de la madre y el bus llega hasta Health; cuando entra el +1, el bus se alarga hasta él */
-.tp-ar-ramas { position: relative; height: 7svh; }
-.tp-ar-ramas i { position: absolute; background: rgba(45, 37, 96, 0.28); }
-.tp-ar-tronco { left: calc(50% - 0.75px); top: 0; width: 1.5px; height: 50%; transform-origin: top; transform: scaleY(var(--ramas)); }
-.tp-ar-bus { left: 12.5%; right: calc(37.5% - var(--nv) * 25%); top: 50%; height: 1.5px; transform-origin: center; transform: scaleX(var(--ramas)); }
-.tp-ar-hijos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
-.tp-ar-hijos li { --c: #FFFFFF; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 30svh; padding: clamp(14px, 1.4vw, 20px) 10px; border-radius: 18px; color: var(--c); opacity: var(--nodo);
-    background: radial-gradient(110% 50% at 50% 0%, color-mix(in srgb, var(--tono) 80%, #FFFFFF) 0%, transparent 72%), var(--tono); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 24px 44px -30px rgba(45, 37, 96, 0.6); }
-.tp-ar-hijos li::before { content: ''; position: absolute; left: calc(50% - 0.75px); bottom: 100%; width: 1.5px; height: 3.5svh; background: rgba(45, 37, 96, 0.28); transform-origin: top; transform: scaleY(var(--ramas)); }
-/* Health va en blanco, como los otros hijos (pedido de Agustín, aunque el blanco sobre su tono mide 2,79:1) */
-.tp-ar-hijos li.tp-ar-claro { --c: #FFFFFF; }
-.tp-ar-iso { flex: 1; display: grid; place-items: center; width: 42%; max-width: 72px; }
-.tp-ar-iso > * { width: 100%; }
-.tp-ar-lockup { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.tp-ar-lockup .tp-wm { width: clamp(46px, 4vw, 66px); }
-.tp-ar-lockup b { font: 600 clamp(14px, 1.15vw, 18px) / 1 var(--tp-f); letter-spacing: -0.02em; }
-/* El +1: un lugar vacío, punteado, que entra deslizándose cuando el bus se alarga */
-.tp-ar-hijos li.tp-ar-nuevo { --c: var(--tp-campus); background: transparent; box-shadow: inset 0 0 0 1.5px rgba(74, 60, 174, 0.35); opacity: var(--nv); translate: calc((1 - var(--nv)) * 24px) 0; }
-.tp-ar-hijos li.tp-ar-nuevo::before { background: repeating-linear-gradient(to bottom, rgba(45, 37, 96, 0.4) 0 4px, transparent 4px 8px); transform: scaleY(var(--nv)); }
-.tp-ar-mas { position: relative; display: block; aspect-ratio: 1; border: 1.5px dashed currentColor; border-radius: 50%; opacity: 0.6; }
+.tp-ar-pieza { grid-column: 8 / -1; display: flex; flex-direction: column; }
+.tp-ar-placa { --tono-ar: var(--tono-sel, #4A3CAE); position: relative; display: flex; flex-direction: column; justify-content: space-between; height: 36svh; padding: var(--pad-ar); border-radius: 24px; color: #FFFFFF; opacity: var(--placa); overflow: hidden;
+    background: radial-gradient(90% 70% at 85% 0%, color-mix(in srgb, var(--tono-ar) 72%, #FFFFFF) 0%, transparent 70%), var(--tono-ar);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 36px 70px -40px color-mix(in srgb, var(--tono-ar) 80%, #000000); transition: --tono-ar 700ms var(--ease); }
+.tp-ar-cab { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; color: rgba(255, 255, 255, 0.72); }
+.tp-ar-lockup { display: grid; grid-template-columns: var(--iso-ar) var(--wm-ar) auto; column-gap: var(--gap-ar); align-items: center; }
+.tp-ar-iso, .tp-ar-nom { position: relative; display: grid; }
+.tp-ar-iso { width: var(--iso-ar); aspect-ratio: 1; place-items: center; }
+.tp-ar-iso > span { grid-area: 1 / 1; width: 74%; opacity: 0; scale: 0.82; transition: opacity 400ms var(--ease), scale 600ms var(--tp-curva); }
+.tp-ar-iso > span > * { width: 100%; }
+.tp-ar-iso > span.on { opacity: 1; scale: 1; }
+.tp-ar-wm { width: var(--wm-ar); }
+.tp-ar-nom > span { grid-area: 1 / 1; font: 600 calc(var(--wm-ar) * 0.3) / 1 var(--tp-f); letter-spacing: -0.04em; white-space: nowrap; opacity: 0; translate: 0 14px; transition: opacity 400ms var(--ease), translate 600ms var(--ease); }
+.tp-ar-nom > span.on { opacity: 1; translate: 0 0; }
+.tp-ar-mas { position: relative; display: block; aspect-ratio: 1; border: 1.5px dashed currentColor; border-radius: 50%; opacity: 0.7; }
 .tp-ar-mas::before, .tp-ar-mas::after { content: ''; position: absolute; left: 50%; top: 50%; width: 40%; height: 1.5px; background: currentColor; translate: -50% -50%; }
 .tp-ar-mas::after { rotate: 90deg; }
-/* Nota: lo que no cambia y lo que sí, bajo una línea que abarca a los cuatro */
-.tp-ar-nota { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 12px; border-top: 1px solid rgba(45, 37, 96, 0.18); color: #57556B; font-size: 11px; opacity: var(--nota); translate: 0 calc((1 - var(--nota)) * 10px); }
-.tp-ar-nota span:last-child { text-align: right; }
-@media (hover: hover) { .tp-rb-fin .tp-ar-hijos li { pointer-events: auto; transition: translate 500ms var(--tp-curva); } .tp-rb-fin .tp-ar-hijos li:not(.tp-ar-nuevo):hover { translate: 0 -6px; } }
+/* Cotas: tres columnas alineadas con el isotipo, el wordmark y el nombre; la del wordmark va en el morado */
+.tp-ar-cotas { display: grid; grid-template-columns: var(--iso-ar) var(--wm-ar) 1fr; column-gap: var(--gap-ar); padding: 16px var(--pad-ar) 0; opacity: var(--cotas); translate: 0 calc((1 - var(--cotas)) * 10px); }
+.tp-ar-cota { display: flex; flex-direction: column; gap: 2px; padding-top: 10px; border-top: 1.5px solid rgba(45, 37, 96, 0.22); color: #57556B; font: 400 11px / 1.35 var(--mono); }
+.tp-ar-cota b { color: var(--tp-tinta); font-weight: 400; }
+.tp-ar-fija { border-top-color: var(--tp-campus); } .tp-ar-fija b { color: var(--tp-campus); }
+/* Serie: los cuatro productos; marca el que está en la placa y, con el mouse o el teclado, permite verlos */
+.tp-ar-serie { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 26px; opacity: var(--cotas); }
+.tp-ar-serie button { display: flex; flex-direction: column; gap: 8px; padding: 0; border: 0; background: none; color: #8A889E; font: 400 11px var(--mono); text-align: left; cursor: pointer; transition: color 300ms linear; }
+.tp-ar-serie i { display: block; height: 4px; border-radius: 2px; background: rgba(45, 37, 96, 0.12); transition: background 400ms var(--ease); }
+.tp-ar-serie button.on { color: var(--tp-tinta); } .tp-ar-serie button.on i { background: var(--t); }
+.tp-ar-serie button:focus-visible { outline: 2px solid var(--tp-campus); outline-offset: 4px; }
+.tp-rb-fin .tp-ar-serie { pointer-events: auto; }
 
 /* --- 2. LAS TIRAS MIENTRAS VIAJAN --- */
 /* Dejan el flex y se ubican una a una (el JS escribe su rectángulo); su contenido se apaga al despegar */
 .tp-rb-morph .tp-tiras { display: block; }
-.tp-rb-morph .tp-tira { position: absolute; transform: none; border-radius: 20px; transition: none; opacity: calc(1 - clamp(0, (var(--p, 0) - 0.845) / 0.02, 1)); }
-.tp-rb-morph .tp-tira > * { opacity: calc(1 - clamp(0, (var(--p, 0) - 0.72) / 0.05, 1)); }
+.tp-rb-morph .tp-tira { position: absolute; transform: none; border-radius: 24px; transition: none; opacity: calc(1 - clamp(0, (var(--p4, 0) - 0.41) / 0.03, 1)); }
+.tp-rb-morph .tp-tira > * { opacity: calc(1 - clamp(0, (var(--p4, 0) - 0.12) / 0.08, 1)); }
+.tp-rb-morph .tp-tira:nth-child(2) { z-index: 2; }
 .tp-rb-morph .tp-tira-mas { grid-template-rows: 0fr; }
 .tp-rb-morph .tp-tira-cab span:first-child { opacity: 0; }
 
@@ -912,11 +915,11 @@
     .tp-rb-cap .tp-cap-n { padding-bottom: 0; } .tp-rb-cap p { display: none; }
     .tp-rb-dec { align-content: start; padding-top: 12svh; }
     .tp-rb-dec-arq .tp-mas { display: none; }
-    .tp-ar { align-content: end; padding-bottom: 6svh; }
-    .tp-ar-arbol { grid-column: 1 / -1; }
-    .tp-ar-madre { height: 13svh; } .tp-ar-ramas { height: 5svh; } .tp-ar-hijos li { height: 22svh; padding: 10px 6px; } .tp-ar-hijos li::before { height: 2.5svh; }
-    .tp-ar-lockup .tp-wm { width: 38px; } .tp-ar-lockup b { font-size: 12px; }
-    .tp-ar-nota { flex-direction: column; gap: 4px; } .tp-ar-nota span:last-child { text-align: left; }
+    .tp-ar { align-content: end; padding-bottom: 8svh; --iso-ar: 44px; --wm-ar: 104px; --gap-ar: 10px; --pad-ar: 18px; }
+    .tp-ar-pieza { grid-column: 1 / -1; }
+    .tp-ar-placa { height: 26svh; border-radius: 18px; }
+    .tp-ar-cab span:first-child { max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tp-ar-cota { font-size: 10px; }
     .tp-tiras { --base: 56svh; left: calc(var(--margen) * (1 - var(--alto))); width: calc(100% - 2 * var(--margen) * (1 - var(--alto))); bottom: 0; height: calc((var(--base) + var(--alto) * (100svh - var(--base))) * (1 - var(--b, 0)) + 50svh * var(--b, 0)); }
     .tp-principal { flex-grow: 1; }
     .tp-tira { padding: 10px 8px; }
