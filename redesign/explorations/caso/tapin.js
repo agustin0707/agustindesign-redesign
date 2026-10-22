@@ -90,6 +90,8 @@
                 el.style.setProperty('--tr', fijar(-qr.getBoundingClientRect().top / (qr.offsetHeight - vh) * 4).toFixed(3));
             };
         },
+        /* El Rebirth: las tiras viajan de la portada a las columnas 8 a 12 */
+        rebirth: el => p => { el.style.setProperty('--b', curva(fijar((p - 0.56) / 0.16)).toFixed(4)); },
         /* Decisión 02: el contador de pasos del escaneo */
         qr: el => {
             const n = el.querySelector('[data-qr-n]');

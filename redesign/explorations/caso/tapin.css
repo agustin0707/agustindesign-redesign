@@ -339,12 +339,12 @@
 .tp-forky .tp-formas-zona { --sal: clamp(0, (var(--tr, 0) - 0.05) / 0.25, 1); opacity: calc(1 - var(--sal)); translate: 0 calc(var(--sal) * -40px); }
 .tp-forky .tp-dec { --sal-t: clamp(0, (var(--tr, 0) - 0.3) / 0.2, 1); opacity: calc(1 - var(--sal-t)); translate: 0 calc(var(--sal-t) * -24px); }
 .tp-forky .tp-fijo, .tp-qr .tp-fijo { align-content: center; align-items: start; }
-:is(.tp-forky, .tp-qr) .tp-dec { grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; row-gap: 16px; max-width: none; align-items: start; }
-:is(.tp-forky, .tp-qr) :is(.tp-dec-num, .tp-dec-n) { grid-column: 1 / span 3; }
-:is(.tp-forky, .tp-qr) .tp-dec-num { grid-row: 1; }
-:is(.tp-forky, .tp-qr) .tp-dec-n { grid-row: 2; align-self: start; padding-top: 4px; }
-:is(.tp-forky, .tp-qr) .tp-dec :is(h3, p, .tp-datos) { grid-column: 4 / span 3; }
-:is(.tp-forky, .tp-qr) .tp-dec h3 { grid-row: 1; } :is(.tp-forky, .tp-qr) .tp-dec p:not(.tp-porque) { grid-row: 2 / 4; } :is(.tp-forky, .tp-qr) .tp-dec .tp-porque { grid-row: 4; } .tp-qr .tp-dec .tp-datos { grid-row: 5; }
+:is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec { grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; row-gap: 16px; max-width: none; align-items: start; }
+:is(.tp-forky, .tp-qr, .tp-rebirth) :is(.tp-dec-num, .tp-dec-n) { grid-column: 1 / span 3; }
+:is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec-num { grid-row: 1; }
+:is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec-n { grid-row: 2; align-self: start; padding-top: 4px; }
+:is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec :is(h3, p, .tp-datos) { grid-column: 4 / span 3; }
+:is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec h3 { grid-row: 1; } :is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec p:not(.tp-porque) { grid-row: 2 / 4; } :is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec .tp-porque { grid-row: 4; } .tp-qr .tp-dec .tp-datos { grid-row: 5; }
 /* Las formas que se exploraron, en el orden del proceso: se encienden una a una con el scroll y al final se
    apartan para que aparezca Forky con el wordmark de Campus */
 .tp-formas-zona { grid-column: 8 / -1; position: relative; width: 100%; }
@@ -582,35 +582,71 @@
 /* =======================================================
    CAPÍTULO 02 · EL REBIRTH Y LA PALETA
    ======================================================= */
-/* Las cuatro tiras suben una tras otra con el scroll; al completarse, cada una dice quién es */
-/* Telón de la paleta: la escena se monta (transparente) sobre el final de las activaciones. Las cuatro tiras suben
-   de a una hasta cubrir la pantalla; recién ahí se enciende la noche, y las tiras bajan su borde hasta su altura
-   para dejar ver el título. Fondo claro donde monta, para que lo que se va hacia arriba no deje un hueco oscuro */
-.tp-rebirth { position: relative; z-index: 2; height: 380svh; margin-top: -100svh; }
+/* Una sola escena de 480svh con tres tiempos:
+   1. Telón: se monta (transparente) sobre el final de las activaciones; las cuatro tiras suben hasta cubrir la
+      pantalla, se enciende la noche y las tiras bajan a su altura para dejar ver la portada.
+   2. Portada en la grilla, como las demás aperturas: rótulo en el riel, título desde la 4 y bajada de 4 a 9.
+   3. Decisión 04: la portada se apaga, las tiras viajan a las columnas 8 a 12 (--b, lo escribe el JS) y entra la
+      decisión con su patrón; Connect se ensancha y cada tira muestra su escala y su contraste */
+.tp-rebirth { position: relative; z-index: 2; height: 480svh; margin-top: -100svh; }
 .tp-rebirth.tp-oscuro { background: linear-gradient(transparent 100svh, var(--tp-papel) 100svh); }
-.tp-rb-noche { position: absolute; inset: 0; background: var(--tp-noche); opacity: clamp(0, (var(--p, 0) - 0.3) * 60, 1); }
-.tp-rb-arriba .tp-cap-txt { opacity: clamp(0, (var(--p, 0) - 0.52) / 0.12, 1); translate: 0 calc((1 - clamp(0, (var(--p, 0) - 0.52) / 0.12, 1)) * 30px); }
-.tp-rb-arriba { position: absolute; left: var(--margen); right: var(--margen); top: 0; height: 36svh; display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; padding-bottom: 3svh; }
-.tp-rb-arriba .tp-cap-txt { position: static; gap: 12px; }
-.tp-rb-arriba .tp-cap-txt h2 { font-size: clamp(56px, 8.4vw, 148px); }
-.tp-rb-arriba .tp-cap-txt p { font-size: clamp(15px, 1.15vw, 18px); }
-.tp-dec-rb { gap: 10px; opacity: 0; translate: 0 24px; transition: opacity 600ms var(--ease), translate 600ms var(--ease); }
-.tp-dec-rb.on { opacity: 1; translate: 0 0; }
-.tp-tiras { --base: 62svh; --alto: calc(1 - clamp(0, (var(--p, 0) - 0.42) / 0.18, 1)); position: absolute; left: calc(var(--margen) * (1 - var(--alto))); right: calc(var(--margen) * (1 - var(--alto))); bottom: 0; height: calc(var(--base) + var(--alto) * (100svh - var(--base))); display: flex; gap: calc(8px - var(--alto) * 4px); }
-.tp-tira { --k: clamp(0, (var(--p, 0) - 0.02 - var(--i) * 0.05) / 0.2, 1); position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 22px; border-radius: var(--tp-radio) var(--tp-radio) 0 0; background: linear-gradient(180deg, color-mix(in srgb, var(--tono) 84%, #FFFFFF), var(--tono) 55%); color: #FFFFFF; transform: translateY(calc((1 - var(--k)) * 104%)); transition: flex-grow 700ms var(--tp-curva); }
-.tp-tira b { font: 600 clamp(18px, 1.7vw, 28px) var(--tp-f); letter-spacing: -0.03em; }
-.tp-tira .mono { font-size: 11px; color: rgba(255, 255, 255, 0.8); }
-.tp-tira-iso { position: absolute; top: 44%; left: 50%; width: 36%; max-width: 150px; translate: -50% -50%; }
-.tp-tira:first-child .tp-tira-iso { width: 62%; max-width: 240px; }
-/* Nombres y códigos aparecen cuando las tiras ya bajaron a su altura */
-.tp-tira > :not(.tp-tira-iso) { opacity: clamp(0, (var(--p, 0) - 0.58) / 0.1, 1); }
-.tp-tira-iso { opacity: 0; scale: 0.8; transition: opacity 600ms var(--ease), scale 700ms var(--tp-curva); }
-.tp-tiras.on .tp-tira-iso { opacity: 1; scale: 1; transition-delay: calc(80ms + var(--i) * 80ms); }
-.tp-principal::after { content: 'Producto principal'; position: absolute; top: 24px; right: 18px; padding: 5px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.2); font: 600 10px var(--tp-f); letter-spacing: 0.06em; text-transform: uppercase; opacity: clamp(0, (var(--p, 0) - 0.6) / 0.1, 1); }
+.tp-rb-noche { position: absolute; inset: 0; background: var(--tp-noche); opacity: clamp(0, (var(--p, 0) - 0.24) * 60, 1); }
+.tp-rb-cap { --ent: calc(clamp(0, (var(--p, 0) - 0.38) / 0.1, 1) * (1 - clamp(0, (var(--p, 0) - 0.56) / 0.06, 1))); position: absolute; inset: 0 0 auto; height: 38svh; padding: 0 var(--margen) 3svh; align-content: end; row-gap: 14px; opacity: var(--ent); translate: 0 calc((1 - var(--ent)) * 30px); pointer-events: none; }
+.tp-rb-cap .tp-cap-n { grid-column: 1 / span 3; grid-row: 1; align-self: end; padding-bottom: 1.1em; }
+.tp-rb-cap h2 { grid-column: 4 / -1; grid-row: 1; font: 600 clamp(56px, 8.4vw, 148px) / 0.84 var(--tp-f); letter-spacing: -0.055em; margin-left: -0.04em; }
+.tp-rb-cap p { grid-column: 4 / span 6; grid-row: 2; max-width: 40ch; color: var(--texto-2); font-size: clamp(15px, 1.15vw, 18px); line-height: 1.45; }
+.tp-rb-dec { --ent: clamp(0, (var(--p, 0) - 0.68) / 0.1, 1); position: absolute; inset: 0; padding: 0 var(--margen); align-content: center; align-items: start; opacity: var(--ent); translate: 0 calc((1 - var(--ent)) * 24px); }
+.tp-rb-dec .tp-dec-num { color: rgba(155, 142, 240, 0.42); }
+
+/* --- TIRAS: POSICIÓN EN CADA TIEMPO --- */
+/* Del telón (pantalla completa) a la portada (de margen a margen, 62svh) y a la pieza (columnas 8 a 12, 66svh) */
+.tp-tiras { --base: 62svh; --alto: calc(1 - clamp(0, (var(--p, 0) - 0.3) / 0.14, 1)); --cw: calc((100% - 2 * var(--margen) - 11 * var(--medianil)) / 12);
+    position: absolute; bottom: calc(var(--b, 0) * 17svh); display: flex; gap: calc(8px - var(--alto) * 4px);
+    left: calc(var(--margen) * (1 - var(--alto)) * (1 - var(--b, 0)) + (var(--margen) + 7 * (var(--cw) + var(--medianil))) * var(--b, 0));
+    width: calc((100% - 2 * var(--margen) * (1 - var(--alto))) * (1 - var(--b, 0)) + (5 * var(--cw) + 4 * var(--medianil)) * var(--b, 0));
+    height: calc((var(--base) + var(--alto) * (100svh - var(--base))) * (1 - var(--b, 0)) + 66svh * var(--b, 0)); }
+
+/* --- TARJETA DE TONO --- */
+/* Como en un manual de marca: el tono real de fondo (con una luz suave arriba), número y etiqueta arriba, el
+   isotipo al centro y abajo la escala del tono, el nombre, el código y su contraste. Health, el más claro, lleva
+   texto noche: el blanco sobre él no pasa AA */
+.tp-tira { --k: clamp(0, (var(--p, 0) - 0.015 - var(--i) * 0.04) / 0.15, 1); --c: #FFFFFF; --t: clamp(0, (var(--p, 0) - 0.44) / 0.08, 1); --d: clamp(0, (var(--p, 0) - 0.74) / 0.08, 1);
+    position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; padding: clamp(12px, 1.2vw, 18px); overflow: hidden; color: var(--c);
+    border-radius: var(--tp-radio) var(--tp-radio) calc(var(--b, 0) * var(--tp-radio)) calc(var(--b, 0) * var(--tp-radio));
+    background: radial-gradient(110% 42% at 50% 0%, color-mix(in srgb, var(--tono) 84%, #FFFFFF) 0%, transparent 70%), var(--tono);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    transform: translateY(calc((1 - var(--k)) * 104%)); transition: flex-grow 600ms var(--tp-curva); }
+.tp-tira-claro { --c: var(--tp-noche); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 0 1px rgba(16, 13, 32, 0.06); }
+.tp-principal { flex-grow: calc(1 + var(--b, 0) * 0.5); }
+.tp-tira-cab { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 22px; font-size: 11px; opacity: calc(var(--t) * 0.8); }
+.tp-tira-tag { padding: 4px 8px; border-radius: 999px; background: color-mix(in srgb, var(--c) 18%, transparent); font: 600 9px var(--tp-f); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+.tp-tira-iso { position: absolute; top: 40%; left: 50%; width: 38%; max-width: 132px; translate: -50% -50%; color: var(--c); }
+.tp-tira:first-child .tp-tira-iso { width: 66%; max-width: 220px; }
+/* Health aún no tiene isotipo: una órbita fina con un punto que la recorre */
+.tp-tira-camino { position: relative; display: block; width: 70%; aspect-ratio: 1; margin: 0 auto; border: 1.5px solid currentColor; border-radius: 50%; opacity: 0.5; animation: tpOrbita 7s linear infinite; }
+.tp-tira-camino::after { content: ''; position: absolute; top: -5px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: currentColor; }
+@keyframes tpOrbita { to { rotate: 360deg; } }
+.tp-tira-pie { margin-top: auto; display: flex; flex-direction: column; gap: 6px; opacity: var(--t); translate: 0 calc((1 - var(--t)) * 14px); }
+.tp-tira-escala { display: flex; gap: 3px; margin-bottom: 8px; opacity: var(--d); }
+.tp-tira-escala i { flex: 1; height: 6px; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(16, 13, 32, 0.06); }
+.tp-tira-escala i:nth-child(1) { background: color-mix(in srgb, var(--tono) 100%, #FFFFFF); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 40%, transparent); }
+.tp-tira-escala i:nth-child(2) { background: color-mix(in srgb, var(--tono) 70%, #FFFFFF); }
+.tp-tira-escala i:nth-child(3) { background: color-mix(in srgb, var(--tono) 42%, #FFFFFF); }
+.tp-tira-escala i:nth-child(4) { background: color-mix(in srgb, var(--tono) 18%, #FFFFFF); }
+.tp-tira-pie b { font: 600 clamp(17px, 1.45vw, 24px) / 1 var(--tp-f); letter-spacing: -0.03em; }
+/* El uso, el RGB y la cifra del contraste se ven en la portada (tiras anchas) y, en la pieza, al pasar el mouse */
+.tp-tira-uso, .tp-tira-spec span { display: inline-block; max-height: calc((1 - var(--b, 0)) * 3em); overflow: hidden; opacity: calc((1 - var(--b, 0)) * 0.82); transition: max-height 400ms var(--ease), opacity 300ms linear; }
+.tp-tira-uso { font: 400 13px / 1.35 var(--tp-f); }
+.tp-tira-ctr span { display: inline-block; max-width: calc((1 - var(--b, 0)) * 7em); overflow: hidden; vertical-align: bottom; opacity: calc(1 - var(--b, 0)); transition: max-width 400ms var(--ease), opacity 300ms linear; }
+.tp-tira-spec { font-size: 11px; opacity: 0.8; white-space: nowrap; }
+.tp-tira-ctr { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; white-space: pre; margin-top: 4px; padding: 4px 9px 4px 4px; border-radius: 999px; background: color-mix(in srgb, var(--c) 15%, transparent); font-size: 10px; white-space: nowrap; opacity: var(--d); }
+.tp-tira-ctr i { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--c); color: var(--tono); font: 600 9px var(--tp-f); font-style: normal; }
 @media (hover: hover) and (min-width: 769px) {
-    .tp-tiras.on:hover .tp-tira { flex-grow: 0.7; }
-    .tp-tiras.on .tp-tira:hover { flex-grow: 2.2; }
-    .tp-tiras.on .tp-tira:hover .tp-tira-iso { scale: 1.08; }
+    .tp-tiras:hover .tp-tira { flex-grow: 0.8; }
+    .tp-tiras .tp-tira:hover { flex-grow: 2.1; }
+    .tp-tira:hover .tp-tira-uso, .tp-tira:hover .tp-tira-spec span { max-height: 3em; opacity: 0.82; }
+    .tp-tira:hover .tp-tira-ctr span { max-width: 7em; opacity: 1; }
+}
 }
 
 /* =======================================================
@@ -777,7 +813,7 @@
     .tp { --hy: 30svh; --hrx: 32deg; --hs: 0.88; }
     .tp-grilla { grid-template-columns: 1fr; row-gap: 28px; }
     .tp-grilla > * { grid-column: 1 / -1 !important; }
-    .tp .tp-cap .tp-cap-txt, .tp-forky .tp-dec, .tp-qr .tp-dec { display: flex; flex-direction: column; gap: 10px; }
+    .tp .tp-cap .tp-cap-txt, .tp-forky .tp-dec, .tp-qr .tp-dec, .tp-rebirth .tp-dec { display: flex; flex-direction: column; gap: 10px; }
     .tp-cap .tp-cap-n { align-self: flex-start; padding-bottom: 0; }
     .tp-segmentos { display: none; }
     .tp-hero-txt { left: var(--margen); right: var(--margen); top: 84px; gap: 14px; align-items: flex-start; text-align: left; translate: none; }
@@ -819,7 +855,7 @@
     .tp-forky-cuerpo { width: 18svh; }
     .tp-fijo.tp-grilla { align-content: center; padding-top: 64px; }
     .tp-dec { gap: 10px; }
-    .tp-forky .tp-dec p:not(.tp-porque), .tp-qr .tp-dec p:not(.tp-porque), .tp-qr .tp-datos, :is(.tp-qr) .tp-dec-num, .tp-cer .tp-dec p, .tp-arq .tp-dec p:not(.tp-porque), .tp-arq .tp-mas, :is(.tp-forky, .tp-cer, .tp-arq) .tp-dec-num { display: none; }
+    .tp-forky .tp-dec p:not(.tp-porque), .tp-qr .tp-dec p:not(.tp-porque), .tp-rebirth .tp-dec p:not(.tp-porque), .tp-rebirth .tp-dec-num, .tp-qr .tp-datos, :is(.tp-qr) .tp-dec-num, .tp-cer .tp-dec p, .tp-arq .tp-dec p:not(.tp-porque), .tp-arq .tp-mas, :is(.tp-forky, .tp-cer, .tp-arq) .tp-dec-num { display: none; }
     .tp-qr-palco { height: 46svh; }
     .tp-rollup { left: 0; }
     .tp-qr-tel { --w: min(32vw, 19svh); right: 0; }
@@ -838,16 +874,18 @@
     .tp-galeria-botones button { width: 40px; height: 40px; }
     .tp-galeria-pista { gap: 10px; margin-left: calc(var(--margen) * -1); padding-left: var(--margen); scroll-padding-left: var(--margen); }
     .tp-galeria-pista figure { height: 58vw; border-radius: 14px; }
-    .tp-rb-arriba { flex-direction: column; align-items: flex-start; justify-content: flex-end; height: 40svh; gap: 14px; }
-    .tp-rb-arriba .tp-cap-txt p, .tp-dec-rb p { display: none; }
-    .tp-dec-rb h3 { font-size: 20px; }
-    .tp-tiras { --base: 56svh; }
-    .tp-tira { padding: 12px 10px; }
-    .tp-tira .mono { font-size: 9px; }
-    .tp-tira b { font-size: 14px; letter-spacing: -0.02em; }
-    .tp-tira-iso { top: 38%; width: 56%; }
-    .tp-tira:first-child .tp-tira-iso { width: 80%; }
-    .tp-principal::after { display: none; }
+    .tp-rb-cap { height: 40svh; padding-bottom: 2svh; row-gap: 8px; }
+    .tp-rb-cap > * { grid-column: 1 !important; grid-row: auto !important; }
+    .tp-rb-cap .tp-cap-n { padding-bottom: 0; } .tp-rb-cap p { display: none; }
+    .tp-rb-dec { align-content: start; padding-top: 12svh; }
+    .tp-tiras { --base: 56svh; left: calc(var(--margen) * (1 - var(--alto))); width: calc(100% - 2 * var(--margen) * (1 - var(--alto))); bottom: 0; height: calc((var(--base) + var(--alto) * (100svh - var(--base))) * (1 - var(--b, 0)) + 50svh * var(--b, 0)); }
+    .tp-principal { flex-grow: 1; }
+    .tp-tira { padding: 10px 8px; }
+    .tp-tira-cab span:first-child, .tp-tira-tag, .tp-tira-uso, .tp-tira-spec { display: none; }
+    .tp-tira-pie b { font-size: 14px; letter-spacing: -0.02em; }
+    .tp-tira-ctr { padding: 3px 6px; font-size: 9px; } .tp-tira-ctr i { display: none; }
+    .tp-tira-iso { top: 36%; width: 56%; }
+    .tp-tira:first-child .tp-tira-iso { width: 84%; }
     .tp-arq .tp-dec { order: -1; }
     .tp-arq-hijos { grid-template-columns: 1fr 1fr; margin-top: 10px; }
     .tp-arq-ramas { display: none; }
@@ -877,6 +915,6 @@
    MOVIMIENTO REDUCIDO
    ======================================================= */
 @media (prefers-reduced-motion: reduce) {
-    .tp-wm-vivo.tap *, .tp-hero.entra *, .tp-forky-corre, .tp-sombra, .tp-hero-pista i, .tp-url-cursor, .tp-velocidad i, .tp-giro-linea::after { animation: none; }
+    .tp-tira-camino, .tp-wm-vivo.tap *, .tp-hero.entra *, .tp-forky-corre, .tp-sombra, .tp-hero-pista i, .tp-url-cursor, .tp-velocidad i, .tp-giro-linea::after { animation: none; }
     .tp-hero.entra * { animation: none !important; }
 }
