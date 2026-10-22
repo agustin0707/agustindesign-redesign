@@ -1,0 +1,488 @@
+<title>Manual Tap In</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Tres direcciones para reemplazar las láminas del manual: mostrar lo que el manual decidió, no el documento.
+       Cada variante es una escena fija que avanza con el scroll, sobre la grilla del caso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --noche: #100D20; --gris: #57556B;
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8;
+        --texto: #F4F3FB; --texto-2: rgba(238, 237, 254, 0.7); --texto-3: rgba(238, 237, 254, 0.42); --linea: rgba(155, 142, 240, 0.2);
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1); --curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+        color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--noche); color: var(--texto); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    .mono { font-family: var(--f-mono); font-size: 12px; font-weight: 400; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .fk { --svg: url('tp-forky.svg'); aspect-ratio: 142 / 158; } .cm { --svg: url('tp-cerebro.svg'); aspect-ratio: 622.7 / 597.42; } .wm { --svg: url('tp-wordmark.svg'); aspect-ratio: 389.87 / 150.6; }
+    .camino { position: relative; display: block; aspect-ratio: 1; border: 1.5px solid currentColor; border-radius: 50%; opacity: 0.6; animation: orbita 7s linear infinite; }
+    .camino::after { content: ''; position: absolute; top: -4px; left: 50%; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: currentColor; }
+    .mas { position: relative; display: block; aspect-ratio: 1; border: 1.5px dashed currentColor; border-radius: 50%; opacity: 0.75; }
+    .mas::before, .mas::after { content: ''; position: absolute; left: 50%; top: 50%; width: 40%; height: 1.5px; background: currentColor; translate: -50% -50%; } .mas::after { rotate: 90deg; }
+    @keyframes orbita { to { rotate: 360deg; } }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 40px; color: var(--texto-2); background: var(--papel); color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .vista { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc { display: block; }
+    /* Puente: el final de la decisión 05 (Connect) que funde a la noche del manual */
+    .puente { height: 40svh; background: linear-gradient(#5E4FDF, var(--noche)); }
+
+    /* --- ESCENA FIJA COMPARTIDA --- */
+    .esc { position: relative; height: var(--alto, 520svh); }
+    .fijo { position: sticky; top: 0; height: 100svh; min-height: 620px; align-content: center; overflow: hidden; }
+    .fijo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(55% 60% at 74% 50%, rgba(107, 92, 231, 0.22), transparent 70%); pointer-events: none; }
+    .riel, .txt, .pieza { position: relative; grid-row: 1; height: min(74svh, 700px); }
+    .riel { grid-column: 1 / span 3; display: flex; flex-direction: column; justify-content: space-between; }
+    .txt { grid-column: 4 / span 3; display: flex; flex-direction: column; justify-content: space-between; }
+    .pieza { grid-column: 8 / -1; }
+    .rot { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); }
+    .rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--health); }
+    .txt h3 { margin: 0 0 16px; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; text-wrap: balance; }
+    .txt > div > p { margin: 0; color: var(--texto-2); font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); letter-spacing: -0.01em; }
+    .pasos { display: flex; flex-direction: column; gap: 2px; }
+    .pasos button { display: flex; align-items: baseline; gap: 12px; padding: 0; border: 0; background: none; color: var(--texto-3); text-align: left; cursor: pointer; transition: color 200ms linear; }
+    .pasos b { font: 600 clamp(26px, 2.4vw, 40px) / 1.04 var(--f-marca); letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+    .pasos span { font: 400 12px var(--f-mono); }
+    .pasos button.on { color: #FFFFFF; } .pasos button:focus-visible { outline: 2px solid var(--health); outline-offset: 3px; border-radius: 4px; }
+    @media (hover: hover) { .pasos button:not(.on):hover { color: var(--texto-2); } }
+    /* Texto que cambia con el paso: sube desde abajo con un recorte, sin mover el layout */
+    .cambia { position: relative; display: grid; }
+    .cambia > * { grid-area: 1 / 1; opacity: 0; clip-path: inset(0 0 100% 0); translate: 0 14px; transition: opacity 200ms linear, clip-path 420ms var(--ease), translate 420ms var(--ease); }
+    .cambia > .on { opacity: 1; clip-path: inset(0 0 -10% 0); translate: 0 0; }
+
+    /* =======================================================
+       A · EL ADN, EN VIVO
+       ======================================================= */
+    /* Las cinco reglas del manual, una por paso. A la derecha, cada regla se demuestra con los isotipos reales */
+    .regla .mono { display: block; margin-bottom: 10px; color: var(--health); }
+    .regla b { display: block; margin-bottom: 8px; font: 600 clamp(30px, 3.2vw, 52px) / 0.98 var(--f-marca); letter-spacing: -0.045em; }
+    .regla span:last-child { display: block; color: var(--texto-2); font: 400 clamp(15px, 1.15vw, 17px) / 1.4 var(--f-marca); }
+    .lienzo { position: absolute; inset: 0; border-radius: 28px; background: linear-gradient(160deg, rgba(155, 142, 240, 0.08), rgba(155, 142, 240, 0.02)); box-shadow: inset 0 0 0 1px var(--linea); overflow: hidden; }
+    .lienzo::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(238, 237, 254, 0.1) 1px, transparent 1px); background-size: 24px 24px; -webkit-mask-image: radial-gradient(70% 60% at 50% 50%, #000, transparent); mask-image: radial-gradient(70% 60% at 50% 50%, #000, transparent); }
+    .demo { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; scale: 0.96; transition: opacity 260ms linear, scale 600ms var(--ease); pointer-events: none; }
+    .demo.on { opacity: 1; scale: 1; pointer-events: auto; }
+    .pie-demo { position: absolute; left: 24px; right: 24px; bottom: 20px; display: flex; justify-content: space-between; color: var(--texto-3); }
+    /* 1. Doble lectura: el cerebro se separa en sus cuatro piezas */
+    .cerebro { width: 58%; overflow: visible; --s: clamp(0, (var(--t0, 0) - 0.12) / 0.5, 1); }
+    .cerebro path { fill: #FFFFFF; transform: translate(calc(var(--dx) * var(--s) * 34px), calc(var(--dy) * var(--s) * 34px)); transition: fill 300ms linear; }
+    .cerebro path:nth-child(odd) { fill: color-mix(in srgb, #FFFFFF calc((1 - var(--s)) * 100%), var(--soft)); }
+    .lecturas { position: absolute; top: 24px; left: 24px; right: 24px; display: flex; justify-content: space-between; }
+    .lecturas span { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--linea); color: var(--texto-3); transition: color 200ms linear, background 200ms linear; }
+    .lecturas span.on { background: #FFFFFF; color: var(--tinta); }
+    @media (hover: hover) { .d0:hover .cerebro { --s: 1; } .d0:hover .cerebro path { transition: transform 500ms var(--curva), fill 300ms linear; } }
+    /* 2. Silueta plana: el mismo isotipo, de 200 a 16 px */
+    .tallas { display: flex; align-items: flex-end; gap: clamp(14px, 2vw, 32px); }
+    .tallas div { display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: clamp(0, (var(--t1, 0) * 6 - var(--i)), 1); translate: 0 calc((1 - clamp(0, (var(--t1, 0) * 6 - var(--i)), 1)) * 16px); }
+    .tallas .marca { width: var(--w); color: #FFFFFF; }
+    .tallas small { color: var(--texto-3); font: 400 11px var(--f-mono); }
+    /* 3. Movimiento y actitud: los cubiertos corren, con estela y sombra */
+    .corre { position: relative; width: 46%; }
+    .corre .marca { position: relative; z-index: 2; width: 100%; color: #FFFFFF; animation: zancada 520ms cubic-bezier(0.5, 0, 0.5, 1) infinite alternate; transform-origin: 50% 90%; }
+    .corre .eco { position: absolute; inset: 0; z-index: 1; opacity: 0.16; animation: zancada 520ms cubic-bezier(0.5, 0, 0.5, 1) 90ms infinite alternate; translate: -16% 0; }
+    .corre .eco + .eco { opacity: 0.07; translate: -32% 0; animation-delay: 180ms; }
+    .corre .sombra { position: absolute; left: 12%; right: 12%; bottom: -8%; height: 7%; border-radius: 50%; background: rgba(0, 0, 0, 0.45); filter: blur(6px); animation: sombra 520ms cubic-bezier(0.5, 0, 0.5, 1) infinite alternate; }
+    .corre .viento { position: absolute; left: -40%; top: 30%; display: flex; flex-direction: column; gap: 18px; }
+    .corre .viento i { display: block; height: 2px; width: 90px; border-radius: 2px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6)); animation: viento 700ms linear infinite; }
+    .corre .viento i:nth-child(2) { width: 60px; margin-left: 30px; animation-delay: 230ms; } .corre .viento i:nth-child(3) { width: 110px; animation-delay: 460ms; }
+    @keyframes zancada { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(-7%) rotate(3deg); } }
+    @keyframes sombra { from { scale: 1; opacity: 1; } to { scale: 0.8; opacity: 0.6; } }
+    @keyframes viento { from { translate: 40px 0; opacity: 0; } 30% { opacity: 1; } to { translate: -60px 0; opacity: 0; } }
+    /* 4. Abstracción media: de lo literal a lo críptico, el isotipo vive al medio */
+    .escala { position: relative; width: 84%; height: 60%; }
+    .escala .linea { position: absolute; left: 0; right: 0; bottom: 22%; height: 1px; background: var(--linea); }
+    .escala .linea i { position: absolute; top: -4px; width: 1px; height: 9px; background: var(--texto-3); } .escala .linea i:nth-child(1) { left: 0; } .escala .linea i:nth-child(2) { left: 25%; } .escala .linea i:nth-child(3) { left: 50%; background: #FFFFFF; height: 13px; top: -6px; } .escala .linea i:nth-child(4) { left: 75%; } .escala .linea i:nth-child(5) { left: 100%; }
+    .escala .punto { position: absolute; bottom: 22%; left: calc(clamp(0, var(--t3, 0) / 0.6, 1) * 50%); width: 14px; height: 14px; margin: 0 0 -7px -7px; border-radius: 50%; background: var(--health); box-shadow: 0 0 0 6px rgba(155, 142, 240, 0.25); }
+    .escala .ext { position: absolute; bottom: calc(22% + 30px); display: flex; flex-direction: column; align-items: center; gap: 12px; width: 25%; color: var(--texto-3); }
+    .escala .ext svg { width: 80%; overflow: visible; } .escala .ext svg * { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .escala .lit { left: -12.5%; } .escala .cri { right: -12.5%; }
+    .escala .medio { position: absolute; left: 50%; bottom: calc(22% + 30px); width: 34%; translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 14px; opacity: clamp(0, (var(--t3, 0) - 0.5) / 0.2, 1); scale: calc(0.85 + 0.15 * clamp(0, (var(--t3, 0) - 0.5) / 0.2, 1)); }
+    .escala .medio .marca { width: 78%; color: #FFFFFF; }
+    .escala small { font: 400 11px var(--f-mono); }
+    .escala .medio small { color: var(--health); }
+    /* 5. Sin ser obvio: lo que se ve y lo que se entiende */
+    .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 88%; }
+    .dos > div { position: relative; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 3 / 4; padding: 18px; border-radius: 22px; background: radial-gradient(90% 70% at 50% 30%, color-mix(in srgb, var(--c) 70%, #FFFFFF 0%), var(--c)); box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.14); overflow: hidden; }
+    .dos .marca { width: 58%; margin: auto; color: #FFFFFF; transition: scale 500ms var(--curva); }
+    .dos dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font: 400 11px var(--f-mono); color: rgba(255, 255, 255, 0.7); }
+    .dos dd { margin: 0; color: #FFFFFF; font: 500 13px var(--f-marca); }
+    .dos > div { opacity: clamp(0, var(--t4, 0) * 4 - var(--i), 1); translate: 0 calc((1 - clamp(0, var(--t4, 0) * 4 - var(--i), 1)) * 20px); }
+    @media (hover: hover) { .dos > div:hover .marca { scale: 1.08; } }
+
+    /* =======================================================
+       B · DEL MANUAL AL CÓDIGO
+       ======================================================= */
+    /* El manual se escribe como variables en un editor; un componente vacío se arma con cada línea y al final
+       cambia de producto solo con cambiar --tono */
+    .editor { position: absolute; left: 0; right: 10%; top: 0; border-radius: 16px; background: #17142B; box-shadow: inset 0 0 0 1px var(--linea), 0 50px 100px -40px rgba(0, 0, 0, 0.9); overflow: hidden; }
+    .editor .cab { display: flex; align-items: center; gap: 7px; height: 38px; padding: 0 14px; border-bottom: 1px solid var(--linea); color: var(--texto-3); }
+    .editor .cab i { width: 10px; height: 10px; border-radius: 50%; background: rgba(238, 237, 254, 0.16); } .editor .cab span { margin-left: 10px; }
+    .codigo { margin: 0; padding: 16px 0; counter-reset: l; font: 400 clamp(11.5px, 0.95vw, 14px) / 1.9 var(--f-mono); }
+    .codigo div { position: relative; display: block; padding: 0 18px 0 52px; white-space: pre; clip-path: inset(0 calc((1 - var(--l, 0)) * 100%) 0 0); color: #CFCBEA; }
+    .codigo div::before { counter-increment: l; content: counter(l); position: absolute; left: 0; width: 36px; text-align: right; color: rgba(238, 237, 254, 0.24); }
+    .codigo .p { color: #9B8EF0; } .codigo .v { color: #F4F3FB; } .codigo .s { color: #7FD7B5; }
+    .codigo .chip { display: inline-block; vertical-align: -1px; margin-left: 8px; width: 11px; height: 11px; border-radius: 3px; background: var(--c); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); }
+    .codigo [data-tono] { cursor: pointer; } .codigo [data-tono].activo { background: rgba(155, 142, 240, 0.12); }
+    @media (hover: hover) { .codigo [data-tono]:hover { background: rgba(155, 142, 240, 0.08); } }
+    .codigo .cursor::after { content: ''; display: inline-block; width: 7px; height: 1.1em; margin-left: 2px; background: var(--health); animation: parpadeo 1s steps(1) infinite; }
+    @keyframes parpadeo { 50% { opacity: 0; } }
+    .comp { --tono: #3A3750; position: absolute; right: 0; bottom: 0; width: 56%; padding: 0; border-radius: 6px; background: #FFFFFF; color: var(--tinta); box-shadow: 0 0 0 1px rgba(16, 13, 32, 0.2), 0 50px 90px -30px rgba(0, 0, 0, 0.85); overflow: hidden; font-family: var(--f-mono); transition: border-radius 600ms var(--curva), --tono 400ms linear; }
+    @property --tono { syntax: '<color>'; inherits: true; initial-value: #3A3750; }
+    .comp .band { display: flex; align-items: center; gap: 10px; padding: 18px; background: var(--tono); color: #FFFFFF; transition: background 400ms linear; }
+    .comp .band .iso { position: relative; width: 26px; height: 28px; } .comp .band .iso > * { position: absolute; inset: 0; margin: auto; width: 100%; opacity: 0; scale: 0.6; transition: opacity 200ms linear, scale 400ms var(--curva); } .comp .band .iso > .on { opacity: 1; scale: 1; }
+    .comp .band .camino { width: 22px; height: 22px; }
+    .comp .band .wm { width: 64px; }
+    .comp .band small { margin-left: 2px; font-size: 11px; opacity: 0.85; }
+    .comp .cuerpo { padding: 18px; display: grid; gap: 6px; }
+    .comp .cuerpo span { font-size: 11px; color: #6E6B84; } .comp .cuerpo b { font-size: clamp(22px, 2vw, 30px); font-weight: 500; letter-spacing: -0.03em; }
+    .comp .cuerpo .boton { margin-top: 10px; justify-self: start; padding: 10px 16px; border-radius: 4px; background: var(--tono); color: #FFFFFF; font-size: 12px; transition: border-radius 600ms var(--curva); }
+    .comp:not(.color) .band, .comp:not(.color) .boton { background: #D9D7E3; color: #8A889E; }
+    .comp.fuente { font-family: var(--f-marca); } .comp.fuente .cuerpo b { font-weight: 600; letter-spacing: -0.04em; }
+    .comp.radio { border-radius: 22px; } .comp.radio .cuerpo .boton { border-radius: 999px; }
+    .comp .tag { position: absolute; top: 10px; right: 10px; padding: 3px 8px; border-radius: 999px; background: rgba(0, 0, 0, 0.25); color: #FFFFFF; font: 400 10px var(--f-mono); }
+
+    /* =======================================================
+       C · UN SISTEMA QUE ESCALA
+       ======================================================= */
+    /* Cuatro aplicaciones por producto se arman solas con las reglas; al final, la columna del próximo producto ya
+       tiene su lugar. Pasar sobre una columna la destaca */
+    .matriz { position: absolute; left: 0; right: 0; top: 50%; translate: 0 -50%; display: grid; grid-template-columns: 64px repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .matriz .cab-c { display: flex; align-items: center; gap: 8px; padding-bottom: 6px; color: var(--texto-2); border: 0; background: none; cursor: pointer; text-align: left; }
+    .matriz .cab-c i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3); }
+    .matriz .cab-f { display: flex; align-items: center; color: var(--texto-3); }
+    .celda { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: 18px; background: radial-gradient(90% 80% at 50% 20%, color-mix(in srgb, var(--c) 80%, #FFFFFF 12%), var(--c)); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); color: #FFFFFF; opacity: 0; clip-path: inset(100% 0 0 0 round 18px); transition: opacity 200ms linear, clip-path 600ms var(--ease), filter 200ms linear, scale 300ms var(--curva); }
+    .celda.on { opacity: 1; clip-path: inset(0 0 0 0 round 18px); }
+    .celda.libre { background: transparent; box-shadow: none; outline: 1.5px dashed rgba(155, 142, 240, 0.5); outline-offset: -1.5px; color: var(--texto-3); }
+    .celda.libre.llena { background: radial-gradient(90% 80% at 50% 20%, #3A3756, #232036); outline-color: transparent; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); color: #FFFFFF; }
+    .matriz:has(.cab-c[data-col="0"]:hover) .celda:not([data-col="0"]), .matriz:has(.cab-c[data-col="1"]:hover) .celda:not([data-col="1"]), .matriz:has(.cab-c[data-col="2"]:hover) .celda:not([data-col="2"]), .matriz:has(.cab-c[data-col="3"]:hover) .celda:not([data-col="3"]),
+    .matriz[data-fija="0"] .celda:not([data-col="0"]), .matriz[data-fija="1"] .celda:not([data-col="1"]), .matriz[data-fija="2"] .celda:not([data-col="2"]), .matriz[data-fija="3"] .celda:not([data-col="3"]) { filter: saturate(0.2) brightness(0.55); }
+    @media (hover: hover) { .matriz:has(.celda[data-col="0"]:hover) .celda:not([data-col="0"]), .matriz:has(.celda[data-col="1"]:hover) .celda:not([data-col="1"]), .matriz:has(.celda[data-col="2"]:hover) .celda:not([data-col="2"]), .matriz:has(.celda[data-col="3"]:hover) .celda:not([data-col="3"]) { filter: saturate(0.2) brightness(0.55); } }
+    .matriz .cab-c[aria-pressed="true"] { color: #FFFFFF; }
+    /* Las cuatro aplicaciones */
+    .ap-ico { width: 46%; aspect-ratio: 1; display: grid; place-items: center; border-radius: 23%; background: rgba(255, 255, 255, 0.16); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25), 0 10px 20px -10px rgba(0, 0, 0, 0.5); }
+    .ap-ico > * { width: 58%; }
+    .ap-lock { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; width: 80%; } .ap-lock > :first-child { flex: none; width: 20%; } .ap-lock .wm { flex: none; width: 60%; } .ap-lock small { flex: 0 0 100%; text-align: center; font: 500 clamp(9px, 0.7vw, 11px) / 1 var(--f-marca); opacity: 0.85; }
+    .ap-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; background: #FFFFFF; color: var(--c); font: 600 clamp(10px, 0.8vw, 12px) var(--f-marca); box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.5); }
+    .ap-btn::after { content: '→'; }
+    .ap-aviso { display: grid; grid-template-columns: 22% 1fr; gap: 8px; align-items: center; width: 84%; padding: 8px; border-radius: 12px; background: rgba(255, 255, 255, 0.94); box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5); }
+    .ap-aviso > span { aspect-ratio: 1; display: grid; place-items: center; border-radius: 26%; background: var(--c); color: #FFFFFF; } .ap-aviso > span > * { width: 60%; }
+    .ap-aviso i { display: block; height: 5px; border-radius: 3px; background: #D9D7E3; } .ap-aviso i:first-child { width: 70%; margin-bottom: 5px; background: var(--tinta); opacity: 0.8; } .ap-aviso i + i { width: 90%; }
+    .celda.libre:not(.llena) > * { opacity: 0; }
+    .nota-libre { position: absolute; right: 0; bottom: 0; color: var(--health); opacity: 0; transition: opacity 300ms linear; } .nota-libre.on { opacity: 1; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(244, 243, 250, 0.12); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 42ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 120px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+    .cero { margin-top: 20px; padding: 16px 20px; border-radius: 14px; background: rgba(238, 237, 254, 0.04); color: rgba(238, 237, 254, 0.72); }
+    .cero b { color: #FFFFFF; font-weight: 500; }
+
+    @media (prefers-reduced-motion: reduce) { .corre .marca, .corre .eco, .corre .sombra, .corre .viento i, .camino { animation: none; } }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); }
+        .grilla > * { grid-column: 1 !important; }
+        .fijo { align-content: start; padding-top: 10svh; row-gap: 14px; min-height: 0; }
+        .riel, .txt, .pieza { grid-row: auto; height: auto; }
+        .riel { order: 2; } .txt { order: 1; } .pieza { order: 3; height: 48svh; }
+        .rot { display: none; }
+        .pasos { flex-direction: row; gap: 14px; } .pasos b { font-size: 24px; } .pasos span { display: none; }
+        .txt > div:first-child { display: none; }
+        .regla b { font-size: 30px; }
+        .vb .txt > div:first-child, .vc .txt > div:first-child { display: block; } .vb .txt > div > p, .vc .txt > div > p { display: none; }
+        .vb .pasos span, .vc .pasos span { display: none; }
+        .editor { right: 0; } .comp { width: 60%; bottom: -12%; } .comp .band { padding: 12px; } .comp .cuerpo { padding: 12px; gap: 2px; }
+        .pie-demo { flex-wrap: wrap; gap: 4px 12px; } .pie-demo span:first-child { display: none; }
+        .dos { width: 92%; gap: 10px; } .dos > div { aspect-ratio: auto; padding: 14px; gap: 14px; } .dos .marca { width: 46%; } .dos dl { grid-template-columns: minmax(0, 1fr); gap: 2px; } .dos dd { font-size: 12px; margin-bottom: 6px; }
+        .nota-libre { bottom: -30px; font-size: 10px; }
+        .matriz { grid-template-columns: 0 repeat(4, minmax(0, 1fr)); gap: 6px; } .matriz .cab-f { visibility: hidden; } .celda { border-radius: 12px; }
+        .matriz .cab-c { font-size: 10px; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Tap In · El manual</span><p>Tres maneras de reemplazar las láminas: mostrar lo que el manual decidió, no el documento. Cada una es una escena que avanza con el scroll; cambia con el selector.</p></div>
+    <div class="puente"></div>
+
+    <!-- A · EL ADN, EN VIVO -->
+    <section class="vista va esc" data-esc="a" style="--alto: 600svh">
+        <div class="fijo grilla">
+            <div class="riel">
+                <span class="rot mono">El manual · El ADN del sistema</span>
+                <div class="pasos" data-pasos>
+                    <button type="button" data-ir="0"><b>01</b><span>Doble lectura</span></button>
+                    <button type="button" data-ir="1"><b>02</b><span>Silueta plana</span></button>
+                    <button type="button" data-ir="2"><b>03</b><span>Movimiento</span></button>
+                    <button type="button" data-ir="3"><b>04</b><span>Abstracción media</span></button>
+                    <button type="button" data-ir="4"><b>05</b><span>Sin ser obvio</span></button>
+                </div>
+            </div>
+            <div class="txt">
+                <div><h3>Cinco reglas para cada símbolo</h3><p>Más que colores y tamaños, el manual dejó por escrito por qué funcionan los isotipos, para que el próximo producto nazca de las mismas reglas</p></div>
+                <div class="cambia regla" aria-live="polite">
+                    <div data-paso="0"><span class="mono">Regla 01 / 05</span><b>Doble lectura</b><span>El objeto esconde un segundo significado</span></div>
+                    <div data-paso="1"><span class="mono">Regla 02 / 05</span><b>Silueta plana</b><span>Funciona como mancha, sin decoraciones</span></div>
+                    <div data-paso="2"><span class="mono">Regla 03 / 05</span><b>Movimiento y actitud</b><span>Nada estático</span></div>
+                    <div data-paso="3"><span class="mono">Regla 04 / 05</span><b>Abstracción media</b><span>Ni literal ni críptico</span></div>
+                    <div data-paso="4"><span class="mono">Regla 05 / 05</span><b>Sin ser obvio</b><span>El símbolo más inteligente, no el más directo</span></div>
+                </div>
+            </div>
+            <div class="pieza">
+                <div class="lienzo">
+                    <div class="demo d0" data-paso="0">
+                        <div class="lecturas mono"><span data-lec="0">A la rápida · un cerebro</span><span data-lec="1">De cerca · cuatro piezas</span></div>
+                        <svg class="cerebro" viewBox="0 0 622.7 597.42" data-cerebro></svg>
+                        <div class="pie-demo mono"><span>Connect</span><span>Pasa el cursor</span></div>
+                    </div>
+                    <div class="demo d1" data-paso="1">
+                        <div class="tallas">
+                            <div style="--i:0; --w:clamp(90px, 10vw, 170px)"><span class="marca fk"></span><small>200 px</small></div>
+                            <div style="--i:1; --w:clamp(48px, 4.6vw, 80px)"><span class="marca fk"></span><small>96</small></div>
+                            <div style="--i:2; --w:32px"><span class="marca fk"></span><small>48</small></div>
+                            <div style="--i:3; --w:22px"><span class="marca fk"></span><small>24</small></div>
+                            <div style="--i:4; --w:16px"><span class="marca fk"></span><small>16</small></div>
+                        </div>
+                        <div class="pie-demo mono"><span>Campus</span><span>Una mancha, sin degradés ni detalles</span></div>
+                    </div>
+                    <div class="demo d2" data-paso="2">
+                        <div class="corre"><span class="viento"><i></i><i></i><i></i></span><span class="marca fk eco"></span><span class="marca fk eco"></span><span class="marca fk"></span><span class="sombra"></span></div>
+                        <div class="pie-demo mono"><span>Campus</span><span>Los cubiertos corren: comida sin filas</span></div>
+                    </div>
+                    <div class="demo d3" data-paso="3">
+                        <div class="escala">
+                            <div class="ext lit"><svg viewBox="0 0 60 60"><path d="M18 6v16a6 6 0 0 0 12 0V6M24 6v48"/><path d="M40 6c6 4 8 12 8 22h-8v26"/></svg><small>Literal</small></div>
+                            <div class="medio"><span class="marca fk"></span><small>Aquí</small></div>
+                            <div class="ext cri"><svg viewBox="0 0 60 60"><circle cx="22" cy="26" r="13"/><circle cx="38" cy="34" r="13"/><path d="M10 52h40"/></svg><small>Críptico</small></div>
+                            <div class="linea"><i></i><i></i><i></i><i></i><i></i></div>
+                            <span class="punto"></span>
+                        </div>
+                    </div>
+                    <div class="demo d4" data-paso="4">
+                        <div class="dos">
+                            <div style="--c:#4A3CAE; --i:0"><span class="mono">Campus</span><span class="marca fk"></span><dl><dt>Se ve</dt><dd>Un tenedor y un cuchillo</dd><dt>Se entiende</dt><dd>Comida sin filas</dd></dl></div>
+                            <div style="--c:#6B5CE7; --i:1"><span class="mono">Connect</span><span class="marca cm"></span><dl><dt>Se ve</dt><dd>Un cerebro</dd><dt>Se entiende</dt><dd>Piezas que se conectan</dd></dl></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- B · DEL MANUAL AL CÓDIGO -->
+    <section class="vista vb esc" data-esc="b" style="--alto: 520svh">
+        <div class="fijo grilla">
+            <div class="riel">
+                <span class="rot mono">El manual · En variables</span>
+                <div class="pasos" data-pasos>
+                    <button type="button" data-ir="0"><b>01</b><span>Color</span></button>
+                    <button type="button" data-ir="1"><b>02</b><span>Familia</span></button>
+                    <button type="button" data-ir="2"><b>03</b><span>Forma</span></button>
+                    <button type="button" data-ir="3"><b>04</b><span>Producto</span></button>
+                </div>
+            </div>
+            <div class="txt">
+                <div><h3>Del PDF al código</h3><p>El manual no se quedó en un documento: cada regla es una variable, el mismo lenguaje con que después programé la web</p></div>
+                <div class="cambia regla" aria-live="polite">
+                    <div data-paso="0"><span class="mono">01 / 04</span><b>Cuatro tonos</b><span>Uno por producto, de oscuro a claro</span></div>
+                    <div data-paso="1"><span class="mono">02 / 04</span><b>Una familia</b><span>Poppins, sin excepciones</span></div>
+                    <div data-paso="2"><span class="mono">03 / 04</span><b>Una forma</b><span>Esquinas redondeadas, como la tipografía</span></div>
+                    <div data-paso="3"><span class="mono">04 / 04</span><b>Una línea cambia el producto</b><span>Todo lo demás se hereda</span></div>
+                </div>
+            </div>
+            <div class="pieza">
+                <div class="editor">
+                    <div class="cab mono"><i></i><i></i><i></i><span>marca.css</span></div>
+                    <div class="codigo">
+                        <div data-l="0"><span class="p">:root</span> {</div>
+                        <div data-l="1" data-tono="#2D2560" data-n="Empresa">  <span class="p">--empresa</span>: <span class="v">#2D2560</span>; <i class="chip" style="--c:#2D2560"></i></div>
+                        <div data-l="2" data-tono="#4A3CAE" data-n="Campus">  <span class="p">--campus</span>:  <span class="v">#4A3CAE</span>; <i class="chip" style="--c:#4A3CAE"></i></div>
+                        <div data-l="3" data-tono="#6B5CE7" data-n="Connect">  <span class="p">--connect</span>: <span class="v">#6B5CE7</span>; <i class="chip" style="--c:#6B5CE7"></i></div>
+                        <div data-l="4" data-tono="#9B8EF0" data-n="Health">  <span class="p">--health</span>:  <span class="v">#9B8EF0</span>; <i class="chip" style="--c:#9B8EF0"></i></div>
+                        <div data-l="5">  <span class="p">--familia</span>: <span class="s">'Poppins'</span>;</div>
+                        <div data-l="6">  <span class="p">--radio</span>:   <span class="v">22px</span>;</div>
+                        <div data-l="7">}</div>
+                        <div data-l="8"> </div>
+                        <div data-l="9"><span class="p">.producto</span> { <span class="p">--tono</span>: <span class="v">var(--<b data-tono-n style="font-weight:400">connect</b>)</span>; }</div>
+                    </div>
+                </div>
+                <div class="comp" data-comp>
+                    <div class="band"><span class="iso"><span class="marca fk" data-iso="Campus"></span><span class="marca cm on" data-iso="Connect"></span><span class="camino" data-iso="Health"></span><span class="marca wm" data-iso="Empresa" style="width:0"></span></span><span class="marca wm"></span><small data-comp-n>Connect</small></div>
+                    <div class="cuerpo"><span>Saldo disponible</span><b>$12.400</b><span>Casino · actualizado hoy</span><span class="boton">Recargar</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- C · UN SISTEMA QUE ESCALA -->
+    <section class="vista vc esc" data-esc="c" style="--alto: 460svh">
+        <div class="fijo grilla">
+            <div class="riel">
+                <span class="rot mono">El manual · Lo que asegura</span>
+                <div class="pasos" data-pasos>
+                    <button type="button" data-ir="0"><b>01</b><span>Campus</span></button>
+                    <button type="button" data-ir="1"><b>02</b><span>Connect</span></button>
+                    <button type="button" data-ir="2"><b>03</b><span>Health</span></button>
+                    <button type="button" data-ir="3"><b>04</b><span>El próximo</span></button>
+                </div>
+            </div>
+            <div class="txt">
+                <div><h3>Un sistema que escala</h3><p>El manual asegura que cada producto se arme solo con las reglas: el mismo ícono, el mismo lockup, el mismo botón y el mismo aviso, en su tono</p></div>
+                <div class="cambia regla" aria-live="polite">
+                    <div data-paso="0"><span class="mono">01 / 04</span><b>Campus</b><span>Comida sin filas</span></div>
+                    <div data-paso="1"><span class="mono">02 / 04</span><b>Connect</b><span>El ecosistema escolar</span></div>
+                    <div data-paso="2"><span class="mono">03 / 04</span><b>Health</b><span>En definición, ya con su tono</span></div>
+                    <div data-paso="3"><span class="mono">04 / 04</span><b>El próximo ya tiene lugar</b><span>Sin rediseñar nada</span></div>
+                </div>
+            </div>
+            <div class="pieza">
+                <div class="matriz" data-matriz></div>
+                <span class="nota-libre mono" data-nota>Columna libre · se llena con las mismas reglas</span>
+            </div>
+        </div>
+    </section>
+    <div class="puente" style="background: linear-gradient(var(--noche), var(--noche))"></div>
+</div>
+
+<nav class="selector" aria-label="Variantes">
+    <button type="button" data-v-ir="a" aria-pressed="true"><b>A</b><span>El ADN</span></button>
+    <button type="button" data-v-ir="b" aria-pressed="false"><b>B</b><span>Al código</span></button>
+    <button type="button" data-v-ir="c" aria-pressed="false"><b>C</b><span>Escala</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit del manual</h2>
+    <div class="bloque">
+        <p>El problema no es cómo se muestran las láminas: es que muestran el documento y no lo que decidió.</p>
+        <ul class="lista">
+            <li><span class="mono">Formato</span><span>Seis láminas 16:9 en un riel horizontal: se lee como un PDF pegado en la página</span><span>Ninguna lámina: el contenido se reconstruye en vivo, con la grilla y el motion del caso</span></li>
+            <li><span class="mono">Lectura</span><span>A 62vw el texto de las láminas queda en 8 a 10 px: nadie lo lee</span><span>Texto real del sitio, a tamaño de lectura</span></li>
+            <li><span class="mono">Repetición</span><span>Sistema, paleta y cerebro ya los contaron las decisiones 03, 04 y 05: tres de seis láminas repiten</span><span>Mostrar solo lo nuevo: el ADN (cinco reglas) y cómo el sistema escala</span></li>
+            <li><span class="mono">Detalle</span><span>Se notan errores: "Ligth" en la lámina de tipografía y la del cerebro titulada "Paleta de Color"</span><span>Si no se muestran las láminas, no se muestran sus errores</span></li>
+            <li><span class="mono">Interacción</span><span>Solo un riel que avanza y un contador</span><span>Pasos clicables, demostraciones que reaccionan al cursor y al scroll</span></li>
+            <li><span class="mono">Relato</span><span>Es el único momento del caso que muestra un entregable en vez de una decisión</span><span>Contarlo como decisión: qué asegura el manual y por qué</span></li>
+        </ul>
+    </div>
+    <h2>Direcciones</h2>
+    <div class="bloque">
+        <p>Tres maneras de mostrar lo que el manual decidió. Elige con el selector y baja por cada escena.</p>
+        <div class="ops">
+            <button type="button" class="op" data-v-ir="a" aria-pressed="true"><span class="mono">A · El ADN, en vivo</span><strong>Las cinco reglas, demostradas</strong><p>Las cinco reglas del manual, una por paso, con los números grandes de la decisión 05. Cada una se demuestra con los isotipos reales: el cerebro que se separa en piezas, la silueta de 200 a 16 px, los cubiertos que corren, la escala de literal a críptico y lo que se ve frente a lo que se entiende.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-v-ir="b" aria-pressed="false"><span class="mono">B · Del manual al código</span><strong>El sistema, en variables</strong><p>El manual se escribe como CSS en un editor y un componente vacío se arma con cada línea: color, Poppins, esquinas. Al final, una sola línea cambia el producto. Es el puente al capítulo 03 y al código como diferencial. Clic en un color lo aplica.</p></button>
+            <button type="button" class="op" data-v-ir="c" aria-pressed="false"><span class="mono">C · Un sistema que escala</span><strong>Cuatro piezas por producto</strong><p>Una matriz: ícono, lockup, botón y aviso para Campus, Connect y Health se arman con el scroll; la cuarta columna aparece vacía y se llena: el próximo producto ya tiene lugar. Pasar o hacer clic sobre una columna la destaca.</p></button>
+        </div>
+        <p class="cero"><b>Opción cero:</b> sacar la sección. Las decisiones 03, 04 y 05 ya cuentan el sistema; el caso pasaría directo del cerebro a la web. Cualquiera de las tres direcciones también puede reemplazar la sección completa sin mencionar el manual.</p>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · MANUAL TAP IN
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const curva = t => 1 - Math.pow(1 - t, 3);
+
+        /* --- 1. LAS CUATRO PIEZAS DEL CEREBRO, CADA UNA CON SU DIRECCIÓN DE SALIDA --- */
+        const svg = document.querySelector('[data-cerebro]');
+        svg.innerHTML = ["M298.51,175.57h29.55c8.05,0,21.61-16.17,36.18-17.63,63.98-6.42,64.01,90.39.89,84.66-17.96-1.63-26.72-18.51-43.24-18.51h-23.38v117.32h-83.8c2.16-4.75,6.04-8.45,8.65-12.96,28.9-50.03-16.35-110.51-72.34-97.04-40.98,9.86-62.25,55.94-43.2,93.84l10.74,16.16H36.96c-11.37,0-25.97-11.14-30.91-21.14-17.98-36.39,6.09-83.55,46.35-89.13-9.79-44.36,16.54-92.96,59.98-106.74-2.47-6.61-5.67-13.01-6.84-20.06-6-36.1,23.41-69.99,60.21-67.33,23.46,1.69,40.36,18.75,38.35,42.83-.72,8.61-12.22,25.77,2.28,25.98,8.72.13,15.15-2.21,25.48.98,7.01,2.17,17.02,13.08,23.03,7.06,10.2-10.23-11.61-20.14-19.23-22.33-5.62-1.61-11.6-2.48-17.43-2.42,6.36-23.23-4.22-48.82-25.48-60.08-1.33-2.27,7.23-10.51,9.19-12.22,23.75-20.78,70.72-25.42,89.35,4.1,3.07,4.87,7.21,16.3,7.21,21.9v132.76ZM147.47,156.4c-21.6,2.43-42.89,17.83-53.44,36.54-3.7,6.56-16.44,34.24-.71,33.75,8.44-.26,8.94-12.86,11.59-19.34,10.32-25.22,34.84-37.88,61.61-35.21,5.91.59,15.09,5.54,19.73,3.63,6.06-2.49,6.44-9.99,1.04-13.82-8.42-5.97-29.74-6.69-39.83-5.55Z", "M324.97,36.63c4.61-34.06,46.39-42.08,74.06-32.6,17.91,6.14,30.7,20.13,39.43,36.49,52.29-18.72,98.25,35.06,71.75,83.88,37.92,11.93,64.02,51.23,61.75,90.87,0,0-13.05-.63-23.18,2.85-17.1,5.87-31.65,24.7-32.4,43.02-21.89-9.86-48.75-8.58-67.84,6.69-5.57,4.46-16.52,13.68-8.22,20.67,7.36,6.19,13.76-5.15,19.67-9.21,16.76-11.51,36.67-11.26,54.03-1.23,5.14,2.97,7.22,8.13,14.77,5.63,7.26-2.41,2.6-12.9,2.59-17.69-.03-27.01,27.3-40.95,51.14-31.74,32.88,12.7,49.92,53.31,34.31,85.44-5.08,10.45-19.27,21.72-31.21,21.72h-140.7v26.02c0,15.99,20.69,24.2,18.51,50.27-4.92,58.67-99.47,45.22-83.53-15.61,2.85-10.89,16.5-24.12,16.5-32.01v-28.67h-71.45v-92.62c3.93,1.68,6.96,5.16,10.66,7.43,63.44,38.94,132.69-41.98,85.06-98.3-24.75-29.26-67.08-30.59-95.72-6.16V36.63ZM434.93,128.5c4.39-4.46,2.95-17.79,1.83-23.71-3.44-18.18-18.37-35.56-35.7-41.93-8.44-3.1-35.16-9.24-29.82,7.78,1.87,5.98,8.72,3.78,13.17,4.47,20.2,3.13,36.1,17.09,37.58,38.28.34,4.79-1.84,9.67.53,13.6,2.53,4.2,8.96,5.02,12.41,1.52Z", "M190.89,366.99h94.39c5.65,8.51,7.7,15.09,4.46,25.19-6.29,19.61-26.8,24.81-45.46,23.32-6.64-.53-21.09-6.93-22.49,4.06-.52,4.09,5.53,14.9,6.15,21.1,2.14,21.26-6.79,37.72-24.42,48.78-5.59,3.51-12.58,3.22-10.82,12.91,2.14,11.76,20.78-.15,25.83-4.07,20.34-15.81,29.84-41.63,23.53-66.89,0,0,10.7.22,18.08,0,23.72-.7,37.91-19.62,38.37-19.4l.04,112.5c-1.84,54.12-51.4,84.86-102.17,68.58-27.91-8.95-54.36-38.39-54.9-68.65-.1-5.34,2.84-11.11-.85-15.86-4.41-5.69-12.67-3.16-14.07,3.6-2.72,13.17.86,26.6,4.35,39.19-38.16,2.3-70.17-32.47-62.54-70.47,25.75,4.73,56.91-6.11,65.88-32.49,2.89-8.5,5.99-33.47-8.88-30.05-8.82,2.03-4.16,11.36-4.36,16.73-.45,12.19-11.03,24.16-22.25,28.1-42.69,15-81.28-34.65-73.29-75.06,1.92-9.72,12.63-21.13,22.98-21.13h93.95v-26.02c0-9.6-8.24-16.45-12.5-23.67-21.36-36.23,16.19-77.74,54.56-60.73,22.14,9.81,31.1,37.6,19.85,58.98-3.66,6.96-13.39,14.97-13.39,23.66v27.79Z", "M371.72,366.99c-25.11,28.62-21.22,73.87,9.78,96.52,54.69,39.95,125.52-16.93,99.76-78.59l-10.74-17.93h103.65c8.63,0,18.9,9.14,21.78,17.04,8.39,23.07-4.23,52.96-22.21,68.1-7.29,6.14-15.31,9.28-23.78,13.33,9.34,22.52,6.79,47.73-9.73,66.07-15.12,16.79-41.71,25.17-63.25,16.45-19.26-7.8-22.44-34.17-5.87-46.75,5.41-4.11,14.25-5.02,11.36-14.32-4.09-13.12-23.55,3.1-28.19,8.94-14.77,18.6-12.92,44.42,5.24,59.88,1.6,1.36,8.62,5.23,8.31,6.57-.39,1.67-13.16,14.48-15.42,16.36-31.25,26.11-83.71,25.41-110.65-6.62-6.45-7.67-16.79-27.12-16.79-37.02v-168.04h46.75Z"].map(d => `<path d="${d}"/>`).join('');
+        requestAnimationFrame(() => svg.querySelectorAll('path').forEach(p => {
+            const b = p.getBBox(), cx = b.x + b.width / 2 - 311, cy = b.y + b.height / 2 - 299, m = Math.hypot(cx, cy) || 1;
+            p.style.setProperty('--dx', (cx / m).toFixed(3)); p.style.setProperty('--dy', (cy / m).toFixed(3));
+        }));
+
+        /* --- 2. C: LA MATRIZ DE APLICACIONES --- */
+        const prods = [['Campus', '#4A3CAE', '<span class="marca fk"></span>'], ['Connect', '#6B5CE7', '<span class="marca cm"></span>'], ['Health', '#9B8EF0', '<span class="camino"></span>'], ['+1', '#2A2740', '<span class="mas"></span>']];
+        const aps = [['Ícono', i => `<span class="ap-ico">${i}</span>`], ['Lockup', (i, n) => `<span class="ap-lock">${i}<span class="marca wm"></span><small>${n}</small></span>`], ['Botón', () => `<span class="ap-btn">Pagar</span>`], ['Aviso', i => `<span class="ap-aviso"><span>${i}</span><span><i></i><i></i></span></span>`]];
+        const matriz = document.querySelector('[data-matriz]');
+        matriz.innerHTML = '<span></span>' + prods.map(([n, c], k) => `<button type="button" class="cab-c mono" data-col="${k}" aria-pressed="false" style="--c:${c}"><i></i>${n}</button>`).join('') +
+            aps.map(([an, f], r) => `<span class="cab-f mono">${an}</span>` + prods.map(([n, c, i], k) => `<span class="celda${k === 3 ? ' libre' : ''}" data-col="${k}" data-r="${r}" style="--c:${c}">${f(i, n === '+1' ? 'Nuevo' : n)}</span>`).join('')).join('');
+        matriz.querySelectorAll('.cab-c').forEach(b => b.addEventListener('click', () => {
+            const ya = matriz.dataset.fija === b.dataset.col; delete matriz.dataset.fija;
+            matriz.querySelectorAll('.cab-c').forEach(x => x.setAttribute('aria-pressed', 'false'));
+            if (!ya) { matriz.dataset.fija = b.dataset.col; b.setAttribute('aria-pressed', 'true'); }
+        }));
+
+        /* --- 3. B: CLIC EN UN COLOR LO APLICA AL COMPONENTE --- */
+        const comp = document.querySelector('[data-comp]'), lineas = [...document.querySelectorAll('.codigo [data-l]')];
+        let manual = null;
+        const ponerTono = (tono, n) => {
+            comp.style.setProperty('--tono', tono); comp.querySelector('[data-comp-n]').textContent = n === 'Empresa' ? 'Gestión' : n;
+            comp.querySelectorAll('[data-iso]').forEach(x => x.classList.toggle('on', x.dataset.iso === n));
+            document.querySelector('[data-tono-n]').textContent = n.toLowerCase();
+            lineas.forEach(l => l.classList.toggle('activo', l.dataset.tono === tono));
+        };
+        lineas.filter(l => l.dataset.tono).forEach(l => l.addEventListener('click', () => { manual = l.dataset.n; ponerTono(l.dataset.tono, l.dataset.n); }));
+
+        /* --- 4. MOTOR DE ESCENAS: --p Y EL PASO ACTUAL --- */
+        const marcar = (el, i) => el.querySelectorAll('[data-paso], [data-ir]').forEach(x => x.classList.toggle('on', +(x.dataset.paso ?? x.dataset.ir) === i));
+        const escenas = {
+            a: (el, p) => {
+                const i = Math.min(Math.floor(p * 5), 4); marcar(el, i);
+                for (let k = 0; k < 5; k++) el.style.setProperty('--t' + k, fijar(p * 5 - k).toFixed(3));
+                const s = fijar((p * 5 - 0.12) / 0.5); el.querySelectorAll('[data-lec]').forEach(x => x.classList.toggle('on', (+x.dataset.lec === 1) === (s > 0.5)));
+            },
+            b: (el, p) => {
+                lineas.forEach((l, k) => { const ini = k < 8 ? 0.04 + k * 0.045 : 0.44; l.style.setProperty('--l', fijar((p - ini) / 0.04).toFixed(3)); l.classList.toggle('cursor', p > ini && p < ini + 0.045); });
+                comp.classList.toggle('color', p > 0.17); comp.classList.toggle('fuente', p > 0.31); comp.classList.toggle('radio', p > 0.36);
+                const i = p < 0.27 ? 0 : p < 0.34 ? 1 : p < 0.5 ? 2 : 3; marcar(el, i);
+                if (i !== 3) manual = null;
+                if (manual) return;
+                const ciclo = [['#4A3CAE', 'Campus'], ['#6B5CE7', 'Connect'], ['#9B8EF0', 'Health']];
+                const [tono, n] = p < 0.55 ? ciclo[1] : ciclo[Math.min(Math.floor((p - 0.55) / 0.15), 2)];
+                ponerTono(tono, n);
+            },
+            c: (el, p) => {
+                el.querySelectorAll('.celda').forEach(c => { const k = +c.dataset.col, r = +c.dataset.r; c.classList.toggle('on', p > (k < 3 ? 0.06 + k * 0.17 + r * 0.035 : 0.6 + r * 0.03)); if (k === 3) c.classList.toggle('llena', p > 0.8 + r * 0.025); });
+                el.querySelector('[data-nota]').classList.toggle('on', p > 0.62);
+                marcar(el, p < 0.23 ? 0 : p < 0.4 ? 1 : p < 0.57 ? 2 : 3);
+            }
+        };
+        const tick = () => document.querySelectorAll('.esc').forEach(el => {
+            if (!el.offsetParent) return;
+            const r = el.getBoundingClientRect(), pista = el.offsetHeight - innerHeight;
+            const p = fijar(-r.top / pista); el.style.setProperty('--p', p.toFixed(4)); escenas[el.dataset.esc](el, p);
+        });
+        let pedido = false;
+        addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; tick(); }); } }, { passive: true });
+        addEventListener('resize', tick);
+
+        /* --- 5. PASOS CLICABLES: LLEVAN A SU TRAMO --- */
+        document.querySelectorAll('.esc').forEach(el => el.querySelectorAll('[data-ir]').forEach(b => b.addEventListener('click', () => {
+            const n = el.querySelectorAll('[data-ir]').length, tramos = { b: [0.2, 0.31, 0.42, 0.62], c: [0.15, 0.32, 0.5, 0.88] }[el.dataset.esc];
+            const f = tramos ? tramos[+b.dataset.ir] : (+b.dataset.ir + 0.6) / n;
+            scrollTo({ top: el.getBoundingClientRect().top + scrollY + f * (el.offsetHeight - innerHeight), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        })));
+
+        /* --- 6. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-v-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.vIr === v))); try { localStorage.setItem('manual-tapin', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(tick); };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.vIr); if (b.classList.contains('op')) scrollTo({ top: document.querySelector('.puente').offsetTop + innerHeight * 0.4, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('manual-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['a', 'b', 'c'].includes(h) ? h : guardado || 'a');
+    })();
+    /* =======================================================
+       FIN JS · MANUAL TAP IN
+       ======================================================= */
+</script>
