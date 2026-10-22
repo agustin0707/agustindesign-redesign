@@ -325,7 +325,7 @@
 .tp-forky .tp-dec { grid-column: 1 / span 4; }
 /* Las formas que se exploraron, en el orden del proceso: se encienden una a una con el scroll y al final se
    apartan para que aparezca Forky con el wordmark de Campus */
-.tp-formas-zona { grid-column: 6 / -1; justify-self: end; position: relative; width: min(100%, 640px); }
+.tp-formas-zona { grid-column: 6 / -1; justify-self: center; position: relative; width: min(100%, clamp(560px, 42vw, 860px)); }
 .tp-formas { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1vw, 14px); transition: opacity 600ms var(--ease), transform 700ms var(--ease); }
 .tp-forma { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: clamp(14px, 1.3vw, 20px); background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea), 0 14px 30px -18px rgba(45, 37, 96, 0.3); color: var(--tp-soft); opacity: 0.6; transform: scale(0.96); transition: opacity 400ms, transform 600ms var(--tp-curva), color 400ms, box-shadow 400ms; }
 /* Cada forma lleva su escala (--s) para que todas pesen lo mismo a la vista, aunque su proporción cambie */
