@@ -488,22 +488,32 @@
 /* =======================================================
    LAS ACTIVACIONES
    ======================================================= */
-/* Solo las fotos de las activaciones, en dos grupos con su rótulo en el riel. Tres por grupo, escalonadas, con
-   parallax interno a distinta velocidad; cada una se destapa desde abajo al entrar */
-.tp-activ { padding-inline: var(--margen); padding-block: clamp(72px, 8vw, 128px) clamp(96px, 10vw, 160px); }
-.tp-activ-grupo + .tp-activ-grupo { margin-top: clamp(88px, 9vw, 144px); }
-.tp-activ-riel { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 6px; padding-top: 4px; }
-.tp-activ-riel .mono { color: var(--texto-2); }
-.tp-activ-riel b { font: 600 clamp(24px, 2.2vw, 34px) / 1.05 var(--tp-f); letter-spacing: -0.035em; margin-bottom: 6px; }
-.tp-activ-fotos { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--medianil); align-items: start; }
-.tp-activ-foto { display: flex; flex-direction: column; gap: 12px; clip-path: inset(14% 0 0 0 round 20px); transition: clip-path 1100ms var(--ease); }
-.tp-activ-foto.baja { margin-top: 18%; }
-.tp-activ-foto:nth-child(2) { transition-delay: 120ms; } .tp-activ-foto:nth-child(3) { transition-delay: 240ms; }
-.tp-activ-foto.visto { clip-path: inset(0 0 0 0 round 0px); }
-.tp-activ-marco { display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 20px; background: var(--tp-empresa); }
-.tp-activ-marco img { width: 100%; height: 118%; object-fit: cover; transform: translateY(calc(var(--v, 0) * var(--vel) * 1px - 8%)); transition: scale 900ms var(--ease); will-change: transform; }
-.tp-activ-foto figcaption { color: var(--texto-2); }
-@media (hover: hover) { .tp-activ-foto:hover .tp-activ-marco img { scale: 1.04; } }
+/* Cada activación es un pliego de revista: una foto a sangre con el logo de la marca en el riel y su nombre en
+   grande, que se aleja suave mientras cruza la pantalla; debajo, dos fotos de apoyo en su proporción real y el
+   índice de las tres en el riel */
+.tp-activ { padding-block: clamp(72px, 8vw, 128px) clamp(96px, 10vw, 160px); }
+.tp-pliego + .tp-pliego { margin-top: clamp(96px, 10vw, 160px); }
+.tp-pliego-sangre { position: relative; height: min(86svh, 56.25vw); overflow: hidden; background: var(--tp-empresa); }
+.tp-pliego-sangre img { width: 100%; height: 100%; object-fit: cover; scale: calc(1.07 - var(--v, 0) * 0.07); will-change: scale; }
+.tp-pliego-sangre::after { content: ''; position: absolute; inset: 30% 0 0; background: linear-gradient(transparent, rgba(16, 13, 32, 0.72)); }
+.tp-pliego-sobre { position: absolute; inset: auto 0 0; z-index: 1; align-items: end; padding: 0 var(--margen) clamp(24px, 3vw, 48px); color: #FFFFFF; }
+.tp-pliego-firma { grid-column: 1 / span 3; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding-bottom: 0.4em; }
+.tp-pliego-firma .mono { color: rgba(255, 255, 255, 0.78); }
+/* Logos en blanco, con alturas ópticas distintas: el de Red Bull es compacto y el de Banco de Chile, alargado */
+.tp-pliego-logo { width: auto; aspect-ratio: 238.71 / 94.06; height: clamp(44px, 4.2vw, 68px); }
+.tp-pliego-bc .tp-pliego-logo { aspect-ratio: 449.84 / 72.37; height: clamp(26px, 2.4vw, 38px); }
+.tp-pliego-sobre b { grid-column: 4 / -1; font: 600 clamp(64px, 11vw, 200px) / 0.8 var(--tp-f); letter-spacing: -0.06em; }
+.tp-pliego-apoyos { align-items: end; padding: var(--medianil) var(--margen) 0; }
+.tp-pliego-indice { grid-column: 1 / span 3; align-self: start; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--linea); }
+.tp-pliego-indice li { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--linea); color: var(--texto-2); font: 12px var(--mono); }
+.tp-pliego-indice li b { font-weight: 400; color: var(--acento); }
+.tp-pliego-apoyos figure { overflow: hidden; border-radius: 20px; clip-path: inset(10% 0 0 0 round 20px); transition: clip-path 1100ms var(--ease); }
+.tp-pliego-apoyos figure.visto { clip-path: inset(0 0 0 0 round 20px); }
+.tp-pliego-a2 { transition-delay: 140ms !important; }
+.tp-pliego-apoyos img { width: 100%; height: auto; transition: scale 900ms var(--ease); }
+@media (hover: hover) { .tp-pliego-apoyos figure:hover img { scale: 1.03; } }
+.tp-pliego-rb .tp-pliego-a1 { grid-column: 4 / span 5; } .tp-pliego-rb .tp-pliego-a2 { grid-column: 9 / -1; }
+.tp-pliego-bc .tp-pliego-a1 { grid-column: 4 / span 3; } .tp-pliego-bc .tp-pliego-a2 { grid-column: 7 / -1; }
 
 /* =======================================================
    CAPÍTULO 02 · EL REBIRTH Y LA PALETA
@@ -745,10 +755,13 @@
     .tp-rollup { left: 0; }
     .tp-qr-tel { --w: min(32vw, 19svh); right: 0; }
     .tp-qr:has(.tp-qr-camara.on) .tp-qr-tel { translate: 0 -46%; }
-    .tp-activ-fotos { grid-template-columns: 1fr 1fr; row-gap: 16px; }
-    .tp-activ-foto:nth-child(3) { grid-column: 1 / -1; }
-    .tp-activ-foto:nth-child(3) .tp-activ-marco { aspect-ratio: 4 / 3; }
-    .tp-activ-foto.baja { margin-top: 12%; }
+    .tp-pliego-sangre { height: 64svh; }
+    .tp-pliego-sobre b { font-size: clamp(52px, 15vw, 80px); }
+    .tp-pliego-firma { gap: 12px; }
+    .tp-pliego-apoyos { grid-template-columns: 1fr 1fr; column-gap: 12px; row-gap: 12px; }
+    .tp-pliego-apoyos > * { grid-column: auto !important; }
+    .tp-pliego-indice { grid-column: 1 / -1 !important; }
+    .tp-pliego-rb .tp-pliego-a1, .tp-pliego-rb .tp-pliego-a2 { grid-column: 1 / -1 !important; }
     .tp-rb-arriba { flex-direction: column; align-items: flex-start; justify-content: flex-end; height: 40svh; gap: 14px; }
     .tp-rb-arriba .tp-cap-txt p, .tp-dec-rb p { display: none; }
     .tp-dec-rb h3 { font-size: 20px; }
