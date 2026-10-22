@@ -338,13 +338,13 @@
 .tp-forky { height: 500svh; }
 .tp-forky .tp-formas-zona { --sal: clamp(0, (var(--tr, 0) - 0.05) / 0.25, 1); opacity: calc(1 - var(--sal)); translate: 0 calc(var(--sal) * -40px); }
 .tp-forky .tp-dec { --sal-t: clamp(0, (var(--tr, 0) - 0.3) / 0.2, 1); opacity: calc(1 - var(--sal-t)); translate: 0 calc(var(--sal-t) * -24px); }
-.tp-forky .tp-fijo, .tp-qr .tp-fijo { align-content: center; align-items: start; }
-:is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec { grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; row-gap: 16px; max-width: none; align-items: start; }
-:is(.tp-forky, .tp-qr, .tp-rebirth) :is(.tp-dec-num, .tp-dec-n) { grid-column: 1 / span 3; }
-:is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec-num { grid-row: 1; }
-:is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec-n { grid-row: 2; align-self: start; padding-top: 4px; }
-:is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec :is(h3, p, .tp-datos) { grid-column: 4 / span 3; }
-:is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec h3 { grid-row: 1; } :is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec p:not(.tp-porque) { grid-row: 2 / 4; } :is(.tp-forky, .tp-qr, .tp-rebirth) .tp-dec .tp-porque { grid-row: 4; } .tp-qr .tp-dec .tp-datos { grid-row: 5; }
+.tp-forky .tp-fijo, .tp-qr .tp-fijo, .tp-cer .tp-fijo { align-content: center; align-items: start; }
+:is(.tp-forky, .tp-qr, .tp-rebirth, .tp-cer) .tp-dec { grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; row-gap: 16px; max-width: none; align-items: start; }
+:is(.tp-forky, .tp-qr, .tp-rebirth, .tp-cer) :is(.tp-dec-num, .tp-dec-n) { grid-column: 1 / span 3; }
+:is(.tp-forky, .tp-qr, .tp-rebirth, .tp-cer) .tp-dec-num { grid-row: 1; }
+:is(.tp-forky, .tp-qr, .tp-rebirth, .tp-cer) .tp-dec-n { grid-row: 2; align-self: start; padding-top: 4px; }
+:is(.tp-forky, .tp-qr, .tp-rebirth, .tp-cer) .tp-dec :is(h3, p, .tp-datos) { grid-column: 4 / span 3; }
+:is(.tp-forky, .tp-qr, .tp-rebirth, .tp-cer) .tp-dec h3 { grid-row: 1; } :is(.tp-forky, .tp-qr, .tp-rebirth, .tp-cer) .tp-dec p:not(.tp-porque) { grid-row: 2 / 4; } :is(.tp-forky, .tp-qr, .tp-rebirth, .tp-cer) .tp-dec .tp-porque { grid-row: 4; } .tp-qr .tp-dec .tp-datos { grid-row: 5; }
 /* Las formas que se exploraron, en el orden del proceso: se encienden una a una con el scroll y al final se
    apartan para que aparezca Forky con el wordmark de Campus */
 .tp-formas-zona { grid-column: 8 / -1; position: relative; width: 100%; }
@@ -717,27 +717,29 @@
 /* =======================================================
    DECISIÓN 05 · EL CEREBRO
    ======================================================= */
-/* Entero, en piezas numeradas, de vuelta entero y probado en tres tamaños, todo con el scroll */
-.tp-cer { --sep: calc(clamp(0, (var(--p, 0) - 0.26) / 0.14, 1) - clamp(0, (var(--p, 0) - 0.66) / 0.1, 1)); --fin: clamp(0, (var(--p, 0) - 0.7) / 0.12, 1); height: 320svh; }
-.tp-cer .tp-dec { grid-column: 1 / span 4; }
-.tp-cer-escenario { grid-column: 6 / -1; display: flex; flex-direction: column; align-items: center; gap: 4svh; }
-.tp-cer-lema { position: relative; width: 100%; height: 1.4em; overflow: hidden; text-align: center; font: 500 clamp(20px, 1.8vw, 28px) var(--tp-f); letter-spacing: -0.02em; }
-.tp-cer-lema span { position: absolute; inset: 0; opacity: 0; transform: translateY(100%); transition: opacity 400ms, transform 600ms var(--tp-curva); }
-.tp-cer-lema span.on { opacity: 1; transform: translateY(0); }
-.tp-cer-svg { position: relative; width: min(40vw, 52svh); transform: scale(calc(1 - var(--fin) * 0.22)); transform-origin: 50% 30%; }
-.tp-cer-svg svg { position: relative; display: block; width: 100%; height: auto; overflow: visible; }
-.tp-cer-svg::before { content: ''; position: absolute; inset: -30%; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.22), transparent); }
-.tp-pieza { fill: #FFFFFF; transform-box: fill-box; translate: calc(var(--dx) * var(--sep)) calc(var(--dy) * var(--sep)); }
-.tp-num { opacity: var(--sep); translate: calc(var(--dx) * var(--sep)) calc(var(--dy) * var(--sep)); }
-.tp-num circle { fill: var(--tp-empresa); }
-.tp-num text { fill: #FFFFFF; font: 600 34px var(--tp-f); text-anchor: middle; }
-.tp-cer-escala { display: flex; gap: 10px; margin-top: -6svh; opacity: 0; translate: 0 20px; transition: opacity 500ms var(--ease), translate 500ms var(--ease); }
-.tp-cer-escala.on { opacity: 1; translate: 0 0; }
-.tp-cer-escala .mono { font-size: 12px; }
-.tp-cer-escala > div { display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 18px; background: rgba(255, 255, 255, 0.12); border: 1px solid var(--linea); }
-.tp-cer-mini { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 14px; background: #FFFFFF; color: var(--tp-connect); }
-.tp-cer-mini .tp-marca { width: var(--px); }
-.tp-cer-escala .riesgo .mono { color: #FFE2B8; }
+/* Lámina técnica, en tres pasos: la grilla de construcción y el contorno del cerebro se dibujan; el isotipo se
+   rellena; y se achica para dejar lugar a una regla de tamaños de 128 a 16 px con el mínimo marcado. Texto con el
+   patrón de las decisiones y pieza de la 8 a la 12 */
+.tp-cer { --g: clamp(0, (var(--p, 0) - 0.04) / 0.22, 1); --d: clamp(0, (var(--p, 0) - 0.1) / 0.26, 1); --f: clamp(0, (var(--p, 0) - 0.4) / 0.12, 1); --k: clamp(0, (var(--p, 0) - 0.66) / 0.1, 1); --r: clamp(0, (var(--p, 0) - 0.72) / 0.12, 1); height: 340svh; }
+/* Fondo: la luz de Connect y una trama de puntos que se apaga hacia los bordes, en vez de la grilla de cuadros */
+.tp-cer.tp-connect { background: radial-gradient(70% 70% at 70% 45%, #8174F0 0%, var(--tp-connect) 45%, #5546D6 100%); }
+.tp-cer .tp-fijo::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px); background-size: 28px 28px; -webkit-mask-image: radial-gradient(60% 60% at 72% 50%, #000, transparent); mask-image: radial-gradient(60% 60% at 72% 50%, #000, transparent); opacity: 0.7; pointer-events: none; }
+.tp-cer-pieza { position: relative; grid-column: 8 / -1; height: min(72svh, 680px); display: flex; flex-direction: column; }
+.tp-cer-lienzo { position: relative; flex: 1; display: grid; place-items: center; }
+.tp-cer-constr { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; opacity: calc(1 - var(--k)); pointer-events: none; }
+.tp-cer-constr * { fill: none; stroke: rgba(255, 255, 255, 0.35); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--g)); }
+.tp-cer-svg { position: relative; width: min(26vw, 44svh); scale: calc(1 - var(--k) * 0.36); translate: 0 calc(var(--k) * -22%); }
+.tp-cer-svg svg { display: block; width: 100%; height: auto; overflow: visible; }
+.tp-cer-svg path { fill: rgba(255, 255, 255, var(--f)); stroke: #FFFFFF; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-dasharray: var(--len, 4000); stroke-dashoffset: calc(var(--len, 4000) * (1 - var(--d))); }
+/* Regla: cinco columnas iguales con el isotipo a su tamaño real; bajo 32 px se apaga. La barra se llena hasta el mínimo */
+.tp-cer-regla { --cols: 5; display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); align-items: end; opacity: var(--r); translate: 0 calc((1 - var(--r)) * 20px); }
+.tp-cer-regla > div { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.tp-cer-regla .tp-marca { aspect-ratio: 622.7 / 597.42; color: #FFFFFF; }
+.tp-cer-regla .mono { font-size: 11px; line-height: 1.35; text-align: center; color: rgba(255, 255, 255, 0.82); }
+.tp-cer-bajo .tp-marca { opacity: 0.45; } .tp-cer-bajo .mono { color: rgba(255, 255, 255, 0.5); }
+.tp-cer-umbral { --hasta: 50%; position: relative; height: 2px; margin: 16px 0 26px; background: rgba(255, 255, 255, 0.25); opacity: var(--r); }
+.tp-cer-umbral i { position: absolute; left: 0; width: var(--hasta); height: 100%; background: #FFFFFF; transform-origin: left; transform: scaleX(var(--r)); }
+.tp-cer-umbral span { position: absolute; left: var(--hasta); top: 8px; translate: -50% 0; white-space: nowrap; font-size: 11px; }
 
 /* =======================================================
    EL MANUAL EN HORIZONTAL
@@ -850,7 +852,7 @@
     .tp { --hy: 30svh; --hrx: 32deg; --hs: 0.88; }
     .tp-grilla { grid-template-columns: 1fr; row-gap: 28px; }
     .tp-grilla > * { grid-column: 1 / -1 !important; }
-    .tp .tp-cap .tp-cap-txt, .tp-forky .tp-dec, .tp-qr .tp-dec, .tp-rebirth .tp-dec { display: flex; flex-direction: column; gap: 10px; }
+    .tp .tp-cap .tp-cap-txt, .tp-forky .tp-dec, .tp-qr .tp-dec, .tp-rebirth .tp-dec, .tp-cer .tp-dec { display: flex; flex-direction: column; gap: 10px; }
     .tp-cap .tp-cap-n { align-self: flex-start; padding-bottom: 0; }
     .tp-segmentos { display: none; }
     .tp-hero-txt { left: var(--margen); right: var(--margen); top: 84px; gap: 14px; align-items: flex-start; text-align: left; translate: none; }
@@ -891,7 +893,7 @@
     .tp-forky-cuerpo { width: 18svh; }
     .tp-fijo.tp-grilla { align-content: center; padding-top: 64px; }
     .tp-dec { gap: 10px; }
-    .tp-forky .tp-dec p:not(.tp-porque), .tp-qr .tp-dec p:not(.tp-porque), .tp-rebirth .tp-dec p:not(.tp-porque), .tp-rebirth .tp-dec-num, .tp-qr .tp-datos, :is(.tp-qr) .tp-dec-num, .tp-cer .tp-dec p, :is(.tp-forky, .tp-cer) .tp-dec-num { display: none; }
+    .tp-forky .tp-dec p:not(.tp-porque), .tp-qr .tp-dec p:not(.tp-porque), .tp-rebirth .tp-dec p:not(.tp-porque), .tp-rebirth .tp-dec-num, .tp-qr .tp-datos, :is(.tp-qr) .tp-dec-num, .tp-cer .tp-dec p:not(.tp-porque), :is(.tp-forky, .tp-cer) .tp-dec-num { display: none; }
     .tp-qr-palco { height: 46svh; }
     .tp-rollup { left: 0; }
     .tp-qr-tel { --w: min(32vw, 19svh); right: 0; }
@@ -929,10 +931,10 @@
     .tp-tira-ctr { padding: 3px 6px; font-size: 9px; } .tp-tira-ctr i { display: none; }
     .tp-tira-iso { top: 36%; width: 56%; }
     .tp-tira:first-child .tp-tira-iso { width: 84%; }
-    .tp-cer-svg { width: 58vw; }
-    .tp-cer-escala { margin-top: -2svh; }
-    .tp-cer-escala > div { flex-direction: column; padding: 8px; gap: 6px; }
-    .tp-cer-mini { width: 52px; height: 52px; }
+    .tp-cer-pieza { height: 60svh; }
+    .tp-cer-svg { width: 50vw; }
+    .tp-cer-regla { --cols: 4; } .tp-cer-regla > div:first-child { display: none; }
+    .tp-cer-umbral { --hasta: 37.5%; }
     .tp-manual { --ancho: 84vw; --gap: 4vw; }
     .tp-url { top: 28svh; padding: 14px 22px; }
     .tp-sitio .tp-fijo { display: flex; flex-direction: column; justify-content: center; gap: 18px; padding-top: 64px; }

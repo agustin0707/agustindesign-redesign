@@ -140,6 +140,11 @@
                 });
             };
         },
+        /* Decisión 05: el contador de pasos de la lámina */
+        cerebro: el => {
+            const n = el.querySelector('[data-cer-n]');
+            return p => { n.textContent = `${String(Math.min(Math.floor(p * 3), 2) + 1).padStart(2, '0')} / 03`; };
+        },
         /* Decisión 02: el contador de pasos del escaneo */
         qr: el => {
             const n = el.querySelector('[data-qr-n]');
@@ -358,23 +363,14 @@
     }), { threshold: 0.25 });
     document.querySelectorAll('[data-mk]').forEach(m => { cerca.observe(m); visible.observe(m); });
 
-    /* --- 7. CEREBRO DE CONNECT: EL SVG OFICIAL, PIEZA POR PIEZA --- */
-    /* Cada pieza sabe hacia dónde separarse (--dx, --dy) y lleva su número; el CSS la mueve con el scroll */
+    /* --- 7. CEREBRO DE CONNECT: EL SVG OFICIAL, PARA DIBUJARLO --- */
+    /* Cada trazado guarda su largo (--len) para que el contorno se dibuje con el scroll */
     const cer = document.querySelector('[data-cerebro]');
     if (cer) fetch('media/tp-cerebro.svg').then(r => r.text()).then(svg => {
         cer.innerHTML = svg.replace(/<\?xml[^>]*>/, '').replace(/<style>[\s\S]*?<\/style>/, '');
-        const el = cer.querySelector('svg'), vb = el.viewBox.baseVal, cx = vb.width / 2, cy = vb.height / 2, ns = 'http://www.w3.org/2000/svg';
+        const el = cer.querySelector('svg');
         el.removeAttribute('width'); el.removeAttribute('height'); el.setAttribute('aria-hidden', 'true');
-        el.querySelectorAll('path').forEach((pth, k) => {
-            pth.classList.add('tp-pieza', 'p' + (k + 1));
-            const b = pth.getBBox(), bx = b.x + b.width / 2, by = b.y + b.height / 2, dx = bx - cx, dy = by - cy, l = Math.hypot(dx, dy) || 1;
-            const vx = (dx / l * 70).toFixed(1) + 'px', vy = (dy / l * 70).toFixed(1) + 'px';
-            pth.style.setProperty('--dx', vx); pth.style.setProperty('--dy', vy);
-            const g = document.createElementNS(ns, 'g'); g.setAttribute('class', 'tp-num');
-            g.style.setProperty('--dx', vx); g.style.setProperty('--dy', vy);
-            g.innerHTML = `<circle cx="${bx}" cy="${by}" r="34"/><text x="${bx}" y="${by}" dy="12">${k + 1}</text>`;
-            el.appendChild(g);
-        });
+        el.querySelectorAll('path').forEach(pth => { pth.removeAttribute('class'); pth.style.setProperty('--len', Math.ceil(pth.getTotalLength())); });
     });
 
     /* --- 8. CITAS QUE ROTAN --- */
