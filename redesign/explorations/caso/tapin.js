@@ -95,10 +95,28 @@
             /* En la pieza, un toque abre o cierra el detalle de cada tira (con mouse lo hace el hover) */
             const tiras = [...el.querySelectorAll('.tp-tira')];
             tiras.forEach(t => t.addEventListener('click', () => { if (window.matchMedia('(hover: hover)').matches) return; const abre = !t.classList.contains('abierta'); tiras.forEach(x => x.classList.remove('abierta')); t.classList.toggle('abierta', abre); }));
+            /* Cuarto tiempo: cada tira viaja de su lugar en la pieza a su nodo del árbol (Empresa a la madre) */
+            const cont = el.querySelector('.tp-tiras'), nodos = [el.querySelector('.tp-ar-madre'), ...el.querySelectorAll('.tp-ar-hijos li')].slice(0, 4);
+            const relativo = (x, base) => { const a = x.getBoundingClientRect(), b = base.getBoundingClientRect(); return { l: a.left - b.left, t: a.top - b.top, w: a.width, h: a.height }; };
             return p => {
-                el.style.setProperty('--b', curva(fijar((p - 0.56) / 0.16)).toFixed(4));
-                el.classList.toggle('tp-rb-pieza', p > 0.64);
-                if (p <= 0.64) tiras.forEach(x => x.classList.remove('abierta'));
+                /* Los tres primeros tiempos usan el avance de los primeros 380svh de la pista */
+                const pr = fijar(p / 0.655);
+                el.style.setProperty('--pr', pr.toFixed(4));
+                el.style.setProperty('--b', curva(fijar((pr - 0.56) / 0.16)).toFixed(4));
+                const pieza = pr > 0.64 && p < 0.72;
+                el.classList.toggle('tp-rb-pieza', pieza);
+                if (!pieza) tiras.forEach(x => x.classList.remove('abierta'));
+                el.classList.toggle('tp-rb-fin', p > 0.9);
+                const viaja = p > 0.72;
+                el.classList.toggle('tp-rb-morph', viaja);
+                if (!viaja) { tiras.forEach(t => { t.style.left = t.style.top = t.style.width = t.style.height = ''; }); return; }
+                const ancho = cont.clientWidth, alto = cont.clientHeight, pesos = [1, 1, 1.5, 1], util = ancho - 24, k = curva(fijar((p - 0.73) / 0.11));
+                let x = 0;
+                tiras.forEach((t, i) => {
+                    const w = util * pesos[i] / 4.5, a = { l: x, t: 0, w, h: alto }, d = relativo(nodos[i], cont); x += w + 8;
+                    t.style.left = (a.l + (d.l - a.l) * k) + 'px'; t.style.top = (a.t + (d.t - a.t) * k) + 'px';
+                    t.style.width = (a.w + (d.w - a.w) * k) + 'px'; t.style.height = (a.h + (d.h - a.h) * k) + 'px';
+                });
             };
         },
         /* Decisión 02: el contador de pasos del escaneo */
@@ -227,7 +245,8 @@
     /* --- 3. BARRA QUE SE ESCONDE AL BAJAR Y TOMA EL COLOR DEL MÓDULO DE ABAJO --- */
     /* Sin mezcla por diferencia (sobre morado se volvía verde): tinta sobre lo claro, blanco sobre lo demás.
        En el hero, cuando el navegador ya llenó la pantalla, lo de abajo es el sitio claro */
-    const nav = document.querySelector('[data-barra]'), modulos = [...document.querySelector('main').children];
+    /* La caja de luz es fija y cubre la pantalla: no cuenta como módulo */
+    const nav = document.querySelector('[data-barra]'), modulos = [...document.querySelector('main').children].filter(el => !el.matches('.tp-caja'));
     let ultimoY = window.scrollY, subida = 0;
     /* Letras de los links separadas, para que rueden con el hover */
     nav.querySelectorAll('ul a').forEach(a => { const t = a.textContent.trim(); a.setAttribute('aria-label', t); a.innerHTML = [...t].map((c, i) => `<span class="c" aria-hidden="true" style="--i:${i}">${c}</span>`).join(''); });
@@ -237,7 +256,7 @@
         const m = modulos.find(el => { const r = el.getBoundingClientRect(); return r.top <= 32 && r.bottom > 32; });
         const hero = escenas[0];
         const resumen = escenas.find(x => x.el.dataset.escena === 'resumen');
-        nav.classList.toggle('sobre-claro', !!m && ((m.classList.contains('tp-claro') && !(m === resumen.el && resumen.p > 0.86)) || (m === hero.el && hero.p > 0.62)));
+        nav.classList.toggle('sobre-claro', !!m && ((m.classList.contains('tp-claro') && !(m === resumen.el && resumen.p > 0.86)) || (m === hero.el && hero.p > 0.62) || (m.id === 'cap-2' && parseFloat(m.style.getPropertyValue('--p')) > 0.8)));
         /* Se esconde al bajar; vuelve solo con una subida clara (90 px seguidos) o cerca del inicio */
         if (dy > 0) { subida = 0; if (y > 120) nav.classList.add('oculta'); }
         else if (dy < 0) { subida -= dy; if (subida > 90 || y < 120) nav.classList.remove('oculta'); }
