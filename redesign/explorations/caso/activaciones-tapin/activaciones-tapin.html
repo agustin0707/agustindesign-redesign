@@ -1,0 +1,457 @@
+<title>Activaciones Tap In</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Cinco formas de mostrar las activaciones (Red Bull y Banco de Chile) del caso Tap In, sobre la grilla del caso:
+       12 columnas, medianil 24, margen 5vw con 1600 px de máximo y riel de rótulos en las columnas 1 a 3.
+       Solo las seis fotos de las activaciones, cada una en su proporción real. Un solo aspecto: los colores del caso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --noche: #100D20; --gris: #57556B; --gris-2: #8A889E; --linea: rgba(45, 37, 96, 0.12);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --tint: #EEEDFE;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1); --curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    img { display: block; max-width: 100%; }
+    figure { margin: 0; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .vista { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc, [data-v="d"] .vd, [data-v="e"] .ve { display: block; }
+    .eti { display: inline-flex; align-items: center; gap: 8px; color: var(--gris); }
+    .eti::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--campus); }
+    .marca { font: 600 clamp(30px, 3vw, 48px) / 1 var(--f-marca); letter-spacing: -0.045em; }
+    /* Final de la decisión 02, para leer la sección en su contexto */
+    .antes { padding-block: 56px 0; color: var(--gris-2); }
+    .antes span { grid-column: 1 / span 3; }
+    .antes p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+
+    /* =======================================================
+       A · CARRETE
+       ======================================================= */
+    /* La sección se fija y las seis fotos pasan en un riel horizontal con el scroll, todas a la misma altura y en
+       su proporción real; una ficha de cada marca abre su tramo. Contador y barra de avance arriba */
+    .va .escena { position: relative; height: 420svh; }
+    .va .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+    .va .cab { align-items: end; }
+    .va .cab .eti { grid-column: 1 / span 3; }
+    .va .cab .cont { grid-column: 10 / -1; justify-self: end; color: var(--gris); }
+    .va .barra { grid-column: 4 / span 6; height: 2px; border-radius: 2px; background: var(--linea); overflow: hidden; align-self: center; }
+    .va .barra i { display: block; height: 100%; background: var(--campus); transform-origin: left; transform: scaleX(var(--p, 0)); }
+    .va .pista { display: flex; gap: var(--medianil); align-items: flex-end; width: max-content; padding-inline: var(--margen); translate: calc(var(--p, 0) * (100vw - var(--ancho, 100vw))) 0; will-change: translate; }
+    .va .ficha { flex: none; display: flex; flex-direction: column; justify-content: space-between; width: min(24vw, 340px); height: min(60svh, 580px); padding: 28px; border-radius: 18px; background: var(--campus); color: #FFFFFF; }
+    .va .ficha.dos { background: var(--empresa); }
+    .va .ficha .mono { color: var(--soft); }
+    .va .ficha .marca { font-size: clamp(34px, 3.2vw, 52px); }
+    .va figure { flex: none; display: flex; flex-direction: column; gap: 12px; }
+    .va figure img { height: min(60svh, 580px); width: auto; border-radius: 18px; }
+    .va figcaption { color: var(--gris); }
+
+    /* =======================================================
+       B · PLIEGO
+       ======================================================= */
+    /* Cada activación es un pliego de revista: una foto a sangre con la marca en grande, que se aleja suave al
+       bajar, y dos fotos de apoyo en la grilla, en su proporción real. El riel lleva el índice de las tres */
+    .vb .pliego { padding-block: 72px 24px; }
+    .vb .pliego + .pliego { padding-top: 120px; }
+    .vb .sangre { position: relative; height: min(86svh, 56.25vw); overflow: hidden; background: var(--empresa); }
+    .vb .sangre img { width: 100%; height: 100%; object-fit: cover; scale: calc(1.14 - var(--z, 0) * 0.14); will-change: scale; }
+    .vb .sangre::after { content: ''; position: absolute; inset: 30% 0 0; background: linear-gradient(transparent, rgba(16, 13, 32, 0.72)); }
+    .vb .sobre { position: absolute; inset: auto 0 0; z-index: 1; padding-bottom: clamp(24px, 3vw, 48px); align-items: end; color: #FFFFFF; }
+    .vb .sobre .mono { grid-column: 1 / span 3; color: rgba(255, 255, 255, 0.78); padding-bottom: 0.9em; }
+    .vb .sobre b { grid-column: 4 / -1; font: 600 clamp(64px, 11vw, 200px) / 0.8 var(--f-marca); letter-spacing: -0.06em; }
+    .vb .apoyos { padding-top: var(--medianil); align-items: end; row-gap: var(--medianil); }
+    .vb .indice { grid-column: 1 / span 3; align-self: start; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--linea); }
+    .vb .indice li { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--linea); color: var(--gris); font: 12px var(--f-mono); }
+    .vb .indice li b { font-weight: 400; color: var(--campus); }
+    .vb .apoyos figure { overflow: hidden; border-radius: 18px; }
+    .vb .apoyos img { width: 100%; height: auto; }
+    .vb .rb .a1 { grid-column: 4 / span 5; } .vb .rb .a2 { grid-column: 9 / -1; }
+    .vb .bc .a1 { grid-column: 4 / span 3; } .vb .bc .a2 { grid-column: 7 / -1; }
+
+    /* =======================================================
+       C · TEXTO FIJO
+       ======================================================= */
+    /* A la izquierda, la ficha de la activación queda fija con su índice; a la derecha, las fotos grandes pasan en
+       su proporción real. Al llegar a Banco de Chile la ficha cambia y el índice marca la foto en pantalla */
+    .vc .cuerpo { align-items: start; padding-bottom: 20svh; }
+    .vc .lado { grid-column: 1 / span 4; position: sticky; top: 0; height: 100svh; display: grid; align-content: center; }
+    .vc .ficha { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 14px; opacity: 0; translate: 0 12px; transition: opacity 400ms var(--ease), translate 600ms var(--ease); pointer-events: none; }
+    .vc .ficha.on { opacity: 1; translate: 0 0; pointer-events: auto; }
+    .vc .ficha .num { font: 600 clamp(64px, 6.6vw, 112px) / 0.78 var(--f-marca); letter-spacing: -0.06em; color: var(--soft); }
+    .vc .ficha .marca { font-size: clamp(40px, 4vw, 64px); }
+    .vc .ficha ol { margin: 10px 0 0; padding: 0; list-style: none; max-width: 300px; border-top: 1px solid var(--linea); }
+    .vc .ficha li { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--linea); color: var(--gris-2); font: 12px var(--f-mono); transition: color 250ms linear; }
+    .vc .ficha li b { font-weight: 400; }
+    .vc .ficha li.on { color: var(--tinta); } .vc .ficha li.on b { color: var(--campus); }
+    .vc .fotos { grid-column: 6 / -1; display: flex; flex-direction: column; gap: clamp(48px, 6vw, 96px); padding-block: 22svh 10svh; }
+    .vc .fotos figure { overflow: hidden; border-radius: 20px; opacity: 0.35; scale: 0.97; transition: opacity 500ms var(--ease), scale 700ms var(--ease); }
+    .vc .fotos figure.on { opacity: 1; scale: 1; }
+    .vc .fotos img { width: 100%; height: auto; }
+    .vc .fotos .vertical { width: 62%; }
+    .vc .fotos .corte { height: 16svh; }
+
+    /* =======================================================
+       D · HOJA DE CONTACTOS
+       ======================================================= */
+    /* Sobre fondo oscuro, las seis fotos como una hoja de contactos: dos tiras de película (una por marca) con sus
+       perforaciones y números de cuadro, y la elegida de cada tira marcada a mano. Un clic la amplía; con las
+       flechas se recorre y con Esc se cierra */
+    .vd { background: var(--noche); color: #F4F3FB; }
+    .vd .antes { color: rgba(238, 237, 254, 0.5); }
+    .vd .hoja { padding-block: 72px 140px; row-gap: 56px; align-items: start; }
+    .vd .riel { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 8px; padding-top: 30px; }
+    .vd .riel .mono { color: rgba(238, 237, 254, 0.6); }
+    .vd .tira { grid-column: 4 / -1; position: relative; display: flex; gap: 10px; padding: 34px 10px 30px; overflow-x: auto; border-radius: 4px; background: #08070D; scrollbar-width: none; }
+    .vd .tira::before, .vd .tira::after { content: ''; position: absolute; left: 0; right: 0; height: 10px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='10'%3E%3Crect x='7' y='0' width='12' height='10' rx='2' fill='%23F4F3FA' fill-opacity='.82'/%3E%3C/svg%3E") repeat-x; }
+    .vd .tira::before { top: 12px; } .vd .tira::after { bottom: 10px; }
+    .vd .cuadro { position: relative; flex: none; display: flex; flex-direction: column; gap: 6px; padding: 0; border: 0; background: none; cursor: zoom-in; }
+    .vd .cuadro img { height: clamp(150px, 15vw, 250px); width: auto; transition: filter 300ms linear; }
+    .vd .cuadro span { font: 10px var(--f-mono); color: var(--health); text-align: left; letter-spacing: 0.08em; }
+    @media (hover: hover) { .vd .cuadro:hover img { filter: brightness(1.12); } }
+    .vd .cuadro:focus-visible { outline: 2px solid var(--health); outline-offset: 4px; }
+    .vd .marcado svg { position: absolute; inset: -10px -10px 12px; width: calc(100% + 20px); height: calc(100% - 2px); overflow: visible; pointer-events: none; }
+    .vd .marcado path { fill: none; stroke: var(--health); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1200ms var(--ease) 300ms; }
+    .vd .tira.visto .marcado path { stroke-dashoffset: 0; }
+    .vd .pista-uso { grid-column: 4 / -1; margin-top: -32px; color: rgba(238, 237, 254, 0.5); }
+    .caja { position: fixed; inset: 0; z-index: 40; display: grid; grid-template-rows: 1fr auto; gap: 16px; padding: 56px var(--margen) 28px; background: rgba(8, 7, 13, 0.94); color: #F4F3FB; opacity: 0; visibility: hidden; transition: opacity 250ms linear, visibility 0s 250ms; }
+    .caja.on { opacity: 1; visibility: visible; transition: opacity 250ms linear; }
+    .caja img { width: 100%; height: 100%; object-fit: contain; min-height: 0; scale: 0.97; transition: scale 400ms var(--ease); }
+    .caja.on img { scale: 1; }
+    .caja .pie { display: flex; justify-content: space-between; align-items: center; gap: 16px; color: rgba(238, 237, 254, 0.7); }
+    .caja button { padding: 8px 14px; border: 1px solid rgba(238, 237, 254, 0.2); border-radius: 999px; background: none; color: inherit; font: 12px var(--f-mono); cursor: pointer; }
+    .caja .cerrar { position: absolute; top: 14px; right: var(--margen); }
+
+    /* =======================================================
+       E · PILA QUE SE REPARTE
+       ======================================================= */
+    /* Las fotos son copias impresas apiladas sobre la mesa. Al bajar, cada una se reparte hacia su lugar y deja ver
+       la siguiente; el rótulo del riel cambia de marca y al final quedan las seis ordenadas en la mesa */
+    .ve .escena { position: relative; height: 460svh; }
+    .ve .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; align-items: center; }
+    .ve .riel { grid-column: 1 / span 3; display: grid; align-self: center; }
+    .ve .rot { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 10px; opacity: 0; transition: opacity 350ms var(--ease); }
+    .ve .rot.on { opacity: 1; }
+    .ve .rot .mono { color: var(--gris); }
+    .ve .cont { margin-top: 18px; color: var(--gris); }
+    .ve .mesa { grid-column: 4 / -1; position: relative; height: 78svh; }
+    .ve .copia { position: absolute; left: 50%; top: 50%; width: min(44vw, 620px); padding: 10px 10px 0; background: #FFFFFF; box-shadow: 0 1px 2px rgba(28, 26, 46, 0.12), 0 24px 50px -24px rgba(45, 37, 96, 0.45); translate: calc(-50% + var(--x, 0px)) calc(-50% + var(--y, 0px)); rotate: var(--r, 0deg); scale: var(--s, 1); will-change: translate, scale; }
+    .ve .copia.vertical { width: min(24vw, 340px); }
+    .ve .copia img { width: 100%; height: auto; }
+    .ve .copia figcaption { padding: 10px 2px 12px; color: var(--gris); }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .selector button:focus-visible { outline: 2px solid var(--health); outline-offset: 2px; }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 48px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 36ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li span:first-child { color: rgba(238, 237, 254, 0.66); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); row-gap: 16px; }
+        .grilla > * { grid-column: 1 !important; }
+        .va .fijo { gap: 20px; }
+        .va .barra { order: 3; }
+        .va .ficha { width: 62vw; height: 46svh; padding: 22px; }
+        .va figure img { height: 46svh; }
+        .vb .sangre { height: 62svh; }
+        .vb .sobre b { font-size: clamp(52px, 16vw, 80px); }
+        .vb .apoyos { grid-template-columns: 1fr 1fr; }
+        .vb .indice { grid-column: 1 / -1 !important; }
+        .vb .bc .a1 { grid-column: 1 !important; } .vb .bc .a2 { grid-column: 2 !important; }
+        .vb .rb .a1, .vb .rb .a2 { grid-column: 1 / -1 !important; }
+        .vc .lado { position: sticky; top: 0; z-index: 2; height: auto; padding: 16px 0 12px; background: var(--papel); }
+        .vc .ficha .num, .vc .ficha ol { display: none; }
+        .vc .ficha { gap: 6px; }
+        .vc .ficha .marca { font-size: 28px; }
+        .vc .fotos { padding-top: 24px; gap: 32px; }
+        .vc .fotos .vertical { width: 100%; }
+        .vd .riel { padding-top: 0; }
+        .vd .pista-uso { margin-top: -8px; }
+        .vd .cuadro img { height: 150px; }
+        .ve .fijo { align-content: center; }
+        .ve .riel .rot { gap: 6px; }
+        .ve .riel .marca { font-size: 28px; }
+        .ve .cont { display: none; }
+        .ve .mesa { height: 70svh; }
+        .ve .copia { width: 80vw; padding: 6px 6px 0; } .ve .copia.vertical { width: 44vw; }
+        .ve .copia figcaption { padding: 6px 0 8px; font-size: 10px; }
+        .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .ops { grid-template-columns: minmax(0, 1fr); }
+        .selector button span { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { .vb .sangre img { scale: 1; } .vd .marcado path { transition: none; } }
+</style>
+
+<div data-v="a" id="raiz">
+    <!-- =======================================================
+         A · CARRETE
+         ======================================================= -->
+    <section class="vista va">
+        <div class="grilla antes"><span class="mono">Viene de la decisión 02</span><p>60 QR en los locales de la UC y promociones con Red Bull y Banco de Chile dentro de la app</p></div>
+        <div class="escena" data-escena-a>
+            <div class="fijo">
+                <div class="grilla cab"><span class="eti mono">Las activaciones</span><span class="barra"><i></i></span><span class="cont mono" data-a-n>01 / 06</span></div>
+                <div class="pista" data-pista>
+                    <div class="ficha"><span class="mono">Activación 01</span><div><b class="marca">Red Bull</b><p class="mono">Campus UC · 2025</p></div></div>
+                    <figure><img src="ed-foto3.webp" alt="Estudiante con la promo de Red Bull en la app y una lata"><figcaption class="mono">01 · La promo, en la app</figcaption></figure>
+                    <figure><img src="ed-foto9.webp" alt="Estudiante con el teléfono y una lata de Red Bull"><figcaption class="mono">02 · En el pasto, con la app</figcaption></figure>
+                    <figure><img src="ed-foto7.webp" alt="La lata de Red Bull junto al teléfono con la promo"><figcaption class="mono">03 · Lata y promo</figcaption></figure>
+                    <div class="ficha dos"><span class="mono">Activación 02</span><div><b class="marca">Banco de Chile</b><p class="mono">Stand en la UC · 2025</p></div></div>
+                    <figure><img src="ed-foto6.webp" alt="Stand de Tap In con estudiantes"><figcaption class="mono">04 · El stand</figcaption></figure>
+                    <figure><img src="ed-foto5.webp" alt="Promotora frente al pendón de Tap In"><figcaption class="mono">05 · Frente al pendón</figcaption></figure>
+                    <figure><img src="ed-foto4.webp" alt="Promotora con tarjetas de Tap In"><figcaption class="mono">06 · Tarjetas en mano</figcaption></figure>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =======================================================
+         B · PLIEGO
+         ======================================================= -->
+    <section class="vista vb">
+        <div class="grilla antes"><span class="mono">Viene de la decisión 02</span><p>60 QR en los locales de la UC y promociones con Red Bull y Banco de Chile dentro de la app</p></div>
+        <article class="pliego rb">
+            <figure class="sangre" data-zoom><img src="ed-foto3.webp" alt="Estudiante con la promo de Red Bull en la app y una lata"><figcaption class="grilla sobre"><span class="mono">Activación 01<br>Campus UC · 2025</span><b>Red Bull</b></figcaption></figure>
+            <div class="grilla apoyos">
+                <ol class="indice"><li><b>01</b>La promo, en la app</li><li><b>02</b>En el pasto, con la app</li><li><b>03</b>Lata y promo</li></ol>
+                <figure class="a1"><img src="ed-foto9.webp" alt="Estudiante con el teléfono y una lata de Red Bull"></figure>
+                <figure class="a2"><img src="ed-foto7.webp" alt="La lata de Red Bull junto al teléfono con la promo"></figure>
+            </div>
+        </article>
+        <article class="pliego bc">
+            <figure class="sangre" data-zoom><img src="ed-foto6.webp" alt="Stand de Tap In con estudiantes"><figcaption class="grilla sobre"><span class="mono">Activación 02<br>Stand en la UC · 2025</span><b>Banco de Chile</b></figcaption></figure>
+            <div class="grilla apoyos">
+                <ol class="indice"><li><b>04</b>El stand</li><li><b>05</b>Frente al pendón</li><li><b>06</b>Tarjetas en mano</li></ol>
+                <figure class="a1"><img src="ed-foto5.webp" alt="Promotora frente al pendón de Tap In"></figure>
+                <figure class="a2"><img src="ed-foto4.webp" alt="Promotora con tarjetas de Tap In"></figure>
+            </div>
+        </article>
+        <div style="height: 120px"></div>
+    </section>
+
+    <!-- =======================================================
+         C · TEXTO FIJO
+         ======================================================= -->
+    <section class="vista vc">
+        <div class="grilla antes"><span class="mono">Viene de la decisión 02</span><p>60 QR en los locales de la UC y promociones con Red Bull y Banco de Chile dentro de la app</p></div>
+        <div class="grilla cuerpo" data-escena-c>
+            <div class="lado">
+                <div class="ficha on" data-g="0"><span class="num">01</span><span class="eti mono">Activación 01</span><b class="marca">Red Bull</b><span class="mono" style="color: var(--gris)">Campus UC · 2025</span><ol><li data-i="0"><b>01</b>La promo, en la app</li><li data-i="1"><b>02</b>En el pasto, con la app</li><li data-i="2"><b>03</b>Lata y promo</li></ol></div>
+                <div class="ficha" data-g="1"><span class="num">02</span><span class="eti mono">Activación 02</span><b class="marca">Banco de Chile</b><span class="mono" style="color: var(--gris)">Stand en la UC · 2025</span><ol><li data-i="3"><b>04</b>El stand</li><li data-i="4"><b>05</b>Frente al pendón</li><li data-i="5"><b>06</b>Tarjetas en mano</li></ol></div>
+            </div>
+            <div class="fotos">
+                <figure data-i="0" data-g="0"><img src="ed-foto3.webp" alt="Estudiante con la promo de Red Bull en la app y una lata"></figure>
+                <figure data-i="1" data-g="0"><img src="ed-foto9.webp" alt="Estudiante con el teléfono y una lata de Red Bull"></figure>
+                <figure data-i="2" data-g="0"><img src="ed-foto7.webp" alt="La lata de Red Bull junto al teléfono con la promo"></figure>
+                <span class="corte"></span>
+                <figure data-i="3" data-g="1"><img src="ed-foto6.webp" alt="Stand de Tap In con estudiantes"></figure>
+                <figure data-i="4" data-g="1" class="vertical"><img src="ed-foto5.webp" alt="Promotora frente al pendón de Tap In"></figure>
+                <figure data-i="5" data-g="1"><img src="ed-foto4.webp" alt="Promotora con tarjetas de Tap In"></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- =======================================================
+         D · HOJA DE CONTACTOS
+         ======================================================= -->
+    <section class="vista vd">
+        <div class="grilla antes"><span class="mono">Viene de la decisión 02</span><p>60 QR en los locales de la UC y promociones con Red Bull y Banco de Chile dentro de la app</p></div>
+        <div class="grilla hoja" data-escena-d>
+            <div class="riel"><span class="mono">Activación 01</span><b class="marca">Red Bull</b><span class="mono">Campus UC · 2025</span></div>
+            <div class="tira">
+                <button type="button" class="cuadro marcado" data-i="0"><img src="ed-foto3.webp" alt="Estudiante con la promo de Red Bull en la app y una lata"><span>▸ 12A · LA PROMO, EN LA APP</span><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M3 6 C 30 1, 72 3, 97 5 C 99 35, 98 70, 96 95 C 66 98, 30 97, 4 96 C 1 66, 2 33, 5 3"/></svg></button>
+                <button type="button" class="cuadro" data-i="1"><img src="ed-foto9.webp" alt="Estudiante con el teléfono y una lata de Red Bull"><span>13A · EN EL PASTO</span></button>
+                <button type="button" class="cuadro" data-i="2"><img src="ed-foto7.webp" alt="La lata de Red Bull junto al teléfono con la promo"><span>14A · LATA Y PROMO</span></button>
+            </div>
+            <div class="riel"><span class="mono">Activación 02</span><b class="marca">Banco de Chile</b><span class="mono">Stand en la UC · 2025</span></div>
+            <div class="tira">
+                <button type="button" class="cuadro" data-i="3"><img src="ed-foto6.webp" alt="Stand de Tap In con estudiantes"><span>27A · EL STAND</span></button>
+                <button type="button" class="cuadro marcado" data-i="4"><img src="ed-foto5.webp" alt="Promotora frente al pendón de Tap In"><span>▸ 28A · FRENTE AL PENDÓN</span><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M4 4 C 35 2, 70 1, 96 6 C 98 38, 99 66, 95 96 C 62 99, 34 98, 3 95 C 2 64, 1 36, 6 2"/></svg></button>
+                <button type="button" class="cuadro" data-i="5"><img src="ed-foto4.webp" alt="Promotora con tarjetas de Tap In"><span>29A · TARJETAS EN MANO</span></button>
+            </div>
+            <span class="pista-uso mono">Clic para ampliar · ← → para recorrer · Esc para cerrar</span>
+        </div>
+    </section>
+
+    <!-- =======================================================
+         E · PILA QUE SE REPARTE
+         ======================================================= -->
+    <section class="vista ve">
+        <div class="grilla antes"><span class="mono">Viene de la decisión 02</span><p>60 QR en los locales de la UC y promociones con Red Bull y Banco de Chile dentro de la app</p></div>
+        <div class="escena" data-escena-e>
+            <div class="grilla fijo">
+                <div class="riel">
+                    <div class="rot on" data-g="0"><span class="eti mono">Activación 01</span><b class="marca">Red Bull</b><span class="mono">Campus UC · 2025</span></div>
+                    <div class="rot" data-g="1"><span class="eti mono">Activación 02</span><b class="marca">Banco de Chile</b><span class="mono">Stand en la UC · 2025</span></div>
+                    <span class="cont mono" data-e-n>01 / 06</span>
+                </div>
+                <div class="mesa" data-mesa>
+                    <figure class="copia"><img src="ed-foto3.webp" alt="Estudiante con la promo de Red Bull en la app y una lata"><figcaption class="mono">01 · La promo, en la app</figcaption></figure>
+                    <figure class="copia"><img src="ed-foto9.webp" alt="Estudiante con el teléfono y una lata de Red Bull"><figcaption class="mono">02 · En el pasto, con la app</figcaption></figure>
+                    <figure class="copia"><img src="ed-foto7.webp" alt="La lata de Red Bull junto al teléfono con la promo"><figcaption class="mono">03 · Lata y promo</figcaption></figure>
+                    <figure class="copia"><img src="ed-foto6.webp" alt="Stand de Tap In con estudiantes"><figcaption class="mono">04 · El stand</figcaption></figure>
+                    <figure class="copia vertical"><img src="ed-foto5.webp" alt="Promotora frente al pendón de Tap In"><figcaption class="mono">05 · Frente al pendón</figcaption></figure>
+                    <figure class="copia"><img src="ed-foto4.webp" alt="Promotora con tarjetas de Tap In"><figcaption class="mono">06 · Tarjetas en mano</figcaption></figure>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="caja" role="dialog" aria-modal="true" aria-label="Foto ampliada" data-caja>
+    <button type="button" class="cerrar" data-cerrar>Cerrar · Esc</button>
+    <img src="" alt="" data-caja-img>
+    <div class="pie"><button type="button" data-ant>← Anterior</button><span class="mono" data-caja-t></span><button type="button" data-sig>Siguiente →</button></div>
+</div>
+
+<nav class="selector" aria-label="Propuestas de activaciones">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>Carrete</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Pliego</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Texto fijo</span></button>
+    <button type="button" data-ir="d" aria-pressed="false"><b>D</b><span>Contactos</span></button>
+    <button type="button" data-ir="e" aria-pressed="false"><b>E</b><span>Pila</span></button>
+</nav>
+
+<main class="notas grilla">
+    <h2>Audit de las activaciones</h2>
+    <div class="bloque">
+        <p>Las fotos son buenas, pero la galería actual las achica y las recorta: se ven como miniaturas.</p>
+        <ul class="lista">
+            <li><span>Cinco de las seis fotos son horizontales (16:9 y 3:2) y van metidas en marcos verticales 4:5</span><span>Cada foto en su proporción real: la lata, el teléfono y el pendón dejan de cortarse</span></li>
+            <li><span>Seis fotos del mismo tamaño, unos 300 px de ancho: no hay jerarquía ni una que mande</span><span>Una foto que manda por activación, o todas grandes de a una</span></li>
+            <li><span>El escalonado de las columnas se lee como un error de alineación, no como intención</span><span>Ritmo claro: misma altura, misma base o una grilla de pliego</span></li>
+            <li><span>La marca de cada activación es un rótulo chico en el riel; no se siente que son dos eventos</span><span>Cada activación con presencia propia: su nombre en grande o una ficha</span></li>
+            <li><span>El parallax interno casi no se percibe en marcos tan chicos</span><span>Un solo movimiento con sentido por propuesta (riel, zoom, reparto)</span></li>
+            <li><span>Después de la escena fija del QR, otra sección larga y pareja cansa</span><span>Preferir propuestas que se lean rápido, o un único gesto fuerte</span></li>
+        </ul>
+    </div>
+    <h2>Propuestas</h2>
+    <div class="bloque">
+        <p>Cinco maneras de mostrar las dos activaciones. Elige con el selector.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · Carrete</span><strong>Un riel que avanza</strong><p>La sección se fija y las seis fotos pasan en horizontal, a la misma altura y en su proporción, con una ficha de color que abre cada marca. Contador y barra de avance.</p></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Pliego</span><strong>Una revista, a sangre</strong><p>Cada activación abre con una foto a todo el ancho y la marca en grande, que se aleja suave al bajar; dos fotos de apoyo en la grilla y el índice en el riel.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Texto fijo</span><strong>Ficha fija, fotos que pasan</strong><p>La ficha de la activación queda fija a la izquierda con su índice; las fotos grandes pasan a la derecha y la ficha cambia al llegar a Banco de Chile.</p></button>
+            <button type="button" class="op" data-ir="d" aria-pressed="false"><span class="mono">D · Hoja de contactos</span><strong>Dos tiras de película</strong><p>Fondo oscuro, una tira por marca con perforaciones y números de cuadro, la elegida marcada a mano. Clic para ampliar y flechas para recorrer, como los atajos del sitio.</p></button>
+            <button type="button" class="op" data-ir="e" aria-pressed="false"><span class="mono">E · Pila que se reparte</span><strong>Copias sobre la mesa</strong><p>Las fotos, impresas y apiladas; con el scroll cada una se reparte a su lugar y deja ver la siguiente. Al final quedan las seis ordenadas.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · ACTIVACIONES
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const movil = window.matchMedia('(max-width: 768px)');
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const suave = t => 1 - Math.pow(1 - t, 3);
+        const avance = el => { const r = el.getBoundingClientRect(); return fijar(-r.top / (r.height - window.innerHeight)); };
+        const dos = n => String(n).padStart(2, '0');
+
+        /* --- 1. A · CARRETE --- */
+        const ea = document.querySelector('[data-escena-a]'), pista = ea.querySelector('[data-pista]'), an = ea.querySelector('[data-a-n]');
+        const medir = () => pista.style.setProperty('--ancho', pista.scrollWidth + 'px');
+
+        /* --- 2. B · PLIEGO: cada foto a sangre se aleja mientras cruza la pantalla --- */
+        const zooms = [...document.querySelectorAll('[data-zoom]')];
+
+        /* --- 3. C · TEXTO FIJO: la foto más cerca del centro manda la ficha y el índice --- */
+        const fotosC = [...document.querySelectorAll('.vc .fotos figure')], fichasC = [...document.querySelectorAll('.vc .ficha')], itemsC = [...document.querySelectorAll('.vc .ficha li')];
+
+        /* --- 4. E · PILA: de la pila a su lugar en la mesa --- */
+        const ee = document.querySelector('[data-escena-e]'), copias = [...ee.querySelectorAll('.copia')], rotE = [...ee.querySelectorAll('.rot')], en = ee.querySelector('[data-e-n]'), mesa = ee.querySelector('[data-mesa]');
+        const giros = [-4, 3, -2, 5, -3, 2];
+        const lugares = () => movil.matches
+            ? [[-0.25, -0.33], [0.25, -0.33], [-0.25, 0], [0.25, 0], [-0.25, 0.33], [0.25, 0.33]]
+            : [[-0.33, -0.24], [0, -0.24], [0.33, -0.24], [-0.33, 0.24], [0, 0.24], [0.33, 0.24]];
+
+        const pintar = () => {
+            const v = raiz.dataset.v;
+            if (v === 'a') {
+                const p = avance(ea); ea.style.setProperty('--p', p.toFixed(4));
+                an.textContent = `${dos(Math.min(Math.floor(p * 6), 5) + 1)} / 06`;
+            }
+            if (v === 'b') zooms.forEach(z => { const r = z.getBoundingClientRect(); z.style.setProperty('--z', fijar((innerHeight - r.top) / (innerHeight + r.height)).toFixed(4)); });
+            if (v === 'c') {
+                let mejor = 0, dist = Infinity;
+                fotosC.forEach((f, i) => { const r = f.getBoundingClientRect(); const d = Math.abs(r.top + r.height / 2 - innerHeight / 2); if (d < dist) { dist = d; mejor = i; } });
+                const g = fotosC[mejor].dataset.g;
+                fotosC.forEach((f, i) => f.classList.toggle('on', i === mejor));
+                fichasC.forEach(f => f.classList.toggle('on', f.dataset.g === g));
+                itemsC.forEach(li => li.classList.toggle('on', +li.dataset.i === +fotosC[mejor].dataset.i));
+            }
+            if (v === 'e') {
+                const p = avance(ee), k = p * 6.4, w = mesa.clientWidth, h = mesa.clientHeight, L = lugares();
+                copias.forEach((c, i) => {
+                    const t = quieto ? (k > i ? 1 : 0) : suave(fijar(k - i));
+                    c.style.setProperty('--x', (L[i][0] * w * t) + 'px');
+                    c.style.setProperty('--y', (L[i][1] * h * t) + 'px');
+                    c.style.setProperty('--r', (giros[i] * (1 - t * 0.6)) + 'deg');
+                    c.style.setProperty('--s', (1 - t * (movil.matches ? 0.6 : 0.54)).toFixed(4));
+                    c.style.zIndex = t > 0 && t < 1 ? 20 : t >= 1 ? 1 : 10 - i;
+                });
+                const arriba = Math.min(Math.floor(k), 5);
+                rotE.forEach(r => r.classList.toggle('on', +r.dataset.g === (arriba < 3 ? 0 : 1)));
+                en.textContent = `${dos(arriba + 1)} / 06`;
+            }
+        };
+        let pendiente = false;
+        window.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } }, { passive: true });
+        window.addEventListener('resize', () => { medir(); pintar(); });
+        window.addEventListener('load', () => { medir(); pintar(); });
+
+        /* --- 5. D · HOJA DE CONTACTOS: el trazo a mano al entrar y la caja de luz --- */
+        const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visto'); io.unobserve(e.target); } }), { threshold: 0.5 });
+        document.querySelectorAll('.vd .tira').forEach(t => io.observe(t));
+        const cuadros = [...document.querySelectorAll('.vd .cuadro')], caja = document.querySelector('[data-caja]'), cimg = caja.querySelector('[data-caja-img]'), ct = caja.querySelector('[data-caja-t]');
+        let actual = 0, origen = null;
+        const mostrar = i => { actual = (i + cuadros.length) % cuadros.length; const im = cuadros[actual].querySelector('img'); cimg.src = im.src; cimg.alt = im.alt; ct.textContent = `${dos(actual + 1)} / 06 · ${cuadros[actual].querySelector('span').textContent.replace('▸ ', '')}`; };
+        const abrir = i => { origen = document.activeElement; mostrar(i); caja.classList.add('on'); caja.querySelector('[data-cerrar]').focus(); };
+        const cerrar = () => { caja.classList.remove('on'); if (origen) origen.focus(); };
+        cuadros.forEach((c, i) => c.addEventListener('click', () => abrir(i)));
+        caja.querySelector('[data-cerrar]').addEventListener('click', cerrar);
+        caja.querySelector('[data-ant]').addEventListener('click', () => mostrar(actual - 1));
+        caja.querySelector('[data-sig]').addEventListener('click', () => mostrar(actual + 1));
+        caja.addEventListener('click', e => { if (e.target === caja) cerrar(); });
+        document.addEventListener('keydown', e => {
+            if (!caja.classList.contains('on')) return;
+            if (e.key === 'Escape') cerrar(); if (e.key === 'ArrowLeft') mostrar(actual - 1); if (e.key === 'ArrowRight') mostrar(actual + 1);
+        });
+
+        /* --- 6. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => {
+            raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v)));
+            try { localStorage.setItem('activaciones-tapin', v); } catch (e) { /* sin almacenamiento */ }
+            requestAnimationFrame(() => { medir(); pintar(); });
+        };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) window.scrollTo({ top: 0, behavior: quieto ? 'auto' : 'smooth' }); }));
+        let guardado = null;
+        try { guardado = localStorage.getItem('activaciones-tapin'); } catch (e) { /* sin almacenamiento */ }
+        elegir(['a', 'b', 'c', 'd', 'e'].includes(location.hash.slice(1)) ? location.hash.slice(1) : guardado || 'a');
+    })();
+    /* =======================================================
+       FIN JS · ACTIVACIONES
+       ======================================================= */
+</script>

@@ -410,31 +410,76 @@
 .tp-rollup-mira i:nth-child(4), .tp-qr-mira i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 8px; }
 .tp-rollup-mira.on i { animation: tpMira 1.4s ease-in-out infinite; }
 @keyframes tpMira { 50% { scale: 0.88; } }
-/* Teléfono: bisel fino, isla y un brillo; en el escaneo se inclina hacia el pendón */
-.tp-qr-tel { position: absolute; right: 2%; top: 50%; width: min(clamp(170px, 13vw, 230px), 26svh); aspect-ratio: 9 / 19.5; padding: 8px; border-radius: 40px; background: #121022; box-shadow: 0 40px 70px -30px rgba(14, 11, 28, 0.65), inset 0 0 0 1px rgba(255, 255, 255, 0.08); translate: 0 -50%; rotate: -2deg; transition: rotate 700ms var(--tp-curva), translate 700ms var(--tp-curva); }
-.tp-qr-tel::before { content: ''; position: absolute; left: 50%; top: 16px; z-index: 3; width: 32%; height: 16px; margin-left: -16%; border-radius: 10px; background: #121022; }
-.tp-qr-tel::after { content: ''; position: absolute; inset: 8px; z-index: 3; border-radius: 32px; background: linear-gradient(120deg, rgba(255, 255, 255, 0.18), transparent 35%); pointer-events: none; }
+/* Teléfono: marco de titanio con sus botones, bisel negro, isla, barra de estado e indicador de inicio. Todo lo de
+   la pantalla se mide en cqw/cqh, así el teléfono se ve igual de nítido en cualquier tamaño. En el escaneo se
+   inclina hacia el pendón y un reflejo cruza el vidrio con el scroll */
+.tp-qr-tel { --w: min(clamp(176px, 13.5vw, 236px), 26svh); position: absolute; right: 2%; top: 50%; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 2px 3px rgba(14, 11, 28, 0.35), 0 34px 60px -26px rgba(14, 11, 28, 0.6), 0 70px 110px -50px rgba(45, 37, 96, 0.55); translate: 0 -50%; rotate: -2deg; transition: rotate 700ms var(--tp-curva), translate 700ms var(--tp-curva); }
 .tp-qr:has(.tp-qr-camara.on) .tp-qr-tel { rotate: -9deg; translate: -14% -46%; }
-.tp-qr-pant { position: relative; width: 100%; height: 100%; border-radius: 32px; overflow: hidden; background: #FFFFFF; container-type: size; }
-.tp-qr-capa { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; transform: scale(1.04); transition: opacity 450ms var(--ease), transform 700ms var(--ease); }
+/* Botones: acción y volumen a la izquierda, encendido a la derecha */
+.tp-qr-boton { position: absolute; width: 3px; border-radius: 2px; background: linear-gradient(90deg, #2A2735, #5B5670); }
+.tp-qr-boton:nth-child(1) { left: -2px; top: 17%; height: 5%; }
+.tp-qr-boton:nth-child(2) { left: -2px; top: 25%; height: 9%; }
+.tp-qr-boton:nth-child(3) { left: -2px; top: 36%; height: 9%; }
+.tp-qr-boton:nth-child(4) { right: -2px; top: 29%; height: 14%; background: linear-gradient(270deg, #2A2735, #5B5670); }
+.tp-qr-pant { position: relative; width: 100%; height: 100%; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); overflow: hidden; background: #FFFFFF; container-type: size; }
+/* Reflejo del vidrio, que se desplaza con el avance de la escena */
+.tp-qr-pant::after { content: ''; position: absolute; inset: -20% -60%; z-index: 6; background: linear-gradient(112deg, transparent 38%, rgba(255, 255, 255, 0.16) 46%, rgba(255, 255, 255, 0.05) 52%, transparent 58%); translate: calc(var(--p, 0) * 50% - 25%) 0; pointer-events: none; }
+.tp-qr-estado { position: absolute; inset: 0 0 auto; z-index: 5; display: flex; justify-content: space-between; align-items: center; height: 11cqw; padding: 0 7cqw; color: var(--tp-tinta); transition: color 300ms linear; }
+.tp-qr-pant:has(.tp-qr-camara.on) .tp-qr-estado { color: #FFFFFF; }
+.tp-qr-estado b { font: 600 4.4cqw / 1 var(--tp-f); }
+.tp-qr-isla { position: absolute; left: 50%; top: 2.8cqw; width: 29cqw; height: 8.4cqw; margin-left: -14.5cqw; border-radius: 5cqw; background: #050408; }
+.tp-qr-iconos { display: flex; align-items: center; gap: 1.4cqw; }
+.tp-qr-iconos i { display: block; width: 4cqw; height: 2.6cqw; border-radius: 0.6cqw; background: currentColor; }
+.tp-qr-iconos i:nth-child(1) { clip-path: polygon(0 100%, 100% 0, 100% 100%); }
+.tp-qr-iconos i:nth-child(2) { border-radius: 50% 50% 0 0 / 100% 100% 0 0; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.tp-qr-iconos i:nth-child(3) { width: 6.4cqw; background: none; box-shadow: inset 0 0 0 0.35cqw currentColor, inset 0 0 0 0.9cqw transparent; position: relative; }
+.tp-qr-iconos i:nth-child(3)::after { content: ''; position: absolute; inset: 0.7cqw 1.6cqw 0.7cqw 0.7cqw; border-radius: 0.3cqw; background: currentColor; }
+.tp-qr-home { position: absolute; left: 50%; bottom: 2cqw; z-index: 5; width: 34cqw; height: 1.3cqw; margin-left: -17cqw; border-radius: 1cqw; background: var(--tp-tinta); opacity: 0.85; transition: background 300ms linear; }
+.tp-qr-pant:has(.tp-qr-camara.on) .tp-qr-home { background: #FFFFFF; }
+.tp-qr-capa { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; transition: opacity 450ms var(--ease), transform 700ms var(--ease); }
 .tp-qr-capa.on { opacity: 1; transform: none; }
-/* Cámara: el QR del pendón, de cerca, con el visor, una línea de barrido y el aviso al reconocerlo */
+/* Cámara: el QR del pendón, de cerca, con el visor, una línea de barrido, el aviso al reconocerlo y los controles */
 /* El fondo es el mismo pendón ampliado: el centro del QR (73 % · 83,5 %) cae en el centro del visor */
 .tp-qr-camara { background: #0E0B1C url('media/tp-pendon.jpg') calc(50cqw - 157cqw) calc(33cqh - 327cqw) / 215cqw auto no-repeat; }
+.tp-qr-camara::before { content: ''; position: absolute; inset: 0; background: radial-gradient(120% 70% at 50% 45%, transparent 55%, rgba(14, 11, 28, 0.45)); }
 .tp-qr-mira { position: absolute; left: 18%; right: 18%; top: 33%; aspect-ratio: 1; }
-.tp-qr-mira b { position: absolute; left: 6%; right: 6%; top: 10%; height: 2px; background: var(--tp-health); box-shadow: 0 0 12px var(--tp-health); }
+.tp-qr-mira i { border-width: 0.9cqw; }
+.tp-qr-mira b { position: absolute; left: 6%; right: 6%; top: 10%; height: 0.7cqw; border-radius: 1cqw; background: var(--tp-health); box-shadow: 0 0 4cqw var(--tp-health); }
 .tp-qr-camara.on .tp-qr-mira b { animation: tpBarrido 1.4s ease-in-out infinite alternate; }
 @keyframes tpBarrido { to { top: 88%; } }
-.tp-qr-aviso { position: absolute; left: 10%; right: 10%; bottom: 14%; padding: 8px 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.92); color: var(--tp-tinta); font-size: 10px; text-align: center; opacity: 0; translate: 0 10px; }
-.tp-qr-camara.on .tp-qr-aviso { animation: tpAviso 500ms var(--ease) 1.1s forwards; }
-@keyframes tpAviso { to { opacity: 1; translate: 0 0; } }
-.tp-qr-aviso { white-space: nowrap; }
-@container (max-width: 150px) { .tp-qr-aviso span { display: none; } }
-.tp-qr-app { display: flex; justify-content: space-between; align-items: center; padding: 34px 14px 10px; color: var(--tp-campus); font: 600 11px var(--tp-f); }
-.tp-qr-app .tp-wm { width: 48px; }
-.tp-qr-promo img { width: calc(100% - 20px); margin: 0 10px; aspect-ratio: 1200 / 1392; height: auto; border-radius: 16px; box-shadow: 0 10px 24px -14px rgba(45, 37, 96, 0.6); }
-/* Debajo de la promo, el menú del local insinuado con dos filas */
-.tp-qr-promo::after { content: ''; margin: 14px 10px 0; height: 64px; border-radius: 12px; background: linear-gradient(#F1EFFA, #F1EFFA) 0 0 / 100% 28px no-repeat, linear-gradient(#F1EFFA, #F1EFFA) 0 100% / 100% 28px no-repeat; }
+.tp-qr-aviso { position: absolute; left: 9cqw; right: 9cqw; top: calc(33cqh + 70cqw); display: flex; align-items: center; gap: 2.6cqw; padding: 2.2cqw 3.4cqw 2.2cqw 2.2cqw; border-radius: 6cqw; background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 3cqw 8cqw -3cqw rgba(14, 11, 28, 0.5); opacity: 0; translate: 0 3cqw; scale: 0.94; }
+.tp-qr-camara.on .tp-qr-aviso { animation: tpAviso 500ms var(--tp-curva) 1s forwards; }
+@keyframes tpAviso { to { opacity: 1; translate: 0 0; scale: 1; } }
+.tp-qr-icono { flex: none; display: grid; place-items: center; width: 10cqw; aspect-ratio: 1; border-radius: 2.6cqw; background: var(--tp-campus); color: #FFFFFF; }
+.tp-qr-icono .tp-marca { width: 64%; aspect-ratio: 142 / 158; }
+.tp-qr-aviso-t { display: flex; flex-direction: column; min-width: 0; color: var(--tp-tinta); line-height: 1.15; white-space: nowrap; }
+.tp-qr-aviso-t b { font: 600 4.2cqw var(--tp-f); }
+.tp-qr-aviso-t small { font: 400 3.6cqw var(--tp-f); color: #57556B; overflow: hidden; text-overflow: ellipsis; }
+.tp-qr-controles { position: absolute; inset: auto 0 0; display: flex; flex-direction: column; align-items: center; gap: 4cqw; padding: 4cqw 0 9cqw; background: rgba(5, 4, 8, 0.6); }
+.tp-qr-modos { display: flex; gap: 4.4cqw; font: 500 3.2cqw var(--tp-f); letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
+.tp-qr-modos i { font-style: normal; } .tp-qr-modos .on { color: #FFD60A; }
+.tp-qr-disparo { width: 16cqw; aspect-ratio: 1; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 0 1cqw rgba(5, 4, 8, 0.6), 0 0 0 1.8cqw #FFFFFF; }
+/* App: se abre desde el aviso. Las dos promos son un carrusel que avanza con el paso */
+.tp-qr-app { padding: 13cqw 0 0; background: #FFFFFF; transform: scale(0.82) translateY(14cqh); transform-origin: 50% 70%; }
+.tp-qr-cabeza { display: flex; justify-content: space-between; align-items: center; padding: 0 6cqw; color: var(--tp-campus); }
+.tp-qr-cabeza .tp-wm { width: 22cqw; }
+.tp-qr-avatar { width: 8cqw; aspect-ratio: 1; border-radius: 50%; background: linear-gradient(140deg, var(--tp-soft), var(--tp-connect)); }
+.tp-qr-titulo { padding: 6cqw 6cqw 4cqw; font: 600 8.4cqw / 1 var(--tp-f); letter-spacing: -0.03em; color: var(--tp-tinta); }
+.tp-qr-carrusel { overflow: hidden; padding: 0 6cqw 3cqw; }
+.tp-qr-pista { display: flex; gap: 3cqw; transition: translate 700ms var(--tp-curva); }
+.tp-qr-app:has(.tp-qr-puntos [data-paso="2"].on) .tp-qr-pista { translate: calc(-100% - 3cqw) 0; }
+.tp-qr-pista figure { flex: 0 0 100%; overflow: hidden; border-radius: 5cqw; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(45, 37, 96, 0.08), 0 4cqw 9cqw -5cqw rgba(45, 37, 96, 0.45); }
+.tp-qr-pista img { display: block; width: 100%; aspect-ratio: 1200 / 1392; height: auto; object-fit: cover; }
+.tp-qr-pista figcaption { display: flex; flex-direction: column; gap: 0.6cqw; padding: 3.4cqw 4cqw 4cqw; }
+.tp-qr-pista figcaption b { font: 600 4.4cqw var(--tp-f); color: var(--tp-tinta); }
+.tp-qr-pista figcaption span { font: 400 3.4cqw var(--tp-f); color: #8A889E; }
+.tp-qr-puntos { display: flex; justify-content: center; gap: 1.6cqw; }
+.tp-qr-puntos i { width: 1.8cqw; height: 1.8cqw; border-radius: 1cqw; background: var(--tp-soft); transition: width 400ms var(--tp-curva), background 300ms linear; }
+.tp-qr-puntos i.on { width: 5cqw; background: var(--tp-campus); }
+.tp-qr-cta { margin: 5cqw 6cqw 0; padding: 3.6cqw 0; border-radius: 3.4cqw; background: var(--tp-campus); color: #FFFFFF; font: 600 4cqw / 1 var(--tp-f); text-align: center; }
+.tp-qr-tabs { position: absolute; inset: auto 0 0; display: flex; justify-content: space-around; padding: 3.6cqw 6cqw 8cqw; border-top: 1px solid rgba(45, 37, 96, 0.08); background: rgba(255, 255, 255, 0.94); }
+.tp-qr-tabs i { width: 5.4cqw; aspect-ratio: 1; border-radius: 1.6cqw; box-shadow: inset 0 0 0 0.6cqw #B5B3C6; }
+.tp-qr-tabs i.on { background: var(--tp-campus); box-shadow: none; }
 .tp-datos { display: flex; gap: 40px; list-style: none; margin-top: 4px; }
 .tp-datos li { display: flex; flex-direction: column; gap: 4px; }
 .tp-datos b { font: 600 clamp(40px, 3.6vw, 60px) / 1 var(--tp-f); letter-spacing: -0.05em; color: var(--acento); }
@@ -698,7 +743,7 @@
     .tp-forky .tp-dec p:not(.tp-porque), .tp-qr .tp-dec p:not(.tp-porque), .tp-qr .tp-datos, :is(.tp-qr) .tp-dec-num, .tp-cer .tp-dec p, .tp-arq .tp-dec p:not(.tp-porque), .tp-arq .tp-mas, :is(.tp-forky, .tp-cer, .tp-arq) .tp-dec-num { display: none; }
     .tp-qr-palco { height: 46svh; }
     .tp-rollup { left: 0; }
-    .tp-qr-tel { right: 0; width: min(30vw, 19svh); }
+    .tp-qr-tel { --w: min(32vw, 19svh); right: 0; }
     .tp-qr:has(.tp-qr-camara.on) .tp-qr-tel { translate: 0 -46%; }
     .tp-activ-fotos { grid-template-columns: 1fr 1fr; row-gap: 16px; }
     .tp-activ-foto:nth-child(3) { grid-column: 1 / -1; }
