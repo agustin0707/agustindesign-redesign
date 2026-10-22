@@ -15,6 +15,45 @@
     const propias = {
         /* Hero: el zoom del sitio con una curva suave, más rápido que el recorrido de la pista */
         hero: el => p => el.style.setProperty('--h', curva(Math.min(p * 1.25, 1)).toFixed(4)),
+        /* Resumen: el cursor recorre el proyecto mes a mes; la credencial cambia al capítulo en curso y los
+           hitos se encienden. El cursor llega a "Hoy" un poco antes del final, para que se lea quieto */
+        resumen: el => {
+            const cred = el.querySelector('[data-cred]'), cursor = el.querySelector('[data-cursor]'), cursorTxt = cursor.querySelector('span');
+            const etapas = [...el.querySelectorAll('[data-et]')], hitos = [...el.querySelectorAll('.tp-hito')], signos = [...el.querySelectorAll('[data-signo]')];
+            const CAPS = [
+                { tono: '#4A3CAE', per: '2025', nom: 'El origen', txt: 'Una app para pedir comida sin filas en la universidad: identidad, Forky y la web app de Campus.' },
+                { tono: '#6B5CE7', per: 'Feb a abr 2026', nom: 'El Rebirth', txt: 'De la comida a los colegios. Diagnóstico con los socios, arquitectura, paleta y el cerebro de Connect.' },
+                { tono: '#2D2560', per: 'Abr a sep 2026', nom: 'La web', txt: 'tapin.cl, diseñada y programada por mí, para que un director entienda en segundos.' }
+            ];
+            const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            let capActual = -1;
+            /* Inclinación leve con el mouse, desde el gancho, con el brillo del plástico */
+            if (!quieto && window.matchMedia('(hover: hover)').matches) {
+                el.addEventListener('pointermove', e => {
+                    const r = cred.getBoundingClientRect(), x = fijar((e.clientX - r.left) / r.width - 0.5, -1, 1), y = fijar((e.clientY - r.top) / r.height - 0.5, -1, 1);
+                    cred.style.setProperty('--ry', (x * 7).toFixed(2) + 'deg'); cred.style.setProperty('--rx', (-y * 5).toFixed(2) + 'deg');
+                    cred.style.setProperty('--lx', (x * 36).toFixed(1) + '%'); cred.style.setProperty('--ly', (y * 36).toFixed(1) + '%');
+                });
+                el.addEventListener('pointerleave', () => ['--rx', '--ry', '--lx', '--ly'].forEach(v => cred.style.removeProperty(v)));
+            }
+            return p => {
+                const mes = fijar(p * 1.15) * 21.68, m = Math.min(Math.floor(mes), 21);
+                cursor.style.setProperty('--mes', mes.toFixed(3));
+                cursorTxt.textContent = mes >= 21.6 ? 'Hoy' : `${MESES[m % 12]} ${m < 12 ? 2025 : 2026}`;
+                hitos.forEach(h => h.classList.toggle('on', parseFloat(h.style.getPropertyValue('--m')) <= mes));
+                const cap = mes < 13 ? 0 : mes < 15.5 ? 1 : 2;
+                if (cap === capActual) return;
+                capActual = cap;
+                const c = CAPS[cap];
+                cred.style.setProperty('--tono', c.tono);
+                cred.querySelector('[data-c-num]').textContent = `0${cap + 1} / 03`;
+                cred.querySelector('[data-c-per]').textContent = c.per;
+                cred.querySelector('[data-c-nom]').textContent = c.nom;
+                cred.querySelector('[data-c-txt]').textContent = c.txt;
+                signos.forEach((sg, i) => sg.classList.toggle('on', i === cap));
+                etapas.forEach((et, i) => et.classList.toggle('on', i <= cap));
+            };
+        },
         /* Capítulo 03: la dirección se escribe con el scroll y la página empieza a cargar */
         url: el => {
             const caja = el.querySelector('[data-url]'), txt = caja.dataset.url;
@@ -129,8 +168,8 @@
         nav.classList.toggle('oculta', y > ultimoY && y > 120);
         ultimoY = y;
     };
-    /* El índice de capítulos lleva a cada uno con un desplazamiento suave */
-    document.querySelectorAll('.tp-indice a').forEach(a => a.addEventListener('click', e => {
+    /* La línea de tiempo del resumen lleva a cada capítulo con un desplazamiento suave */
+    document.querySelectorAll('.tp-etapa').forEach(a => a.addEventListener('click', e => {
         const destino = document.querySelector(a.getAttribute('href'));
         if (!destino) return;
         e.preventDefault();
@@ -152,7 +191,7 @@
     const luces = () => textos.forEach(t => {
         const r = t.el.getBoundingClientRect();
         if (r.bottom < 0 || r.top > vh) return;
-        const l = quieto ? 1 : fijar((vh * 0.9 - r.top) / (r.height + vh * 0.4));
+        const l = quieto ? 1 : fijar((vh * 0.9 - r.top) / (r.height + vh * 0.25));
         const n = Math.round(l * t.pals.length);
         if (n === t.n) return;
         t.n = n; t.pals.forEach((w, i) => w.classList.toggle('on', i < n));

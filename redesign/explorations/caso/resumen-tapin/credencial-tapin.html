@@ -1,0 +1,554 @@
+<title>Credencial Tap In</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Tres mejoras de la propuesta "Credencial y tiempo" para el resumen de Tap In. Arriba el final del hero,
+       abajo el comienzo del capítulo 01, para juzgar la transición. Un solo aspecto claro a propósito */
+    :root {
+        --papel: #FBFAFF;
+        --tinta: #1C1A2E;
+        --gris: #57556B;
+        --gris-2: #8A889E;
+        --linea: rgba(45, 37, 96, 0.12);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --tint: #EEEDFE;
+        --f-marca: 'Poppins', system-ui, sans-serif;
+        --f-texto: 'Geist', system-ui, sans-serif;
+        --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: clamp(20px, 3.2vw, 48px);
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+        --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.01em; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .wm { aspect-ratio: 389.87 / 150.6; --svg: url('wordmark.svg'); }
+    .forky { aspect-ratio: 1; --svg: url('forky.svg'); }
+    .cerebro { aspect-ratio: 1; --svg: url('cerebro.svg'); }
+    .envoltura { padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 16px; }
+
+    /* --- CONTEXTO --- */
+    .antes { position: relative; height: 56svh; overflow: hidden; background: #FFFFFF; }
+    .antes img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .antes::after { content: ''; position: absolute; inset: auto 0 0; height: 45%; background: linear-gradient(transparent, var(--papel)); }
+    .etiqueta-ctx { position: absolute; top: 16px; left: max(var(--margen), env(safe-area-inset-left, 0px)); z-index: 2; padding: 5px 10px; border-radius: 999px; background: rgba(28, 26, 46, 0.78); color: #FFFFFF; }
+    .despues { padding-block: 80px 120px; color: #FFFFFF; background: radial-gradient(120% 90% at 80% 0%, var(--connect), var(--campus) 45%, var(--empresa)); }
+    .despues h3 { margin: 12px 0 0; font: 600 clamp(64px, 11vw, 190px) / 0.86 var(--f-marca); letter-spacing: -0.055em; }
+    .despues .mono { opacity: 0.75; }
+
+    /* --- COMUNES: ENUNCIADO, ENCARGO Y TIEMPO --- */
+    .resumen { padding-block: clamp(72px, 8vw, 128px) clamp(88px, 9vw, 144px); }
+    .etq { color: var(--gris); }
+    .enunciado { margin: 0; font: 600 clamp(32px, 3.9vw, 62px) / 1.05 var(--f-marca); letter-spacing: -0.04em; text-wrap: balance; }
+    .enunciado em { font-style: normal; color: var(--campus); }
+    .pal { opacity: 0.22; transition: opacity 260ms linear; }
+    .pal.on { opacity: 1; }
+    .encargo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .encargo div { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--linea); }
+    .encargo span { color: var(--gris); }
+    .encargo p { margin: 0; font-size: clamp(16px, 1.2vw, 18px); line-height: 1.45; max-width: 30ch; }
+
+    /* Línea de tiempo a escala real: 22 meses (ene 2025 a oct 2026). Cada etapa va de --a a --b en meses */
+    .tiempo { --meses: 22; position: relative; }
+    .tiempo .cab { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 20px; color: var(--gris); }
+    .tiempo .cab b { font-weight: 400; color: var(--tinta); }
+    .pista { position: relative; }
+    .etapa { position: absolute; left: calc(var(--a) / var(--meses) * 100%); width: calc((var(--b) - var(--a)) / var(--meses) * 100% - 4px); color: #FFFFFF; text-decoration: none; }
+    .meses { position: relative; display: grid; grid-template-columns: repeat(22, minmax(0, 1fr)); height: 10px; }
+    .meses i { border-left: 1px solid var(--linea); }
+    .meses i:nth-child(1), .meses i:nth-child(13) { border-left: 1px solid var(--gris-2); }
+    .anios { position: relative; height: 18px; margin-top: 6px; color: var(--gris-2); }
+    .anios span { position: absolute; left: calc(var(--m) / 22 * 100%); }
+    .hito { position: absolute; left: calc((var(--m) + 0.5) / 22 * 100%); width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--papel); border: 2px solid var(--tono, var(--campus)); cursor: default; z-index: 2; transition: transform 300ms var(--curva), background-color 300ms; }
+    .hito::after { content: attr(data-t); position: absolute; left: 50%; bottom: calc(100% + 10px); translate: -50% 4px; width: max-content; max-width: 220px; padding: 7px 10px; border-radius: 10px; background: var(--tinta); color: #FFFFFF; font: 12px/1.35 var(--f-texto); text-align: left; opacity: 0; pointer-events: none; transition: opacity 200ms, translate 300ms var(--ease); }
+    .hito:hover, .hito:focus-visible { transform: scale(1.35); background: var(--tono, var(--campus)); outline: none; }
+    .hito:hover::after, .hito:focus-visible::after { opacity: 1; translate: -50% 0; }
+    .hoy { position: absolute; left: calc(21.68 / 22 * 100%); top: -6px; bottom: -6px; width: 0; border-left: 1.5px dashed var(--campus); z-index: 1; }
+    .hoy span { position: absolute; top: -22px; left: 0; translate: -50% 0; padding: 2px 7px; border-radius: 999px; background: var(--campus); color: #FFFFFF; font: 11px var(--f-mono); white-space: nowrap; }
+
+    /* =======================================================
+       1 · TARJETA QUE GIRA
+       ======================================================= */
+    /* La credencial pasa a tarjeta de verdad (proporción 85,6 × 54 mm), con el símbolo de pago sin contacto:
+       "tap". Se inclina con el mouse y gira con un clic: adelante la persona, atrás los datos */
+    .v1 { row-gap: clamp(48px, 5vw, 72px); }
+    .v1 .etq { grid-column: 1 / span 3; padding-top: 0.75em; }
+    .v1 .enunciado { grid-column: 4 / -1; }
+    .v1 .encargo { grid-column: 4 / span 4; grid-template-columns: minmax(0, 1fr); align-self: end; }
+    .v1-escena { grid-column: 8 / -1; perspective: 1400px; justify-self: end; width: min(100%, 470px); }
+    .tarjeta { --rx: 0deg; --ry: 0deg; --giro: 0deg; position: relative; aspect-ratio: 85.6 / 54; transform-style: preserve-3d; transform: rotateX(var(--rx)) rotateY(calc(var(--ry) + var(--giro))); transition: transform 700ms var(--ease); cursor: pointer; }
+    .tarjeta.girada { --giro: 180deg; }
+    .cara { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 22px 24px; border-radius: 20px; color: #FFFFFF; background: radial-gradient(120% 120% at 85% 0%, #8174F2, var(--campus) 50%, var(--empresa)); box-shadow: 0 40px 70px -36px rgba(45, 37, 96, 0.65); backface-visibility: hidden; overflow: hidden; isolation: isolate; }
+    .cara::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: var(--grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; }
+    .cara::after { content: ''; position: absolute; inset: -50%; z-index: -1; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.22), transparent); transform: translate(var(--lx, 0%), var(--ly, 0%)); transition: transform 600ms var(--ease); }
+    .frente .fila { display: flex; justify-content: space-between; align-items: flex-start; }
+    .frente .wm { width: 34%; }
+    .sincontacto { width: 26px; height: 26px; }
+    .sincontacto path { fill: none; stroke: #FFFFFF; stroke-width: 2; stroke-linecap: round; }
+    .chip { width: 44px; height: 34px; margin-top: auto; border-radius: 7px; background: linear-gradient(135deg, #F1EEFF, #B6ACF3); box-shadow: inset 0 0 0 1px rgba(45, 37, 96, 0.22); position: relative; }
+    .chip::before { content: ''; position: absolute; inset: 8px 14px; border: 1px solid rgba(45, 37, 96, 0.3); border-radius: 3px; }
+    .frente .pie { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; }
+    .frente .nombre { display: flex; flex-direction: column; gap: 2px; }
+    .frente .nombre b { font: 500 clamp(16px, 1.4vw, 20px) / 1.1 var(--f-marca); letter-spacing: -0.02em; }
+    .frente .nombre span { opacity: 0.75; }
+    .frente .num { font: 600 clamp(28px, 2.6vw, 40px) / 0.9 var(--f-marca); letter-spacing: -0.05em; opacity: 0.9; }
+    .reverso { transform: rotateY(180deg); padding: 0; background: radial-gradient(120% 120% at 15% 0%, #8174F2, var(--campus) 50%, var(--empresa)); }
+    .reverso .banda { height: 22%; margin-top: 8%; background: #17132E; }
+    .reverso dl { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; margin: auto 0 0; padding: 0 24px 20px; }
+    .reverso dl div { display: flex; flex-direction: column; gap: 2px; }
+    .reverso dt { opacity: 0.7; }
+    .reverso dd { margin: 0; font-weight: 500; font-size: 14px; }
+    .girar { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 7px 12px; border: 1px solid var(--linea); border-radius: 999px; background: #FFFFFF; color: var(--tinta); font: 12px var(--f-mono); cursor: pointer; float: right; transition: border-color 200ms; }
+    .girar:focus-visible { outline: 2px solid var(--campus); outline-offset: 2px; }
+    @media (hover: hover) { .girar:hover { border-color: var(--campus); } }
+    .v1 .tiempo { grid-column: 1 / -1; margin-top: clamp(24px, 3vw, 40px); }
+    .v1 .pista { height: 112px; }
+    .v1 .etapa { top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: var(--tono); overflow: hidden; transition: transform 500ms var(--curva), box-shadow 400ms; }
+    .v1 .etapa b { font: 600 clamp(16px, 1.5vw, 24px) / 1 var(--f-marca); letter-spacing: -0.035em; }
+    .v1 .etapa span { opacity: 0.85; }
+    .v1 .etapa .marca { position: absolute; right: 12px; top: 10px; width: 30px; }
+    .v1 .etapa.web { box-shadow: -6px 0 0 var(--papel); }
+    .v1 .hitos { position: relative; height: 12px; margin-top: 14px; }
+    @media (hover: hover) { .v1 .etapa:hover { transform: translateY(-5px); box-shadow: 0 24px 40px -24px var(--tono); } .v1 .etapa.web:hover { box-shadow: -6px 0 0 var(--papel), 0 24px 40px -24px var(--tono); } }
+
+    /* =======================================================
+       2 · CREDENCIAL COLGANTE
+       ======================================================= */
+    /* La credencial de un evento de campus, colgada de una cinta con la marca: se mece con el mouse y con el
+       scroll (péndulo con inercia). La línea de tiempo se vuelve una línea fina, a escala, con hitos */
+    .v2 { align-items: start; }
+    .v2-txt { grid-column: 1 / span 7; display: flex; flex-direction: column; gap: 36px; padding-top: clamp(40px, 5vw, 80px); }
+    .v2-txt .enunciado { font-size: clamp(32px, 3.6vw, 58px); }
+    .v2-colgante { grid-column: 9 / -1; justify-self: center; position: relative; width: min(100%, 330px); margin-top: calc(-1 * clamp(72px, 8vw, 128px)); transform-origin: 50% 0; rotate: var(--ang, 0deg); }
+    .cinta { position: relative; left: 50%; width: 46px; height: clamp(110px, 12vw, 170px); margin-left: -23px; background: repeating-linear-gradient(180deg, var(--campus) 0 60px, var(--connect) 60px 120px); overflow: hidden; }
+    .cinta::after { content: 'tap in · tap in · tap in · tap in'; position: absolute; left: 50%; top: 8px; writing-mode: vertical-rl; translate: -50% 0; color: rgba(255, 255, 255, 0.75); font: 600 12px var(--f-marca); letter-spacing: 0.02em; white-space: nowrap; }
+    .gancho { position: relative; left: 50%; width: 28px; height: 22px; margin: -2px 0 -6px -14px; border-radius: 6px 6px 10px 10px; background: linear-gradient(#D6D3E4, #9F9BB8); }
+    .credencial { position: relative; display: flex; flex-direction: column; gap: 18px; aspect-ratio: 0.7; padding: 26px 24px 22px; border-radius: 22px; color: #FFFFFF; background: radial-gradient(120% 80% at 80% 0%, #8174F2, var(--campus) 50%, var(--empresa)); box-shadow: 0 40px 60px -30px rgba(45, 37, 96, 0.6); overflow: hidden; isolation: isolate; }
+    .credencial::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: var(--grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; }
+    .credencial .ranura { position: absolute; top: 12px; left: 50%; width: 56px; height: 9px; margin-left: -28px; border-radius: 9px; background: var(--papel); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25); }
+    .credencial .acceso { display: flex; justify-content: space-between; margin-top: 10px; }
+    .credencial .acceso span:last-child { padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.18); }
+    .credencial .wm { width: 62%; margin-top: 6px; }
+    .credencial .isos { display: flex; gap: 12px; margin-top: auto; }
+    .credencial .isos .marca { width: 30px; }
+    .credencial dl { display: flex; flex-direction: column; margin: 0; }
+    .credencial dl div { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+    .credencial dt { opacity: 0.7; }
+    .credencial dd { margin: 0; font-weight: 500; text-align: right; }
+    .v2 .tiempo { grid-column: 1 / -1; margin-top: clamp(72px, 8vw, 120px); }
+    .v2 .pista { height: 120px; }
+    .v2 .eje { position: absolute; left: 0; right: 0; top: 58px; height: 2px; background: var(--linea); }
+    .v2 .etapa { top: 52px; height: 14px; border-radius: 14px; background: var(--tono); }
+    .v2 .etapa .txt { position: absolute; left: 0; display: flex; flex-direction: column; gap: 2px; color: var(--tinta); white-space: nowrap; }
+    .v2 .etapa.arriba .txt { bottom: 26px; }
+    .v2 .etapa.abajo .txt { top: 26px; }
+    .v2 .etapa b { font: 600 clamp(17px, 1.5vw, 22px) / 1 var(--f-marca); letter-spacing: -0.03em; }
+    .v2 .etapa .txt span { color: var(--gris); }
+    .v2 .hito { top: 53px; }
+    .v2 .hoy { top: 40px; bottom: 40px; }
+    @media (hover: hover) { .v2 .etapa { transition: transform 400ms var(--curva); } .v2 .etapa:hover { transform: scaleY(1.4); } }
+
+    /* =======================================================
+       3 · EL TIEMPO NARRA
+       ======================================================= */
+    /* La sección se fija y el scroll recorre el proyecto mes a mes: un cursor avanza por la línea de tiempo,
+       los hitos se encienden y la credencial cambia al capítulo en curso (tono, signo, nombre, qué pasó) */
+    .v3 { position: relative; height: 230svh; padding-block: 0; }
+    .v3-fijo { position: sticky; top: 0; height: 100svh; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: 1fr auto; column-gap: 16px; padding-block: clamp(64px, 9svh, 110px) clamp(40px, 6svh, 72px); }
+    .v3-txt { grid-column: 1 / span 7; align-self: center; display: flex; flex-direction: column; gap: 32px; }
+    .v3-txt .enunciado { font-size: clamp(30px, 3.4vw, 54px); }
+    .v3-escena { grid-column: 9 / -1; align-self: center; perspective: 1200px; }
+    .vivo { --tono: var(--campus); position: relative; display: flex; flex-direction: column; gap: 16px; aspect-ratio: 0.74; max-height: 58svh; margin-left: auto; padding: 24px; border-radius: 24px; color: #FFFFFF; background: radial-gradient(120% 80% at 80% 0%, color-mix(in srgb, var(--tono) 60%, #FFFFFF), var(--tono) 55%, color-mix(in srgb, var(--tono) 55%, #000000)); box-shadow: 0 40px 70px -36px color-mix(in srgb, var(--tono) 80%, transparent); overflow: hidden; isolation: isolate; transition: background 600ms var(--ease), box-shadow 600ms; }
+    .vivo::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: var(--grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; }
+    .vivo .fila { display: flex; justify-content: space-between; align-items: center; }
+    .vivo .fila .wm { width: 34%; }
+    .vivo .signos { position: relative; flex: 1; display: grid; place-items: center; }
+    .vivo .signo { position: absolute; display: grid; place-items: center; width: 44%; opacity: 0; transform: scale(0.8) rotate(-8deg); transition: opacity 400ms, transform 600ms var(--curva); }
+    .vivo .signo .marca { width: 100%; }
+    .vivo .signo.nav { width: 62%; }
+    .vivo .signo.nav i { display: block; width: 100%; aspect-ratio: 16 / 10; border-radius: 8px; border: 2px solid #FFFFFF; background: linear-gradient(#FFFFFF 0 14%, transparent 14%); }
+    .vivo .signo.on { opacity: 1; transform: none; }
+    .vivo .cap { display: flex; flex-direction: column; gap: 4px; min-height: 92px; }
+    .vivo .cap b { font: 600 clamp(22px, 2vw, 30px) / 1 var(--f-marca); letter-spacing: -0.04em; }
+    .vivo .cap p { margin: 0; opacity: 0.85; font-size: 14px; line-height: 1.4; }
+    .vivo .datos { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.22); }
+    .v3 .tiempo { grid-column: 1 / -1; grid-row: 2; margin-top: 32px; }
+    .v3 .pista { height: 44px; }
+    .v3 .eje { position: absolute; left: 0; right: 0; top: 21px; height: 2px; background: var(--linea); }
+    .v3 .etapa { top: 16px; height: 12px; border-radius: 12px; background: var(--tono); opacity: 0.25; transition: opacity 400ms; }
+    .v3 .etapa.on { opacity: 1; }
+    .v3 .hito { top: 16px; }
+    .v3 .hito.on { background: var(--tono, var(--campus)); }
+    .cursor { position: absolute; top: 0; bottom: 0; left: calc(var(--mes, 0) / 22 * 100%); width: 0; z-index: 3; }
+    .cursor::before { content: ''; position: absolute; top: 4px; bottom: 4px; left: -1px; width: 2px; background: var(--tinta); }
+    .cursor span { position: absolute; top: -26px; left: 0; translate: -50% 0; padding: 3px 8px; border-radius: 999px; background: var(--tinta); color: #FFFFFF; font: 11px var(--f-mono); white-space: nowrap; }
+    .v3 .hoy { opacity: 0.6; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 20; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.5); }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 16px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; transition: background-color 200ms, color 200ms; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .selector button:focus-visible { outline: 2px solid var(--health); outline-offset: 2px; }
+    @media (hover: hover) { .selector button:not([aria-pressed="true"]):hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.1); } }
+    .notas { padding-block: 96px 140px; background: var(--tinta); color: #F4F3FB; }
+    .notas .grilla { row-gap: 64px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; padding-top: 6px; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); }
+    .bloque { grid-column: 4 / -1; min-width: 0; }
+    .bloque > p:first-child { margin: 0 0 28px; max-width: 34ch; font: 600 clamp(24px, 2.4vw, 36px) / 1.1 var(--f-marca); letter-spacing: -0.035em; text-wrap: balance; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 120px minmax(0, 1fr) minmax(0, 1.3fr); gap: 20px; padding: 16px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li > :first-child { color: var(--health); font: 12px var(--f-mono); padding-top: 2px; }
+    .lista li > :nth-child(2) { color: rgba(238, 237, 254, 0.66); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .op { display: flex; flex-direction: column; gap: 12px; padding: 22px; border-radius: 20px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); text-align: left; color: inherit; font: inherit; cursor: pointer; transition: border-color 200ms, background-color 200ms; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); }
+    .op strong { font: 600 22px / 1.1 var(--f-marca); letter-spacing: -0.03em; }
+    .op p { margin: 0; color: rgba(238, 237, 254, 0.7); }
+    .op .rec { align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+    .op:focus-visible { outline: 2px solid var(--health); outline-offset: 3px; }
+
+    /* --- MÓVIL --- */
+    @media (max-width: 768px) {
+        .grilla, .v3-fijo { grid-template-columns: minmax(0, 1fr); row-gap: 28px; }
+        .grilla > *, .v3-fijo > * { grid-column: 1 / -1 !important; }
+        .encargo { grid-template-columns: minmax(0, 1fr); }
+        .v1-escena { justify-self: stretch; width: 100%; }
+        .v2-colgante { margin-top: 0; width: 76%; }
+        .v2-txt { padding-top: 0; }
+        .v3 { height: 260svh; }
+        .v3-fijo { grid-template-rows: auto 1fr auto; padding-block: 72px 32px; row-gap: 18px; }
+        .v3-txt { align-self: start; gap: 16px; }
+        .v3-txt .enunciado { font-size: 26px; }
+        .v3-txt .encargo { display: none; }
+        .vivo { aspect-ratio: auto; max-height: none; min-height: 0; width: 100%; padding: 18px; gap: 10px; }
+        .vivo .signos { min-height: 110px; }
+        .vivo .signo { width: 30%; }
+        .vivo .signo.nav { width: 44%; }
+        .vivo .cap { min-height: 0; }
+        .tiempo .cab span:last-child { display: none; }
+        .v2 .etapa b { font-size: 14px; }
+        .v1 .etapa { padding: 8px 6px; }
+        .v1 .etapa b { font-size: 11px; line-height: 1.05; }
+        .v3 .tiempo { grid-row: auto; margin-top: 0; }
+        .v1 .etapa .marca, .v1 .etapa span { display: none; }
+        .v2 .etapa .txt span { display: none; }
+        .anios span:nth-child(2) { display: none; }
+        .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .ops { grid-template-columns: minmax(0, 1fr); }
+        .selector button { padding: 8px 12px; font-size: 13px; }
+        .selector button span { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition-duration: 1ms !important; } }
+</style>
+
+<div class="antes"><span class="etiqueta-ctx mono">Final del hero: el sitio a pantalla completa</span><img src="web.jpg" alt="El sitio tapin.cl a pantalla completa, final del hero"></div>
+
+<!-- =======================================================
+     1 · TARJETA QUE GIRA
+     ======================================================= -->
+<section class="resumen envoltura" data-p="1">
+    <div class="grilla v1">
+        <span class="etq mono">Resumen</span>
+        <p class="enunciado" data-luz>Diseñé la marca de Tap In desde el día uno. Cuando la empresa se reinventó, <em>rehice la marca y programé su web.</em></p>
+        <div class="encargo">
+            <div><span class="mono">El encargo</span><p>Una marca que sobreviviera al pivote, de la comida a los colegios.</p></div>
+            <div><span class="mono">El resultado</span><p>tapin.cl en producción y una sola marca para todo el ecosistema.</p></div>
+        </div>
+        <div class="v1-escena">
+            <div class="tarjeta" data-tarjeta role="button" tabindex="0" aria-label="Credencial del proyecto: clic para girar">
+                <div class="cara frente">
+                    <div class="fila"><span class="marca wm"></span><svg class="sincontacto" viewBox="0 0 26 26" aria-hidden="true"><path d="M8 7c3 3.5 3 8.5 0 12"/><path d="M13 4c4.5 5 4.5 13 0 18"/><path d="M18 1.5c6 6.5 6 16.5 0 23"/></svg></div>
+                    <span class="chip" aria-hidden="true"></span>
+                    <div class="pie"><span class="nombre"><b>Agustín Avendaño</b><span class="mono">Diseñador fundador · desde 2025</span></span><span class="num">02</span></div>
+                </div>
+                <div class="cara reverso">
+                    <div class="banda"></div>
+                    <dl>
+                        <div><dt class="mono">Período</dt><dd>Ene 2025 a hoy</dd></div>
+                        <div><dt class="mono">Cliente</dt><dd>Chile y Perú</dd></div>
+                        <div><dt class="mono">Equipo</dt><dd>Cofundadores y desarrollo</dd></div>
+                        <div><dt class="mono">Stack</dt><dd>HTML, CSS y JS</dd></div>
+                    </dl>
+                </div>
+            </div>
+            <button type="button" class="girar" id="girar" data-girar>↻ Girar la tarjeta</button>
+        </div>
+        <div class="tiempo">
+            <div class="cab mono"><span>El proyecto en el tiempo · <b>22 meses, 3 capítulos</b></span><span>Pasa el mouse por los hitos</span></div>
+            <div class="pista">
+                <a class="etapa" href="#cap" style="--a:0; --b:12; --tono:#4A3CAE"><span class="marca forky"></span><span class="mono">01 · Ene a dic 2025</span><b>El origen</b></a>
+                <a class="etapa" href="#cap" style="--a:13; --b:16; --tono:#6B5CE7"><span class="mono">02 · Feb a abr</span><b>El Rebirth</b></a>
+                <a class="etapa web" href="#cap" style="--a:15.5; --b:21; --tono:#9B8EF0"><span class="mono">03 · Abr a sep 2026</span><b>La web</b></a>
+            </div>
+            <div class="hitos">
+                <span class="hito" tabindex="0" style="--m:0" data-t="Ene 2025 · Nace Tap In: identidad, Forky y la web app de Campus"></span>
+                <span class="hito" tabindex="0" style="--m:5" data-t="Jun 2025 · La marca sale al campus: 60 QR en la UC"></span>
+                <span class="hito" tabindex="0" style="--m:13; --tono:#6B5CE7" data-t="Feb 2026 · Diagnóstico con los socios antes de diseñar"></span>
+                <span class="hito" tabindex="0" style="--m:14; --tono:#6B5CE7" data-t="24 mar 2026 · Marca aprobada: paleta y cerebro de Connect"></span>
+                <span class="hito" tabindex="0" style="--m:16; --tono:#9B8EF0" data-t="May 2026 · Primera versión de tapin.cl"></span>
+                <span class="hito" tabindex="0" style="--m:20; --tono:#9B8EF0" data-t="Sep 2026 · El sitio completo, en producción"></span>
+                <span class="hoy"><span>Hoy</span></span>
+            </div>
+            <div class="meses" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="anios mono"><span style="--m:0">2025</span><span style="--m:6">Jul</span><span style="--m:12">2026</span><span style="--m:18">Jul</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- =======================================================
+     2 · CREDENCIAL COLGANTE
+     ======================================================= -->
+<section class="resumen envoltura" data-p="2" hidden>
+    <div class="grilla v2">
+        <div class="v2-txt">
+            <span class="etq mono">Resumen</span>
+            <p class="enunciado" data-luz>Diseñé la marca de Tap In desde el día uno. Cuando la empresa se reinventó, <em>rehice la marca y programé su web.</em></p>
+            <div class="encargo">
+                <div><span class="mono">El encargo</span><p>Una marca que sobreviviera al pivote, de la comida a los colegios.</p></div>
+                <div><span class="mono">El resultado</span><p>tapin.cl en producción y una sola marca para todo el ecosistema.</p></div>
+            </div>
+        </div>
+        <div class="v2-colgante" data-pendulo aria-label="Credencial del proyecto">
+            <div class="cinta" aria-hidden="true"></div>
+            <div class="gancho" aria-hidden="true"></div>
+            <div class="credencial">
+                <span class="ranura" aria-hidden="true"></span>
+                <div class="acceso mono"><span>Caso 02</span><span>Fundador</span></div>
+                <span class="marca wm"></span>
+                <span class="isos"><span class="marca forky"></span><span class="marca cerebro"></span></span>
+                <dl>
+                    <div><dt class="mono">Período</dt><dd>Ene 2025 a hoy</dd></div>
+                    <div><dt class="mono">Cliente</dt><dd>Chile y Perú</dd></div>
+                    <div><dt class="mono">Equipo</dt><dd>Cofundadores y desarrollo</dd></div>
+                    <div><dt class="mono">Stack</dt><dd>HTML, CSS y JS</dd></div>
+                </dl>
+            </div>
+        </div>
+        <div class="tiempo">
+            <div class="cab mono"><span>El proyecto en el tiempo · <b>22 meses, 3 capítulos</b></span><span>Pasa el mouse por los hitos</span></div>
+            <div class="pista">
+                <span class="eje"></span>
+                <a class="etapa arriba" href="#cap" style="--a:0; --b:12; --tono:#4A3CAE"><span class="txt"><b>El origen</b><span class="mono">01 · Ene a dic 2025</span></span></a>
+                <a class="etapa arriba" href="#cap" style="--a:13; --b:16; --tono:#6B5CE7"><span class="txt"><b>El Rebirth</b><span class="mono">02 · Feb a abr 2026</span></span></a>
+                <a class="etapa abajo" href="#cap" style="--a:15.5; --b:21; --tono:#9B8EF0"><span class="txt"><b>La web</b><span class="mono">03 · Abr a sep 2026</span></span></a>
+                <span class="hito" tabindex="0" style="--m:0" data-t="Ene 2025 · Nace Tap In: identidad, Forky y la web app de Campus"></span>
+                <span class="hito" tabindex="0" style="--m:5" data-t="Jun 2025 · La marca sale al campus: 60 QR en la UC"></span>
+                <span class="hito" tabindex="0" style="--m:13; --tono:#6B5CE7" data-t="Feb 2026 · Diagnóstico con los socios antes de diseñar"></span>
+                <span class="hito" tabindex="0" style="--m:14; --tono:#6B5CE7" data-t="24 mar 2026 · Marca aprobada: paleta y cerebro de Connect"></span>
+                <span class="hito" tabindex="0" style="--m:16; --tono:#9B8EF0" data-t="May 2026 · Primera versión de tapin.cl"></span>
+                <span class="hito" tabindex="0" style="--m:20; --tono:#9B8EF0" data-t="Sep 2026 · El sitio completo, en producción"></span>
+                <span class="hoy"><span>Hoy</span></span>
+            </div>
+            <div class="meses" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="anios mono"><span style="--m:0">2025</span><span style="--m:6">Jul</span><span style="--m:12">2026</span><span style="--m:18">Jul</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- =======================================================
+     3 · EL TIEMPO NARRA
+     ======================================================= -->
+<section class="v3 envoltura" data-p="3" data-narra hidden>
+    <div class="v3-fijo">
+        <div class="v3-txt">
+            <span class="etq mono">Resumen</span>
+            <p class="enunciado" data-luz>Diseñé la marca de Tap In desde el día uno. Cuando la empresa se reinventó, <em>rehice la marca y programé su web.</em></p>
+            <div class="encargo">
+                <div><span class="mono">El encargo</span><p>Una marca que sobreviviera al pivote, de la comida a los colegios.</p></div>
+                <div><span class="mono">El resultado</span><p>tapin.cl en producción y una sola marca para todo el ecosistema.</p></div>
+            </div>
+        </div>
+        <div class="v3-escena">
+            <div class="vivo" data-vivo>
+                <div class="fila"><span class="marca wm"></span><span class="mono" data-v-num>01 / 03</span></div>
+                <div class="signos">
+                    <span class="signo on" data-signo="0"><span class="marca forky"></span></span>
+                    <span class="signo" data-signo="1"><span class="marca cerebro"></span></span>
+                    <span class="signo nav" data-signo="2"><i></i></span>
+                </div>
+                <div class="cap"><span class="mono" data-v-per>2025</span><b data-v-nom>El origen</b><p data-v-txt>Una app para pedir comida sin filas en la universidad: identidad, Forky y la web app de Campus.</p></div>
+                <div class="datos mono"><span>Diseñador fundador</span><span>HTML, CSS y JS</span></div>
+            </div>
+        </div>
+        <div class="tiempo">
+            <div class="cab mono"><span>El proyecto en el tiempo · <b>22 meses, 3 capítulos</b></span><span>Baja para recorrerlo</span></div>
+            <div class="pista">
+                <span class="eje"></span>
+                <a class="etapa on" href="#cap" style="--a:0; --b:12; --tono:#4A3CAE" data-et="0"></a>
+                <a class="etapa" href="#cap" style="--a:13; --b:16; --tono:#6B5CE7" data-et="1"></a>
+                <a class="etapa" href="#cap" style="--a:15.5; --b:21; --tono:#9B8EF0" data-et="2"></a>
+                <span class="hito" tabindex="0" style="--m:0" data-t="Ene 2025 · Nace Tap In"></span>
+                <span class="hito" tabindex="0" style="--m:5" data-t="Jun 2025 · 60 QR en la UC"></span>
+                <span class="hito" tabindex="0" style="--m:13; --tono:#6B5CE7" data-t="Feb 2026 · Diagnóstico con los socios"></span>
+                <span class="hito" tabindex="0" style="--m:14; --tono:#6B5CE7" data-t="24 mar 2026 · Marca aprobada"></span>
+                <span class="hito" tabindex="0" style="--m:16; --tono:#9B8EF0" data-t="May 2026 · Primera versión de tapin.cl"></span>
+                <span class="hito" tabindex="0" style="--m:20; --tono:#9B8EF0" data-t="Sep 2026 · En producción"></span>
+                <span class="hoy"></span>
+                <span class="cursor" data-cursor><span>Ene 2025</span></span>
+            </div>
+            <div class="meses" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="anios mono"><span style="--m:0">2025</span><span style="--m:6">Jul</span><span style="--m:12">2026</span><span style="--m:18">Jul</span></div>
+        </div>
+    </div>
+</section>
+
+<section class="despues envoltura" id="cap"><span class="mono">Comienzo del capítulo 01 · 2025</span><h3>El origen</h3></section>
+
+<nav class="selector" aria-label="Mejoras de la credencial">
+    <button type="button" id="sel-1" data-ir="1" aria-pressed="true"><b>1</b><span>Tarjeta que gira</span></button>
+    <button type="button" id="sel-2" data-ir="2" aria-pressed="false"><b>2</b><span>Credencial colgante</span></button>
+    <button type="button" id="sel-3" data-ir="3" aria-pressed="false"><b>3</b><span>El tiempo narra</span></button>
+</nav>
+
+<main class="notas envoltura">
+    <div class="grilla">
+        <h2>Audit de la B</h2>
+        <div class="bloque">
+            <p>La idea funciona. Fallaban la proporción, la alineación y una línea de tiempo que no informaba.</p>
+            <ul class="lista">
+                <li><span>Diagramación</span><span>El enunciado y la credencial no compartían línea superior; la etiqueta "Resumen" flotaba</span><span>Todo arranca en la misma línea; la etiqueta se alinea con la primera línea del enunciado</span></li>
+                <li><span>Tamaños</span><span>Enunciado en 7 columnas: 4 líneas. Credencial de 660 px de alto, más grande que el texto</span><span>Enunciado en 3 líneas; credencial a la medida de lo que dice (tarjeta, colgante o viva)</span></li>
+                <li><span>Gráfica</span><span>Centro vacío en la credencial y un chip que parecía botón</span><span>Cada versión llena la pieza con algo propio: símbolo sin contacto, cinta con la marca o el capítulo en curso</span></li>
+                <li><span>Tiempo</span><span>Bloques planos y altos, como un gráfico de barras; sin meses, sin hoy, sin hitos; el hueco de enero 2026 sin explicación</span><span>Escala de meses real, marca de "Hoy", seis hitos con su fecha y el cruce de abril entre el Rebirth y la web</span></li>
+                <li><span>Márgenes</span><span>Mucho aire arriba y 140 px muertos antes de la línea de tiempo</span><span>Ritmo más corto y parejo entre bloques; la línea de tiempo cierra la sección</span></li>
+                <li><span>Interacción</span><span>Solo se inclinaba la credencial al pasar el mouse</span><span>Girar la tarjeta, mecer la credencial o recorrer el tiempo con el scroll; hitos con detalle al pasar el mouse</span></li>
+            </ul>
+        </div>
+        <h2>Mejoras</h2>
+        <div class="bloque">
+            <p>Tres maneras de llevar la B más lejos. Elige con el selector.</p>
+            <div class="ops">
+                <button type="button" class="op" id="op-1" data-ir="1" aria-pressed="true"><span class="mono">1 · Tarjeta que gira</span><strong>Una tarjeta de verdad</strong><p>Proporción de tarjeta, con chip y el símbolo de pago sin contacto (el "tap"). Se inclina con el mouse y gira con un clic: adelante la persona, atrás los datos. Línea de tiempo en bloques, más bajos y a escala.</p></button>
+                <button type="button" class="op" id="op-2" data-ir="2" aria-pressed="false"><span class="mono">2 · Credencial colgante</span><strong>La del stand del campus</strong><p>Colgada de una cinta con la marca, se mece con el mouse y con el scroll como un péndulo. La línea de tiempo se vuelve una línea fina con los capítulos rotulados.</p></button>
+                <button type="button" class="op" id="op-3" data-ir="3" aria-pressed="false"><span class="mono">3 · El tiempo narra</span><strong>Resumen que se recorre</strong><p>La sección se fija y el scroll avanza mes a mes: un cursor recorre la línea, los hitos se encienden y la credencial cambia al capítulo en curso. Es la más "scroll que narra".</p><span class="rec">Recomendada</span></button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · MEJORAS DE LA CREDENCIAL
+       ======================================================= */
+    (function () {
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const conMouse = window.matchMedia('(hover: hover)').matches;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+
+        /* --- 1. TEXTO QUE SE ENCIENDE --- */
+        const textos = [...document.querySelectorAll('[data-luz]')].map(el => {
+            const partir = nodo => [...nodo.childNodes].forEach(n => {
+                if (n.nodeType === 3) {
+                    const f = document.createDocumentFragment();
+                    n.textContent.split(/(\s+)/).forEach(w => { if (!w) return; if (/^\s+$/.test(w)) f.appendChild(document.createTextNode(w)); else { const s = document.createElement('span'); s.className = 'pal'; s.textContent = w; f.appendChild(s); } });
+                    n.replaceWith(f);
+                } else partir(n);
+            });
+            partir(el);
+            return { el, pals: [...el.querySelectorAll('.pal')] };
+        });
+        const luces = () => textos.forEach(t => {
+            const r = t.el.getBoundingClientRect(), vh = window.innerHeight;
+            if (!r.height) return;
+            const l = quieto ? 1 : fijar((vh * 0.92 - r.top) / (r.height + vh * 0.35));
+            const n = Math.round(l * t.pals.length);
+            t.pals.forEach((w, i) => w.classList.toggle('on', i < n));
+        });
+
+        /* --- 2. TARJETA QUE GIRA (1) --- */
+        const tarjeta = document.querySelector('[data-tarjeta]');
+        const girar = () => tarjeta.classList.toggle('girada');
+        tarjeta.addEventListener('click', girar);
+        tarjeta.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); girar(); } });
+        document.querySelector('[data-girar]').addEventListener('click', girar);
+        if (conMouse && !quieto) {
+            const zona = tarjeta.closest('.resumen');
+            zona.addEventListener('pointermove', e => {
+                const r = tarjeta.getBoundingClientRect(), x = fijar((e.clientX - r.left) / r.width - 0.5, -1, 1), y = fijar((e.clientY - r.top) / r.height - 0.5, -1, 1);
+                tarjeta.style.setProperty('--ry', (x * 14).toFixed(2) + 'deg'); tarjeta.style.setProperty('--rx', (-y * 12).toFixed(2) + 'deg');
+                tarjeta.querySelectorAll('.cara').forEach(c => { c.style.setProperty('--lx', (x * 40).toFixed(1) + '%'); c.style.setProperty('--ly', (y * 40).toFixed(1) + '%'); });
+            });
+            zona.addEventListener('pointerleave', () => { tarjeta.style.removeProperty('--rx'); tarjeta.style.removeProperty('--ry'); });
+        }
+
+        /* --- 3. CREDENCIAL COLGANTE (2): PÉNDULO CON INERCIA --- */
+        const colgante = document.querySelector('[data-pendulo]');
+        let ang = 0, vel = 0, corre = false, ultimoX = null, ultimoY = window.scrollY;
+        const empujar = f => { vel += f; if (!corre && !quieto) { corre = true; requestAnimationFrame(oscilar); } };
+        const oscilar = () => {
+            vel += -ang * 0.012; vel *= 0.965; ang += vel;
+            colgante.style.setProperty('--ang', ang.toFixed(3) + 'deg');
+            if (Math.abs(ang) + Math.abs(vel) > 0.01) requestAnimationFrame(oscilar); else { corre = false; ang = 0; vel = 0; colgante.style.setProperty('--ang', '0deg'); }
+        };
+        if (conMouse) colgante.closest('.resumen').addEventListener('pointermove', e => { if (ultimoX !== null) empujar(fijar((e.clientX - ultimoX) * 0.03, -0.8, 0.8)); ultimoX = e.clientX; });
+        colgante.addEventListener('click', () => empujar(3));
+
+        /* --- 4. EL TIEMPO NARRA (3) --- */
+        const narra = document.querySelector('[data-narra]'), vivo = narra.querySelector('[data-vivo]'), cursor = narra.querySelector('[data-cursor]');
+        const etapas = [...narra.querySelectorAll('[data-et]')], hitos = [...narra.querySelectorAll('.hito')], signos = [...narra.querySelectorAll('[data-signo]')];
+        const CAPS = [
+            { tono: '#4A3CAE', per: '2025', nom: 'El origen', txt: 'Una app para pedir comida sin filas en la universidad: identidad, Forky y la web app de Campus.' },
+            { tono: '#6B5CE7', per: 'Feb a abr 2026', nom: 'El Rebirth', txt: 'De la comida a los colegios. Diagnóstico con los socios, arquitectura, paleta y el cerebro de Connect.' },
+            { tono: '#2D2560', per: 'Abr a sep 2026', nom: 'La web', txt: 'tapin.cl, diseñada y programada por mí, para que un director entienda en segundos.' }
+        ];
+        const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        let capActual = -1;
+        const narrar = () => {
+            if (narra.hidden) return;
+            const r = narra.getBoundingClientRect(), p = fijar(-r.top / (r.height - window.innerHeight));
+            const mes = fijar(p * 1.15, 0, 1) * 21.68;
+            cursor.style.setProperty('--mes', mes.toFixed(3));
+            const m = Math.min(Math.floor(mes), 21);
+            cursor.querySelector('span').textContent = mes >= 21.6 ? 'Hoy' : `${MESES[m % 12]} ${m < 12 ? 2025 : 2026}`;
+            const cap = mes < 13 ? 0 : mes < 15.5 ? 1 : 2;
+            hitos.forEach(h => h.classList.toggle('on', parseFloat(h.style.getPropertyValue('--m')) <= mes));
+            if (cap === capActual) return;
+            capActual = cap;
+            const c = CAPS[cap];
+            vivo.style.setProperty('--tono', c.tono);
+            vivo.querySelector('[data-v-num]').textContent = `0${cap + 1} / 03`;
+            vivo.querySelector('[data-v-per]').textContent = c.per;
+            vivo.querySelector('[data-v-nom]').textContent = c.nom;
+            vivo.querySelector('[data-v-txt]').textContent = c.txt;
+            signos.forEach((s, i) => s.classList.toggle('on', i === cap));
+            etapas.forEach((e, i) => e.classList.toggle('on', i <= cap));
+        };
+
+        /* --- 5. SCROLL, SELECTOR Y ENLACES --- */
+        let pendiente = false;
+        window.addEventListener('scroll', () => {
+            if (pendiente) return; pendiente = true;
+            requestAnimationFrame(() => {
+                pendiente = false; luces(); narrar();
+                const dy = window.scrollY - ultimoY; ultimoY = window.scrollY;
+                if (!document.querySelector('[data-p="2"]').hidden) empujar(fijar(dy * 0.01, -0.6, 0.6));
+            });
+        }, { passive: true });
+        const vistas = [...document.querySelectorAll('[data-p]')], botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => {
+            vistas.forEach(s => (s.hidden = s.dataset.p !== v));
+            botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v)));
+            try { localStorage.setItem('credencial-tapin', v); } catch (e) { /* sin almacenamiento */ }
+            capActual = -1; luces(); narrar();
+        };
+        botones.forEach(b => b.addEventListener('click', () => {
+            elegir(b.dataset.ir);
+            if (b.classList.contains('op')) document.querySelector(`[data-p="${b.dataset.ir}"]`).scrollIntoView({ behavior: quieto ? 'auto' : 'smooth' });
+        }));
+        document.querySelectorAll('a[href="#cap"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); document.getElementById('cap').scrollIntoView({ behavior: quieto ? 'auto' : 'smooth' }); }));
+        let guardado = null;
+        try { guardado = localStorage.getItem('credencial-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const inicial = ['1', '2', '3'].includes(location.hash.slice(1)) ? location.hash.slice(1) : guardado;
+        elegir(inicial || '1');
+    })();
+    /* =======================================================
+       FIN JS · MEJORAS DE LA CREDENCIAL
+       ======================================================= */
+</script>

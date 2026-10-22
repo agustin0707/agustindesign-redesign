@@ -1,0 +1,397 @@
+<title>Resumen Tap In</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Comparador del resumen del caso Tap In: el final del hero arriba (el sitio a pantalla completa) para
+       juzgar la transición, la propuesta elegida y el comienzo del capítulo 01 abajo. Selector flotante.
+       Un solo aspecto claro a propósito: el resumen vive sobre el blanco del sitio */
+    :root {
+        --papel: #FBFAFF;
+        --tinta: #1C1A2E;
+        --gris: #57556B;
+        --gris-2: #8A889E;
+        --linea: rgba(45, 37, 96, 0.12);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --tint: #EEEDFE;
+        --f-marca: 'Poppins', system-ui, sans-serif;
+        --f-texto: 'Geist', system-ui, sans-serif;
+        --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: clamp(20px, 3.2vw, 48px);
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+        --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.01em; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .wm { aspect-ratio: 389.87 / 150.6; --svg: url('wordmark.svg'); }
+    .forky { aspect-ratio: 1; --svg: url('forky.svg'); }
+    .cerebro { aspect-ratio: 1; --svg: url('cerebro.svg'); }
+    .envoltura { padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 16px; }
+
+    /* --- CONTEXTO: EL FINAL DEL HERO Y EL COMIENZO DEL CAPÍTULO 01 --- */
+    .antes { position: relative; height: 62svh; overflow: hidden; background: #FFFFFF; }
+    .antes img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .antes::after { content: ''; position: absolute; inset: auto 0 0; height: 40%; background: linear-gradient(transparent, var(--papel)); }
+    .etiqueta-ctx { position: absolute; top: 16px; left: max(var(--margen), env(safe-area-inset-left, 0px)); z-index: 2; padding: 5px 10px; border-radius: 999px; background: rgba(28, 26, 46, 0.78); color: #FFFFFF; }
+    .despues { position: relative; padding-block: 80px 120px; color: #FFFFFF; background: radial-gradient(120% 90% at 80% 0%, var(--connect), var(--campus) 45%, var(--empresa)); overflow: hidden; }
+    .despues h3 { margin: 12px 0 0; font: 600 clamp(64px, 11vw, 190px) / 0.86 var(--f-marca); letter-spacing: -0.055em; }
+    .despues .mono { opacity: 0.75; }
+
+    /* --- PIEZAS COMUNES DEL RESUMEN --- */
+    .resumen { padding-block: clamp(80px, 9vw, 140px); }
+    .etq { color: var(--gris); }
+    .enunciado { margin: 0; font: 600 clamp(32px, 3.9vw, 64px) / 1.06 var(--f-marca); letter-spacing: -0.04em; text-wrap: balance; }
+    .enunciado em { font-style: normal; color: var(--campus); }
+    /* Se enciende palabra por palabra al leer; parte visible (no desde cero) para que la primera vista no se lave */
+    .pal { opacity: 0.22; transition: opacity 260ms linear; }
+    .pal.on { opacity: 1; }
+
+    /* =======================================================
+       A · FICHA EDITORIAL
+       ======================================================= */
+    /* El enunciado manda; los datos van en una franja de proyecto con valores grandes, y el índice repite el
+       mismo tratamiento en las tres tarjetas: un signo de cada capítulo, sobre blanco */
+    .a .etq { grid-column: 1 / span 3; padding-top: 0.8em; }
+    .a .enunciado { grid-column: 4 / -1; }
+    .a-ficha { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: clamp(64px, 7vw, 112px) 0 0; border-top: 2px solid var(--tinta); }
+    .a-ficha div { display: flex; flex-direction: column; gap: 8px; padding: 16px 16px 0 0; }
+    .a-ficha div + div { padding-left: 16px; border-left: 1px solid var(--linea); }
+    .a-ficha dt { color: var(--gris); }
+    .a-ficha dd { margin: 0; font: 500 clamp(17px, 1.45vw, 22px) / 1.25 var(--f-marca); letter-spacing: -0.02em; }
+    .a-ficha a { color: inherit; text-decoration-color: var(--soft); text-underline-offset: 4px; }
+    .a-indice { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: clamp(72px, 8vw, 120px); }
+    .a-cap { position: relative; display: grid; grid-template-rows: auto 1fr auto; gap: 18px; min-height: clamp(280px, 26vw, 380px); padding: 20px; border-radius: 22px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea), 0 30px 60px -44px rgba(45, 37, 96, 0.45); color: var(--tinta); text-decoration: none; overflow: hidden; transition: transform 600ms var(--curva), box-shadow 400ms; }
+    .a-cap .fila { display: flex; justify-content: space-between; color: var(--gris); }
+    .a-cap .signo { position: relative; display: grid; place-items: center; }
+    .a-cap .signo::before { content: ''; position: absolute; width: min(72%, 220px); aspect-ratio: 1; border-radius: 50%; background: var(--tono); opacity: 0.12; transition: transform 700ms var(--curva), opacity 400ms; }
+    .a-cap .signo .marca { position: relative; width: min(38%, 120px); color: var(--tono); transition: transform 700ms var(--curva); }
+    .a-cap .navegador { position: relative; width: 74%; border-radius: 10px; overflow: hidden; box-shadow: 0 18px 40px -18px rgba(45, 37, 96, 0.5); transition: transform 700ms var(--curva); }
+    .a-cap .navegador i { display: block; height: 14px; background: #F2F1F8; }
+    .a-cap .navegador img { display: block; width: 100%; }
+    .a-cap b { font: 600 clamp(24px, 2.2vw, 32px) / 1 var(--f-marca); letter-spacing: -0.04em; }
+    .a-cap .pie { display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+    .a-cap .pie > .mono { color: var(--gris); }
+    @media (hover: hover) {
+        .a-cap:hover { transform: translateY(-6px); box-shadow: 0 0 0 1px var(--linea), 0 40px 70px -40px rgba(45, 37, 96, 0.55); }
+        .a-cap:hover .signo::before { transform: scale(1.12); opacity: 0.2; }
+        .a-cap:hover .signo .marca { transform: rotate(-8deg) scale(1.06); }
+        .a-cap:hover .navegador { transform: translateY(-4px) rotate(-2deg); }
+    }
+
+    /* =======================================================
+       B · CREDENCIAL Y LÍNEA DE TIEMPO
+       ======================================================= */
+    /* Los datos del proyecto en una credencial de Tap In (la marca nació en tarjetas y QR de campus) que se
+       inclina con el mouse; el índice es la línea de tiempo real del proyecto, con cada etapa a escala */
+    .b { align-items: center; }
+    .b-txt { grid-column: 1 / span 7; display: flex; flex-direction: column; gap: 28px; }
+    .b .enunciado { font-size: clamp(30px, 3.4vw, 56px); }
+    .b-encargo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; max-width: 640px; }
+    .b-encargo div { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--linea); }
+    .b-encargo span { color: var(--gris); }
+    .b-encargo p { margin: 0; font-size: 17px; line-height: 1.45; }
+    .b-escena { grid-column: 9 / -1; perspective: 1200px; }
+    .b-cred { --rx: 0deg; --ry: 0deg; position: relative; display: flex; flex-direction: column; gap: 22px; aspect-ratio: 0.66; padding: 26px; border-radius: 26px; color: #FFFFFF; background: radial-gradient(120% 80% at 80% 0%, #8174F2, var(--campus) 50%, var(--empresa)); box-shadow: 0 50px 80px -40px rgba(45, 37, 96, 0.7); transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform 500ms var(--ease); overflow: hidden; isolation: isolate; }
+    .b-cred::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: var(--grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; }
+    .b-cred::after { content: ''; position: absolute; inset: -40%; z-index: -1; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.25), transparent); transform: translate(var(--lx, 0%), var(--ly, 0%)); transition: transform 500ms var(--ease); }
+    .b-cred .fondo-iso { position: absolute; right: -14%; top: 22%; width: 74%; color: #FFFFFF; opacity: 0.1; z-index: -1; transform: translate(calc(var(--lx, 0%) * -0.3), calc(var(--ly, 0%) * -0.3)); transition: transform 500ms var(--ease); }
+    .b-cred .arriba { display: flex; justify-content: space-between; align-items: flex-start; }
+    .b-cred .wm { width: 46%; }
+    .b-cred .chip { width: 42px; height: 32px; border-radius: 7px; background: linear-gradient(135deg, #E9E5FF, #B9AFF5); box-shadow: inset 0 0 0 1px rgba(45, 37, 96, 0.2); }
+    .b-cred dl { display: flex; flex-direction: column; margin: auto 0 0; }
+    .b-cred dl div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+    .b-cred dt { opacity: 0.7; }
+    .b-cred dd { margin: 0; text-align: right; font-weight: 500; }
+    .b-cred .abajo { display: flex; justify-content: space-between; align-items: center; }
+    .b-cred .isos { display: flex; gap: 10px; }
+    .b-cred .isos .marca { width: 26px; }
+    .b-cred a { color: #FFFFFF; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.45); }
+    .b-linea { grid-column: 1 / -1; margin-top: clamp(80px, 9vw, 140px); }
+    .b-linea .cab { display: flex; justify-content: space-between; color: var(--gris); margin-bottom: 18px; }
+    .b-pista { position: relative; display: grid; grid-template-columns: repeat(21, minmax(0, 1fr)); column-gap: 4px; height: 168px; }
+    .b-etapa { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; padding: 14px 16px; border-radius: 16px; background: var(--tono); color: #FFFFFF; text-decoration: none; overflow: hidden; transition: transform 500ms var(--curva), box-shadow 400ms; }
+    .b-etapa b { font: 600 clamp(18px, 1.6vw, 26px) / 1 var(--f-marca); letter-spacing: -0.035em; }
+    .b-etapa span { opacity: 0.8; }
+    .b-etapa .marca { position: absolute; right: 14px; top: 12px; width: 34px; opacity: 0.9; }
+    .b-ejes { display: grid; grid-template-columns: repeat(21, minmax(0, 1fr)); column-gap: 4px; margin-top: 10px; color: var(--gris-2); }
+    .b-ejes span { border-left: 1px solid var(--linea); padding-left: 6px; white-space: nowrap; }
+    @media (hover: hover) { .b-etapa:hover { transform: translateY(-6px); box-shadow: 0 30px 50px -30px var(--tono); } }
+
+    /* =======================================================
+       C · ANTES Y DESPUÉS
+       ======================================================= */
+    /* El resumen cuenta el giro del proyecto: Campus 2025 y Connect 2026 enfrentados; se arrastra para pasar de
+       uno al otro. Debajo, los datos en una línea y el índice como lista de capítulos */
+    .c .etq { grid-column: 1 / -1; margin-bottom: 18px; }
+    .c .enunciado { grid-column: 1 / span 10; }
+    .c-giro { --corte: 50%; grid-column: 1 / -1; position: relative; height: clamp(360px, 40vw, 560px); margin-top: clamp(56px, 6vw, 96px); border-radius: 26px; overflow: hidden; user-select: none; touch-action: pan-y; }
+    .c-lado { position: absolute; inset: 0; display: flex; align-items: center; padding: clamp(24px, 4vw, 64px); color: #FFFFFF; isolation: isolate; }
+    .c-lado::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: var(--grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.5; }
+    .c-antes { background: radial-gradient(90% 90% at 20% 20%, #5B4CC4, var(--campus) 55%, var(--empresa)); }
+    .c-ahora { justify-content: flex-end; background: radial-gradient(90% 90% at 80% 20%, #8C80F4, var(--connect) 55%, #4C3FC0); clip-path: inset(0 0 0 var(--corte)); }
+    /* Cada lado vive en su mitad: el de 2025 a la izquierda y el de 2026 a la derecha */
+    .contenido { width: calc(50% - clamp(24px, 4vw, 64px)); display: flex; flex-direction: column; gap: 28px; }
+    .c-ahora .contenido { align-items: flex-end; text-align: right; }
+    .c-lado .info { display: flex; flex-direction: column; gap: 12px; max-width: 30ch; }
+    .c-ahora .info { align-items: flex-end; }
+    .c-lado .anio { font: 600 clamp(56px, 7vw, 120px) / 0.85 var(--f-marca); letter-spacing: -0.06em; }
+    .c-lado strong { font: 600 clamp(20px, 1.8vw, 28px) / 1.1 var(--f-marca); letter-spacing: -0.03em; }
+    .c-lado p { margin: 0; opacity: 0.82; }
+    .c-lado .marca.grande { width: clamp(72px, 8vw, 120px); }
+    .c-mango { position: absolute; top: 0; bottom: 0; left: var(--corte); width: 2px; margin-left: -1px; background: #FFFFFF; pointer-events: none; }
+    .c-mango i { position: absolute; top: 50%; left: 50%; display: grid; place-items: center; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%; background: #FFFFFF; color: var(--campus); font-style: normal; box-shadow: 0 10px 30px -8px rgba(28, 26, 46, 0.5); }
+    .c-rango { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; }
+    .c-rango:focus-visible + .c-mango i { outline: 3px solid var(--health); outline-offset: 3px; }
+    .c-datos { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 32px; margin-top: 28px; color: var(--gris); }
+    .c-datos b { font-weight: 500; color: var(--tinta); }
+    .c-indice { grid-column: 1 / -1; margin: clamp(64px, 7vw, 104px) 0 0; padding: 0; list-style: none; border-top: 1px solid var(--linea); }
+    .c-indice a { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto 32px; gap: 16px; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--linea); color: inherit; text-decoration: none; transition: padding 500ms var(--ease); }
+    .c-indice b { font: 600 clamp(24px, 2.6vw, 40px) / 1 var(--f-marca); letter-spacing: -0.04em; }
+    .c-indice .num { color: var(--tono); font: 500 14px var(--f-mono); }
+    .c-indice .per { color: var(--gris); }
+    .c-indice .flecha { justify-self: end; color: var(--tono); transition: transform 500ms var(--curva); }
+    @media (hover: hover) { .c-indice a:hover { padding-left: 12px; } .c-indice a:hover .flecha { transform: translateY(4px); } }
+
+    /* --- SELECTOR FLOTANTE Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 20; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.5); }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 16px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; transition: background-color 200ms, color 200ms; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .selector button:focus-visible { outline: 2px solid var(--health); outline-offset: 2px; }
+    @media (hover: hover) { .selector button:not([aria-pressed="true"]):hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.1); } }
+    .notas { padding-block: 96px 140px; background: var(--tinta); color: #F4F3FB; }
+    .notas .grilla { row-gap: 64px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; padding-top: 6px; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); }
+    .bloque { grid-column: 4 / -1; min-width: 0; }
+    .bloque > p:first-child { margin: 0 0 28px; max-width: 34ch; font: 600 clamp(24px, 2.4vw, 36px) / 1.1 var(--f-marca); letter-spacing: -0.035em; text-wrap: balance; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 24px; padding: 16px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li span:first-child { color: rgba(238, 237, 254, 0.66); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .op { display: flex; flex-direction: column; gap: 12px; padding: 22px; border-radius: 20px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); text-align: left; color: inherit; font: inherit; cursor: pointer; transition: border-color 200ms, background-color 200ms; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); }
+    .op strong { font: 600 22px / 1.1 var(--f-marca); letter-spacing: -0.03em; }
+    .op p { margin: 0; color: rgba(238, 237, 254, 0.7); }
+    .op .rec { align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+    .op:focus-visible { outline: 2px solid var(--health); outline-offset: 3px; }
+
+    /* --- MÓVIL --- */
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); row-gap: 24px; }
+        .grilla > * { grid-column: 1 / -1 !important; }
+        .a-ficha { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 18px; }
+        .a-ficha div + div { padding-left: 0; border-left: 0; }
+        .a-indice, .ops { grid-template-columns: minmax(0, 1fr); }
+        .a-cap { min-height: 240px; }
+        .b-encargo { grid-template-columns: minmax(0, 1fr); }
+        .b-escena { max-width: 320px; }
+        .b-pista { height: auto; grid-template-columns: minmax(0, 1fr); row-gap: 8px; }
+        .b-etapa { grid-column: 1 / -1 !important; min-height: 96px; }
+        .b-ejes { display: none; }
+        .c-giro { height: 520px; }
+        .contenido { width: calc(50% - 12px); gap: 18px; }
+        .c-lado { padding: 20px; }
+        .c-lado .anio { font-size: 44px; }
+        .c-lado p { font-size: 13px; }
+        .c-lado .mono { font-size: 10px; }
+        .c-indice a { grid-template-columns: 40px minmax(0, 1fr) 24px; }
+        .c-indice .per { display: none; }
+        .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button { padding: 8px 12px; font-size: 13px; }
+        .selector button span { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition-duration: 1ms !important; } }
+</style>
+
+<div class="antes"><span class="etiqueta-ctx mono">Final del hero: el sitio a pantalla completa</span><img src="web.jpg" alt="El sitio tapin.cl a pantalla completa, final del hero"></div>
+
+<!-- =======================================================
+     A · FICHA EDITORIAL
+     ======================================================= -->
+<section class="resumen envoltura" data-p="a">
+    <div class="grilla a">
+        <span class="etq mono">Resumen</span>
+        <p class="enunciado" data-luz>Diseñé la marca de Tap In desde el día uno. Cuando la empresa se reinventó, <em>rehice la marca y programé su web.</em></p>
+        <dl class="a-ficha">
+            <div><dt class="mono">Cliente</dt><dd>Tap In, Chile y Perú</dd></div>
+            <div><dt class="mono">Rol</dt><dd>Diseñador fundador</dd></div>
+            <div><dt class="mono">Período</dt><dd>Ene 2025 a hoy</dd></div>
+            <div><dt class="mono">Alcance</dt><dd>Marca, producto y web en HTML, CSS y JS</dd></div>
+            <div><dt class="mono">En vivo</dt><dd><a href="https://tapin.cl" target="_blank" rel="noopener">tapin.cl ↗</a></dd></div>
+        </dl>
+        <nav class="a-indice" aria-label="Capítulos">
+            <a class="a-cap" href="#cap" style="--tono:#4A3CAE"><span class="fila mono"><span>01</span><span>2025</span></span><span class="signo"><span class="marca forky"></span></span><span class="pie"><span><b>El origen</b></span><span class="mono">Ver ↓</span></span></a>
+            <a class="a-cap" href="#cap" style="--tono:#6B5CE7"><span class="fila mono"><span>02</span><span>Feb a abr 2026</span></span><span class="signo"><span class="marca cerebro"></span></span><span class="pie"><span><b>El Rebirth</b></span><span class="mono">Ver ↓</span></span></a>
+            <a class="a-cap" href="#cap" style="--tono:#2D2560"><span class="fila mono"><span>03</span><span>Abr a sep 2026</span></span><span class="signo"><span class="navegador"><i></i><img src="web.jpg" alt=""></span></span><span class="pie"><span><b>La web</b></span><span class="mono">Ver ↓</span></span></a>
+        </nav>
+    </div>
+</section>
+
+<!-- =======================================================
+     B · CREDENCIAL Y LÍNEA DE TIEMPO
+     ======================================================= -->
+<section class="resumen envoltura" data-p="b" hidden>
+    <div class="grilla b">
+        <div class="b-txt">
+            <span class="etq mono">Resumen</span>
+            <p class="enunciado" data-luz>Diseñé la marca de Tap In desde el día uno. Cuando la empresa se reinventó, <em>rehice la marca y programé su web.</em></p>
+            <div class="b-encargo">
+                <div><span class="mono">El encargo</span><p>Una marca que sobreviviera al pivote, de la comida a los colegios.</p></div>
+                <div><span class="mono">El resultado</span><p>tapin.cl en producción y una sola marca para todo el ecosistema.</p></div>
+            </div>
+        </div>
+        <div class="b-escena">
+            <div class="b-cred" data-cred>
+                <div class="arriba"><span class="marca wm"></span><span class="chip" aria-hidden="true"></span></div>
+                <span class="marca cerebro fondo-iso" aria-hidden="true"></span>
+                <span class="mono">Caso 02 · Diseñador fundador</span>
+                <dl>
+                    <div><dt class="mono">Período</dt><dd>Ene 2025 a hoy</dd></div>
+                    <div><dt class="mono">Cliente</dt><dd>Chile y Perú</dd></div>
+                    <div><dt class="mono">Equipo</dt><dd>Cofundadores y desarrollo</dd></div>
+                    <div><dt class="mono">Stack</dt><dd>HTML, CSS y JS</dd></div>
+                </dl>
+                <div class="abajo"><span class="isos"><span class="marca forky"></span><span class="marca cerebro"></span></span><a class="mono" href="https://tapin.cl" target="_blank" rel="noopener">tapin.cl ↗</a></div>
+            </div>
+        </div>
+        <div class="b-linea">
+            <div class="cab mono"><span>El proyecto en el tiempo</span><span>21 meses · 3 capítulos</span></div>
+            <div class="b-pista">
+                <a class="b-etapa" href="#cap" style="--tono:#4A3CAE; grid-column: 1 / span 12"><span class="marca forky"></span><span class="mono">01 · Ene a dic 2025</span><b>El origen</b></a>
+                <a class="b-etapa" href="#cap" style="--tono:#6B5CE7; grid-column: 14 / span 3"><span class="mono">02</span><b>El Rebirth</b></a>
+                <a class="b-etapa" href="#cap" style="--tono:#9B8EF0; grid-column: 17 / span 5"><span class="mono">03 · Abr a sep 2026</span><b>La web</b></a>
+            </div>
+            <div class="b-ejes mono"><span style="grid-column: 1 / span 6">Ene 2025</span><span style="grid-column: 7 / span 7">Jul 2025</span><span style="grid-column: 14 / span 3">Feb 2026</span><span style="grid-column: 17 / span 5">Abr 2026</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- =======================================================
+     C · ANTES Y DESPUÉS
+     ======================================================= -->
+<section class="resumen envoltura" data-p="c" hidden>
+    <div class="grilla c">
+        <span class="etq mono">Resumen</span>
+        <p class="enunciado" data-luz>Diseñé la marca de Tap In desde el día uno. Cuando la empresa se reinventó, <em>rehice la marca y programé su web.</em></p>
+        <div class="c-giro" data-giro>
+            <div class="c-lado c-antes"><div class="contenido"><span class="marca forky grande"></span><div class="info"><span class="anio">2025</span><strong>Campus</strong><p>Una app para pedir comida sin filas en la universidad.</p><span class="mono">Estudiantes · UC</span></div></div></div>
+            <div class="c-lado c-ahora"><div class="contenido"><span class="marca cerebro grande"></span><div class="info"><span class="anio">2026</span><strong>Connect</strong><p>El sistema que conecta los servicios del colegio.</p><span class="mono">Directores y familias · Chile y Perú</span></div></div></div>
+            <input class="c-rango" type="range" id="giro" min="0" max="100" value="50" aria-label="Pasar de Campus 2025 a Connect 2026">
+            <span class="c-mango" aria-hidden="true"><i>↔</i></span>
+        </div>
+        <p class="c-datos mono"><span><b>Rol</b> Diseñador fundador</span><span><b>Período</b> Ene 2025 a hoy</span><span><b>Alcance</b> Marca, producto y web</span><span><b>Stack</b> HTML, CSS y JS</span><span><b>En vivo</b> tapin.cl</span></p>
+        <ol class="c-indice">
+            <li><a href="#cap" style="--tono:#4A3CAE"><span class="num">01</span><b>El origen</b><span class="per mono">2025 · Forky y el campus</span><span class="flecha">↓</span></a></li>
+            <li><a href="#cap" style="--tono:#6B5CE7"><span class="num">02</span><b>El Rebirth</b><span class="per mono">Feb a abr 2026 · La marca</span><span class="flecha">↓</span></a></li>
+            <li><a href="#cap" style="--tono:#2D2560"><span class="num">03</span><b>La web</b><span class="per mono">Abr a sep 2026 · tapin.cl</span><span class="flecha">↓</span></a></li>
+        </ol>
+    </div>
+</section>
+
+<section class="despues envoltura" id="cap"><span class="mono">Comienzo del capítulo 01 · 2025</span><h3>El origen</h3></section>
+
+<nav class="selector" aria-label="Propuestas de resumen">
+    <button type="button" id="sel-a" data-ir="a" aria-pressed="true"><b>A</b><span>Ficha editorial</span></button>
+    <button type="button" id="sel-b" data-ir="b" aria-pressed="false"><b>B</b><span>Credencial y tiempo</span></button>
+    <button type="button" id="sel-c" data-ir="c" aria-pressed="false"><b>C</b><span>Antes y después</span></button>
+</nav>
+
+<main class="notas envoltura">
+    <div class="grilla">
+        <h2>Diagnóstico</h2>
+        <div class="bloque">
+            <p>El enunciado funciona. Lo que lo rodea se lee chico, repetido y sin transición.</p>
+            <ul class="lista">
+                <li><span>El hero termina en el sitio blanco a pantalla completa y entra un lavanda de golpe</span><span>El resumen pasa a vivir sobre casi blanco: se sale del sitio al relato sin corte</span></li>
+                <li><span>La ficha es una tabla de letra chica y deja vacía la columna izquierda</span><span>Los datos se vuelven una pieza: franja de proyecto, credencial o línea corrida, según la propuesta</span></li>
+                <li><span>"Lo que hice" y "El resultado" repiten lo que ya dice el enunciado</span><span>Se recorta a lo que suma: el encargo y el resultado, o nada si la pieza ya lo cuenta</span></li>
+                <li><span>Las tarjetas del índice tienen piezas de distinto peso y las barras de la 02 parecen un gráfico</span><span>Un mismo tratamiento para los tres capítulos, o un índice que además informa (tiempo, giro)</span></li>
+                <li><span>Tres tarjetas moradas justo antes de la apertura morada del capítulo 01</span><span>El índice baja de intensidad (blanco, tiempo o lista) para que el capítulo 01 sea el golpe de color</span></li>
+                <li><span>El enunciado arranca muy apagado y la primera vista se ve gris</span><span>Las palabras parten más visibles y se encienden igual al leer</span></li>
+            </ul>
+        </div>
+        <h2>Propuestas</h2>
+        <div class="bloque">
+            <p>Tres maneras de resumir el caso. Elige con el selector.</p>
+            <div class="ops">
+                <button type="button" class="op" id="op-a" data-ir="a" aria-pressed="true"><span class="mono">A · Ficha editorial</span><strong>El enunciado manda</strong><p>Franja de proyecto con valores grandes, como la ficha de un Behance, y un índice en blanco con el signo de cada capítulo: Forky, el cerebro y el sitio.</p></button>
+                <button type="button" class="op" id="op-b" data-ir="b" aria-pressed="false"><span class="mono">B · Credencial y tiempo</span><strong>Datos con identidad</strong><p>Los datos en una credencial de Tap In que se inclina con el mouse, como el hero. El índice es la línea de tiempo real del proyecto, con cada etapa a escala.</p><span class="rec">Recomendada</span></button>
+                <button type="button" class="op" id="op-c" data-ir="c" aria-pressed="false"><span class="mono">C · Antes y después</span><strong>El giro en un gesto</strong><p>Campus 2025 y Connect 2026 enfrentados: se arrastra para pasar de uno al otro. Datos en una línea e índice como lista. Cuenta la historia antes de empezarla.</p></button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · COMPARADOR DEL RESUMEN
+       ======================================================= */
+    (function () {
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        /* --- 1. TEXTO QUE SE ENCIENDE PALABRA POR PALABRA --- */
+        const textos = [...document.querySelectorAll('[data-luz]')].map(el => {
+            const partir = nodo => [...nodo.childNodes].forEach(n => {
+                if (n.nodeType === 3) {
+                    const f = document.createDocumentFragment();
+                    n.textContent.split(/(\s+)/).forEach(w => { if (!w) return; if (/^\s+$/.test(w)) f.appendChild(document.createTextNode(w)); else { const s = document.createElement('span'); s.className = 'pal'; s.textContent = w; f.appendChild(s); } });
+                    n.replaceWith(f);
+                } else partir(n);
+            });
+            partir(el);
+            return { el, pals: [...el.querySelectorAll('.pal')] };
+        });
+        const luces = () => textos.forEach(t => {
+            const r = t.el.getBoundingClientRect(), vh = window.innerHeight;
+            const l = quieto ? 1 : Math.min(Math.max((vh * 0.92 - r.top) / (r.height + vh * 0.35), 0), 1);
+            const n = Math.round(l * t.pals.length);
+            t.pals.forEach((w, i) => w.classList.toggle('on', i < n));
+        });
+        let pendiente = false;
+        window.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; luces(); }); } }, { passive: true });
+
+        /* --- 2. CREDENCIAL QUE SE INCLINA CON EL MOUSE (B) --- */
+        const cred = document.querySelector('[data-cred]');
+        if (cred && !quieto && window.matchMedia('(hover: hover)').matches) {
+            const zona = cred.closest('.resumen');
+            zona.addEventListener('pointermove', e => {
+                const r = cred.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+                const k = Math.min(1, 1.6 / Math.max(Math.abs(x), Math.abs(y), 1));
+                cred.style.setProperty('--ry', (x * 16 * k).toFixed(2) + 'deg'); cred.style.setProperty('--rx', (-y * 12 * k).toFixed(2) + 'deg');
+                cred.style.setProperty('--lx', (x * 40).toFixed(1) + '%'); cred.style.setProperty('--ly', (y * 40).toFixed(1) + '%');
+            });
+            zona.addEventListener('pointerleave', () => { ['--rx', '--ry', '--lx', '--ly'].forEach(v => cred.style.removeProperty(v)); });
+        }
+
+        /* --- 3. ANTES Y DESPUÉS (C) --- */
+        const giro = document.querySelector('[data-giro]'), rango = document.getElementById('giro');
+        if (giro) rango.addEventListener('input', () => giro.style.setProperty('--corte', rango.value + '%'));
+
+        /* --- 4. SELECTOR DE PROPUESTAS --- */
+        const vistas = [...document.querySelectorAll('[data-p]')], botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => {
+            vistas.forEach(s => (s.hidden = s.dataset.p !== v));
+            botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v)));
+            try { localStorage.setItem('resumen-tapin', v); } catch (e) { /* sin almacenamiento */ }
+            luces();
+        };
+        botones.forEach(b => b.addEventListener('click', () => {
+            elegir(b.dataset.ir);
+            if (b.classList.contains('op')) document.querySelector(`[data-p="${b.dataset.ir}"]`).scrollIntoView({ behavior: quieto ? 'auto' : 'smooth' });
+        }));
+        document.querySelectorAll('a[href="#cap"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); document.getElementById('cap').scrollIntoView({ behavior: quieto ? 'auto' : 'smooth' }); }));
+        let guardado = null;
+        try { guardado = localStorage.getItem('resumen-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const inicial = ['a', 'b', 'c'].includes(location.hash.slice(1)) ? location.hash.slice(1) : guardado;
+        elegir(inicial || 'a');
+    })();
+    /* =======================================================
+       FIN JS · COMPARADOR DEL RESUMEN
+       ======================================================= */
+</script>

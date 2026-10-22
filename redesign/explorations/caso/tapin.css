@@ -131,46 +131,68 @@
 .tp-mk.listo img { opacity: 0; }
 
 /* =======================================================
-   RESUMEN
+   RESUMEN: EL TIEMPO NARRA
    ======================================================= */
-/* La ficha ocupa la columna izquierda; abajo, el índice de capítulos con la pieza de cada uno */
-.tp-intro { padding-bottom: clamp(64px, 7vw, 112px); }
-.tp-intro-izq { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 36px; padding-top: 0.9em; }
-.tp-intro-izq .tp-etq { padding-top: 0; }
-.tp-intro-der { grid-column: 4 / -1; }
-.tp-intro .tp-enunciado { grid-column: auto; }
-.tp-tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--medianil); margin-top: clamp(56px, 6vw, 96px); }
-.tp-tres > div { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--linea); }
-.tp-tres .mono { color: var(--texto-2); }
-.tp-tres p { font-size: var(--tp-t4); line-height: 1.45; max-width: 28ch; }
-.tp-ficha { display: flex; flex-direction: column; max-width: 260px; }
-.tp-ficha > div { display: grid; grid-template-columns: 76px 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--linea); }
-.tp-ficha > div:last-child { border-bottom: 1px solid var(--linea); }
-.tp-ficha dt { color: var(--texto-2); padding-top: 2px; }
-.tp-ficha dd { font-size: 14px; line-height: 1.4; }
-.tp-ficha a { border-bottom: 1px solid var(--linea); }
-.tp-indice { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--medianil); margin-top: clamp(80px, 9vw, 140px); }
-.tp-ind { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 18px 20px 20px; border-radius: var(--tp-radio); color: #FFFFFF; overflow: hidden; background: radial-gradient(120% 90% at 80% 0%, color-mix(in srgb, var(--tono) 70%, #FFFFFF), var(--tono) 55%, color-mix(in srgb, var(--tono) 70%, #000000)); opacity: 0; translate: 0 32px; transition: opacity 800ms var(--ease), translate 800ms var(--ease); }
-.tp-ind:nth-child(2) { transition-delay: 90ms; } .tp-ind:nth-child(3) { transition-delay: 180ms; }
-.tp-ind.visto { opacity: 1; translate: 0 0; }
-.tp-ind-fila { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.75); }
-.tp-ind-vis { display: grid; place-items: center; height: clamp(150px, 14vw, 220px); margin: 6px 0 10px; transition: transform 700ms var(--tp-curva); }
-.tp-ind-vis > .tp-marca { width: auto; height: 78%; }
-.tp-ind b { font: 600 clamp(24px, 2.2vw, 34px) / 1 var(--tp-f); letter-spacing: -0.04em; }
-.tp-ind-pie { color: rgba(255, 255, 255, 0.75); }
-.tp-ind-tiras { display: flex; align-items: flex-end; gap: 6px; padding: 0 12%; }
-.tp-ind-tiras i { flex: 1; border-radius: 10px 10px 0 0; background: var(--tono); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18); }
-.tp-ind-tiras i:nth-child(1) { height: 40%; } .tp-ind-tiras i:nth-child(2) { height: 62%; } .tp-ind-tiras i:nth-child(3) { height: 84%; } .tp-ind-tiras i:nth-child(4) { height: 100%; }
-.tp-ind-web { position: relative; display: block; padding: 0 6%; }
-.tp-ind-web img, .tp-ind-nav { width: 100%; }
-.tp-ind-nav { display: flex; gap: 4px; padding: 6px 8px; border-radius: 8px 8px 0 0; background: #F2F1F8; }
-.tp-ind-nav i { width: 6px; height: 6px; border-radius: 50%; background: #D9D6EA; }
-.tp-ind-web img { height: calc(100% - 18px); object-fit: cover; object-position: top; border-radius: 0 0 8px 8px; }
-.tp-ind::after { content: '↓'; position: absolute; right: 20px; bottom: 18px; font: 16px var(--mono); transition: transform 500ms var(--tp-curva); }
-@media (hover: hover) {
-    .tp-ind:hover .tp-ind-vis { transform: scale(1.06) rotate(-2deg); }
-    .tp-ind:hover::after { transform: translateY(4px); }
-}
+/* La sección se fija y el scroll recorre el proyecto mes a mes: un cursor avanza por la línea de tiempo (a
+   escala real, 22 meses), los hitos se encienden y la credencial colgante cambia al capítulo en curso.
+   La credencial se inclina levemente con el mouse, colgada de su cinta */
+.tp-res { --fondo: #FBFAFF; height: 230svh; }
+.tp-res-fijo { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 1fr auto; column-gap: var(--medianil); padding: clamp(72px, 10svh, 120px) var(--margen) clamp(40px, 6svh, 72px); }
+.tp-res-txt { grid-column: 1 / span 7; align-self: center; display: flex; flex-direction: column; gap: 32px; }
+.tp-res .tp-etq { padding-top: 0; }
+.tp-res .tp-enunciado { font-size: clamp(30px, 3.4vw, 56px); line-height: 1.05; text-wrap: balance; }
+.tp-pal { opacity: 0.22; }
+.tp-encargo { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--medianil); max-width: 680px; }
+.tp-encargo div { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--linea); }
+.tp-encargo .mono { color: var(--texto-2); }
+.tp-encargo p { font-size: var(--tp-t4); line-height: 1.45; max-width: 30ch; }
+
+/* --- CREDENCIAL COLGANTE --- */
+.tp-res-colgante { grid-column: 9 / -1; grid-row: 1; justify-self: center; align-self: start; display: flex; flex-direction: column; align-items: center; width: min(100%, 340px); margin-top: calc(-1 * clamp(72px, 10svh, 120px)); perspective: 1200px; }
+.tp-cinta { position: relative; width: 44px; height: clamp(90px, 16svh, 170px); background: repeating-linear-gradient(180deg, var(--tp-campus) 0 60px, var(--tp-connect) 60px 120px); overflow: hidden; }
+.tp-cinta::after { content: 'tap in · tap in · tap in · tap in'; position: absolute; left: 50%; bottom: 8px; writing-mode: vertical-rl; translate: -50% 0; color: rgba(255, 255, 255, 0.75); font: 600 12px var(--tp-f); white-space: nowrap; }
+.tp-gancho { width: 28px; height: 22px; margin: -2px 0 -6px; border-radius: 6px 6px 10px 10px; background: linear-gradient(#D6D3E4, #9F9BB8); position: relative; z-index: 1; }
+.tp-cred { --tono: var(--tp-campus); --rx: 0deg; --ry: 0deg; position: relative; width: 100%; aspect-ratio: 0.72; max-height: 60svh; display: flex; flex-direction: column; gap: 16px; padding: 30px 24px 22px; border-radius: 24px; color: #FFFFFF; background: radial-gradient(120% 80% at 80% 0%, color-mix(in srgb, var(--tono) 60%, #FFFFFF), var(--tono) 55%, color-mix(in srgb, var(--tono) 55%, #000000)); box-shadow: 0 40px 70px -36px color-mix(in srgb, var(--tono) 80%, transparent); transform-origin: 50% 0; transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform 600ms var(--ease), background 600ms var(--ease), box-shadow 600ms; overflow: hidden; isolation: isolate; }
+.tp-cred::before { content: ''; position: absolute; inset: 0; z-index: -1; background-image: var(--tp-grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; }
+/* Brillo que sigue al mouse sobre el plástico */
+.tp-cred::after { content: ''; position: absolute; inset: -50%; z-index: -1; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.22), transparent); transform: translate(var(--lx, 0%), var(--ly, 0%)); transition: transform 600ms var(--ease); }
+.tp-ranura { position: absolute; top: 12px; left: 50%; width: 56px; height: 9px; margin-left: -28px; border-radius: 9px; background: var(--fondo); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25); }
+.tp-cred-fila { display: flex; justify-content: space-between; align-items: center; }
+.tp-cred-fila .tp-wm { width: 36%; }
+.tp-cred-signos { position: relative; flex: 1; display: grid; place-items: center; }
+.tp-signo { position: absolute; display: grid; place-items: center; width: 44%; opacity: 0; transform: scale(0.8) rotate(-8deg); transition: opacity 400ms, transform 600ms var(--tp-curva); }
+.tp-signo.on { opacity: 1; transform: none; }
+.tp-signo-nav { width: 62%; }
+.tp-signo-nav i { display: block; width: 100%; aspect-ratio: 16 / 10; border-radius: 8px; border: 2px solid #FFFFFF; background: linear-gradient(#FFFFFF 0 14%, transparent 14%); }
+.tp-cred-cap { display: flex; flex-direction: column; gap: 4px; min-height: 96px; }
+.tp-cred-cap b { font: 600 clamp(22px, 2vw, 30px) / 1 var(--tp-f); letter-spacing: -0.04em; }
+.tp-cred-cap p { opacity: 0.85; font-size: 14px; line-height: 1.4; }
+.tp-cred-datos { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.22); }
+
+/* --- LÍNEA DE TIEMPO A ESCALA --- */
+.tp-tiempo { grid-column: 1 / -1; grid-row: 2; position: relative; margin-top: 28px; }
+.tp-tiempo-cab { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 16px; color: var(--texto-2); }
+.tp-tiempo-cab b { font-weight: 400; color: var(--texto); }
+.tp-pista { position: relative; height: 44px; }
+.tp-eje { position: absolute; left: 0; right: 0; top: 21px; height: 2px; background: var(--linea); }
+.tp-etapa { position: absolute; top: 16px; left: calc(var(--a) / 22 * 100%); width: calc((var(--b) - var(--a)) / 22 * 100% - 4px); height: 12px; border-radius: 12px; background: var(--tono); opacity: 0.25; transition: opacity 400ms, transform 400ms var(--tp-curva); }
+.tp-etapa.on { opacity: 1; }
+@media (hover: hover) { .tp-etapa:hover { transform: scaleY(1.5); opacity: 1; } }
+.tp-hito { position: absolute; top: 16px; left: calc((var(--m) + 0.5) / 22 * 100%); z-index: 2; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--fondo); border: 2px solid var(--tono); transition: transform 300ms var(--tp-curva), background-color 300ms; }
+.tp-hito.on { background: var(--tono); }
+.tp-hito::after { content: attr(data-t); position: absolute; left: 50%; bottom: calc(100% + 10px); translate: -50% 4px; width: max-content; max-width: 220px; padding: 7px 10px; border-radius: 10px; background: var(--tp-tinta); color: #FFFFFF; font: 12px/1.35 var(--sans); opacity: 0; pointer-events: none; transition: opacity 200ms, translate 300ms var(--ease); }
+.tp-hito:focus-visible { outline: none; transform: scale(1.35); }
+.tp-hito:focus-visible::after { opacity: 1; translate: -50% 0; }
+@media (hover: hover) { .tp-hito:hover { transform: scale(1.35); } .tp-hito:hover::after { opacity: 1; translate: -50% 0; } }
+.tp-hoy { position: absolute; left: calc(21.68 / 22 * 100%); top: 6px; bottom: 6px; border-left: 1.5px dashed var(--tp-campus); opacity: 0.6; }
+.tp-cursor { position: absolute; top: 0; bottom: 0; left: calc(var(--mes, 0) / 22 * 100%); z-index: 3; }
+.tp-cursor::before { content: ''; position: absolute; top: 4px; bottom: 4px; left: -1px; width: 2px; background: var(--tp-tinta); }
+.tp-cursor span { position: absolute; top: -26px; left: 0; translate: -50% 0; padding: 3px 8px; border-radius: 999px; background: var(--tp-tinta); color: #FFFFFF; font: 11px var(--mono); white-space: nowrap; }
+.tp-meses { display: grid; grid-template-columns: repeat(22, 1fr); height: 10px; }
+.tp-meses i { border-left: 1px solid var(--linea); }
+.tp-meses i:nth-child(1), .tp-meses i:nth-child(13) { border-left-color: var(--texto-3); }
+.tp-anios { position: relative; height: 18px; margin-top: 6px; color: var(--texto-3); }
+.tp-anios span { position: absolute; left: calc(var(--m) / 22 * 100%); }
 
 /* =======================================================
    APERTURAS DE CAPÍTULO
@@ -464,11 +486,23 @@
     .tp-hero-txt p { font-size: 18px; }
     .tp-hero-pista { display: none; }
     .tp-etq { padding-top: 0; }
-    .tp-tres, .tp-creditos { grid-template-columns: 1fr; }
-    .tp-intro-izq { order: 2; gap: 20px; }
-    .tp-ficha { max-width: none; }
-    .tp-indice { order: 3; grid-template-columns: 1fr; margin-top: 48px; gap: 10px; }
-    .tp-ind-vis { height: 120px; }
+    .tp-creditos { grid-template-columns: 1fr; }
+    .tp-res { height: 260svh; }
+    .tp-res-fijo { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; row-gap: 14px; padding: 72px var(--margen) 28px; }
+    .tp-res-fijo > * { grid-column: 1 !important; }
+    .tp-res-txt { align-self: start; gap: 14px; }
+    .tp-res .tp-enunciado { font-size: 25px; }
+    .tp-encargo { display: none; }
+    .tp-res-colgante { grid-row: 2; width: 100%; margin-top: 0; align-self: stretch; }
+    .tp-cinta, .tp-gancho, .tp-ranura { display: none; }
+    .tp-cred { aspect-ratio: auto; height: 100%; max-height: none; padding: 18px; gap: 8px; }
+    .tp-cred-signos { min-height: 80px; }
+    .tp-signo { width: 26%; }
+    .tp-signo-nav { width: 40%; }
+    .tp-cred-cap { min-height: 0; }
+    .tp-tiempo { grid-row: 3; margin-top: 0; }
+    .tp-tiempo-cab, .tp-anios span:nth-child(2n) { display: none; }
+    .tp-tiempo { padding-top: 26px; }
     .tp-cap-num { top: 12svh; font-size: 52vw; }
     .tp-velocidad { width: 14svh; }
     .tp-dec-num { font-size: 56px; margin-bottom: 0; }
