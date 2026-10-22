@@ -20,6 +20,11 @@
     --tp-grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
     /* Hero: de dónde parte el navegador recostado antes de llenar la pantalla */
     --hy: 36svh; --hrx: 38deg; --hs: 0.74;
+    /* Grilla del caso (mezcla de la editorial y el riel): 12 columnas, medianil de 24 px, márgenes amplios y un
+       ancho de contenido de 1600 px como máximo. Las columnas 1 a 3 son el riel de rótulos y números (como el home
+       y el índice de trabajos); el texto va de la 4 a la 9 y las piezas pueden llegar a la 12 */
+    --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2));
+    --medianil: 24px;
     --c-fondo: var(--tp-papel);
     background: var(--tp-noche);
 }
@@ -168,9 +173,11 @@
 .tp-res { --fondo: #FBFAFF; --t: 0; position: relative; z-index: 2; height: 300svh; background: transparent; }
 .tp-res-fijo { background: var(--fondo); opacity: calc(1 - clamp(0, (var(--p, 0) - 0.95) / 0.05, 1)); }
 .tp-res-fijo { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 1fr auto; column-gap: var(--medianil); padding: clamp(72px, 10svh, 120px) var(--margen) clamp(40px, 6svh, 72px); }
-.tp-res-txt { grid-column: 1 / span 7; align-self: center; display: flex; flex-direction: column; gap: 32px; }
+.tp-res-txt { grid-column: 1 / span 9; align-self: center; display: grid; grid-template-columns: subgrid; row-gap: 32px; align-items: start; }
+.tp-res-txt .tp-etq { grid-column: 1 / span 3; padding-top: 0.9em; }
+.tp-res-txt .tp-enunciado, .tp-res-txt .tp-encargo { grid-column: 4 / span 6; }
 .tp-res .tp-etq { padding-top: 0; }
-.tp-res .tp-enunciado { font-size: clamp(30px, 3.4vw, 56px); font-weight: 300; line-height: 1.06; letter-spacing: -0.035em; text-wrap: balance; }
+.tp-res .tp-enunciado { font-size: clamp(28px, 3vw, 52px); font-weight: 300; line-height: 1.06; letter-spacing: -0.035em; text-wrap: balance; }
 .tp-res .tp-enunciado :is(b, em) { font-weight: 600; letter-spacing: -0.04em; }
 .tp-pal { opacity: 0.22; }
 .tp-encargo { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: start; gap: 28px; max-width: 820px; margin-top: 8px; }
@@ -192,7 +199,7 @@
 .tp-res .tp-cred { scale: calc(1 - clamp(0, var(--t) / 0.08, 1) * 0.05 + clamp(0, (var(--t) - 0.08) / 0.1, 1) * 0.05); }
 
 /* --- CREDENCIAL COLGANTE --- */
-.tp-res-colgante { grid-column: 9 / -1; grid-row: 1; justify-self: center; align-self: start; display: flex; flex-direction: column; align-items: center; width: min(100%, 340px); margin-top: calc(-1 * clamp(72px, 10svh, 120px)); perspective: 1200px; }
+.tp-res-colgante { grid-column: 10 / -1; grid-row: 1; justify-self: center; align-self: start; display: flex; flex-direction: column; align-items: center; width: min(100%, 340px); margin-top: calc(-1 * clamp(72px, 10svh, 120px)); perspective: 1200px; }
 /* Cinta en V: dos tramos tejidos (Campus y Connect) con "tap in" estampado y costuras, que bajan desde fuera
    de cuadro y se juntan en un mosquetón enganchado a la ranura */
 .tp-v { position: relative; width: 100%; height: clamp(110px, 18svh, 190px); margin-bottom: -6px; z-index: 1; }
@@ -226,7 +233,7 @@
 /* Cuatro filas sin solaparse: nombres de capítulo, barras finas con el degradado de la paleta (continuo de punta
    a punta, cortado en tres capítulos), hitos sobre su eje y, debajo, el texto del hito en curso, anclado a su
    punto. El cursor es una línea con un punto; nada se pone encima de la información */
-.tp-tiempo { --mes: 0; grid-column: 1 / -1; grid-row: 2; position: relative; margin-top: 28px; }
+.tp-tiempo { --mes: 0; grid-column: 4 / -1; grid-row: 2; position: relative; margin-top: 28px; }
 .tp-tiempo-cab { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 14px; color: var(--texto-2); }
 .tp-tiempo-cab .mono:last-child { color: var(--texto-3); }
 .tp-pista { position: relative; height: 122px; }
@@ -269,6 +276,11 @@
 .tp-cap { height: 200svh; }
 .tp-cap .tp-fijo, .tp-rebirth .tp-fijo { padding: 0 var(--margen); }
 .tp-cap-txt { position: absolute; left: var(--margen); right: var(--margen); bottom: 9svh; z-index: 2; display: flex; flex-direction: column; gap: 18px; }
+/* En las aperturas, el rótulo va en el riel y el título y la bajada desde la columna 4 */
+.tp-cap .tp-cap-txt { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); row-gap: 18px; }
+.tp-cap .tp-cap-n { grid-column: 1 / span 3; grid-row: 1; align-self: end; padding-bottom: 1.1em; }
+.tp-cap .tp-cap-txt h2 { grid-column: 4 / -1; grid-row: 1; }
+.tp-cap .tp-cap-txt p { grid-column: 4 / span 6; grid-row: 2; }
 .tp-cap-n { color: var(--texto-2); }
 .tp-cap-txt h2 { font: 600 var(--tp-t1) / 0.86 var(--tp-f); letter-spacing: -0.055em; margin-left: -0.04em; }
 .tp-cap-txt p { max-width: 34ch; font-size: clamp(17px, 1.4vw, 22px); line-height: 1.4; color: var(--texto-2); }
@@ -322,10 +334,16 @@
    DECISIÓN 01 · FORKY, PASO A PASO
    ======================================================= */
 .tp-forky { height: 380svh; }
-.tp-forky .tp-dec { grid-column: 1 / span 4; }
+.tp-forky .tp-fijo { align-content: center; align-items: start; }
+.tp-forky .tp-dec { grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; row-gap: 16px; max-width: none; align-items: start; }
+.tp-forky .tp-dec-num, .tp-forky .tp-dec-n { grid-column: 1 / span 3; }
+.tp-forky .tp-dec-num { grid-row: 1; }
+.tp-forky .tp-dec-n { grid-row: 2; align-self: start; padding-top: 4px; }
+.tp-forky .tp-dec h3, .tp-forky .tp-dec p { grid-column: 4 / span 3; }
+.tp-forky .tp-dec h3 { grid-row: 1; } .tp-forky .tp-dec p:not(.tp-porque) { grid-row: 2 / 4; } .tp-forky .tp-dec .tp-porque { grid-row: 4; }
 /* Las formas que se exploraron, en el orden del proceso: se encienden una a una con el scroll y al final se
    apartan para que aparezca Forky con el wordmark de Campus */
-.tp-formas-zona { grid-column: 6 / -1; justify-self: center; position: relative; width: min(100%, clamp(560px, 42vw, 860px)); }
+.tp-formas-zona { grid-column: 8 / -1; position: relative; width: 100%; }
 .tp-formas { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1vw, 14px); transition: opacity 600ms var(--ease), transform 700ms var(--ease); }
 .tp-forma { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: clamp(14px, 1.3vw, 20px); background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea), 0 14px 30px -18px rgba(45, 37, 96, 0.3); color: var(--tp-soft); opacity: 0.6; transform: scale(0.96); transition: opacity 400ms, transform 600ms var(--tp-curva), color 400ms, box-shadow 400ms; }
 /* Cada forma lleva su escala (--s) para que todas pesen lo mismo a la vista, aunque su proporción cambie */
@@ -582,6 +600,9 @@
     .tp { --hy: 30svh; --hrx: 32deg; --hs: 0.88; }
     .tp-grilla { grid-template-columns: 1fr; row-gap: 28px; }
     .tp-grilla > * { grid-column: 1 / -1 !important; }
+    .tp .tp-cap .tp-cap-txt, .tp-forky .tp-dec { display: flex; flex-direction: column; gap: 10px; }
+    .tp-cap .tp-cap-n { align-self: flex-start; padding-bottom: 0; }
+    .tp-segmentos { display: none; }
     .tp-hero-txt { left: var(--margen); right: var(--margen); top: 84px; gap: 14px; align-items: flex-start; text-align: left; translate: none; }
     .tp-hero-txt .mono { flex-wrap: wrap; font-size: 11px; }
     .tp-hero-txt h1 { width: 46vw; }
@@ -594,7 +615,7 @@
     .tp-res-fijo > * { grid-column: 1 !important; }
     /* La onda no es un elemento de la grilla: con columna asignada perdería el padding y dejaría un borde blanco */
     .tp-res-fijo > .tp-tap { grid-column: auto !important; }
-    .tp-res-txt { align-self: start; gap: 14px; }
+    .tp-res-txt { align-self: start; display: flex; flex-direction: column; gap: 14px; }
     .tp-res .tp-enunciado { font-size: 25px; }
     .tp-encargo { display: none; }
     .tp-res-colgante { grid-row: 2; width: 100%; margin-top: 0; align-self: stretch; }
