@@ -83,14 +83,20 @@
         },
         /* Decisión 01: el contador de formas sigue al paso en curso */
         forky: el => {
-            const n = el.querySelector('[data-fk-n]');
-
-            return p => { n.textContent = `${String(Math.min(Math.floor(p * 7), 6) + 1).padStart(2, '0')} / 07`; };
+            const n = el.querySelector('[data-fk-n]'), qr = document.querySelector('.tp-qr');
+            return p => {
+                n.textContent = `${String(Math.min(Math.floor(fijar(p / 0.7) * 7), 6) + 1).padStart(2, '0')} / 07`;
+                /* El paso a la 02 se mide desde la escena del QR, que se fija encima en las últimas 100svh */
+                el.style.setProperty('--tr', fijar(-qr.getBoundingClientRect().top / (qr.offsetHeight - vh) * 4).toFixed(3));
+            };
         },
         /* Decisión 02: el contador de pasos del escaneo */
         qr: el => {
             const n = el.querySelector('[data-qr-n]');
-            return p => { n.textContent = `${String(Math.min(Math.floor(p * 3), 2) + 1).padStart(2, '0')} / 03`; };
+            return p => {
+                el.style.setProperty('--tr', fijar(p * 4).toFixed(3));
+                n.textContent = `${String(Math.max(Math.min(Math.floor(p * 4), 3), 1)).padStart(2, '0')} / 03`;
+            };
         },
         /* Capítulo 01: Forky corre mientras se scrollea y se inclina según la velocidad; quieto, se detiene */
         cap: el => {
@@ -175,7 +181,7 @@
     const escenas = [...document.querySelectorAll('[data-escena]')].map(el => ({
         el, p: -1,
         rangos: [...el.querySelectorAll('[data-rango]')].map(r => { const [a, b] = r.dataset.rango.split('-').map(Number); return { r, a, b }; }),
-        pasos: +el.dataset.pasos || 0,
+        pasos: +el.dataset.pasos || 0, hasta: +el.dataset.pasosHasta || 1,
         marcas: [...el.querySelectorAll('[data-paso]')],
         propia: propias[el.dataset.escena] ? propias[el.dataset.escena](el) : null
     }));
@@ -190,7 +196,7 @@
             s.el.style.setProperty('--p', p.toFixed(4));
             s.rangos.forEach(x => x.r.classList.toggle('on', p >= x.a && p < x.b));
             if (s.pasos) {
-                const k = Math.min(Math.floor(p * s.pasos), s.pasos - 1);
+                const k = Math.min(Math.floor(fijar(p / s.hasta) * s.pasos), s.pasos - 1);
                 s.marcas.forEach(m => { m.classList.toggle('on', +m.dataset.paso === k); m.classList.toggle('ya', +m.dataset.paso < k); });
             }
             if (s.propia) s.propia(p);
@@ -390,16 +396,46 @@
     }
 
     /* --- 11. GALERÍAS DE LAS ACTIVACIONES --- */
-    /* Riel con snap: flechas, contador y barra de avance; con el mouse se arrastra y con el teclado se recorre */
+    /* Riel con snap: flechas, contador, un segmento por foto y el pie de la foto en pantalla. Con el mouse se
+       arrastra (una pastilla acompaña al cursor) y un clic abre la caja de luz; con el teclado, las flechas */
+    const caja = document.querySelector('[data-caja]'), cajaImg = caja.querySelector('[data-caja-img]'), cursor = document.querySelector('.tp-cursor');
+    let fotosCaja = [], marcaCaja = '', enCaja = 0, focoAntes = null, scrollCaja = 0;
+    const verEnCaja = i => {
+        enCaja = (i + fotosCaja.length) % fotosCaja.length;
+        const img = fotosCaja[enCaja].querySelector('img');
+        cajaImg.src = img.src; cajaImg.alt = img.alt;
+        caja.querySelector('[data-caja-t]').textContent = `${String(enCaja + 1).padStart(2, '0')} / ${String(fotosCaja.length).padStart(2, '0')} · ${fotosCaja[enCaja].dataset.pie}`;
+        caja.querySelector('[data-caja-marca]').textContent = `Tap In × ${marcaCaja}`;
+    };
+    const abrirCaja = (figs, marca, i) => {
+        fotosCaja = figs; marcaCaja = marca; focoAntes = document.activeElement; verEnCaja(i);
+        scrollCaja = window.scrollY; document.body.style.top = `-${scrollCaja}px`; document.body.style.position = 'fixed'; document.body.style.width = '100%';
+        caja.classList.add('on'); caja.querySelector('[data-caja-cerrar]').focus({ preventScroll: true });
+    };
+    const cerrarCaja = () => {
+        if (!caja.classList.contains('on')) return;
+        caja.classList.remove('on'); document.body.style.position = ''; document.body.style.top = ''; document.body.style.width = ''; window.scrollTo(0, scrollCaja);
+        if (focoAntes) focoAntes.focus({ preventScroll: true });
+    };
+    caja.querySelector('[data-caja-cerrar]').addEventListener('click', cerrarCaja);
+    caja.querySelector('[data-caja-ant]').addEventListener('click', () => verEnCaja(enCaja - 1));
+    caja.querySelector('[data-caja-sig]').addEventListener('click', () => verEnCaja(enCaja + 1));
+    caja.addEventListener('click', e => { if (e.target === caja) cerrarCaja(); });
+    document.addEventListener('keydown', e => {
+        if (!caja.classList.contains('on')) return;
+        if (e.key === 'Escape') cerrarCaja(); if (e.key === 'ArrowLeft') verEnCaja(enCaja - 1); if (e.key === 'ArrowRight') verEnCaja(enCaja + 1);
+    });
     document.querySelectorAll('[data-carrusel]').forEach(car => {
         const pista = car.querySelector('[data-car-pista]'), figs = [...pista.children], n = car.querySelector('[data-car-n]');
-        const ant = car.querySelector('[data-car-ant]'), sig = car.querySelector('[data-car-sig]');
+        const ant = car.querySelector('[data-car-ant]'), sig = car.querySelector('[data-car-sig]'), segs = [...car.querySelectorAll('.tp-galeria-segs i')], pie = car.querySelector('[data-car-pie]');
         const lugar = f => f.offsetLeft - figs[0].offsetLeft, fin = () => pista.scrollWidth - pista.clientWidth;
         const cerca = () => figs.reduce((m, f, i) => Math.abs(lugar(f) - pista.scrollLeft) < Math.abs(lugar(figs[m]) - pista.scrollLeft) ? i : m, 0);
+        let mostrada = 0;
         const marcar = () => {
-            const alFinal = pista.scrollLeft >= fin() - 4;
-            n.textContent = String((alFinal ? figs.length - 1 : cerca()) + 1).padStart(2, '0');
-            car.style.setProperty('--avance', fin() > 0 ? (pista.scrollLeft / fin()).toFixed(3) : 1);
+            const alFinal = pista.scrollLeft >= fin() - 4, i = alFinal ? figs.length - 1 : cerca();
+            n.textContent = String(i + 1).padStart(2, '0');
+            segs.forEach((s, k) => s.classList.toggle('ya', k <= i));
+            if (i !== mostrada) { pie.innerHTML = `<span>${figs[i].dataset.pie}</span>`; mostrada = i; }
             ant.disabled = pista.scrollLeft <= 4; sig.disabled = alFinal;
         };
         const ir = d => { const i = fijar(cerca() + d, 0, figs.length - 1); pista.scrollTo({ left: Math.min(lugar(figs[i]), fin()), behavior: quieto ? 'auto' : 'smooth' }); };
@@ -408,12 +444,22 @@
         pista.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); ir(e.key === 'ArrowLeft' ? -1 : 1); } });
         let pendiente = false;
         pista.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; marcar(); }); } }, { passive: true });
-        let x0 = null, s0 = 0;
-        pista.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; x0 = e.clientX; s0 = pista.scrollLeft; pista.classList.add('arrastrando'); pista.setPointerCapture(e.pointerId); });
-        pista.addEventListener('pointermove', e => { if (x0 !== null) pista.scrollLeft = s0 - (e.clientX - x0); });
-        const soltar = () => { if (x0 === null) return; x0 = null; ir(0); setTimeout(() => pista.classList.remove('arrastrando'), quieto ? 0 : 450); };
+        let x0 = null, s0 = 0, movido = 0;
+        pista.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; x0 = e.clientX; s0 = pista.scrollLeft; movido = 0; pista.classList.add('arrastrando'); pista.setPointerCapture(e.pointerId); });
+        pista.addEventListener('pointermove', e => {
+            if (e.pointerType === 'mouse') cursor.style.translate = `${e.clientX + 16}px ${e.clientY + 16}px`;
+            if (x0 !== null) { movido = Math.max(movido, Math.abs(e.clientX - x0)); pista.scrollLeft = s0 - (e.clientX - x0); }
+        });
+        const soltar = e => {
+            if (x0 === null) return; x0 = null;
+            /* Sin arrastre es un clic: abre la foto que estaba bajo el cursor */
+            if (movido < 6) { const f = figs.find(x => { const r = x.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; }); if (f) abrirCaja(figs, car.dataset.marca, figs.indexOf(f)); }
+            ir(0); setTimeout(() => pista.classList.remove('arrastrando'), quieto ? 0 : 450);
+        };
         pista.addEventListener('pointerup', soltar);
-        pista.addEventListener('pointercancel', soltar);
+        pista.addEventListener('pointercancel', () => { x0 = null; pista.classList.remove('arrastrando'); });
+        pista.addEventListener('click', e => { if (e.pointerType === 'mouse') return; const f = e.target.closest('figure'); if (f) abrirCaja(figs, car.dataset.marca, figs.indexOf(f)); });
+        if (window.matchMedia('(hover: hover)').matches) { pista.addEventListener('mouseenter', () => cursor.classList.add('on')); pista.addEventListener('mouseleave', () => cursor.classList.remove('on')); }
         window.addEventListener('resize', marcar);
         marcar();
     });

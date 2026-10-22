@@ -333,7 +333,11 @@
 /* =======================================================
    DECISIÓN 01 · FORKY, PASO A PASO
    ======================================================= */
-.tp-forky { height: 380svh; }
+/* Los siete pasos ocupan el 70 % de la pista (data-pasos-hasta); el resto es el logotipo solo y, en sus últimas
+   100svh, el paso a la decisión 02: la escena del QR se monta encima (transparente) y el logotipo se apaga */
+.tp-forky { height: 500svh; }
+.tp-forky .tp-formas-zona { --sal: clamp(0, (var(--tr, 0) - 0.05) / 0.25, 1); opacity: calc(1 - var(--sal)); translate: 0 calc(var(--sal) * -40px); }
+.tp-forky .tp-dec { --sal-t: clamp(0, (var(--tr, 0) - 0.3) / 0.2, 1); opacity: calc(1 - var(--sal-t)); translate: 0 calc(var(--sal-t) * -24px); }
 .tp-forky .tp-fijo, .tp-qr .tp-fijo { align-content: center; align-items: start; }
 :is(.tp-forky, .tp-qr) .tp-dec { grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; row-gap: 16px; max-width: none; align-items: start; }
 :is(.tp-forky, .tp-qr) :is(.tp-dec-num, .tp-dec-n) { grid-column: 1 / span 3; }
@@ -380,10 +384,6 @@
 .tp-plena img { height: 116%; object-fit: cover; transform: translateY(calc(var(--v, 0) * -6% - 7%)); will-change: transform; }
 /* La primera foto sale de la decisión 01 como una ventana: entra recortada, con márgenes y esquinas sobre el
    lavanda, y se abre a todo el ancho cuando su borde llega arriba (--v es su avance por la pantalla) */
-.tp-plena-abre { --r: clamp(0, var(--v, -1) + 1, 1); background: var(--tp-papel); }
-.tp-plena-abre img { clip-path: inset(calc((1 - var(--r)) * 9%) calc((1 - var(--r)) * 7vw) 0 round calc((1 - var(--r)) * 32px)); }
-.tp-plena-abre img { scale: calc(1.12 - var(--r) * 0.12); }
-.tp-plena-abre .tp-pie { opacity: var(--r); }
 .tp-plena .tp-pie { position: absolute; left: var(--margen); right: var(--margen); bottom: 22px; color: #FFFFFF; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35); }
 
 /* =======================================================
@@ -392,13 +392,19 @@
 /* Escena fija: el pendón real, de pie como un roll-up, con su QR marcado. El teléfono lo escanea y su pantalla
    pasa a las promociones de Red Bull y Banco de Chile dentro de la app. Los pasos usan el mismo detalle que la
    decisión 01; el texto va en la misma grilla (riel y columnas 4 a 6) */
-.tp-qr { height: 340svh; }
+/* Paso desde la decisión 01 (--tr de 0 a 1, primer cuarto de la pista): entra la base del roll-up, la tela sube
+   desde ella y monta el riel; el texto de la 02 aparece y al final llegan el teléfono y el rótulo de pasos */
+.tp-qr { --u: clamp(0, (var(--tr, 1) - 0.4) / 0.45, 1); position: relative; z-index: 2; height: 500svh; margin-top: -200svh; }
+/* Transparente solo en las 200svh que monta sobre la decisión 01; después, su fondo claro */
+.tp-qr.tp-claro { background: linear-gradient(transparent 200svh, var(--fondo) 200svh); }
+.tp-qr .tp-dec { --ent: clamp(0, (var(--tr, 1) - 0.55) / 0.25, 1); opacity: var(--ent); translate: 0 calc((1 - var(--ent)) * 24px); }
+.tp-qr .tp-rotulo, .tp-qr-tel { opacity: clamp(0, (var(--tr, 1) - 0.85) / 0.15, 1); }
 .tp-qr-zona { grid-column: 8 / -1; position: relative; width: 100%; }
 .tp-qr-palco { position: relative; height: min(62svh, 640px); }
 .tp-rollup { position: absolute; left: 6%; top: 0; bottom: 18px; aspect-ratio: 1 / 2; }
-.tp-rollup img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px 6px 2px 2px; box-shadow: 0 30px 60px -34px rgba(45, 37, 96, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.1); }
-.tp-rollup::before { content: ''; position: absolute; left: -3%; right: -3%; top: -6px; height: 8px; border-radius: 4px; background: linear-gradient(#D6D3E4, #9F9BB8); }
-.tp-rollup-base { position: absolute; left: -10%; right: -10%; bottom: -18px; height: 16px; border-radius: 8px 8px 4px 4px; background: linear-gradient(#C9C5DB, #8F8AA8); }
+.tp-rollup img { width: 100%; height: 100%; object-fit: cover; clip-path: inset(calc((1 - var(--u)) * 100%) 0 0 0); border-radius: 6px 6px 2px 2px; box-shadow: 0 30px 60px -34px rgba(45, 37, 96, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.1); }
+.tp-rollup-riel { position: absolute; left: -3%; right: -3%; top: calc((1 - var(--u)) * 100% - 6px); height: 8px; border-radius: 4px; background: linear-gradient(#D6D3E4, #9F9BB8); opacity: min(var(--u) * 8, 1); }
+.tp-rollup-base { position: absolute; left: -10%; right: -10%; bottom: -18px; scale: clamp(0, (var(--tr, 1) - 0.25) / 0.17, 1) 1; height: 16px; border-radius: 8px 8px 4px 4px; background: linear-gradient(#C9C5DB, #8F8AA8); }
 .tp-rollup-base::after { content: ''; position: absolute; left: -10%; right: -10%; bottom: -14px; height: 14px; border-radius: 50%; background: radial-gradient(closest-side, rgba(28, 26, 46, 0.25), transparent); }
 /* Visor sobre el QR del pendón (está al 60 %–86 % de ancho y 77 %–90 % de alto) */
 .tp-rollup-mira { position: absolute; left: 57%; top: 75%; width: 32%; aspect-ratio: 1; opacity: 0; transform: scale(1.2); transition: opacity 300ms, transform 500ms var(--tp-curva); }
@@ -467,7 +473,7 @@
 .tp-qr-titulo { padding: 7cqw 6cqw 4.4cqw; font: 600 9cqw / 1 var(--tp-f); letter-spacing: -0.03em; color: var(--tp-tinta); }
 .tp-qr-carrusel { overflow: hidden; padding: 0 6cqw 3cqw; }
 .tp-qr-pista { display: flex; gap: 3cqw; transition: translate 700ms var(--tp-curva); }
-.tp-qr-app:has(.tp-qr-puntos [data-paso="2"].on) .tp-qr-pista { translate: calc(-100% - 3cqw) 0; }
+.tp-qr-app:has(.tp-qr-puntos [data-paso="3"].on) .tp-qr-pista { translate: calc(-100% - 3cqw) 0; }
 .tp-qr-pista figure { flex: 0 0 100%; overflow: hidden; border-radius: 5cqw; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(45, 37, 96, 0.08), 0 4cqw 9cqw -5cqw rgba(45, 37, 96, 0.45); }
 .tp-qr-pista img { display: block; width: 100%; aspect-ratio: 1200 / 1392; height: auto; object-fit: cover; }
 .tp-qr-pista figcaption { display: flex; flex-direction: column; gap: 1cqw; padding: 4.4cqw 4.4cqw 5cqw; }
@@ -512,24 +518,35 @@
 .tp-pliego + .tp-pliego { margin-top: clamp(96px, 10vw, 160px); }
 .tp-pliego-sangre { position: relative; height: min(86svh, 56.25vw); overflow: hidden; background: var(--tp-empresa); }
 .tp-pliego-sangre img { width: 100%; height: 100%; object-fit: cover; scale: calc(1.07 - var(--v, 0) * 0.07); will-change: scale; }
-.tp-pliego-sangre::after { content: ''; position: absolute; inset: 30% 0 0; background: linear-gradient(transparent, rgba(16, 13, 32, 0.72)); }
-.tp-pliego-sobre { position: absolute; inset: auto 0 0; z-index: 1; align-items: end; padding: 0 var(--margen) clamp(24px, 3vw, 48px); color: #FFFFFF; }
-.tp-pliego-firma { grid-column: 1 / span 3; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding-bottom: 0.4em; }
-.tp-pliego-firma .mono { color: rgba(255, 255, 255, 0.78); }
-/* Logos en blanco, con alturas ópticas distintas: el de Red Bull es compacto y el de Banco de Chile, alargado */
-.tp-pliego-logo { width: auto; aspect-ratio: 238.71 / 94.06; height: clamp(44px, 4.2vw, 68px); }
-.tp-pliego-bc .tp-pliego-logo { aspect-ratio: 449.84 / 72.37; height: clamp(26px, 2.4vw, 38px); }
-.tp-pliego-sobre b { grid-column: 4 / -1; font: 600 clamp(64px, 11vw, 200px) / 0.8 var(--tp-f); letter-spacing: -0.06em; }
+.tp-pliego-sangre::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16, 13, 32, 0.35), transparent 28%, transparent 52%, rgba(16, 13, 32, 0.78)); }
+/* Arriba, el lockup de la alianza (Tap In × marca) y el número de activación; abajo, el lugar, la marca en un
+   tamaño que no pelea con la foto y una línea de qué pasó */
+.tp-pliego-arriba { position: absolute; inset: 0 0 auto; z-index: 1; align-items: center; padding: clamp(20px, 2.4vw, 36px) var(--margen) 0; color: #FFFFFF; }
+.tp-pliego-arriba .tp-lockup { grid-column: 1 / span 6; }
+.tp-pliego-arriba .mono { grid-column: 10 / -1; justify-self: end; color: rgba(255, 255, 255, 0.78); }
+.tp-lockup { display: inline-flex; align-items: center; gap: clamp(10px, 1vw, 16px); }
+.tp-lockup .tp-wm { width: auto; height: clamp(22px, 2vw, 30px); }
+.tp-lockup-x { width: 12px; height: 12px; opacity: 0.7; background: linear-gradient(45deg, transparent calc(50% - 0.7px), currentColor calc(50% - 0.7px) calc(50% + 0.7px), transparent calc(50% + 0.7px)), linear-gradient(-45deg, transparent calc(50% - 0.7px), currentColor calc(50% - 0.7px) calc(50% + 0.7px), transparent calc(50% + 0.7px)); }
+.tp-pliego-logo { width: auto; aspect-ratio: 238.71 / 94.06; height: clamp(30px, 2.8vw, 42px); }
+.tp-pliego-bc .tp-pliego-logo { aspect-ratio: 449.84 / 72.37; height: clamp(18px, 1.7vw, 26px); }
+.tp-pliego-sobre { position: absolute; inset: auto 0 0; z-index: 1; align-items: end; padding: 0 var(--margen) clamp(24px, 3vw, 44px); color: #FFFFFF; }
+.tp-pliego-sobre .mono { grid-column: 1 / span 3; color: rgba(255, 255, 255, 0.78); padding-bottom: 0.4em; }
+.tp-pliego-sobre h3 { grid-column: 4 / span 7; font: 600 clamp(48px, 6.4vw, 112px) / 0.86 var(--tp-f); letter-spacing: -0.055em; }
+.tp-pliego-sobre p { grid-column: 4 / span 5; grid-row: 2; margin-top: 14px; color: rgba(255, 255, 255, 0.82); font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--tp-f); }
 /* Galería de cada activación: un riel con snap que sale por el borde derecho. En el riel de la grilla, contador,
    barra de avance y flechas; también se arrastra con el mouse y se recorre con las flechas del teclado */
 .tp-pliego-galeria { align-items: start; padding: var(--medianil) var(--margen) 0; }
 .tp-galeria-riel { grid-column: 1 / span 3; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 4px; }
-.tp-galeria-eti { color: var(--texto-2); }
 .tp-galeria-cont { display: flex; align-items: baseline; gap: 8px; }
 .tp-galeria-cont b { font: 600 clamp(36px, 3.2vw, 52px) / 0.9 var(--tp-f); letter-spacing: -0.05em; color: var(--acento); font-variant-numeric: tabular-nums; }
 .tp-galeria-cont .mono { color: var(--texto-3); }
-.tp-galeria-barra { width: min(100%, 200px); height: 2px; border-radius: 2px; background: var(--linea); overflow: hidden; }
-.tp-galeria-barra i { display: block; height: 100%; background: var(--acento); transform-origin: left; transform: scaleX(calc(0.12 + var(--avance, 0) * 0.88)); transition: transform 200ms linear; }
+/* Un segmento por foto, como historias, y el pie de la foto en pantalla */
+.tp-galeria-segs { display: flex; gap: 4px; width: min(100%, 220px); }
+.tp-galeria-segs i { flex: 1; height: 3px; border-radius: 2px; background: var(--linea); transition: background 300ms linear; }
+.tp-galeria-segs i.ya { background: var(--acento); }
+.tp-galeria-pie { min-height: 2.9em; max-width: 26ch; color: var(--texto-2); font: 400 14px / 1.45 var(--tp-f); }
+.tp-galeria-pie span { display: block; animation: tpPie 400ms var(--ease); }
+@keyframes tpPie { from { opacity: 0; translate: 0 6px; } }
 .tp-galeria-botones { display: flex; gap: 8px; }
 .tp-galeria-botones button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--linea); border-radius: 50%; background: transparent; color: var(--texto); cursor: pointer; transition: background 200ms linear, color 200ms linear, border-color 200ms linear, opacity 200ms linear; }
 .tp-galeria-botones svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: translate 300ms var(--tp-curva); }
@@ -546,9 +563,20 @@
 .tp-galeria-pista.arrastrando { cursor: grabbing; scroll-snap-type: none; }
 /* Las fotos entran con un barrido (clip-path) y no con un desplazamiento: mover el ancla del snap durante la
    entrada dejaba el riel corrido y la primera foto cortada */
-.tp-galeria-pista figure { flex: none; height: clamp(260px, 30vw, 460px); overflow: hidden; border-radius: 18px; background: var(--tp-tint); scroll-snap-align: start; clip-path: inset(0 100% 0 0 round 18px); transition: clip-path 1000ms var(--ease); transition-delay: calc(var(--i) * 80ms); }
+.tp-galeria-pista figure { flex: none; height: clamp(260px, 30vw, 460px); overflow: hidden; cursor: zoom-in; border-radius: 18px; background: var(--tp-tint); scroll-snap-align: start; clip-path: inset(0 100% 0 0 round 18px); transition: clip-path 1000ms var(--ease); transition-delay: calc(var(--i) * 80ms); }
 .tp-galeria-pista.visto figure { clip-path: inset(0 0 0 0 round 18px); }
 .tp-galeria-pista img { width: auto; height: 100%; user-select: none; -webkit-user-drag: none; pointer-events: none; transition: scale 900ms var(--ease); }
+/* Caja de luz: la foto en grande con su pie, flechas y Esc. Pastilla que acompaña al cursor sobre la galería */
+.tp-caja { position: fixed; inset: 0; z-index: 90; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 16px; padding: 18px var(--margen) 24px; background: rgba(16, 13, 32, 0.96); color: #F4F3FB; opacity: 0; visibility: hidden; transition: opacity 250ms linear, visibility 0s 250ms; }
+.tp-caja.on { opacity: 1; visibility: visible; transition: opacity 250ms linear; }
+.tp-caja-cab, .tp-caja-pie { display: flex; justify-content: space-between; align-items: center; gap: 16px; color: rgba(238, 237, 254, 0.72); }
+.tp-caja img { width: 100%; height: 100%; object-fit: contain; scale: 0.97; transition: scale 400ms var(--ease); }
+.tp-caja.on img { scale: 1; }
+.tp-caja button { padding: 8px 14px; border: 1px solid rgba(238, 237, 254, 0.2); border-radius: 999px; background: none; color: inherit; cursor: pointer; transition: background 200ms linear, color 200ms linear; }
+.tp-caja button:focus-visible { outline: 2px solid var(--tp-health); outline-offset: 2px; }
+@media (hover: hover) { .tp-caja button:hover { background: #F4F3FB; color: var(--tp-tinta); } }
+.tp-cursor { position: fixed; left: 0; top: 0; z-index: 80; padding: 8px 12px; border-radius: 999px; background: var(--tp-tinta); color: #FFFFFF; pointer-events: none; white-space: nowrap; opacity: 0; scale: 0.8; transition: opacity 200ms linear, scale 300ms var(--tp-curva); }
+.tp-cursor.on { opacity: 1; scale: 1; }
 
 /* =======================================================
    CAPÍTULO 02 · EL REBIRTH Y LA PALETA
@@ -791,14 +819,17 @@
     .tp-qr-tel { --w: min(32vw, 19svh); right: 0; }
     .tp-qr:has(.tp-qr-camara.on) .tp-qr-tel { translate: 0 -46%; }
     .tp-pliego-sangre { height: 64svh; }
-    .tp-pliego-sobre b { font-size: clamp(52px, 15vw, 80px); }
-    .tp-pliego-firma { gap: 12px; }
+    .tp-pliego-sobre h3 { font-size: 15vw; }
+    .tp-pliego-sobre p { grid-row: auto; }
+    .tp-pliego-arriba .mono { display: none; }
+    .tp-cursor { display: none; }
     .tp-pliego-galeria { row-gap: 16px; }
     .tp-pliego-galeria > * { grid-column: 1 / -1 !important; }
     .tp-galeria-riel { flex-direction: row; align-items: center; gap: 14px; }
-    .tp-galeria-eti { display: none; }
+    .tp-galeria-pie { order: 5; width: 100%; max-width: none; min-height: 0; }
     .tp-galeria-cont b { font-size: 32px; }
-    .tp-galeria-barra { flex: 1; }
+    .tp-galeria-segs { flex: 1; width: auto; }
+    .tp-galeria-riel { flex-wrap: wrap; }
     .tp-galeria-botones button { width: 40px; height: 40px; }
     .tp-galeria-pista { gap: 10px; margin-left: calc(var(--margen) * -1); padding-left: var(--margen); scroll-padding-left: var(--margen); }
     .tp-galeria-pista figure { height: 58vw; border-radius: 14px; }
