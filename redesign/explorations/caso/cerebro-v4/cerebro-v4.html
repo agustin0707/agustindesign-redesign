@@ -1,0 +1,271 @@
+<title>Mockups Connect</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Tres variantes de los mockups del cierre de la decisión 05 (el isotipo de Connect en uso), con pantallas
+       reales del sitio. Cada variante se ve como el último cuadro de la escena, sobre la grilla del caso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B; --noche: #100D20;
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    img { display: block; max-width: 100%; }
+    .vista { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc { display: block; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .cm { --svg: url('tp-cerebro.svg'); aspect-ratio: 622.7 / 597.42; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 32px; color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+
+    /* --- CUADRO FINAL DE LA ESCENA --- */
+    .cuadro { position: relative; height: 100svh; min-height: 640px; overflow: hidden; color: #FFFFFF; align-items: stretch; align-content: center; }
+    .fondo { position: absolute; inset: 0; background: radial-gradient(70% 70% at 70% 45%, #8174F0 0%, var(--connect) 45%, #5546D6 100%); }
+    .fondo::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px); background-size: 28px 28px; -webkit-mask-image: radial-gradient(60% 60% at 72% 50%, #000, transparent); mask-image: radial-gradient(60% 60% at 72% 50%, #000, transparent); opacity: 0.7; }
+    .izq { position: relative; grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; grid-template-rows: auto 1fr auto; height: min(74svh, 700px); }
+    .dec { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; row-gap: 16px; align-items: start; }
+    .dec .num { grid-column: 1 / span 3; grid-row: 1; font: 600 clamp(64px, 6.6vw, 112px) / 0.78 var(--f-marca); letter-spacing: -0.06em; color: rgba(255, 255, 255, 0.42); }
+    .dec .eti { grid-column: 1 / span 3; grid-row: 2; display: inline-flex; align-items: center; gap: 8px; color: rgba(255, 255, 255, 0.8); }
+    .dec .eti::before, .dec .porque span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #FFFFFF; }
+    .dec h3 { grid-column: 4 / span 3; grid-row: 1; margin: 0; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; }
+    .dec p { grid-column: 4 / span 3; grid-row: 2; margin: 0; color: rgba(255, 255, 255, 0.82); font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); }
+    .dec .porque { grid-row: 3; display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.24); color: #FFFFFF; }
+    .dec .porque span { display: inline-flex; align-items: center; gap: 8px; font: 400 12px var(--f-mono); color: rgba(255, 255, 255, 0.8); }
+    .pasos { grid-column: 1 / span 3; grid-row: 3; display: flex; flex-direction: column; gap: 4px; }
+    .pasos div { display: flex; align-items: baseline; gap: 14px; color: rgba(255, 255, 255, 0.34); } .pasos div.on { color: #FFFFFF; }
+    .pasos b { font: 600 clamp(34px, 3.2vw, 52px) / 1 var(--f-marca); letter-spacing: -0.05em; } .pasos span { font: 400 13px var(--f-mono); }
+    .escena { position: relative; grid-column: 8 / -1; height: min(74svh, 700px); }
+    .entra { opacity: 0; translate: 0 26px; transition: opacity 700ms var(--ease), translate 900ms var(--ease); transition-delay: var(--t, 0ms); }
+    .visto .entra { opacity: 1; translate: 0 0; }
+
+    /* --- PIEZAS COMPARTIDAS: VENTANA, TELÉFONO, NOTIFICACIÓN E ÍCONO --- */
+    .win { position: absolute; overflow: hidden; border-radius: 12px; background: #FFFFFF; box-shadow: 0 0 0 0.5px rgba(16, 13, 32, 0.25), 0 1px 2px rgba(16, 13, 32, 0.2), 0 12px 24px -10px rgba(16, 13, 32, 0.35), 0 50px 100px -40px rgba(16, 13, 32, 0.75); }
+    .win-bar { display: grid; grid-template-columns: auto 1fr; align-items: end; height: 38px; padding: 0 10px; background: linear-gradient(#F2F1F7, #E9E7F1); }
+    .luces { display: flex; gap: 6px; align-self: center; margin-right: 12px; } .luces i { width: 10px; height: 10px; border-radius: 50%; background: #FF5F57; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.15); } .luces i:nth-child(2) { background: #FEBC2E; } .luces i:nth-child(3) { background: #28C840; }
+    .tabs { display: flex; align-items: flex-end; gap: 2px; min-width: 0; }
+    .tab { display: flex; align-items: center; gap: 7px; height: 30px; min-width: 0; padding: 0 10px; border-radius: 8px 8px 0 0; color: #5E5B72; font: 500 11.5px var(--f-texto); white-space: nowrap; }
+    .tab.on { background: #FFFFFF; color: var(--tinta); box-shadow: 0 -1px 0 rgba(16, 13, 32, 0.04); }
+    .tab small { margin-left: 8px; color: #9C99B0; }
+    .fav { flex: none; width: 16px; height: 16px; border-radius: 4px; background: var(--connect); display: grid; place-items: center; color: #FFFFFF; } .fav .marca { width: 11px; }
+    .fav.otro { background: #C9C6D8; }
+    .win-url { display: flex; align-items: center; gap: 12px; height: 36px; padding: 0 10px; background: #FFFFFF; border-bottom: 1px solid #EEECF4; }
+    .win-url .flechas { display: flex; gap: 9px; } .win-url .flechas i { width: 6px; height: 6px; border-left: 1.4px solid #9C99B0; border-bottom: 1.4px solid #9C99B0; rotate: 45deg; } .win-url .flechas i + i { rotate: -135deg; opacity: 0.45; }
+    .win-url .dir { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 24px; border-radius: 7px; background: #F3F2F8; color: #3A3850; font: 400 11.5px var(--f-texto); }
+    .candado { position: relative; width: 7px; height: 6px; margin-top: 3px; border-radius: 1.5px; background: #6E6B84; } .candado::before { content: ''; position: absolute; left: 1px; top: -4.5px; width: 5px; height: 5px; box-sizing: border-box; border: 1.2px solid #6E6B84; border-bottom: 0; border-radius: 3px 3px 0 0; }
+    .win img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: 50% 0; }
+    .tel { --w: 200px; position: absolute; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 2px 3px rgba(14, 11, 28, 0.35), 0 24px 40px -18px rgba(14, 11, 28, 0.55), 0 60px 110px -40px rgba(14, 11, 28, 0.75); }
+    .tel::before, .tel::after { content: ''; position: absolute; width: 3px; border-radius: 2px; background: linear-gradient(90deg, #2A2735, #5B5670); }
+    .tel::before { left: -2px; top: 25%; height: 9%; } .tel::after { right: -2px; top: 29%; height: 14%; background: linear-gradient(270deg, #2A2735, #5B5670); }
+    .pant { position: relative; width: 100%; height: 100%; overflow: hidden; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); background: #050408; container-type: size; }
+    .pant > img { width: 100%; height: 100%; padding-top: 12cqw; background: #F7F6FD; object-fit: cover; object-position: 50% 0; }
+    .pant::after { content: ''; position: absolute; inset: 0; background: linear-gradient(120deg, rgba(255, 255, 255, 0.14), transparent 32%); pointer-events: none; }
+    .estado { position: absolute; inset: 0 0 auto; z-index: 3; display: flex; justify-content: space-between; align-items: center; height: 14cqw; padding: 0 8cqw 0 9cqw; color: var(--c, var(--tinta)); }
+    .estado b { font: 600 4.4cqw / 1 var(--f-texto); }
+    .isla { position: absolute; left: 50%; top: 2.8cqw; z-index: 4; width: 29cqw; height: 8.4cqw; margin-left: -14.5cqw; border-radius: 5cqw; background: #050408; }
+    .sen { display: flex; align-items: center; gap: 1.2cqw; } .sen i { display: block; width: 1.2cqw; border-radius: 0.4cqw; background: currentColor; } .sen i:nth-child(1) { height: 1.6cqw; } .sen i:nth-child(2) { height: 2.4cqw; } .sen i:nth-child(3) { height: 3.2cqw; }
+    .sen u { width: 6cqw; height: 2.8cqw; margin-left: 1cqw; border-radius: 0.9cqw; box-shadow: inset 0 0 0 0.35cqw currentColor; position: relative; } .sen u::after { content: ''; position: absolute; inset: 0.7cqw 1.6cqw 0.7cqw 0.7cqw; border-radius: 0.3cqw; background: currentColor; }
+    .noti { position: absolute; z-index: 3; left: 3.5cqw; right: 3.5cqw; display: grid; grid-template-columns: 10.5cqw 1fr; gap: 3cqw; align-items: center; padding: 3cqw; border-radius: 6cqw; background: rgba(250, 249, 255, 0.94); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); color: var(--tinta); box-shadow: 0 3cqw 9cqw -3cqw rgba(16, 13, 32, 0.45), inset 0 0 0 0.25cqw rgba(255, 255, 255, 0.6); }
+    .ico { display: grid; place-items: center; aspect-ratio: 1; border-radius: 23%; background: linear-gradient(160deg, #8C80F5, #5A4BDF); color: #FFFFFF; box-shadow: inset 0 0 0 0.6px rgba(255, 255, 255, 0.35); } .ico .marca { width: 62%; }
+    .noti .ico { width: 10.5cqw; }
+    .noti .cab { display: flex; justify-content: space-between; color: #6E6B84; font: 600 2.6cqw / 1.2 var(--f-texto); letter-spacing: 0.04em; text-transform: uppercase; } .noti .cab small { font-weight: 400; letter-spacing: 0; text-transform: none; }
+    .noti b { display: block; margin-top: 0.4cqw; font: 600 3.4cqw / 1.2 var(--f-texto); } .noti p { margin: 0.2cqw 0 0; font: 400 3.2cqw / 1.25 var(--f-texto); color: #3A3850; }
+    .chip { position: absolute; z-index: 6; display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 8px; border-radius: 999px; background: rgba(16, 13, 32, 0.72); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #FFFFFF; font: 400 11px var(--f-mono); white-space: nowrap; box-shadow: 0 8px 20px -10px rgba(16, 13, 32, 0.6); }
+    .chip::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--health); box-shadow: 0 0 0 3px rgba(155, 142, 240, 0.3); }
+    .chip b { font-weight: 400; color: var(--soft); }
+
+    /* =======================================================
+       A · PANTALLAS REALES
+       ======================================================= */
+    /* La ventana con el hero real de tapin.cl y el teléfono con el módulo de comedor real; la notificación baja
+       sobre la pantalla y el ícono de la app flota al lado. Cada uso lleva su ficha de tamaño junto a él */
+    .va .win { left: 0; right: 9%; top: 3%; }
+    .va .tel { --w: min(14vw, 27svh); right: -3%; bottom: 0; }
+    .va .tel .noti { top: 15cqw; }
+    .va .flota { position: absolute; z-index: 5; right: calc(min(14vw, 27svh) + 4%); bottom: 9%; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .va .flota .ico { width: 64px; border-radius: 15px; box-shadow: inset 0 0 0 0.6px rgba(255, 255, 255, 0.35), 0 16px 30px -12px rgba(16, 13, 32, 0.7); } .va .flota .ico .marca { width: 40px; }
+    .va .flota span { font: 500 12px var(--f-texto); } .va .flota small { margin-top: -6px; font: 400 11px var(--f-mono); color: rgba(255, 255, 255, 0.7); }
+
+    /* =======================================================
+       B · PANTALLA DE BLOQUEO
+       ======================================================= */
+    /* El teléfono en su pantalla de bloqueo, con la hora grande y dos notificaciones de Connect apiladas; detrás, la
+       ventana con el sitio. Un detalle del ícono a gran tamaño completa la lámina */
+    .vb .win { left: 0; right: 12%; top: 3%; }
+    .vb .win img { aspect-ratio: 16 / 7.4; }
+    .vb .tel { --w: min(14.4vw, 28svh); right: -3%; bottom: 0; }
+    .vb .bloqueo { position: absolute; inset: 0; background: radial-gradient(90% 55% at 30% 10%, #B4AAFB 0%, transparent 60%), radial-gradient(80% 60% at 90% 100%, #2D2390 0%, transparent 70%), linear-gradient(180deg, #7466EE, #4C3DC9); }
+    .vb .bloqueo .fecha { position: absolute; top: 18cqw; left: 0; right: 0; text-align: center; color: rgba(255, 255, 255, 0.85); font: 500 3.8cqw var(--f-texto); }
+    .vb .bloqueo .hora { position: absolute; top: 22cqw; left: 0; right: 0; text-align: center; color: rgba(255, 255, 255, 0.95); font: 300 22cqw / 1 var(--f-marca); letter-spacing: -0.03em; }
+    .vb .bloqueo .noti.n1 { top: auto; bottom: 41cqw; }
+    .vb .bloqueo .noti.n2 { top: auto; bottom: 25.5cqw; left: 6cqw; right: 6cqw; opacity: 0.75; scale: 0.96; transform-origin: bottom; }
+    .vb .widgets { position: absolute; top: 49cqw; left: 12cqw; right: 12cqw; display: grid; grid-template-columns: 17cqw 1fr; gap: 3cqw; color: #FFFFFF; }
+    .vb .widgets > * { height: 17cqw; border-radius: 50%; background: rgba(255, 255, 255, 0.16); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); display: grid; place-items: center; font: 600 3.6cqw / 1.1 var(--f-texto); text-align: center; }
+    .vb .widgets .anillo { background: conic-gradient(#FFFFFF 0 78%, rgba(255, 255, 255, 0.2) 78% 100%); -webkit-mask: radial-gradient(circle, transparent 54%, #000 56%); mask: radial-gradient(circle, transparent 54%, #000 56%); }
+    .vb .widgets .rect { border-radius: 4.4cqw; display: flex; align-items: center; gap: 2cqw; padding: 0 3cqw; text-align: left; } .vb .widgets .rect .marca { width: 5cqw; flex: none; } .vb .widgets .rect small { display: block; font-weight: 400; opacity: 0.8; }
+    .vb .bloqueo .botones { position: absolute; left: 9cqw; right: 9cqw; bottom: 6cqw; display: flex; justify-content: space-between; }
+    .vb .bloqueo .botones i { width: 11cqw; aspect-ratio: 1; border-radius: 50%; background: rgba(16, 13, 32, 0.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+    .vb .bloqueo .barra-h { position: absolute; left: 50%; bottom: 2cqw; width: 34cqw; height: 1.3cqw; margin-left: -17cqw; border-radius: 1cqw; background: rgba(255, 255, 255, 0.85); }
+    .vb .detalle { position: absolute; z-index: 5; left: 5%; top: 47%; display: flex; align-items: center; gap: 14px; padding: 14px 18px 14px 14px; border-radius: 22px; background: rgba(255, 255, 255, 0.1); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), 0 20px 40px -20px rgba(16, 13, 32, 0.6); }
+    .vb .detalle .ico { width: 72px; border-radius: 17px; } .vb .detalle .ico .marca { width: 44px; }
+    .vb .detalle .rejilla { position: relative; } .vb .detalle .rejilla::after { content: ''; position: absolute; inset: -6px; border-radius: 21px; border: 1px dashed rgba(255, 255, 255, 0.45); }
+    .vb .detalle b { display: block; font: 600 15px var(--f-marca); } .vb .detalle span { font: 400 11px var(--f-mono); color: rgba(255, 255, 255, 0.78); }
+
+    /* =======================================================
+       C · LÁMINA ANOTADA EN PERSPECTIVA
+       ======================================================= */
+    /* La ventana y el teléfono con una leve perspectiva, como una lámina de aplicaciones de manual; líneas guía
+       llevan desde cada uso (pestaña, notificación, ícono) a su ficha con el tamaño */
+    .vc .escena { perspective: 1800px; }
+    .vc .win { left: 0; right: 10%; top: 9%; transform: rotateY(-14deg) rotateX(5deg); transform-origin: 30% 50%; }
+    .vc .tel { --w: min(13.4vw, 26svh); right: 0; bottom: 2%; transform: rotateY(-14deg) rotateX(5deg); }
+    .vc .tel .noti { top: 15cqw; }
+    .vc .tel .ico-app { position: absolute; z-index: 3; left: 50%; bottom: 8cqw; width: 18cqw; margin-left: -9cqw; border-radius: 4.4cqw; box-shadow: 0 2cqw 6cqw -2cqw rgba(16, 13, 32, 0.6); } .vc .tel .ico-app .marca { width: 62%; }
+    .vc .guias { position: absolute; inset: 0; z-index: 5; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .vc .guias line { stroke: rgba(255, 255, 255, 0.7); stroke-width: 1; stroke-dasharray: 3 3; }
+    .vc .guias circle { fill: #FFFFFF; stroke: rgba(155, 142, 240, 0.6); stroke-width: 4; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 40ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 110px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); }
+        .grilla > *, .dec > *, .izq > * { grid-column: 1 !important; grid-row: auto !important; }
+        .cuadro > .fondo { grid-column: auto !important; }
+        .cuadro { align-content: start; padding-top: 8svh; row-gap: 16px; min-height: 0; }
+        .izq { display: flex; flex-direction: column; gap: 12px; height: auto; } .dec { display: flex; flex-direction: column; gap: 8px; } .dec .num, .dec p:not(.porque) { display: none; }
+        .pasos { flex-direction: row; gap: 16px; } .pasos b { font-size: 26px; } .pasos span { display: none; }
+        .escena { height: 56svh; }
+        .tab:not(.on) { display: none; }
+        .va .tel, .vc .tel { --w: 34vw; } .vb .tel { --w: 38vw; }
+        .va .flota, .vb .detalle { display: none; }
+        .chip { font-size: 10px; padding: 4px 8px 4px 6px; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Decisión 05 · En uso</span><p>Tres variantes de los mockups del cierre, con pantallas reales del sitio. Cada una se ve como el último cuadro de la escena; cambia con el selector.</p></div>
+</div>
+
+<template id="base">
+    <section class="grilla cuadro"><div class="fondo"></div>
+        <div class="izq">
+            <div class="dec"><span class="num">05</span><span class="eti mono">Decisión 05</span><h3>Un cerebro hecho de piezas</h3><p>La silueta habla de inteligencia; el interior, de conexión. Connect une los servicios del colegio</p><p class="porque"><span>Aprobado</span>El 24 de marzo de 2026, con la paleta</p></div>
+            <div class="pasos"><div><b>01</b><span>Construcción</span></div><div><b>02</b><span>Relleno</span></div><div class="on"><b>03</b><span>En uso</span></div></div>
+        </div>
+        <div class="escena"></div>
+    </section>
+</template>
+
+<nav class="selector" aria-label="Variantes">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>Pantallas reales</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Bloqueo</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Lámina anotada</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de los mockups</h2>
+    <div class="bloque">
+        <p>Están bien construidos, pero se notan hechos: la pantalla del teléfono es inventada y la captura del navegador se corta en un lugar raro.</p>
+        <ul class="lista">
+            <li><span class="mono">Navegador</span><span>La captura termina en "Las dudas que tienen los directivos", cortada a la mitad</span><span>Encuadres limpios: el hero de tapin.cl completo, o el bloque "Todo conectado" sin el título de abajo</span></li>
+            <li><span class="mono">Teléfono</span><span>Pantalla de inicio con íconos de cristal vacíos y un dock en blanco: se ve falsa</span><span>Una pantalla real del sitio móvil (el módulo de comedor), o una pantalla de bloqueo creíble</span></li>
+            <li><span class="mono">Profundidad</span><span>Las sombras son de una sola capa y el teléfono no tiene botones ni brillo de vidrio</span><span>Sombras en capas (contacto, media y ambiente), botones laterales y un brillo sutil</span></li>
+            <li><span class="mono">Composición</span><span>El teléfono tapa la esquina del navegador justo donde está el contenido; la relación de tamaños no es real</span><span>Superposición pensada: el teléfono sobre el margen, no sobre el contenido; escala creíble entre ambos</span></li>
+            <li><span class="mono">Tamaños</span><span>La línea de tamaños va suelta abajo y lejos de cada uso</span><span>Cada tamaño junto a su uso: fichas o líneas guía</span></li>
+            <li><span class="mono">Detalle</span><span>El ícono de la app aparece chico y entre cuadros sin marca</span><span>El ícono con protagonismo: a tamaño de lectura, con su rejilla o flotando</span></li>
+        </ul>
+    </div>
+    <h2>Variantes</h2>
+    <div class="bloque">
+        <p>Tres maneras de llevarlos a un nivel profesional. Elige con el selector.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · Pantallas reales</span><strong>Todo es del sitio</strong><p>La ventana con el hero real de tapin.cl y el teléfono con el módulo de comedor real; la notificación baja sobre la pantalla y el ícono de la app flota al lado. Fichas de tamaño junto a cada uso.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Pantalla de bloqueo</span><strong>El momento de uso</strong><p>El teléfono en su pantalla de bloqueo, con la hora grande y dos notificaciones de Connect apiladas; detrás, la ventana con el sitio. Un detalle del ícono a 72 px con su rejilla completa la lámina.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Lámina anotada</span><strong>Manual de aplicaciones</strong><p>Ventana y teléfono con una leve perspectiva, como en un manual; líneas guía punteadas llevan desde la pestaña, la notificación y el ícono hasta su ficha con el tamaño.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · MOCKUPS CONNECT
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz'), base = document.getElementById('base').content;
+        const cm = '<span class="marca cm"></span>';
+        const ventana = (img, tit, otra) => `<div class="win entra" style="--t:0ms"><div class="win-bar"><span class="luces"><i></i><i></i><i></i></span><div class="tabs"><span class="tab on" data-fav-t><span class="fav">${cm}</span>${tit}<small>×</small></span><span class="tab"><span class="fav otro"></span>${otra}</span></div></div><div class="win-url"><span class="flechas"><i></i><i></i></span><span class="dir"><i class="candado"></i>tapin.cl</span></div><img src="${img}" alt=""></div>`;
+        const estado = c => `<div class="estado" style="--c:${c}"><b>9:41</b><span class="sen"><i></i><i></i><i></i><u></u></span></div><span class="isla"></span>`;
+        const noti = (cls, tit, txt, cuando = 'ahora') => `<div class="noti ${cls}" data-noti><span class="ico">${cm}</span><div><span class="cab">Connect<small>${cuando}</small></span><b>${tit}</b><p>${txt}</p></div></div>`;
+        const piezas = {
+            a: `${ventana('hero.webp', 'Tap In · Gestión escolar', 'Correo')}
+                <div class="tel entra" style="--t:140ms"><div class="pant">${estado('#1C1A2E')}<img src="cel-inicio.webp" alt="Inicio del sitio en el teléfono">${noti('', 'Casino · marzo', 'El pago ya está conciliado')}</div></div>
+                <div class="flota entra" style="--t:260ms"><span class="ico">${cm}</span><span>Connect</span><small>60 px</small></div>`,
+            b: `${ventana('tp-cer-sitio.webp', 'Tap In · Gestión escolar', 'Calendario')}
+                <div class="tel entra" style="--t:140ms"><div class="pant"><div class="bloqueo">${estado('#FFFFFF')}<span class="fecha">jueves, 22 de octubre</span><span class="hora">9:41</span><div class="widgets"><span class="anillo"></span><span class="rect">${cm}<span>Casino<small>184 hoy</small></span></span></div>${noti('n1', 'Casino · marzo', 'El pago ya está conciliado')}${noti('n2', 'Talleres', 'Quedan 2 cupos en básquetbol', 'hace 5 min')}<div class="botones"><i></i><i></i></div><span class="barra-h"></span></div></div></div>
+                <div class="detalle entra" style="--t:260ms"><span class="rejilla"><span class="ico">${cm}</span></span><div><b>Ícono de la app</b><span>60 px · esquinas al 23 %</span></div></div>`,
+            c: `${ventana('hero.webp', 'Tap In · Gestión escolar', 'Correo')}
+                <div class="tel entra" style="--t:140ms"><div class="pant">${estado('#1C1A2E')}<img src="cel-inicio.webp" alt="Inicio del sitio en el teléfono">${noti('', 'Casino · marzo', 'El pago ya está conciliado')}<span class="ico ico-app" data-app>${cm}</span></div></div>
+                <svg class="guias entra" style="--t:300ms"></svg>
+                <span class="chip entra" data-chip="0" style="--t:380ms"><b>Pestaña</b> 16 px</span>
+                <span class="chip entra" data-chip="1" style="--t:420ms"><b>Notificación</b> 38 px</span>
+                <span class="chip entra" data-chip="2" style="--t:460ms"><b>Ícono</b> 60 px</span>`
+        };
+        const cuadros = {};
+        Object.entries(piezas).forEach(([v, html]) => {
+            const s = document.createElement('div'); s.className = 'vista v' + v; s.appendChild(base.cloneNode(true));
+            s.querySelector('.escena').innerHTML = html; raiz.appendChild(s); cuadros[v] = s.querySelector('.cuadro');
+        });
+
+        /* --- 1. ENTRADA AL APARECER --- */
+        const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('visto', e.isIntersecting)), { threshold: 0.35 });
+        Object.values(cuadros).forEach(c => io.observe(c));
+
+        /* --- 2. C: LÍNEAS GUÍA DESDE CADA USO HASTA SU FICHA --- */
+        const guiar = () => {
+            const c = cuadros.c, esc = c.querySelector('.escena'), E = esc.getBoundingClientRect(); if (!E.width) return;
+            const pt = el => { const r = el.getBoundingClientRect(); return [r.left - E.left + r.width / 2, r.top - E.top + r.height / 2]; };
+            const puntos = [pt(c.querySelector('[data-fav-t] .fav')), pt(c.querySelector('[data-noti] .ico')), pt(c.querySelector('[data-app]'))];
+            const destinos = [[E.width * 0.02, E.height * (innerWidth < 769 ? 0.03 : -0.02)], [E.width * 0.6, E.height * 0.74], [E.width * 0.36, E.height * 0.97]];
+            const chips = [...c.querySelectorAll('[data-chip]')];
+            chips.forEach((ch, i) => { const [x, y] = destinos[i]; ch.style.left = (i === 1 ? x - ch.offsetWidth : x) + 'px'; ch.style.top = (y - ch.offsetHeight / 2) + 'px'; });
+            c.querySelector('.guias').innerHTML = puntos.map(([x, y], i) => { const ch = chips[i].getBoundingClientRect(), cx = i === 1 ? ch.right - E.left : (i === 0 ? ch.left - E.left + 10 : ch.left - E.left + ch.width / 2), cy = ch.top - E.top + ch.height / 2; return `<line x1="${x}" y1="${y}" x2="${cx}" y2="${cy}"/><circle cx="${x}" cy="${y}" r="4"/>`; }).join('');
+        };
+        addEventListener('resize', guiar);
+
+        /* --- 3. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v))); try { localStorage.setItem('cerebro-v4', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(() => requestAnimationFrame(guiar)); setTimeout(guiar, 1000); };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) scrollTo({ top: 0, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('cerebro-v4'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['a', 'b', 'c'].includes(h) ? h : guardado || 'a');
+        addEventListener('load', guiar);
+    })();
+    /* =======================================================
+       FIN JS · MOCKUPS CONNECT
+       ======================================================= */
+</script>
