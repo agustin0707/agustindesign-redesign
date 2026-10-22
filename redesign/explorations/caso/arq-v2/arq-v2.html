@@ -1,0 +1,304 @@
+<title>Arquitectura Tap In</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Cinco maneras de mostrar la decisión 04 (una madre que lidera) del caso Tap In, sobre la grilla del caso:
+       número y rótulo en el riel (1 a 3), texto de 4 a 6 y pieza de 8 a 12. Cada pieza entra con el scroll */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B; --gris-2: #8A889E; --linea: rgba(45, 37, 96, 0.12); --linea-2: rgba(45, 37, 96, 0.22);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --tint: #EEEDFE;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    img { display: block; max-width: 100%; }
+    .vista { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc, [data-v="d"] .vd, [data-v="e"] .ve { display: block; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .wm { --svg: url('tp-wordmark.svg'); aspect-ratio: 389.87 / 150.6; }
+    .forky { --svg: url('tp-forky.svg'); aspect-ratio: 142 / 158; }
+    .cerebro { --svg: url('tp-cerebro.svg'); aspect-ratio: 622.7 / 597.42; }
+    .orbita { display: block; aspect-ratio: 1; border: 1.5px solid currentColor; border-radius: 50%; opacity: 0.55; }
+    .mas { position: relative; display: block; aspect-ratio: 1; border: 1.5px dashed currentColor; border-radius: 50%; opacity: 0.6; }
+    .mas::before, .mas::after { content: ''; position: absolute; left: 50%; top: 50%; width: 42%; height: 1.5px; background: currentColor; translate: -50% -50%; } .mas::after { rotate: 90deg; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 32px; color: var(--gris-2); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+
+    /* --- ESCENA Y TEXTO DE LA DECISIÓN (IGUAL EN LAS CINCO) --- */
+    .escena { --p: 0; position: relative; height: 260svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; align-content: center; align-items: center; }
+    .dec { grid-column: 1 / span 6; display: grid; grid-template-columns: subgrid; row-gap: 16px; align-items: start; }
+    .dec .num { grid-column: 1 / span 3; grid-row: 1; font: 600 clamp(64px, 6.6vw, 112px) / 0.78 var(--f-marca); letter-spacing: -0.06em; color: var(--soft); }
+    .dec .eti { grid-column: 1 / span 3; grid-row: 2; display: inline-flex; align-items: center; gap: 8px; color: var(--gris); }
+    .dec .eti::before, .dec .porque span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--campus); }
+    .dec h3 { grid-column: 4 / span 3; grid-row: 1; margin: 0; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; }
+    .dec p { grid-column: 4 / span 3; grid-row: 2; margin: 0; color: var(--gris); font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); }
+    .dec .porque { grid-row: 3; display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--linea); color: var(--tinta); }
+    .dec .porque span { display: inline-flex; align-items: center; gap: 8px; font: 400 12px var(--f-mono); color: var(--gris); }
+    .pieza { grid-column: 8 / -1; position: relative; }
+    /* Entrada escalonada: cada elemento con --e (su turno) aparece según --p */
+    .ent { --k: clamp(0, (var(--p) - 0.08 - var(--e, 0) * 0.07) / 0.12, 1); opacity: var(--k); translate: 0 calc((1 - var(--k)) * 14px); }
+
+    /* =======================================================
+       A · MATRIZ DE MARCA
+       ======================================================= */
+    /* Como la hoja de arquitectura de un manual: una fila por producto (isotipo, lockup, tono y uso). El wordmark
+       ocupa siempre el mismo ancho, así los nombres arrancan en la misma línea; una banda marca lo constante */
+    .va .matriz { --wm: clamp(76px, 6.6vw, 104px); position: relative; }
+    .va .cab, .va .fila { display: grid; grid-template-columns: 52px minmax(0, 1fr) 92px; column-gap: 20px; align-items: center; }
+    .va .cab { padding-bottom: 10px; border-bottom: 1px solid var(--linea-2); color: var(--gris-2); font: 400 11px var(--f-mono); }
+    .va .fila { min-height: clamp(64px, 7.4svh, 82px); border-bottom: 1px solid var(--linea); }
+    .va .fila.madre { min-height: clamp(84px, 10svh, 112px); }
+    .va .iso { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--tono); color: #FFFFFF; }
+    .va .iso > * { width: 52%; } .va .madre .iso > * { width: 76%; }
+    .va .fila.nuevo .iso { background: none; color: var(--campus); box-shadow: inset 0 0 0 1.5px var(--linea-2); }
+    .va .lockup { display: flex; align-items: baseline; gap: 0; }
+    .va .lockup .wm { width: var(--wm); flex: none; color: var(--tinta); translate: 0 0.12em; }
+    .va .madre .lockup .wm { width: calc(var(--wm) * 1.5); }
+    .va .lockup b { margin-left: 12px; font: 600 clamp(18px, 1.6vw, 24px) / 1 var(--f-marca); letter-spacing: -0.03em; color: var(--tono); }
+    .va .lockup small { margin-left: 12px; color: var(--gris-2); font: 400 12px var(--f-mono); }
+    .va .tono { display: flex; align-items: center; gap: 8px; justify-self: end; font: 400 11px var(--f-mono); color: var(--gris); }
+    .va .tono i { width: 14px; height: 14px; border-radius: 4px; background: var(--tono); }
+    .va .nuevo .tono i { background: none; box-shadow: inset 0 0 0 1.5px var(--linea-2); }
+    .va .banda { position: absolute; top: 0; bottom: 0; left: calc(52px + 20px - 8px); width: calc(var(--wm) + 16px); border-radius: 10px; background: rgba(74, 60, 174, 0.06); box-shadow: inset 0 0 0 1px rgba(74, 60, 174, 0.14); opacity: clamp(0, (var(--p) - 0.5) / 0.12, 1); pointer-events: none; }
+    .va .banda span { position: absolute; bottom: calc(100% + 8px); left: 8px; color: var(--campus); font: 400 11px var(--f-mono); white-space: nowrap; }
+
+    /* =======================================================
+       B · ANATOMÍA DEL LOCKUP
+       ======================================================= */
+    /* Un lockup grande con sus partes anotadas. Al bajar, cambian el isotipo, el nombre y el tono (Campus, Connect,
+       Health, +1) y el wordmark queda quieto: la regla se ve, no se lee */
+    .vb .lam { position: relative; padding: clamp(28px, 3vw, 44px); border-radius: 22px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea), 0 30px 60px -40px rgba(45, 37, 96, 0.35); }
+    .vb .grande { display: flex; align-items: center; gap: clamp(14px, 1.4vw, 22px); }
+    .vb .g-iso { position: relative; flex: none; width: clamp(64px, 5.6vw, 88px); aspect-ratio: 1; border-radius: 20px; background: var(--tono); transition: background 500ms var(--ease); color: #FFFFFF; display: grid; place-items: center; }
+    .vb .g-iso > * { position: absolute; width: 52%; opacity: 0; scale: 0.8; transition: opacity 400ms var(--ease), scale 500ms var(--ease); }
+    .vb .g-iso > .on { opacity: 1; scale: 1; }
+    .vb .g-wm { flex: none; width: clamp(130px, 11vw, 180px); color: var(--tinta); }
+    .vb .g-nom { position: relative; display: grid; font: 600 clamp(28px, 2.6vw, 42px) / 1 var(--f-marca); letter-spacing: -0.04em; }
+    .vb .g-nom span { grid-area: 1 / 1; color: var(--tono); opacity: 0; translate: 0 12px; transition: opacity 400ms var(--ease), translate 500ms var(--ease); }
+    .vb .g-nom span.on { opacity: 1; translate: 0 0; }
+    .vb .cotas { display: grid; grid-template-columns: clamp(64px, 5.6vw, 88px) clamp(130px, 11vw, 180px) 1fr; column-gap: clamp(14px, 1.4vw, 22px); margin-top: 18px; }
+    .vb .cota { padding-top: 10px; border-top: 1.5px solid var(--linea-2); font: 400 11px / 1.35 var(--f-mono); color: var(--gris); }
+    .vb .cota b { display: block; color: var(--tinta); font-weight: 400; }
+    .vb .cota.fija { border-top-color: var(--campus); } .vb .cota.fija b { color: var(--campus); }
+    .vb .serie { display: flex; gap: 8px; margin-top: 22px; }
+    .vb .serie i { flex: 1; height: 4px; border-radius: 2px; background: var(--linea); transition: background 300ms linear; }
+    .vb .serie i.on { background: var(--tono); }
+    .vb .pie-serie { display: flex; justify-content: space-between; margin-top: 10px; color: var(--gris-2); font: 400 11px var(--f-mono); }
+
+    /* =======================================================
+       C · EJE COMÚN
+       ======================================================= */
+    /* Tipográfico: los lockups apilados a gran tamaño sobre un mismo eje. El wordmark se repite idéntico en tinta y
+       solo cambia el nombre, en su tono; una guía vertical marca dónde termina lo que nunca cambia */
+    .vc .eje { --wm: clamp(120px, 10.4vw, 168px); position: relative; display: flex; flex-direction: column; gap: clamp(10px, 1.6svh, 18px); }
+    .vc .linea { display: flex; align-items: baseline; gap: clamp(12px, 1.1vw, 18px); }
+    .vc .linea .wm { flex: none; width: var(--wm); color: var(--tinta); translate: 0 0.1em; }
+    .vc .linea b { font: 600 calc(var(--wm) * 0.33) / 1 var(--f-marca); letter-spacing: -0.04em; color: var(--tono); }
+    .vc .linea .ic { width: calc(var(--wm) * 0.2); align-self: center; color: var(--tono); opacity: 0.9; }
+    .vc .linea.madre .wm { width: calc(var(--wm) * 1.45); }
+    .vc .linea.madre { padding-bottom: clamp(10px, 1.6svh, 18px); margin-bottom: 4px; border-bottom: 1px solid var(--linea-2); }
+    .vc .linea.madre small { color: var(--gris-2); font: 400 11px var(--f-mono); }
+    .vc .linea.nuevo b { color: transparent; -webkit-text-stroke: 1.2px var(--campus); }
+    .vc .guia { position: absolute; top: 0; bottom: 0; left: calc(var(--wm) + clamp(6px, 0.55vw, 9px)); width: 0; border-left: 1px dashed var(--campus); opacity: clamp(0, (var(--p) - 0.5) / 0.12, 1); transform-origin: top; transform: scaleY(clamp(0, (var(--p) - 0.5) / 0.14, 1)); }
+    .vc .guia-t { display: flex; justify-content: space-between; margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--linea); color: var(--gris); font: 400 11px var(--f-mono); }
+
+    /* =======================================================
+       D · ÁRBOL EDITORIAL
+       ======================================================= */
+    /* Un organigrama de informe: sin cajas, con filetes de 1 px. La madre arriba, cuatro columnas con un punto de
+       tono, isotipo, nombre, uso y código */
+    .vd .arbol { position: relative; }
+    .vd .tope { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-bottom: 22px; }
+    .vd .tope .wm { width: clamp(150px, 13vw, 210px); color: var(--tinta); }
+    .vd .tope .mono { color: var(--gris-2); font-size: 11px; }
+    .vd .ramas { position: relative; height: 40px; }
+    .vd .ramas::before { content: ''; position: absolute; left: 50%; top: 0; width: 1px; height: 20px; background: var(--linea-2); transform-origin: top; transform: scaleY(var(--r, 0)); }
+    .vd .ramas::after { content: ''; position: absolute; left: 12.5%; right: 12.5%; top: 20px; height: 1px; background: var(--linea-2); transform: scaleX(var(--r, 0)); }
+    .vd .cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 16px; }
+    .vd .col { position: relative; display: flex; flex-direction: column; gap: 10px; padding-top: 20px; }
+    .vd .col::before { content: ''; position: absolute; left: 0; top: -20px; width: 1px; height: 20px; background: var(--linea-2); transform-origin: top; transform: scaleY(var(--r, 0)); }
+    .vd .col .punto { position: absolute; left: -4px; top: -4px; width: 9px; height: 9px; border-radius: 50%; background: var(--tono); box-shadow: 0 0 0 3px var(--papel); }
+    .vd .col.nuevo .punto { background: var(--papel); box-shadow: 0 0 0 3px var(--papel), inset 0 0 0 1.5px var(--campus); }
+    .vd .col .ic { width: 30px; color: var(--tono); }
+    .vd .col .lk { display: flex; align-items: baseline; gap: 6px; } .vd .col .lk .wm { width: 50px; color: var(--tinta); translate: 0 0.1em; }
+    .vd .col .lk b { font: 600 16px / 1 var(--f-marca); letter-spacing: -0.02em; color: var(--tono); }
+    .vd .col p { margin: 0; color: var(--gris); font: 400 13px / 1.4 var(--f-marca); }
+    .vd .col .mono { color: var(--gris-2); font-size: 11px; }
+    .vd .col.nuevo .lk b { color: var(--campus); }
+
+    /* =======================================================
+       E · EN SUS PIEZAS
+       ======================================================= */
+    /* La arquitectura probada en piezas reales: el sitio de Empresa, la app de Campus y un módulo de Connect, cada
+       una con su lockup debajo. Arriba, la madre con una llave que abarca a las tres */
+    .ve .paraguas { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .ve .paraguas .wm { width: clamp(130px, 11vw, 180px); color: var(--tinta); }
+    .ve .llave { position: relative; height: 26px; margin: 4px 0 16px; border: 1px solid var(--linea-2); border-bottom: 0; border-radius: 12px 12px 0 0; transform-origin: center; transform: scaleX(var(--r, 0)); }
+    .ve .llave::before { content: ''; position: absolute; left: 50%; top: -14px; width: 1px; height: 14px; background: var(--linea-2); }
+    .ve .piezas { display: grid; grid-template-columns: 1.25fr 0.9fr 1.1fr; gap: 14px; align-items: end; }
+    .ve .pz { display: flex; flex-direction: column; gap: 12px; }
+    .ve .marco { overflow: hidden; border-radius: 12px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea), 0 24px 44px -30px rgba(45, 37, 96, 0.45); }
+    .ve .marco img { width: 100%; height: clamp(150px, 20svh, 220px); object-fit: cover; object-position: 50% 0; }
+    .ve .pz:nth-child(2) .marco img { height: clamp(190px, 26svh, 280px); }
+    .ve .barra-n { display: flex; gap: 4px; padding: 7px 9px; background: #F1F1EF; border-bottom: 1px solid #E2E2DF; } .ve .barra-n i { width: 6px; height: 6px; border-radius: 50%; background: #CFCFCB; }
+    .ve .lk { display: flex; align-items: baseline; gap: 6px; } .ve .lk .wm { width: 46px; color: var(--tinta); translate: 0 0.1em; }
+    .ve .lk b { font: 600 15px / 1 var(--f-marca); letter-spacing: -0.02em; color: var(--tono); }
+    .ve .pz .mono { color: var(--gris-2); font-size: 11px; }
+    .ve .pie { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--linea); display: flex; justify-content: space-between; color: var(--gris); font: 400 11px var(--f-mono); }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 48px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 38ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li span:first-child { color: rgba(238, 237, 254, 0.66); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); }
+        .grilla > *, .dec > * { grid-column: 1 !important; grid-row: auto !important; }
+        .fijo { align-content: start; padding-top: 9svh; row-gap: 26px; }
+        .dec { display: flex; flex-direction: column; gap: 8px; } .dec .num, .dec p:not(.porque) { display: none; }
+        .va .cab, .va .fila { grid-template-columns: 40px minmax(0, 1fr) 70px; column-gap: 12px; } .va .iso { width: 36px; height: 36px; } .va .lockup small { display: none; } .va .banda { left: 44px; }
+        .vb .cotas { grid-template-columns: 64px 120px 1fr; } .vb .g-wm { width: 120px; }
+        .vc .eje { --wm: 108px; }
+        .vd .cols { grid-template-columns: 1fr 1fr; row-gap: 26px; } .vd .ramas { display: none; } .vd .col p { display: none; }
+        .ve .piezas { grid-template-columns: 1fr 1fr; } .ve .pz:nth-child(3) { display: none; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Decisión 04</span><p>Cinco maneras de mostrar la arquitectura de marca. Baja para ver cómo entra cada una; cambia con el selector.</p></div>
+</div>
+
+<template id="dec">
+    <div class="dec"><span class="num">04</span><span class="eti mono">Decisión 04</span><h3>Una madre que lidera</h3><p>tap in arriba; Campus, Connect y Health cuelgan de ella con su nombre y su tono</p><p class="porque"><span>Por qué</span>Si mañana hay un cuarto producto, entra solo</p></div>
+</template>
+
+<nav class="selector" aria-label="Versiones">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>Matriz</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Anatomía</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Eje común</span></button>
+    <button type="button" data-ir="d" aria-pressed="false"><b>D</b><span>Árbol editorial</span></button>
+    <button type="button" data-ir="e" aria-pressed="false"><b>E</b><span>En sus piezas</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de la decisión 04</h2>
+    <div class="bloque">
+        <p>El esquema de cajas de colores con líneas se lee como un diagrama genérico: cuenta la jerarquía, pero no la regla de marca.</p>
+        <ul class="lista">
+            <li><span>Tarjetas grandes de color con un isotipo al centro: parece un juego, no un sistema</span><span>Lenguaje de manual de marca: filetes finos, filas, cotas, tipografía</span></li>
+            <li><span>La regla ("el wordmark nunca cambia") está en una nota chica al pie</span><span>Que la pieza la demuestre: wordmark fijo y alineado, lo variable marcado</span></li>
+            <li><span>Los lockups son pequeños dentro de las tarjetas</span><span>Los lockups como protagonistas, a tamaño de lectura</span></li>
+            <li><span>Nada conecta la arquitectura con piezas reales</span><span>Mostrarla aplicada, o con los datos de cada producto (uso, tono)</span></li>
+        </ul>
+    </div>
+    <h2>Propuestas</h2>
+    <div class="bloque">
+        <p>Cinco maneras de mostrarla. Elige con el selector.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · Matriz de marca</span><strong>La hoja del manual</strong><p>Una fila por producto con isotipo, lockup, tono y uso. El wordmark mide lo mismo en todas, así los nombres arrancan en la misma línea; una banda marca lo constante. Sobria y técnica.</p></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Anatomía del lockup</span><strong>La regla, en movimiento</strong><p>Un lockup grande con sus partes anotadas. Al bajar cambian el isotipo, el nombre y el tono (Campus, Connect, Health, +1) y el wordmark queda quieto. La decisión se ve, no se lee.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Eje común</span><strong>Tipografía pura</strong><p>Los lockups apilados a gran tamaño sobre un mismo eje: el wordmark idéntico en tinta y solo el nombre en su tono. Una guía punteada marca dónde termina lo que nunca cambia.</p></button>
+            <button type="button" class="op" data-ir="d" aria-pressed="false"><span class="mono">D · Árbol editorial</span><strong>Un organigrama de informe</strong><p>La jerarquía sin cajas: la madre arriba, filetes de 1 px y cuatro columnas con punto de tono, isotipo, lockup, uso y código. Conserva el árbol, pero con tono de informe.</p></button>
+            <button type="button" class="op" data-ir="e" aria-pressed="false"><span class="mono">E · En sus piezas</span><strong>La arquitectura aplicada</strong><p>Tres piezas reales (el sitio de Empresa, la app de Campus, un módulo de Connect) con su lockup debajo, y la madre arriba con una llave que las abarca. Prueba, no esquema.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · ARQUITECTURA V2
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz'), dec = document.getElementById('dec').content;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const wm = '<span class="marca wm"></span>';
+        const P = [
+            { n: 'Campus', t: '#4A3CAE', ic: '<span class="marca forky"></span>', uso: 'Comida sin filas en la universidad' },
+            { n: 'Connect', t: '#6B5CE7', ic: '<span class="marca cerebro"></span>', uso: 'El sistema del colegio, el principal' },
+            { n: 'Health', t: '#9B8EF0', ic: '<i class="orbita"></i>', uso: 'Servicios internos de salud, en camino' },
+            { n: '+1', t: '#4A3CAE', ic: '<i class="mas"></i>', uso: 'El próximo producto, cuando llegue', nuevo: true }
+        ];
+        const piezas = {
+            a: `<div class="matriz"><span class="banda"><span>Constante</span></span>
+                <div class="cab ent" style="--e:0"><span>Isotipo</span><span>Lockup</span><span style="justify-self:end">Tono</span></div>
+                <div class="fila madre ent" style="--e:1; --tono:#2D2560"><span class="iso"><span class="marca wm"></span></span><span class="lockup">${wm}<small>Marca madre</small></span><span class="tono"><i></i>#2D2560</span></div>
+                ${P.map((x, i) => `<div class="fila ent${x.nuevo ? ' nuevo' : ''}" style="--e:${i + 2}; --tono:${x.t}"><span class="iso">${x.ic}</span><span class="lockup">${wm}<b>${x.n}</b></span><span class="tono"><i></i>${x.nuevo ? 'Por definir' : x.t}</span></div>`).join('')}</div>`,
+            b: `<div class="lam ent" style="--e:0; --tono:#4A3CAE" data-anat>
+                <div class="grande"><span class="g-iso">${P.map((x, i) => `<span class="${i === 0 ? 'on' : ''}" data-i="${i}">${x.ic}</span>`).join('')}</span><span class="marca wm g-wm"></span><span class="g-nom">${P.map((x, i) => `<span class="${i === 0 ? 'on' : ''}" data-i="${i}" style="color:${x.t}">${x.n}</span>`).join('')}</span></div>
+                <div class="cotas"><span class="cota"><b>Isotipo</b>cambia</span><span class="cota fija"><b>Wordmark</b>nunca cambia</span><span class="cota"><b>Nombre y tono</b>cambian</span></div>
+                <div class="serie">${P.map((x, i) => `<i data-i="${i}" style="--tono:${x.t}"></i>`).join('')}</div>
+                <div class="pie-serie">${P.map(x => `<span>${x.n}</span>`).join('')}</div></div>`,
+            c: `<div class="eje"><span class="guia"></span>
+                <div class="linea madre ent" style="--e:0">${wm}<small>Marca madre</small></div>
+                ${P.map((x, i) => `<div class="linea ent${x.nuevo ? ' nuevo' : ''}" style="--e:${i + 1}; --tono:${x.t}">${wm}<b>${x.n}</b><span class="ic">${x.ic}</span></div>`).join('')}
+                <div class="guia-t ent" style="--e:6"><span>← Nunca cambia</span><span>Cambia: nombre, isotipo y tono →</span></div></div>`,
+            d: `<div class="arbol"><div class="tope ent" style="--e:0">${wm}<span class="mono">Marca madre · lidera siempre</span></div><div class="ramas"></div>
+                <div class="cols">${P.map((x, i) => `<div class="col ent${x.nuevo ? ' nuevo' : ''}" style="--e:${i + 2}; --tono:${x.t}"><span class="punto"></span><span class="ic">${x.ic}</span><span class="lk">${wm}<b>${x.n}</b></span><p>${x.uso}</p><span class="mono">${x.nuevo ? 'Tono por definir' : x.t}</span></div>`).join('')}</div></div>`,
+            e: `<div class="paraguas ent" style="--e:0">${wm}<span class="mono" style="color:var(--gris-2)">Marca madre</span></div><div class="llave"></div>
+                <div class="piezas">
+                    <div class="pz ent" style="--e:1; --tono:#2D2560"><div class="marco"><div class="barra-n"><i></i><i></i><i></i></div><img src="empresa.webp" alt="Sitio de Tap In Empresa"></div><span class="lk">${wm}<b>Empresa</b></span><span class="mono">Sitio institucional</span></div>
+                    <div class="pz ent" style="--e:2; --tono:#4A3CAE"><div class="marco"><img src="campus.webp" alt="Pantallas de la app de Campus"></div><span class="lk">${wm}<b>Campus</b></span><span class="mono">App para pedir comida</span></div>
+                    <div class="pz ent" style="--e:3; --tono:#6B5CE7"><div class="marco"><img src="connect.webp" alt="Módulo de gestión de Connect"></div><span class="lk">${wm}<b>Connect</b></span><span class="mono">Módulos del colegio</span></div>
+                </div>
+                <div class="pie ent" style="--e:5"><span>La madre se lee primero en cualquier pieza</span><span>Health y +1, en camino</span></div>`
+        };
+        const escenas = {};
+        Object.entries(piezas).forEach(([v, html]) => {
+            const s = document.createElement('section'); s.className = 'vista v' + v;
+            s.innerHTML = `<div class="escena"><div class="grilla fijo"></div></div>`;
+            const fijo = s.querySelector('.fijo'); fijo.appendChild(dec.cloneNode(true));
+            fijo.insertAdjacentHTML('beforeend', `<div class="pieza">${html}</div>`);
+            raiz.appendChild(s); escenas[v] = s.querySelector('.escena');
+        });
+
+        /* --- 1. AVANCE --- */
+        const pintar = () => {
+            const v = raiz.dataset.v, el = escenas[v], r = el.getBoundingClientRect(), p = fijar(-r.top / (r.height - innerHeight));
+            el.style.setProperty('--p', p.toFixed(4));
+            el.style.setProperty('--r', fijar((p - 0.12) / 0.16).toFixed(3));
+            if (v === 'b') {
+                /* Anatomía: el producto cambia con el avance; el wordmark no se mueve */
+                const lam = el.querySelector('[data-anat]'), i = Math.min(Math.floor(fijar((p - 0.2) / 0.7) * 4), 3);
+                lam.style.setProperty('--tono', P[i].t);
+                lam.querySelectorAll('[data-i]').forEach(x => x.classList.toggle('on', +x.dataset.i === i && !x.matches('.serie i') || (x.matches('.serie i') && +x.dataset.i <= i)));
+            }
+        };
+        let pendiente = false;
+        addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } }, { passive: true });
+        addEventListener('resize', pintar);
+
+        /* --- 2. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v))); try { localStorage.setItem('arq-v2', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(pintar); };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) scrollTo({ top: 0, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('arq-v2'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['a', 'b', 'c', 'd', 'e'].includes(h) ? h : guardado || 'a');
+        addEventListener('load', pintar);
+    })();
+    /* =======================================================
+       FIN JS · ARQUITECTURA V2
+       ======================================================= */
+</script>
