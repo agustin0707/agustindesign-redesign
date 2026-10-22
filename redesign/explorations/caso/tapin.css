@@ -325,23 +325,24 @@
 /* Las formas que se exploraron, en el orden del proceso: se encienden una a una con el scroll y al final se
    apartan para que aparezca Forky con el wordmark de Campus */
 .tp-formas-zona { grid-column: 6 / -1; position: relative; }
-.tp-formas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; transition: opacity 600ms var(--ease), transform 700ms var(--ease); }
-.tp-forma { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: 20px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea); color: var(--texto-3); opacity: 0.45; transform: scale(0.95); transition: opacity 400ms, transform 600ms var(--tp-curva), color 400ms, box-shadow 400ms; }
-.tp-forma .tp-marca { width: 66%; }
-.tp-forma .mono { position: absolute; left: 14px; top: 12px; color: var(--texto-3); }
-.tp-forma.ya { opacity: 0.8; transform: none; color: var(--tp-soft); }
+.tp-formas { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1.1vw, 16px); transition: opacity 600ms var(--ease), transform 700ms var(--ease); }
+.tp-forma { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: clamp(16px, 1.6vw, 24px); background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea); color: var(--tp-soft); opacity: 0.55; transform: scale(0.95); transition: opacity 400ms, transform 600ms var(--tp-curva), color 400ms, box-shadow 400ms; }
+/* Cada forma lleva su escala (--s) para que todas pesen lo mismo a la vista, aunque su proporción cambie */
+.tp-forma .tp-marca { width: calc(var(--s, 0.6) * 100%); }
+.tp-forma .mono { position: absolute; left: 16px; top: 14px; color: var(--texto-3); }
+.tp-forma.ya { opacity: 1; transform: none; color: var(--tp-soft); }
 .tp-forma.on { opacity: 1; transform: scale(1.03); color: var(--tp-campus); box-shadow: 0 0 0 2px var(--tp-campus), 0 26px 44px -26px rgba(74, 60, 174, 0.6); }
 .tp-rotulo { display: flex; align-items: baseline; gap: 14px; margin-top: 24px; }
 .tp-rotulo b { font-weight: 400; color: var(--acento); }
-.tp-rotulo-t { position: relative; flex: 1; height: 1.4em; overflow: hidden; font: 600 clamp(20px, 1.8vw, 28px) var(--tp-f); letter-spacing: -0.03em; color: var(--texto); }
+.tp-rotulo-t { position: relative; flex: 1; height: 1.4em; overflow: hidden; font: 600 clamp(20px, 2vw, 32px) var(--tp-f); letter-spacing: -0.03em; color: var(--texto); }
 .tp-rotulo-t span { position: absolute; inset: 0; white-space: nowrap; opacity: 0; transform: translateY(100%); transition: opacity 300ms, transform 500ms var(--ease); }
 .tp-rotulo-t span.on { opacity: 1; transform: none; }
 .tp-fk-final { position: absolute; left: 0; right: 0; top: 0; aspect-ratio: 3 / 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; color: var(--tp-campus); opacity: 0; transform: scale(0.85); transition: opacity 600ms var(--ease), transform 800ms var(--tp-curva); pointer-events: none; }
-.tp-fk-forky { width: 30%; aspect-ratio: 142 / 158; }
+.tp-fk-forky { width: 34%; aspect-ratio: 142 / 158; }
 .tp-fk-final .tp-lockup .tp-wm { width: clamp(80px, 7vw, 120px); }
 .tp-fk-final .tp-lockup b { font-size: clamp(18px, 1.6vw, 26px); }
 .tp-fk-final.on { opacity: 1; transform: none; }
-.tp-formas-zona:has(.tp-fk-final.on) .tp-formas { opacity: 0.07; transform: scale(0.96); }
+.tp-formas-zona:has(.tp-fk-final.on) .tp-formas { opacity: 0; transform: scale(0.94); }
 
 /* =======================================================
    LA MARCA EN EL CAMPUS
