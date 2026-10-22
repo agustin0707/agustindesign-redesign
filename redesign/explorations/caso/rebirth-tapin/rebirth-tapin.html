@@ -1,0 +1,259 @@
+<title>Rebirth Tap In</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Tres pasos de las activaciones (claro) a la portada del capítulo 02, El Rebirth (oscuro), más el actual.
+       Cada uno es una escena fija que avanza con el scroll y termina en la misma portada: título arriba y las
+       cuatro tiras de la paleta abajo */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B; --gris-2: #8A889E; --linea: rgba(45, 37, 96, 0.12);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --noche: #100D20;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px; --radio: 22px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .mono { font-family: var(--f-mono); font-size: 12px; }
+    img { display: block; max-width: 100%; }
+    .vista { display: none; } [data-v="0"] .v0, [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc { display: block; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+
+    /* --- FINAL DE LAS ACTIVACIONES (CONTEXTO) --- */
+    .antes { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding: 64px var(--margen) 96px; align-items: start; }
+    .antes .riel { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 12px; }
+    .antes .riel b { font: 600 clamp(36px, 3.2vw, 52px) / 0.9 var(--f-marca); letter-spacing: -0.05em; color: var(--campus); }
+    .antes .riel p { margin: 0; color: var(--gris); font: 400 14px / 1.45 var(--f-marca); }
+    .antes .fotos { grid-column: 4 / -1; display: flex; gap: 16px; overflow: hidden; margin-right: calc(var(--margen) * -1); }
+    .antes .fotos img { height: clamp(220px, 26vw, 400px); width: auto; border-radius: 18px; }
+
+    /* --- ESCENA Y PORTADA COMÚN --- */
+    .escena { --p: 0; position: relative; height: 320svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; background: transparent; }
+    .noche { position: absolute; inset: 0; background: var(--noche); }
+    .arriba { position: absolute; left: var(--margen); right: var(--margen); top: 0; height: 36svh; display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; padding-bottom: 3svh; color: #F4F3FB; }
+    .cap { display: flex; flex-direction: column; gap: 12px; opacity: var(--ti, 1); translate: 0 calc((1 - var(--ti, 1)) * 30px); }
+    .cap .mono { color: rgba(238, 237, 254, 0.66); }
+    .cap h2 { margin: 0; font: 600 clamp(56px, 8.4vw, 148px) / 0.86 var(--f-marca); letter-spacing: -0.055em; }
+    .cap p { margin: 0; max-width: 40ch; color: rgba(238, 237, 254, 0.72); font: 400 clamp(15px, 1.15vw, 18px) / 1.45 var(--f-marca); }
+    .dec { max-width: 300px; display: flex; flex-direction: column; gap: 10px; opacity: var(--de, 0); translate: 0 calc((1 - var(--de, 0)) * 24px); }
+    .dec .mono { display: inline-flex; align-items: center; gap: 8px; color: rgba(238, 237, 254, 0.66); }
+    .dec .mono::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--health); }
+    .dec h3 { margin: 0; font: 600 clamp(22px, 2vw, 32px) / 1.05 var(--f-marca); letter-spacing: -0.04em; }
+    .dec p { margin: 0; color: rgba(238, 237, 254, 0.72); font: 400 14px / 1.45 var(--f-marca); }
+    .tiras { position: absolute; left: var(--margen); right: var(--margen); bottom: 0; height: 62svh; display: flex; gap: 8px; }
+    .tira { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 22px; border-radius: var(--radio) var(--radio) 0 0; background: linear-gradient(180deg, color-mix(in srgb, var(--tono) 84%, #FFFFFF), var(--tono) 55%); color: #FFFFFF; transform: translateY(calc((1 - var(--k, 1)) * 104%)); }
+    .tira b { font: 600 clamp(18px, 1.7vw, 28px) var(--f-marca); letter-spacing: -0.03em; opacity: var(--et, 1); }
+    .tira .mono { font-size: 11px; color: rgba(255, 255, 255, 0.8); opacity: var(--et, 1); }
+    .tira .iso { position: absolute; top: 44%; left: 50%; width: 36%; max-width: 150px; translate: -50% -50%; color: #FFFFFF; }
+    .tira:first-child .iso { width: 62%; max-width: 240px; }
+    .wm { --svg: url('tp-wordmark.svg'); aspect-ratio: 389.87 / 150.6; }
+    .forky { --svg: url('tp-forky.svg'); aspect-ratio: 142 / 158; }
+    .cerebro { --svg: url('tp-cerebro.svg'); aspect-ratio: 622.7 / 597.42; }
+    .pendiente { display: block; width: 70%; aspect-ratio: 1; margin: 0 auto; border: 1.5px dashed rgba(255, 255, 255, 0.6); border-radius: 50%; }
+
+    /* =======================================================
+       A · LA LÍNEA DEL TIEMPO SIGUE
+       ======================================================= */
+    /* Vuelve la línea del resumen: el tramo del capítulo 01 ya lleno y el cursor que entra al 02. A medida que
+       avanza, la noche se extiende detrás de él; la línea sube y se queda como el filete del título */
+    .va .noche { clip-path: inset(0 calc(100% - var(--x, 0) * 100%) 0 0); }
+    .va .linea { position: absolute; left: var(--margen); right: var(--margen); top: calc(50% - var(--sube, 0) * (50% - 36svh)); display: grid; grid-template-columns: 12fr 4fr 6fr; gap: 6px; opacity: calc(1 - var(--fu, 0)); }
+    .va .tramo { position: relative; display: flex; flex-direction: column; gap: 10px; }
+    .va .tramo span { font: 400 12px var(--f-mono); color: var(--gris); transition: color 300ms linear; }
+    .va .tramo i { display: block; height: 8px; border-radius: 4px; background: rgba(45, 37, 96, 0.14); overflow: hidden; position: relative; }
+    .va .tramo i::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--empresa), var(--campus), var(--connect), var(--health)); background-size: 300% 100%; transform-origin: left; transform: scaleX(var(--f, 0)); }
+    .va .tramo:nth-child(1) i::after { background-position: 0 0; }
+    .va .tramo:nth-child(2) i::after { background-position: 50% 0; }
+    .va .tramo:nth-child(3) i::after { background-position: 100% 0; }
+    .va .linea.oscura .tramo span { color: rgba(238, 237, 254, 0.66); }
+    .va .linea.oscura .tramo i { background: rgba(238, 237, 254, 0.14); }
+    .va .punto { position: absolute; top: 27px; left: calc(var(--x, 0) * 100%); width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 0 4px var(--connect), 0 6px 18px rgba(16, 13, 32, 0.35); }
+    .va .fecha { position: absolute; top: -34px; left: calc(var(--x, 0) * 100%); translate: -50% 0; padding: 4px 10px; border-radius: 999px; background: var(--tinta); color: #FFFFFF; white-space: nowrap; }
+
+    /* =======================================================
+       B · EL TELÓN DE LA PALETA
+       ======================================================= */
+    /* Las cuatro tiras de la paleta suben desde abajo, de a una, hasta cubrir la pantalla: son el telón. Después
+       bajan su borde superior hasta su altura en la portada y dejan ver la noche y el título */
+    .vb .tiras { height: calc(62svh + var(--alto, 0) * 38svh); }
+    .vb .tira { border-radius: calc(var(--radio) * (1 - var(--alto, 0) * 0.6)) calc(var(--radio) * (1 - var(--alto, 0) * 0.6)) 0 0; }
+    .vb .tiras { left: calc(var(--margen) * (1 - var(--alto, 0))); right: calc(var(--margen) * (1 - var(--alto, 0))); gap: calc(8px * (1 - var(--alto, 0) * 0.5)); }
+
+    /* =======================================================
+       C · DE CAMPUS A CONNECT
+       ======================================================= */
+    /* El isotipo de Campus aparece al centro; desde él se abre la noche en círculo (el mismo gesto del tap que
+       abrió el capítulo 01) y el isotipo se vuelve el cerebro de Connect, que baja a su tira */
+    .vc .noche { clip-path: circle(var(--r, 0px) at 50% 50%); }
+    .vc .centro { position: absolute; left: 50%; top: 50%; width: clamp(80px, 8vw, 130px); translate: -50% -50%; }
+    .vc .centro .marca { position: absolute; inset: 0; margin: auto; width: 100%; }
+    .vc .centro .forky { color: var(--c1, var(--campus)); opacity: calc(1 - var(--m, 0)); scale: calc(1 - var(--m, 0) * 0.4); rotate: calc(var(--m, 0) * -40deg); }
+    .vc .centro .cerebro { opacity: var(--m, 0); scale: calc(0.6 + var(--m, 0) * 0.4); color: #FFFFFF; }
+    .vc .centro { aspect-ratio: 1; }
+    .vc .rotulo { position: absolute; left: 50%; top: calc(50% + clamp(70px, 6vw, 100px)); translate: -50% 0; display: grid; text-align: center; white-space: nowrap; }
+    .vc .rotulo span { grid-area: 1 / 1; transition: opacity 300ms linear; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; }
+    .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding: 80px var(--margen) 140px; background: var(--tinta); color: #F4F3FB; row-gap: 48px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 38ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .antes { grid-template-columns: minmax(0, 1fr); row-gap: 16px; }
+        .antes .riel, .antes .fotos { grid-column: 1; }
+        .antes .fotos img { height: 56vw; }
+        .arriba { flex-direction: column; align-items: flex-start; justify-content: flex-end; height: 40svh; gap: 14px; }
+        .cap p, .dec p { display: none; }
+        .tiras { height: 58svh; gap: 6px; } .tira { padding: 12px; } .tira .mono { display: none; } .tira b { font-size: 15px; }
+        .vb .tiras { height: calc(58svh + var(--alto, 0) * 42svh); }
+        .va .linea { grid-template-columns: 12fr 4fr 6fr; } .va .tramo span { font-size: 10px; }
+        .ops { grid-template-columns: minmax(0, 1fr); }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="b" id="raiz"></div>
+
+<template id="portada">
+    <div class="arriba">
+        <div class="cap"><span class="mono">Capítulo 02 · Feb a abr 2026</span><h2>El Rebirth</h2><p>De app de comida a sistema para colegios. Antes de diseñar, un cuestionario a los socios</p></div>
+        <aside class="dec"><span class="mono">Decisión 04</span><h3>Un tono por producto</h3><p>Una sola familia morada. Connect, el principal, no lleva el más oscuro: su público es escolar.</p></aside>
+    </div>
+    <div class="tiras">
+        <div class="tira" style="--tono:#2D2560"><span class="iso"><span class="marca wm"></span></span><b>Empresa</b><span class="mono">#2D2560 · Corporativo y fondos</span></div>
+        <div class="tira" style="--tono:#4A3CAE"><span class="iso"><span class="marca forky"></span></span><b>Campus</b><span class="mono">#4A3CAE · Comida sin filas</span></div>
+        <div class="tira" style="--tono:#6B5CE7"><span class="iso"><span class="marca cerebro"></span></span><b>Connect</b><span class="mono">#6B5CE7 · El sistema del colegio</span></div>
+        <div class="tira" style="--tono:#9B8EF0"><span class="iso"><i class="pendiente"></i></span><b>Health</b><span class="mono">#9B8EF0 · En camino</span></div>
+    </div>
+</template>
+<template id="antes">
+    <div class="antes"><div class="riel"><span class="mono" style="color:var(--gris)">Galería · Banco de Chile</span><b>09<span class="mono" style="color:var(--gris-2); font-weight:400"> / 09</span></b><p>La tarjeta de Tap In, en el stand</p></div><div class="fotos"><img src="tp-bc-08.webp" alt=""><img src="tp-bc-05.webp" alt=""></div></div>
+</template>
+
+<nav class="selector" aria-label="Versiones del paso">
+    <button type="button" data-ir="0" aria-pressed="false"><b>0</b><span>Actual</span></button>
+    <button type="button" data-ir="a" aria-pressed="false"><b>A</b><span>La línea sigue</span></button>
+    <button type="button" data-ir="b" aria-pressed="true"><b>B</b><span>Telón de la paleta</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>De Campus a Connect</span></button>
+</nav>
+
+<main class="notas">
+    <h2>Paso a El Rebirth</h2>
+    <div class="bloque">
+        <p>Hoy es un corte seco del claro al oscuro, y la portada queda un buen rato vacía hasta que suben las tiras. Las tres versiones hacen del paso el inicio del capítulo.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="false"><span class="mono">A · La línea sigue</span><strong>El tiempo como hilo</strong><p>Vuelve la línea del resumen: el capítulo 01 lleno y el cursor que entra al 02 (feb 2026). La noche se extiende detrás del cursor y la línea sube hasta ser el filete del título.</p></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="true"><span class="mono">B · Telón de la paleta</span><strong>El paso es la decisión</strong><p>Las cuatro tiras de la paleta suben de a una hasta cubrir la pantalla, como telón; después bajan su borde a su altura y dejan ver el título. No queda tiempo vacío y el color anticipa la decisión 04.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · De Campus a Connect</span><strong>El renacer, literal</strong><p>El isotipo de Campus aparece al centro, la noche se abre en círculo desde él (como el tap del capítulo 01) y se vuelve el cerebro de Connect, que baja a su tira.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · PASO A EL REBIRTH
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b), tramo = (p, a, b) => fijar((p - a) / (b - a));
+        const suave = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        const portada = document.getElementById('portada').content, antes = document.getElementById('antes').content;
+
+        /* --- 1. ARMAR LAS CUATRO ESCENAS --- */
+        const extra = {
+            '0': '', b: '',
+            a: `<div class="linea"><div class="tramo"><span>01 · El origen</span><i style="--f:1"></i></div><div class="tramo"><span>02 · El Rebirth</span><i></i></div><div class="tramo"><span>03 · La web</span><i></i></div><span class="punto"></span><span class="fecha mono">Feb 2026</span></div>`,
+            c: `<div class="centro"><span class="marca forky"></span><span class="marca cerebro"></span></div><div class="rotulo mono"><span data-r1>Campus · comida sin filas</span><span data-r2 style="opacity:0;color:rgba(238,237,254,0.72)">Connect · el sistema del colegio</span></div>`
+        };
+        const escenas = {};
+        ['0', 'a', 'b', 'c'].forEach(v => {
+            const s = document.createElement('section'); s.className = 'vista v' + v;
+            s.appendChild(antes.cloneNode(true));
+            s.insertAdjacentHTML('beforeend', '<div class="escena"><div class="fijo"><div class="noche"></div></div></div>');
+            const fijo = s.querySelector('.fijo'); fijo.appendChild(portada.cloneNode(true)); fijo.insertAdjacentHTML('beforeend', extra[v]);
+            raiz.appendChild(s); escenas[v] = s.querySelector('.escena');
+        });
+
+        /* --- 2. COREOGRAFÍA --- */
+        const tiras = el => [...el.querySelectorAll('.tira')];
+        const coreo = {
+            '0': (el, p) => {
+                /* Actual: la sección oscura entra con el scroll normal; la portada espera vacía y luego suben las tiras */
+                el.style.setProperty('--ti', 1);
+                tiras(el).forEach((t, i) => t.style.setProperty('--k', suave(tramo(p, 0.3 + i * 0.08, 0.55 + i * 0.08)).toFixed(3)));
+                el.style.setProperty('--de', tramo(p, 0.7, 0.82).toFixed(3));
+            },
+            a: (el, p) => {
+                const x = suave(tramo(p, 0.08, 0.5));
+                el.style.setProperty('--x', x.toFixed(4));
+                el.querySelector('.linea').classList.toggle('oscura', x > 0.5);
+                el.querySelectorAll('.tramo i')[1].style.setProperty('--f', fijar(x * 3 - 0.9).toFixed(3));
+                el.querySelector('.fecha').textContent = x < 0.3 ? 'Ene 2026' : x < 0.62 ? 'Feb 2026' : 'Mar 2026';
+                el.style.setProperty('--sube', suave(tramo(p, 0.5, 0.66)).toFixed(3));
+                el.style.setProperty('--fu', tramo(p, 0.6, 0.68).toFixed(3));
+                el.style.setProperty('--ti', tramo(p, 0.6, 0.72).toFixed(3));
+                tiras(el).forEach((t, i) => t.style.setProperty('--k', suave(tramo(p, 0.66 + i * 0.04, 0.84 + i * 0.04)).toFixed(3)));
+                el.style.setProperty('--de', tramo(p, 0.88, 0.96).toFixed(3));
+            },
+            b: (el, p) => {
+                /* Telón: suben a pantalla completa (alto 1) y luego bajan su borde a su altura (alto 0) */
+                tiras(el).forEach((t, i) => t.style.setProperty('--k', suave(tramo(p, 0.02 + i * 0.06, 0.26 + i * 0.06)).toFixed(3)));
+                el.style.setProperty('--alto', (1 - suave(tramo(p, 0.5, 0.72))).toFixed(3));
+                el.querySelector('.noche').style.opacity = p > 0.3 ? 1 : 0;
+                el.style.setProperty('--ti', tramo(p, 0.62, 0.76).toFixed(3));
+                el.style.setProperty('--et', tramo(p, 0.66, 0.78).toFixed(3));
+                el.style.setProperty('--de', tramo(p, 0.82, 0.92).toFixed(3));
+            },
+            c: (el, p) => {
+                const fijo = el.querySelector('.fijo'), R = Math.hypot(fijo.clientWidth, fijo.clientHeight) / 2;
+                const ap = tramo(p, 0.02, 0.1);
+                el.querySelector('.centro').style.opacity = ap * (1 - tramo(p, 0.62, 0.7));
+                el.querySelector('.rotulo').style.opacity = ap * (1 - tramo(p, 0.55, 0.62));
+                const r = suave(tramo(p, 0.12, 0.38));
+                el.style.setProperty('--r', (r * R * 1.05).toFixed(1) + 'px');
+                el.style.setProperty('--c1', r > 0.04 ? '#FFFFFF' : 'var(--campus)');
+                el.querySelector('[data-r1]').style.color = r > 0.04 ? 'rgba(238,237,254,0.72)' : 'var(--gris)';
+                const m = suave(tramo(p, 0.36, 0.52));
+                el.style.setProperty('--m', m.toFixed(3));
+                el.querySelector('[data-r1]').style.opacity = 1 - m; el.querySelector('[data-r2]').style.opacity = m;
+                el.style.setProperty('--ti', tramo(p, 0.6, 0.72).toFixed(3));
+                tiras(el).forEach((t, i) => t.style.setProperty('--k', suave(tramo(p, 0.62 + i * 0.04, 0.8 + i * 0.04)).toFixed(3)));
+                el.style.setProperty('--de', tramo(p, 0.86, 0.95).toFixed(3));
+            }
+        };
+        const pintar = () => {
+            const v = raiz.dataset.v, el = escenas[v], r = el.getBoundingClientRect();
+            const p = fijar(-r.top / (r.height - innerHeight));
+            el.style.setProperty('--p', p.toFixed(4)); coreo[v](el, p);
+        };
+        let pendiente = false;
+        addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } }, { passive: true });
+        addEventListener('resize', pintar);
+
+        /* --- 3. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v))); try { localStorage.setItem('rebirth-tapin', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(pintar); };
+        botones.forEach(b => b.addEventListener('click', () => { elegir(b.dataset.ir); if (b.classList.contains('op')) scrollTo({ top: 0, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('rebirth-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['0', 'a', 'b', 'c'].includes(h) ? h : guardado || 'b');
+        addEventListener('load', pintar);
+    })();
+    /* =======================================================
+       FIN JS · PASO A EL REBIRTH
+       ======================================================= */
+</script>
