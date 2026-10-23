@@ -329,10 +329,35 @@
             /* Clic en el índice: lleva el scroll al momento en que esa decisión está quieta */
             /* El primer tramo de la pista (una pantalla) es el vuelo desde la portada; el recorrido usa el resto */
             const vuelo = () => vh / (el.offsetHeight - vh);
-            items.forEach((li, i) => li.querySelector('button').addEventListener('click', () => {
-                const r = el.getBoundingClientRect(), u = i === 0 ? 0.5 : i + VIAJE + 0.3, M = vuelo();
-                window.scrollTo({ top: window.scrollY + r.top + (M + (u / U) * (1 - M)) * (r.height - vh), behavior: quieto ? 'auto' : 'smooth' });
-            }));
+            const irA = u => { const r = el.getBoundingClientRect(), M = vuelo(); window.scrollTo({ top: window.scrollY + r.top + (M + (u / U) * (1 - M)) * (r.height - vh), behavior: quieto ? 'auto' : 'smooth' }); };
+            const quieta = k => (k === 0 ? 0.5 : k + VIAJE + 0.3);
+            items.forEach((li, i) => li.querySelector('button').addEventListener('click', () => irA(quieta(i))));
+            /* Los marcadores que quedan en el sitio también llevan a su decisión */
+            pins.forEach((pn, k) => pn.addEventListener('click', () => irA(quieta(k))));
+            /* --- Recorrido suavizado: el sitio y el marco persiguen su posición con un amortiguado por cuadro, así el
+               movimiento es continuo aunque la rueda del mouse avance a saltos --- */
+            let meta = null, ahora = null, bucle = null;
+            const pintarSitio = () => {
+                let llego = true;
+                for (const c in meta) { const dd = meta[c] - ahora[c]; if (Math.abs(dd) > 0.4) llego = false; ahora[c] += dd * (quieto ? 1 : 0.16); }
+                if (llego) Object.assign(ahora, meta);
+                lienzo.style.transform = `translate3d(0, ${(-ahora.y * e).toFixed(1)}px, 0)`;
+                caja.style.setProperty('--x', (ahora.x * e).toFixed(1) + 'px'); caja.style.setProperty('--y', ((ahora.cy - ahora.y) * e).toFixed(1) + 'px');
+                caja.style.setProperty('--w', (ahora.w * e).toFixed(1) + 'px'); caja.style.setProperty('--h', (ahora.h * e).toFixed(1) + 'px');
+                caja.style.setProperty('--r', (ahora.rad * e).toFixed(1) + 'px');
+                caja.classList.toggle('abajo', (ahora.cy - ahora.y) * e < 18);
+                bucle = llego ? null : requestAnimationFrame(pintarSitio);
+            };
+            const llevar = (obj, directo) => { meta = obj; if (!ahora || directo) ahora = { ...obj }; if (!bucle) bucle = requestAnimationFrame(pintarSitio); };
+            /* --- Imán: si el scroll se detiene a mitad de un viaje, termina de llegar a la parada en la dirección en que
+               se venía bajando o subiendo. En las paradas no hace nada --- */
+            let espera = null, antesPista = 0, dir = 1;
+            const imantar = pista => {
+                const M = vuelo(); if (pista <= M || pista >= 1) return;
+                const u = ((pista - M) / (1 - M)) * U, i = Math.floor(u), t = u - i;
+                if (i < 1 || i >= paradas.length || t >= VIAJE) return;
+                irA(dir > 0 ? i + VIAJE + 0.05 : quieta(i - 1));
+            };
             /* --- Vuelo: el navegador parte donde está la ventana de la portada y viaja a su lugar --- */
             const nav = el.querySelector('.tp-sitio-nav'), fijo = el.querySelector('.tp-fijo'), cap3 = document.getElementById('cap-3');
             const ventana3 = cap3 && cap3.querySelector('.tp-c3-ventana');
@@ -372,10 +397,13 @@
                 const M = vuelo();
                 if (pista < M && ventana3) {
                     volar(fijar(pista / M)); volaba = true;
-                    if (actual !== -2) { actual = -2; el.dataset.parada = -1; caja.classList.remove('on'); items.forEach(li => li.classList.remove('actual', 'ya')); pins.forEach(x => x.classList.remove('ya')); segs.forEach(x => x.classList.remove('ya', 'on')); lienzo.style.transform = 'translate3d(0, 0, 0)'; }
+                    if (actual !== -2) { actual = -2; el.dataset.parada = -1; caja.classList.remove('on'); items.forEach(li => li.classList.remove('actual', 'ya')); pins.forEach(x => x.classList.remove('ya')); segs.forEach(x => x.classList.remove('ya', 'on')); lienzo.style.transform = 'translate3d(0, 0, 0)'; ahora = null; }
                     return;
                 }
+                const recien = volaba;
                 if (volaba) { aterrizar(); medir(); volaba = false; }
+                dir = pista >= antesPista ? 1 : -1; antesPista = pista;
+                clearTimeout(espera); if (!quieto) espera = setTimeout(() => imantar(pista), 220);
                 const p = fijar((pista - M) / (1 - M));
                 const u = p * U, i = Math.floor(u), t = u - i;
                 let y, act = -1;
@@ -383,7 +411,6 @@
                 if (i >= paradas.length) y = paradas[paradas.length - 1].top;
                 else if (i === 0 || t >= VIAJE) { y = paradas[i].top; act = i; }
                 else y = paradas[i - 1].top + (paradas[i].top - paradas[i - 1].top) * curva(t / VIAJE);
-                lienzo.style.transform = `translate3d(0, ${(-y * e).toFixed(1)}px, 0)`;
                 el.dataset.parada = act;
                 /* El marco nunca desaparece: en el viaje pasa de un elemento al siguiente; la nota cambia a mitad de camino */
                 const ult = paradas.length - 1, m = i >= 1 && i <= ult && t < VIAJE ? curva(t / VIAJE) : 1;
@@ -398,10 +425,7 @@
                     cajaTxt.textContent = String(n + 6).padStart(2, '0'); contador.textContent = `${String(n + 6).padStart(2, '0')} / 10`;
                 }
                 caja.classList.add('on');
-                caja.style.setProperty('--x', (d.x * e).toFixed(1) + 'px'); caja.style.setProperty('--y', ((d.y - y) * e).toFixed(1) + 'px');
-                caja.style.setProperty('--w', (d.w * e).toFixed(1) + 'px'); caja.style.setProperty('--h', (d.h * e).toFixed(1) + 'px');
-                caja.style.setProperty('--r', (d.rad * e).toFixed(1) + 'px');
-                caja.classList.toggle('abajo', (d.y - y) * e < 18);
+                llevar({ y, x: d.x, cy: d.y, w: d.w, h: d.h, rad: d.rad }, recien);
             };
         }
     };

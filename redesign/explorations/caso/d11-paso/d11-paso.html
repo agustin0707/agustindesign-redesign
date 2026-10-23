@@ -1,0 +1,245 @@
+<title>Paso a la decisión 11</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@400;500;600&display=swap">
+<style>
+    /* Cinco pasos de la decisión 10 (el formulario, en el navegador con las notas) a la decisión 11 (los cuatro mockups
+       en vivo). Escenas con scroll sobre una réplica a 1440 × 900: el navegador es real (la captura del sitio) y las
+       notas, el texto y las tarjetas de la 11 son capturas del caso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --noche: #100D20; --gris: #57556B;
+        --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    .mono { font-family: var(--f-mono); font-weight: 400; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 40px; color: var(--gris); border-bottom: 1px solid rgba(45, 37, 96, 0.12); }
+    .intro span { grid-column: 1 / span 3; font-size: 12px; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .vista-v { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc, [data-v="d"] .vd, [data-v="e"] .ve { display: block; }
+
+    /* =======================================================
+       ESCENARIO Y PIEZAS
+       ======================================================= */
+    .esc { position: relative; height: 420svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; display: grid; place-items: center; overflow: hidden; background: var(--papel); }
+    .stage { position: relative; width: min(100vw, 160svh); aspect-ratio: 1440 / 900; container-type: inline-size; overflow: hidden; background: radial-gradient(60% 50% at 30% 30%, rgba(155, 142, 240, 0.22), transparent 70%), var(--papel); }
+    .capa-s { position: absolute; inset: 0; background: radial-gradient(60% 50% at 30% 30%, rgba(155, 142, 240, 0.22), transparent 70%), var(--papel); }
+    .pieza { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: calc(var(--w) * 1%); }
+    .pieza > img { display: block; width: 100%; }
+    .nav { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: calc(var(--w) * 1%); height: calc(var(--h) * 1%); display: flex; flex-direction: column; overflow: hidden; border-radius: 1.1cqw; background: #FFFFFF; box-shadow: 0 2.8cqw 6.2cqw -2.8cqw rgba(45, 37, 96, 0.45), 0 0 0 1px rgba(45, 37, 96, 0.08); transform-origin: var(--ox, 50%) var(--oy, 50%); }
+    .barra { flex: none; display: flex; align-items: center; gap: 0.55cqw; height: 2.8cqw; padding: 0 1.25cqw; background: #F2F1F8; border-bottom: 1px solid rgba(45, 37, 96, 0.08); }
+    .barra > i { width: 0.83cqw; height: 0.83cqw; border-radius: 50%; background: #D9D6EA; } .barra > span { margin: 0 auto; padding: 0.35cqw 3.9cqw; border-radius: 0.55cqw; background: #FFFFFF; font: max(9px, 0.9cqw) var(--f-mono); color: #5E5C72; }
+    .pant { position: relative; flex: 1; overflow: hidden; }
+    .capa { position: absolute; left: 0; top: 0; width: 100%; will-change: transform; } .capa > img { display: block; width: 100%; }
+    .caja { position: absolute; left: var(--cx); top: var(--cy); width: var(--cw); height: var(--ch); border: 2px solid var(--connect); border-radius: var(--cr, 12px); box-shadow: 0 0 0 5px rgba(107, 92, 231, 0.14); pointer-events: none; }
+    .caja span { position: absolute; left: -14px; top: -14px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--connect); color: #FFFFFF; font: 400 11px var(--f-mono); box-shadow: 0 0 0 3px #FFFFFF; }
+    .nota11 { position: absolute; left: 66.1%; width: 28.9%; top: 73%; display: grid; grid-template-columns: 1.7cqw 1fr; gap: 0.85cqw; align-items: center; padding: 0.7cqw 1cqw; border-radius: 1cqw; background: rgba(255, 255, 255, 0.72); box-shadow: 0 0 0 1px rgba(45, 37, 96, 0.07); opacity: var(--n11, 0); translate: 0 calc((1 - var(--n11, 0)) * 1.5cqw); }
+    .nota11 i { display: grid; place-items: center; width: 1.7cqw; height: 1.7cqw; border-radius: 50%; background: var(--connect); color: #FFFFFF; font: normal 400 max(8px, 0.76cqw) var(--f-mono); }
+    .nota11 b { font: 600 max(11px, 1.25cqw) / 1.2 var(--f-marca); letter-spacing: -0.02em; } .nota11 small { display: block; margin-top: 0.3cqw; color: #8A889E; font: 400 max(8px, 0.76cqw) var(--f-mono); }
+    .num-vuela { position: absolute; font: 600 9cqw / 0.78 var(--f-marca); letter-spacing: -0.06em; color: #C8C0F8; height: 0.78em; overflow: hidden; }
+    .num-vuela > span { display: block; transition: none; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 13px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; } .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; font-size: 12px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); font-size: 12px; } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); } .grilla > * { grid-column: 1 !important; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Tap In · Decisión 10 → 11</span><p>Cinco pasos de la última nota del sitio (el formulario) a los cuatro mockups en vivo de la decisión 11. La escena es la vista de escritorio a 1440 × 900; en móvil se ve reducida. Baja por cada una; cambia con el selector.</p></div>
+    <section class="vista-v va esc" data-esc="a"></section>
+    <section class="vista-v vb esc" data-esc="b"></section>
+    <section class="vista-v vc esc" data-esc="c"></section>
+    <section class="vista-v vd esc" data-esc="d"></section>
+    <section class="vista-v ve esc" data-esc="e"></section>
+</div>
+
+<nav class="selector" aria-label="Variantes">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>El mockup sale</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Se reparte</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Hoja</span></button>
+    <button type="button" data-ir="d" aria-pressed="false"><b>D</b><span>El contador</span></button>
+    <button type="button" data-ir="e" aria-pressed="false"><b>E</b><span>Zoom al hero</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit del paso</h2>
+    <div class="bloque">
+        <p>El navegador se va con el formulario y la decisión 11 empieza de cero, con otro sistema.</p>
+        <ul class="lista">
+            <li><span class="mono">Corte</span><span>El navegador sube completo y queda una franja vacía de 176 px antes de la decisión 11</span><span>Un paso con continuidad, sin pantalla vacía</span></li>
+            <li><span class="mono">Sistema</span><span>Las decisiones 06 a 10 son notas junto al sitio; la 11 vuelve al número grande y al texto suelto</span><span>Que el paso explique el cambio: la 11 sigue el relato de las notas o sale del navegador</span></li>
+            <li><span class="mono">Relación</span><span>Los mockups de la 11 están dentro del sitio (el del comedor, en "Elige por dónde empezar"; otro, flotando en el hero), pero no se ve esa relación</span><span>Mostrar de dónde salen: el mockup sale del sitio</span></li>
+            <li><span class="mono">Entrada</span><span>Las cuatro tarjetas aparecen con un fundido hacia arriba, todas casi juntas</span><span>Una primero (el comedor, la destacada) y las demás en cascada</span></li>
+        </ul>
+    </div>
+    <h2>Pasos</h2>
+    <div class="bloque">
+        <p>Cinco maneras de pasar de la decisión 10 a la 11.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · El mockup sale del sitio</span><strong>De dónde viene la 11</strong><p>El navegador vuelve a "Elige por dónde empezar" y el marco toma el mockup del comedor; aparece la nota 11. Luego el mockup sale del sitio y aterriza como la tarjeta destacada; el navegador se retira y entran el texto y las otras tres.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · La ventana se reparte</span><strong>Uno se vuelve cuatro</strong><p>El navegador se divide en cuatro ventanas que viajan a las posiciones de las tarjetas y se convierten en ellas.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Hoja</span><strong>Se levanta</strong><p>La sección del sitio sube como una hoja y deja ver la decisión 11 debajo, que se acerca.</p></button>
+            <button type="button" class="op" data-ir="d" aria-pressed="false"><span class="mono">D · El contador sigue</span><strong>10 pasa a 11</strong><p>El contador de las notas gira de 10 a 11 y el número viaja, creciendo, hasta ser el número grande de la decisión 11; el navegador sale por la izquierda y las tarjetas entran en cascada.</p></button>
+            <button type="button" class="op" data-ir="e" aria-pressed="false"><span class="mono">E · Zoom al hero</span><strong>Un mockup flotando</strong><p>El navegador sube al hero y el marco toma la tarjeta flotante del comedor; la cámara se acerca hasta que esa tarjeta llena la vista y aparece la decisión 11.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · PASO A LA DECISIÓN 11
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+        const mez = (a, b, t) => a + (b - a) * t;
+        const ANCHO = 1440, ALTO = 5140;
+        /* Rectángulos en % del escenario (1440 × 900) */
+        const NAV = [5, 8.4, 59.4, 87.1], NOTAS = [66.1, 31, 28.9], DEC = [5, 22, 26.24];
+        const CARDS = [[35.56, 11.95, 29.24, 39.78], [65.76, 11.95, 29.24, 39.78], [35.56, 53.29, 29.24, 39.78], [65.76, 53.29, 29.24, 39.78]];
+        /* Marcos en el sitio (px a 1440) */
+        const FORM = { x: 737, y: 4460, w: 555, h: 532, r: 26 }, COMEDOR = { x: 840, y: 2210, w: 445, h: 385, r: 20 }, HERO = { x: 90, y: 144, w: 266, h: 210, r: 16 };
+
+        const navHtml = (n = '10') => `<div class="nav"><div class="barra"><i></i><i></i><i></i><span>tapin.cl</span></div><div class="pant"><div class="capa"><img src="sitio.webp" alt=""></div><div class="caja"><span>${n}</span></div></div></div>`;
+        const piezas = `<div class="pieza dec" style="--x:${DEC[0]}; --y:${DEC[1]}; --w:${DEC[2]}"><img src="dec11.webp" alt=""></div>` + CARDS.map((c, i) => `<div class="pieza card" data-c="${i}" style="--x:${c[0]}; --y:${c[1]}; --w:${c[2]}"><img src="card${i}.webp" alt=""></div>`).join('');
+        const sitio = `${navHtml()}<div class="pieza notas-img" style="--x:${NOTAS[0]}; --y:${NOTAS[1]}; --w:${NOTAS[2]}"><img src="notas.webp" alt=""></div><div class="nota11"><i>11</i><div><b>Un mockup con empatía</b><small>En el sitio · El mockup del comedor</small></div></div>`;
+        const html = {
+            a: `<div class="stage">${piezas}${sitio}</div>`,
+            b: `<div class="stage">${piezas}${sitio}${[0, 1, 2, 3].map(i => `<div class="clon" data-k="${i}">${navHtml()}</div>`).join('')}</div>`,
+            c: `<div class="stage"><div class="capa-s d11">${piezas}</div><div class="capa-s sit">${sitio}</div></div>`,
+            d: `<div class="stage">${piezas}${sitio}<div class="num-vuela"><span>10</span><span>11</span></div></div>`,
+            e: `<div class="stage">${piezas}${sitio}</div>`
+        };
+        document.querySelectorAll('.esc').forEach(s => { s.innerHTML = `<div class="fijo">${html[s.dataset.esc]}</div>`; });
+
+        /* --- 1. AYUDAS: NAVEGADOR, MARCO Y PIEZAS --- */
+        const ponerRect = (el, r) => { el.style.setProperty('--x', r[0]); el.style.setProperty('--y', r[1]); el.style.setProperty('--w', r[2]); if (r[3] !== undefined) el.style.setProperty('--h', r[3]); };
+        const verSitio = (nav, y, m) => {
+            const pant = nav.querySelector('.pant'), e = pant.clientWidth / ANCHO;
+            nav.querySelector('.capa').style.transform = `translate3d(0, ${(-y * e).toFixed(1)}px, 0)`;
+            const c = nav.querySelector('.caja'); c.style.setProperty('--cx', m.x * e + 'px'); c.style.setProperty('--cy', (m.y - y) * e + 'px'); c.style.setProperty('--cw', m.w * e + 'px'); c.style.setProperty('--ch', m.h * e + 'px'); c.style.setProperty('--cr', m.r * e + 'px');
+            return e;
+        };
+        const entre = (A, B, t) => ({ x: mez(A.x, B.x, t), y: mez(A.y, B.y, t), w: mez(A.w, B.w, t), h: mez(A.h, B.h, t), r: mez(A.r, B.r, t) });
+        const vis = nav => nav.querySelector('.pant').clientHeight / (nav.querySelector('.pant').clientWidth / ANCHO);
+        const topDe = (nav, m) => fijar(m.y + m.h / 2 - vis(nav) / 2, 0, ALTO - vis(nav));
+        /* Rectángulo del marco en % del escenario */
+        const marcoEnStage = (st, nav, m, y) => { const S = st.getBoundingClientRect(), P = nav.querySelector('.pant').getBoundingClientRect(), e = P.width / ANCHO; return [((P.left - S.left) + m.x * e) / S.width * 100, ((P.top - S.top) + (m.y - y) * e) / S.height * 100, (m.w * e) / S.width * 100]; };
+        const op = (el, o, tx = 0, ty = 0, s = 1) => { el.style.opacity = o; el.style.transform = `translate(${tx}%, ${ty}%) scale(${s})`; };
+
+        /* --- 2. LOS CINCO PASOS --- */
+        const escenas = {
+            a: (el, p) => {
+                const st = el.querySelector('.stage'), nav = st.querySelector('.nav'), notas = st.querySelector('.notas-img'), n11 = st.querySelector('.nota11');
+                ponerRect(nav, NAV);
+                const v = curva(fijar(p / 0.28)), y = mez(topDe(nav, FORM), topDe(nav, COMEDOR), v), m = entre(FORM, COMEDOR, v);
+                verSitio(nav, y, m); nav.querySelector('.caja span').textContent = v > 0.5 ? '11' : '10';
+                st.style.setProperty('--n11', fijar((p - 0.2) / 0.1)); n11.style.setProperty('--n11', fijar((p - 0.2) / 0.1));
+                /* El mockup sale del marco y aterriza como tarjeta destacada */
+                const s = curva(fijar((p - 0.42) / 0.3)), desde = marcoEnStage(st, nav, COMEDOR, topDe(nav, COMEDOR));
+                const c0 = st.querySelector('[data-c="0"]'), rr = [0, 1, 2].map(k => mez(desde[k], CARDS[0][k], s));
+                ponerRect(c0, rr); c0.style.opacity = fijar((p - 0.4) / 0.04); c0.style.zIndex = 5;
+                const sale = curva(fijar((p - 0.45) / 0.28));
+                op(nav, 1 - sale, -sale * 12); op(notas, 1 - sale * 1.4, sale * 10); op(n11, 1 - sale * 1.4, sale * 10);
+                op(st.querySelector('.dec'), fijar((p - 0.62) / 0.14), 0, (1 - fijar((p - 0.62) / 0.14)) * 6);
+                [1, 2, 3].forEach(k => { const t = fijar((p - 0.66 - k * 0.05) / 0.14); op(st.querySelector(`[data-c="${k}"]`), t, 0, (1 - curva(t)) * 10); });
+            },
+            b: (el, p) => {
+                const st = el.querySelector('.stage'), nav = st.querySelector('.nav'), notas = st.querySelector('.notas-img'), n11 = st.querySelector('.nota11');
+                ponerRect(nav, NAV); verSitio(nav, topDe(nav, FORM), FORM); n11.style.setProperty('--n11', 0);
+                const m = curva(fijar((p - 0.12) / 0.5));
+                nav.style.opacity = p > 0.12 ? 0 : 1; op(notas, 1 - fijar(p / 0.2), fijar(p / 0.2) * 8);
+                st.querySelectorAll('.clon').forEach(cl => {
+                    const k = +cl.dataset.k, cn = cl.querySelector('.nav'), C = CARDS[k], r = [0, 1, 2, 3].map(i => mez(NAV[i], C[i], m));
+                    ponerRect(cn, r); verSitio(cn, mez(topDe(cn, FORM), topDe(cn, COMEDOR), m) * (1 - k * 0.12), FORM); cn.querySelector('.caja').style.opacity = 1 - m;
+                    cn.style.opacity = p < 0.12 ? 0 : 1 - fijar((p - 0.62) / 0.12);
+                });
+                CARDS.forEach((c, k) => op(st.querySelector(`[data-c="${k}"]`), fijar((p - 0.6) / 0.12)));
+                op(st.querySelector('.dec'), fijar((p - 0.5) / 0.15), 0, (1 - fijar((p - 0.5) / 0.15)) * 6);
+            },
+            c: (el, p) => {
+                const st = el.querySelector('.stage'), sit = st.querySelector('.sit'), d11 = st.querySelector('.d11'), nav = sit.querySelector('.nav');
+                ponerRect(nav, NAV); verSitio(nav, topDe(nav, FORM), FORM); sit.querySelector('.nota11').style.setProperty('--n11', 0);
+                const m = curva(fijar(p / 0.6));
+                sit.style.transform = `translateY(${-m * 100}%)`; sit.style.borderRadius = `0 0 ${m > 0 ? 3 : 0}cqw ${m > 0 ? 3 : 0}cqw`; sit.style.boxShadow = '0 3cqw 6cqw rgba(45, 37, 96, 0.35)';
+                d11.style.transform = `scale(${0.94 + m * 0.06})`; d11.style.filter = `brightness(${0.8 + m * 0.2})`;
+            },
+            d: (el, p) => {
+                const st = el.querySelector('.stage'), nav = st.querySelector('.nav'), notas = st.querySelector('.notas-img'), nv = st.querySelector('.num-vuela');
+                ponerRect(nav, NAV); verSitio(nav, topDe(nav, FORM), FORM); st.querySelector('.nota11').style.setProperty('--n11', 0);
+                /* El número nace en el contador de las notas, gira de 10 a 11 y viaja al número grande de la 11 */
+                const g = curva(fijar((p - 0.08) / 0.16)), f = curva(fijar((p - 0.28) / 0.36));
+                const x0 = 90.6, y0 = 30.2, s0 = 0.13, x1 = DEC[0] - 0.2, y1 = DEC[1] - 0.6, s1 = 1;
+                nv.style.left = mez(x0, x1, f) + '%'; nv.style.top = mez(y0, y1, f) + '%'; nv.style.transformOrigin = '0 0'; nv.style.transform = `scale(${mez(s0, s1, f)})`;
+                nv.style.opacity = fijar(p / 0.06) * (1 - fijar((p - 0.66) / 0.06)); nv.querySelectorAll('span').forEach(s => s.style.transform = `translateY(${-g * 100}%)`);
+                const sale = curva(fijar((p - 0.3) / 0.3)); op(nav, 1 - sale, -sale * 20); op(notas, 1 - fijar((p - 0.04) / 0.2));
+                op(st.querySelector('.dec'), fijar((p - 0.64) / 0.08));
+                CARDS.forEach((c, k) => { const t = fijar((p - 0.45 - k * 0.06) / 0.16); op(st.querySelector(`[data-c="${k}"]`), t, (1 - curva(t)) * 30); });
+            },
+            e: (el, p) => {
+                const st = el.querySelector('.stage'), nav = st.querySelector('.nav'), notas = st.querySelector('.notas-img');
+                ponerRect(nav, NAV); st.querySelector('.nota11').style.setProperty('--n11', 0);
+                const v = curva(fijar(p / 0.28)), y = mez(topDe(nav, FORM), 0, v), m = entre(FORM, HERO, v);
+                verSitio(nav, y, m); nav.querySelector('.caja span').textContent = v > 0.5 ? '11' : '10';
+                op(notas, 1 - fijar((p - 0.1) / 0.2));
+                /* La cámara se acerca a la tarjeta del hero hasta que ocupa el lugar de la destacada */
+                const z = curva(fijar((p - 0.34) / 0.34)), marco = marcoEnStage(st, nav, HERO, 0);
+                const esc = mez(1, CARDS[0][2] / marco[2] * 1.15, z);
+                const cx = marco[0] + marco[2] / 2, cy = marco[1] + marco[2] * (HERO.h / HERO.w) * 1.6 / 2;
+                nav.style.setProperty('--ox', ((cx - NAV[0]) / NAV[2]) * 100 + '%'); nav.style.setProperty('--oy', ((cy - NAV[1]) / NAV[3]) * 100 + '%');
+                const tx = (CARDS[0][0] + CARDS[0][2] / 2 - cx) * z, ty = (CARDS[0][1] + CARDS[0][3] * 0.38 - cy) * z;
+                nav.style.transform = `translate(${tx / NAV[2] * 100}%, ${ty / NAV[3] * 100}%) scale(${esc})`; nav.style.opacity = 1 - fijar((p - 0.62) / 0.08);
+                op(st.querySelector('[data-c="0"]'), fijar((p - 0.6) / 0.08));
+                op(st.querySelector('.dec'), fijar((p - 0.66) / 0.12), 0, (1 - fijar((p - 0.66) / 0.12)) * 6);
+                [1, 2, 3].forEach(k => { const t = fijar((p - 0.68 - k * 0.05) / 0.14); op(st.querySelector(`[data-c="${k}"]`), t, 0, (1 - curva(t)) * 10); });
+            }
+        };
+        /* Estado inicial: la 11 oculta salvo en la hoja (C), que está debajo */
+        document.querySelectorAll('.esc:not(.vc) .pieza.dec, .esc:not(.vc) .pieza.card').forEach(x => { x.style.opacity = 0; });
+        const tick = () => document.querySelectorAll('.esc').forEach(el => {
+            if (!el.offsetParent) return;
+            const r = el.getBoundingClientRect(), pista = el.offsetHeight - innerHeight;
+            escenas[el.dataset.esc](el, fijar(-r.top / pista));
+        });
+        let pedido = false;
+        addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; tick(); }); } }, { passive: true });
+        addEventListener('resize', tick);
+
+        /* --- 3. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.ir === v))); try { localStorage.setItem('d11-paso', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(tick); };
+        botones.forEach(x => x.addEventListener('click', () => { elegir(x.dataset.ir); if (x.classList.contains('op')) scrollTo({ top: document.querySelector('.esc.v' + x.dataset.ir).offsetTop, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('d11-paso'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(h && 'abcde'.includes(h) ? h : guardado || 'a');
+        addEventListener('load', tick);
+    })();
+    /* =======================================================
+       FIN JS · PASO A LA DECISIÓN 11
+       ======================================================= */
+</script>
