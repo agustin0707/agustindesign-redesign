@@ -309,7 +309,7 @@
         /* El sitio: baja por tapin.cl y se detiene en cada decisión; el foco se dibuja sobre la parte que
            explica. Las cajas están en píxeles del sitio a 1440 de ancho */
         sitio: el => {
-            const ANCHO = 1440, ALTO = 4600, VIAJE = 0.4, FINAL = 0.6;
+            const ANCHO = 1440, ALTO = 5140, VIAJE = 0.4, FINAL = 0.6;
             const pant = el.querySelector('.tp-sitio-pantalla'), lienzo = el.querySelector('.tp-sitio-lienzo');
             const caja = el.querySelector('.tp-sitio-caja'), cajaTxt = caja.querySelector('span');
             const items = [...el.querySelectorAll('[data-parada]')];
@@ -321,8 +321,8 @@
             const medir = () => {
                 e = pant.clientWidth / ANCHO; vis = pant.clientHeight / e;
                 pant.style.setProperty('--e', e.toFixed(4));
-                /* Cada parada deja su caja en el primer cuarto de la pantalla */
-                paradas.forEach(d => { d.top = fijar(d.y - vis * 0.22, 0, ALTO - vis); });
+                /* Cada parada deja su marco centrado en la pantalla del navegador */
+                paradas.forEach(d => { d.top = fijar(d.y + d.h / 2 - vis / 2, 0, ALTO - vis); });
             };
             medir();
             window.addEventListener('resize', medir);
@@ -379,7 +379,8 @@
                 const p = fijar((pista - M) / (1 - M));
                 const u = p * U, i = Math.floor(u), t = u - i;
                 let y, act = -1;
-                if (i >= paradas.length) y = paradas[paradas.length - 1].top + (ALTO - vis - paradas[paradas.length - 1].top) * curva(fijar(t / FINAL));
+                /* Después de la última decisión el sitio queda quieto: no hay más que recorrer */
+                if (i >= paradas.length) y = paradas[paradas.length - 1].top;
                 else if (i === 0 || t >= VIAJE) { y = paradas[i].top; act = i; }
                 else y = paradas[i - 1].top + (paradas[i].top - paradas[i - 1].top) * curva(t / VIAJE);
                 lienzo.style.transform = `translate3d(0, ${(-y * e).toFixed(1)}px, 0)`;
