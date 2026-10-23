@@ -1072,10 +1072,14 @@
    compensa su desplazamiento) y se acerca con un velo que se disuelve */
 .tp-vivo { position: relative; z-index: 1; margin-top: -200svh; }
 .tp-vivo::before { content: ''; position: absolute; inset: 0; z-index: 2; background: var(--tp-tinta); opacity: var(--velo, 0); pointer-events: none; }
-.tp-vivo::after { content: ''; display: block; height: 100svh; }
+.tp-vivo::after { content: ''; display: block; height: 110svh; }
 /* Quieta con sticky (sin compensar el scroll por código, que temblaba): se fija apenas la sección llega arriba y el
    espacio extra de abajo la sostiene una pantalla, lo que dura la hoja */
-.tp-vivo > .tp-grilla { position: sticky; top: clamp(96px, 11vw, 176px); transform-origin: 50% 0; }
+.tp-v11-marco > .tp-grilla { position: sticky; top: clamp(96px, 11vw, 176px); transform-origin: 50% 0; }
+.tp-v11-marco::after { content: ''; display: block; height: 100svh; }
+/* Segundo tramo quieto, para el barrido: el marco se fija con la 11 alineada abajo (o arriba, si cabe). El JS calcula
+   --t11 con el alto real de la grilla; mientras, el muro la cubre en diagonal */
+.tp-vivo > .tp-v11-marco { position: sticky; top: var(--t11, -100svh); }
 .tp-vivo { --ok: #2FB37A; --error: #E5484D; }
 .tp-vivo .tp-grilla { align-items: start; row-gap: clamp(32px, 3vw, 48px); }
 
@@ -1135,8 +1139,12 @@
 /* Columnas inclinadas de teléfonos, cada uno con otra parte del sitio en móvil; con el scroll suben y bajan a
    distinta velocidad. Al pasar el cursor (o tocar) un teléfono, se adelanta, los demás se apagan y su pantalla
    recorre el sitio. El título queda a la izquierda sobre un velo */
-.tp-movil { height: 260svh; }
-.tp-movil .tp-fijo { display: flex; align-items: center; }
+.tp-movil { --barre: 0; height: 360svh; margin-top: calc(-200svh - clamp(96px, 11vw, 176px)); z-index: 2; background: transparent; pointer-events: none; }
+.tp-movil.tp-grano::before { display: none; }
+/* Barrido: el panel queda fijo y un borde inclinado 12° (el ángulo del muro) lo destapa de abajo hacia arriba sobre la
+   11 quieta. --barre va de 0 a 1 en la primera pantalla de la pista; 21.26vw es el desnivel del borde (tan 12°) */
+.tp-movil .tp-fijo { display: flex; align-items: center; isolation: isolate; pointer-events: auto; background: radial-gradient(120% 90% at 80% 0%, var(--tp-connect), var(--tp-campus) 45%, var(--tp-empresa)); clip-path: polygon(0 calc(100% - (100% + 21.26vw) * var(--barre) + 21.26vw), 100% calc(100% - (100% + 21.26vw) * var(--barre)), 100% 100%, 0 100%); }
+.tp-movil .tp-fijo::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: var(--tp-grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; }
 .tp-muro { position: absolute; inset: 0; -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent); }
 .tp-muro-giro { position: absolute; inset: -30% -6% -30% 18%; display: flex; justify-content: center; gap: clamp(20px, 2.6vw, 44px); rotate: -12deg; }
 /* Cada columna va de --a a --b (en % de su alto) mientras la sección cruza la pantalla: --v lo publica el parallax */
@@ -1144,7 +1152,7 @@
 
 /* --- 1. TELÉFONO --- */
 /* Marco de titanio, bisel fino e isla; la pantalla muestra la captura del sitio en móvil */
-.tp-tel { --w: min(12.5vw, 24svh); position: relative; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 2px 3px rgba(14, 11, 28, 0.35), 0 30px 50px -20px rgba(14, 11, 28, 0.6), 0 70px 120px -40px rgba(14, 11, 28, 0.8); flex: none; transition: scale 450ms var(--tp-curva), opacity 300ms var(--ease), filter 300ms var(--ease); cursor: pointer; }
+.tp-tel { --w: min(14.5vw, 27svh); position: relative; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 2px 3px rgba(14, 11, 28, 0.35), 0 30px 50px -20px rgba(14, 11, 28, 0.6), 0 70px 120px -40px rgba(14, 11, 28, 0.8); flex: none; transition: scale 450ms var(--tp-curva), opacity 300ms var(--ease), filter 300ms var(--ease); cursor: pointer; }
 .tp-tel-pant { position: relative; width: 100%; height: 100%; overflow: hidden; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); background: #F7F6FD; }
 .tp-tel-pant::before { content: ''; position: absolute; left: 50%; top: calc(var(--w) * 0.02); z-index: 2; width: 30%; height: calc(var(--w) * 0.085); margin-left: -15%; border-radius: 99px; background: #050408; }
 .tp-tel-pant::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(125deg, rgba(255, 255, 255, 0.16), transparent 38%); }
@@ -1322,7 +1330,7 @@
     .tp-v11-fila { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(var(--margen) * -1); padding: 4px var(--margen) 24px; scroll-padding: 0 var(--margen); scrollbar-width: none; }
     .tp-v11-fila::-webkit-scrollbar { display: none; }
     .tp-v11-mini { flex: 0 0 74%; scroll-snap-align: start; }
-    .tp-movil { height: 220svh; }
+    .tp-movil { height: 330svh; }
     .tp-movil .tp-fijo { align-items: flex-end; }
     .tp-muro-giro { inset: -24% -30% -24% -30%; gap: 16px; }
     .tp-muro-col { gap: 16px; }

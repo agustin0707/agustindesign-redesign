@@ -177,6 +177,8 @@
         },
         /* Capítulo 03: la portada entra sobre el final del manual (que sube y se apaga), la dirección se escribe con el
            scroll, la pestaña toma el nombre del sitio y la página se dibuja adentro de la ventana */
+        /* Muro: el barrido destapa el panel en la primera pantalla de su pista */
+        muro: el => p => el.style.setProperty('--barre', fijar(p * (el.offsetHeight - vh) / vh).toFixed(4)),
         url: el => {
             const caja = el.querySelector('[data-url]'), txt = caja.dataset.url, man = document.querySelector('.tp-man'), tab = el.querySelector('[data-c3-tab]');
             caja.innerHTML = [...txt].map(c => `<span>${c}</span>`).join('');
@@ -392,7 +394,7 @@
             };
             /* --- Hoja: en la última pantalla la sección sube y deja ver la decisión 11, que espera quieta debajo --- */
             const vivo = el.nextElementSibling && el.nextElementSibling.classList.contains('tp-vivo') ? el.nextElementSibling : null;
-            const vivoIn = vivo && vivo.querySelector(':scope > .tp-grilla');
+            const vivoIn = vivo && vivo.querySelector('.tp-v11-marco > .tp-grilla');
             const hoja = () => {
                 if (!vivo) return;
                 const T = vivo.getBoundingClientRect().top, m = fijar(-T / vh);
@@ -492,7 +494,10 @@
     const barra = () => {
         const y = window.scrollY, dy = y - ultimoY;
         ultimoY = y;
-        const m = modulos.find(el => { const r = el.getBoundingClientRect(); return r.top <= 32 && r.bottom > 32; });
+        let m = modulos.find(el => { const r = el.getBoundingClientRect(); return r.top <= 32 && r.bottom > 32; });
+        /* El muro tapa a la 11 recién cuando el barrido terminó */
+        const muroB = modulos.find(el => el.matches('.tp-movil'));
+        if (muroB && parseFloat(muroB.style.getPropertyValue('--barre')) > 0.96 && muroB.getBoundingClientRect().top <= 32) m = muroB;
         const hero = escenas[0];
         const resumen = escenas.find(x => x.el.dataset.escena === 'resumen');
         nav.classList.toggle('sobre-claro', !!m && ((m.classList.contains('tp-claro') && !(m === resumen.el && resumen.p > 0.86)) || (m === hero.el && hero.p > 0.62) || (m.id === 'cap-2' && parseFloat(m.style.getPropertyValue('--p4')) > 0.3)));
@@ -722,6 +727,14 @@
     });
 
     /* --- 12. DECISIÓN 11: EL COMEDOR, EN VIVO --- */
+    /* El marco de la 11 se fija por segunda vez para el barrido: alineada abajo si no cabe, en su sitio si cabe */
+    const marco11 = document.querySelector('[data-v11-marco]');
+    if (marco11) {
+        const g = marco11.querySelector('.tp-grilla');
+        const fijarMarco = () => { const arriba = parseFloat(getComputedStyle(g).top) || 0, h = window.innerHeight; marco11.style.setProperty('--t11', `${Math.round(Math.min(arriba, h * 0.94 - g.offsetHeight) - h)}px`); };
+        fijarMarco(); window.addEventListener('resize', fijarMarco);
+        if ('ResizeObserver' in window) new ResizeObserver(fijarMarco).observe(g);
+    }
     /* Los pasos del flujo siguen el reloj real del mockup del comedor (18,3 s por vuelta): pago hasta los 4 s,
        validación hasta los 10,9 y aviso de saldo hasta los 17,6; después el mockup se reinicia */
     const v11 = document.querySelector('[data-v11-mk]');
@@ -771,7 +784,7 @@
     const muro = document.querySelector('[data-muro]');
     if (muro) {
         const M_ANCHO = 390, M_ALTO = 6636, POR_COL = 7;
-        const tramos = [[4, -40], [-38, 0], [0, -42], [-36, -2]].slice(0, window.innerWidth >= 1100 ? 4 : 3);
+        const tramos = [[4, -40], [-38, 0], [0, -42]];
         muro.innerHTML = `<div class="tp-muro-giro">${tramos.map(([a, b], k) => `<div class="tp-muro-col" style="--a:${a}%;--b:${b}%">${Array.from({ length: POR_COL }, (_, i) =>
             `<div class="tp-tel" data-f="${((i * 0.23 + k * 0.41) % 0.97).toFixed(3)}"><div class="tp-tel-pant"><img src="media/tp-movil.jpg" alt="" decoding="async"></div></div>`).join('')}</div>`).join('')}</div>`;
         const tels = [...muro.querySelectorAll('.tp-tel')];

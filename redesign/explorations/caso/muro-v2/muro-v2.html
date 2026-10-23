@@ -1,0 +1,320 @@
+<title>Muro de teléfonos Tap In</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@400;500;600&display=swap">
+<style>
+    /* El muro de teléfonos del caso Tap In, hoy y con tres mejoras, en tres columnas. Una sola escena con selector;
+       las notas al final. Look único: papel, morado y tinta, como el caso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B;
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0;
+        --texto: #FFFFFF; --texto-2: rgba(255, 255, 255, 0.78); --texto-3: rgba(255, 255, 255, 0.5); --linea-c: rgba(45, 37, 96, 0.12);
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --curva: cubic-bezier(0.34, 1.25, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    button:focus-visible { outline: 2px solid var(--health); outline-offset: 3px; }
+    .mono { font-family: var(--f-mono); font-weight: 400; font-size: 12px; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+    .intro { padding-block: 56px 40px; color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+
+    /* =======================================================
+       ESCENA
+       ======================================================= */
+    .esc { position: relative; height: 520svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; background: radial-gradient(120% 90% at 80% 0%, var(--connect), var(--campus) 45%, var(--empresa)); color: var(--texto); }
+    .muro { position: absolute; inset: 0; -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); }
+    .giro { position: absolute; inset: -30% -6% -30% 18%; display: flex; justify-content: center; gap: clamp(20px, 2.6vw, 44px); rotate: -12deg; }
+    /* Cada columna va de --a a --b (en % de su alto) según --q */
+    .col { display: flex; flex-direction: column; gap: clamp(20px, 2.6vw, 44px); will-change: transform; transform: translate3d(0, calc(var(--a) + (var(--b) - var(--a)) * var(--q, 0)), 0); }
+
+    /* --- 1. TELÉFONO --- */
+    .tel { --w: min(14.5vw, 27svh); position: relative; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 2px 3px rgba(14, 11, 28, 0.35), 0 30px 50px -20px rgba(14, 11, 28, 0.6), 0 70px 120px -40px rgba(14, 11, 28, 0.8); flex: none; cursor: pointer; transition: scale 600ms var(--curva), rotate 600ms var(--ease), opacity 350ms var(--ease), filter 350ms var(--ease); }
+    .pant { position: relative; width: 100%; height: 100%; overflow: hidden; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); background: #F7F6FD; }
+    .pant::before { content: ''; position: absolute; left: 50%; top: calc(var(--w) * 0.02); z-index: 2; width: 30%; height: calc(var(--w) * 0.085); margin-left: -15%; border-radius: 99px; background: #050408; }
+    .pant::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(125deg, rgba(255, 255, 255, var(--brillo, 0.16)), transparent 38%); }
+    .pant img { position: absolute; left: 0; top: 0; width: 100%; max-width: none; will-change: transform; }
+    .tel.on { scale: 1.08; z-index: 2; }
+    .muro.mano .tel:not(.on), .muro.guiado:not(.mano) .tel:not(.guia) { opacity: 0.38; filter: saturate(0.6); }
+    /* El teléfono de la parada se adelanta y se endereza (anula los -12° del muro) */
+    .muro.guiado:not(.mano) .tel.guia { scale: 1.3; rotate: 12deg; z-index: 3; }
+    .tel.solo { position: absolute; z-index: 6; left: 0; top: 0; opacity: 0; pointer-events: none; transition: none; }
+
+    /* --- 2. VELO Y TÍTULO --- */
+    .velo { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(45, 37, 96, 0.94) 0%, rgba(45, 37, 96, 0.7) 30%, rgba(45, 37, 96, 0) 56%); }
+    .esc:not([data-m="hoy"]) .velo { background: linear-gradient(90deg, rgba(45, 37, 96, 0.9) 0%, rgba(45, 37, 96, 0.5) 26%, rgba(45, 37, 96, 0) 46%); }
+    .esc:not([data-m="hoy"]) .tel { --brillo: 0.07; }
+    .titulo { position: absolute; z-index: 4; left: max(var(--margen), env(safe-area-inset-left, 0px)); top: 50%; translate: 0 -50%; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; max-width: min(30vw, 480px); pointer-events: none; }
+    .rot { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); } .rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #FFFFFF; }
+    .titulo h2 { margin: 0; font: 600 clamp(40px, 5vw, 84px) / 0.98 var(--f-marca); letter-spacing: -0.045em; text-wrap: balance; }
+    .titulo p { margin: 0; max-width: 30ch; color: var(--texto-2); font: 400 clamp(16px, 1.25vw, 19px) / 1.45 var(--f-marca); text-wrap: pretty; }
+    .pista { display: inline-flex; align-items: center; gap: 10px; margin-top: 6px; color: var(--texto-3); transition: opacity 300ms; }
+    .pista::before { content: ''; width: 18px; height: 1px; background: currentColor; }
+    .muro.mano ~ .titulo .pista { opacity: 0; }
+
+    /* --- 3. ÍNDICE DE PARADAS (M1 Y M2) --- */
+    .indice { display: none; margin: 4px 0 0; padding: 0; list-style: none; pointer-events: auto; }
+    .esc[data-m="m1"] .indice, .esc[data-m="m2"] .indice { display: flex; flex-direction: column; gap: 2px; }
+    .indice button { display: flex; align-items: baseline; gap: 10px; padding: 5px 0; border: 0; background: none; color: var(--texto-3); font: 500 15px var(--f-marca); cursor: pointer; transition: color 200ms linear, translate 300ms var(--ease); }
+    .indice button .mono { min-width: 2ch; }
+    .indice li.on button { color: #FFFFFF; translate: 6px 0; }
+    @media (hover: hover) { .indice button:hover { color: var(--texto-2); } }
+    .esc[data-m="m1"] .titulo p.hoy, .esc[data-m="m2"] .titulo p, .esc[data-m="m3"] .titulo p.nuevo, .esc[data-m="hoy"] .titulo p.nuevo { display: none; }
+
+    /* --- 4. M2 · EL ESCRITORIO AL LADO --- */
+    .navegador { position: absolute; z-index: 4; left: max(var(--margen), env(safe-area-inset-left, 0px)); bottom: 7svh; display: none; flex-direction: column; width: min(34vw, 560px); height: 34svh; margin: 0; overflow: hidden; border-radius: 14px; background: #FFFFFF; box-shadow: 0 40px 90px -40px rgba(14, 11, 28, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.14); }
+    .esc[data-m="m2"] .navegador { display: flex; }
+    .navegador .barra { flex: none; display: flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; background: #F2F1F8; border-bottom: 1px solid var(--linea-c); }
+    .navegador .barra i { width: 9px; height: 9px; border-radius: 50%; background: #D9D6EA; } .navegador .barra span { margin: 0 auto; padding: 2px 30px; border-radius: 6px; background: #FFFFFF; color: #5E5C72; font: 11px var(--f-mono); }
+    .navegador .pant { flex: 1; border: 0; border-radius: 0; }
+    .navegador .pant::before, .navegador .pant::after { display: none; }
+    .navegador figcaption { position: absolute; left: 12px; bottom: 10px; z-index: 2; padding: 4px 9px; border-radius: 999px; background: rgba(16, 13, 32, 0.72); color: #FFFFFF; font: 11px var(--f-mono); }
+    .esc[data-m="m2"] .giro { inset: -30% -8% -30% 36%; }
+    .esc[data-m="m2"] .titulo { top: 12svh; translate: none; }
+    .esc[data-m="m2"] .titulo h2 { font-size: clamp(32px, 3.4vw, 56px); }
+    .esc[data-m="m2"] .titulo .pista { display: none; }
+    .esc[data-m="m2"] .velo { background: linear-gradient(90deg, rgba(45, 37, 96, 0.92) 0%, rgba(45, 37, 96, 0.6) 36%, rgba(45, 37, 96, 0) 56%); }
+
+    /* --- 5. M3 · UN TELÉFONO QUE SE USA --- */
+    .prueba { position: absolute; z-index: 6; left: max(var(--margen), env(safe-area-inset-left, 0px)); top: 50%; translate: 0 -50%; display: none; flex-direction: column; gap: 14px; max-width: min(28vw, 420px); opacity: 0; pointer-events: none; }
+    .esc[data-m="m3"] .prueba { display: flex; }
+    .prueba h2 { margin: 0; font: 600 clamp(36px, 4.2vw, 72px) / 0.98 var(--f-marca); letter-spacing: -0.045em; }
+    .prueba p { margin: 0; color: var(--texto-2); font: 400 clamp(15px, 1.2vw, 18px) / 1.45 var(--f-marca); }
+    .prueba .mono { color: var(--texto-3); }
+    .tel.solo.juega { pointer-events: auto; cursor: ns-resize; touch-action: none; }
+    .avance { position: absolute; right: calc(var(--w) * -0.09); top: 18%; width: 3px; height: 64%; border-radius: 3px; background: rgba(255, 255, 255, 0.16); opacity: 0; transition: opacity 300ms; }
+    .avance i { position: absolute; left: 0; top: 0; width: 100%; height: 18%; border-radius: inherit; background: #FFFFFF; transform: translateY(calc(var(--av, 0) * 455%)); }
+    .tel.solo.juega .avance { opacity: 1; }
+
+    /* =======================================================
+       SELECTOR Y NOTAS
+       ======================================================= */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(16, 13, 32, 0.6); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 13px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; } .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; padding-top: 6px; color: rgba(238, 237, 254, 0.66); font: 400 12px var(--f-mono); }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { padding-top: 3px; color: var(--health); } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 1px solid rgba(155, 142, 240, 0.22); border-radius: 18px; background: rgba(238, 237, 254, 0.03); color: inherit; font: inherit; text-align: left; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    /* =======================================================
+       VISTA MÓVIL
+       ======================================================= */
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); } .grilla > * { grid-column: 1 !important; }
+        .giro, .esc[data-m="m2"] .giro { inset: -24% -30%; gap: 16px; } .col { gap: 16px; } .tel { --w: 31vw; }
+        .velo, .esc:not([data-m="hoy"]) .velo, .esc[data-m="m2"] .velo { background: linear-gradient(0deg, rgba(45, 37, 96, 0.96) 0%, rgba(45, 37, 96, 0.78) 28%, rgba(45, 37, 96, 0) 52%); }
+        .titulo, .esc[data-m="m2"] .titulo { top: auto; bottom: 10svh; right: max(var(--margen), env(safe-area-inset-right, 0px)); translate: none; max-width: none; gap: 10px; }
+        .titulo h2, .esc[data-m="m2"] .titulo h2 { font-size: 36px; }
+        .esc:not([data-m="hoy"]) .titulo p { display: none; }
+        .indice li:not(.on) { display: none; } .indice li.on button { translate: none; }
+        .esc[data-m="m2"] .giro { inset: -6% -30% -30%; }
+        .navegador { top: calc(18px + env(safe-area-inset-top, 0px)); bottom: auto; width: 70vw; height: 22svh; }
+        .prueba { top: auto; bottom: 10svh; translate: none; max-width: 52vw; }
+        .prueba h2 { font-size: 30px; } .prueba p { font-size: 14px; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div class="grilla intro"><span class="mono">Tap In · Muro de teléfonos</span><p>El muro en tres columnas: hoy (como quedó en el caso) y tres mejoras. Baja por la escena y cambia con el selector. Las notas están al final.</p></div>
+
+<section class="esc" id="muro" data-m="m1">
+    <div class="fijo">
+        <div class="muro" data-muro></div>
+        <div class="velo"></div>
+        <div class="titulo">
+            <span class="rot mono">tapin.cl en el teléfono</span>
+            <h2>Todo el sitio, también en el teléfono</h2>
+            <p class="hoy">La misma web, diseñada y programada a la par.</p>
+            <p class="nuevo">La misma web, diseñada y programada a la par. Un recorrido por sus partes:</p>
+            <ol class="indice" data-indice></ol>
+            <span class="pista mono" data-pista>Pasa el cursor por una pantalla</span>
+        </div>
+        <figure class="navegador"><div class="barra"><i></i><i></i><i></i><span>tapin.cl</span></div><div class="pant"><img src="sitio.jpg" alt="tapin.cl en escritorio" data-nav></div><figcaption data-nav-txt>Escritorio · Inicio</figcaption></figure>
+        <div class="prueba" data-prueba><span class="mono">tapin.cl en el teléfono</span><h2>Es el sitio. Pruébalo.</h2><p>Desliza dentro del teléfono: es la versión móvil, entera.</p></div>
+        <div class="tel solo" data-solo><div class="pant"><img src="movil.jpg" alt="tapin.cl en el teléfono, se puede recorrer"></div><span class="avance" aria-hidden="true"><i></i></span></div>
+    </div>
+</section>
+
+<nav class="selector" aria-label="Versiones del muro">
+    <button type="button" data-ir="hoy" aria-pressed="false"><b>Hoy</b></button>
+    <button type="button" data-ir="m1" aria-pressed="true"><b>M1</b><span>Recorrido</span></button>
+    <button type="button" data-ir="m2" aria-pressed="false"><b>M2</b><span>A la par</span></button>
+    <button type="button" data-ir="m3" aria-pressed="false"><b>M3</b><span>Pruébalo</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Qué se arregló</h2>
+    <div class="bloque">
+        <p>Esta versión reemplaza la parte 3 del comparador anterior, que se comportaba raro.</p>
+        <ul class="lista">
+            <li><span class="mono">Cursor</span><span>Con el cursor quieto, los teléfonos pasaban por debajo al hacer scroll y se activaban solos</span><span>El foco responde solo a un movimiento real del cursor y se suelta al hacer scroll</span></li>
+            <li><span class="mono">Paradas</span><span>El muro seguía moviéndose durante cada parada: el teléfono elegido se iba hacia un borde y otro saltaba en su lugar</span><span>En cada parada el muro se detiene; se mueve solo entre paradas, con una curva suave</span></li>
+            <li><span class="mono">Elección</span><span>El teléfono de la parada podía quedar en una orilla, cortado por el fundido</span><span>Siempre es uno de la columna del medio, el más cercano al centro</span></li>
+            <li><span class="mono">M2</span><span>El navegador tapaba el índice y, en móvil, el teléfono guiado</span><span>Sin párrafo en M2, navegador más bajo y, en móvil, el teléfono guiado debajo del navegador</span></li>
+            <li><span class="mono">Selector</span><span>Aparecía y desaparecía según la parte de la página</span><span>Una sola escena, con el selector siempre visible</span></li>
+            <li><span class="mono">Columnas</span><span>Cuatro columnas en pantallas anchas</span><span>Tres en todos los anchos, con teléfonos un poco más grandes (igual que en el caso)</span></li>
+        </ul>
+    </div>
+    <h2>Mejoras del muro</h2>
+    <div class="bloque">
+        <p>Las tres traen cortes al inicio de cada parte del sitio, sin repetir entre vecinos, y pantallas con más contraste.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="m1" aria-pressed="true"><span class="mono">M1 · Recorrido guiado</span><strong>El scroll recorre el sitio</strong><p>Cinco paradas (Inicio, Los módulos, Todo conectado, Las dudas, La demo). En cada una el muro se detiene, un teléfono se adelanta y se endereza, y su pantalla baja por esa parte; el índice la marca y se puede tocar. El cursor sigue mandando.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="m2" aria-pressed="false"><span class="mono">M2 · A la par</span><strong>Escritorio y teléfono juntos</strong><p>Las mismas paradas, con un navegador al lado que muestra esa parte en escritorio. Demuestra literalmente "diseñada y programada a la par".</p></button>
+            <button type="button" class="op" data-ir="m3" aria-pressed="false"><span class="mono">M3 · Pruébalo</span><strong>Un teléfono que se usa</strong><p>El muro se detiene, la cámara entra a un teléfono y queda uno grande que se recorre con la rueda o el dedo. En el caso sería el sitio real dentro del teléfono; aquí es la captura completa.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · MURO DE TELÉFONOS
+       ======================================================= */
+    (function () {
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const cursor = window.matchMedia('(hover: hover)').matches;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+        const mezcla = (a, b, t) => a + (b - a) * t;
+
+        /* --- 1. DATOS --- */
+        /* Captura móvil de 390 × 6636 y de escritorio de 1440 × 5140; cada parte con su altura en las dos */
+        const M_ANCHO = 390, M_ALTO = 6636, D_ANCHO = 1440, D_ALTO = 5140;
+        const PARTES = [['Inicio', 0, 0], ['El día a día', 1110, 1150], ['Los módulos', 1880, 1830], ['Todo conectado', 2870, 2830], ['El ecosistema', 3330, 2830], ['Las dudas', 4210, 3330], ['La demo', 5420, 4330], ['El formulario', 6050, 4330]];
+        const PARADAS = [0, 2, 3, 5, 6], INI = 0.04, LARGO = 0.86, QUIETA = 0.72;
+        const TRAMOS = [[4, -40], [-38, 0], [0, -42]];
+
+        const esc = document.getElementById('muro'), fijo = esc.querySelector('.fijo'), cont = esc.querySelector('[data-muro]');
+        const indice = esc.querySelector('[data-indice]'), navImg = esc.querySelector('[data-nav]'), navTxt = esc.querySelector('[data-nav-txt]');
+        const titulo = esc.querySelector('.titulo'), prueba = esc.querySelector('[data-prueba]'), solo = esc.querySelector('[data-solo]'), velo = esc.querySelector('.velo');
+        indice.innerHTML = PARADAS.map((s, n) => `<li data-n="${n}"><button type="button"><span class="mono">0${n + 1}</span>${PARTES[s][0]}</button></li>`).join('');
+        if (!cursor) esc.querySelector('[data-pista]').textContent = 'Toca una pantalla para recorrerla';
+
+        /* --- 2. ENCUADRE Y ARMADO --- */
+        const encuadrar = (img, ancho, alto, y) => { const pant = img.parentElement, e = pant.clientWidth / ancho, vis = pant.clientHeight / e, max = Math.max(alto - vis, 0); img.style.transform = `translate3d(0, ${(-fijar(y, 0, max) * e).toFixed(1)}px, 0)`; return max; };
+        const ponerY = (t, y) => { t.y = y; t.max = encuadrar(t.querySelector('img'), M_ANCHO, M_ALTO, y); };
+        let tels = [];
+        /* "Hoy" repite los cortes del caso; las mejoras empiezan cada teléfono donde empieza una parte, sin repetir entre vecinos */
+        const armar = () => {
+            const hoy = esc.dataset.m === 'hoy';
+            cont.innerHTML = `<div class="giro">${TRAMOS.map(([a, b], k) => `<div class="col" style="--a:${a}%;--b:${b}%">${Array.from({ length: 7 }, (_, i) => {
+                const s = hoy ? -1 : (i * 3 + k * 2) % 8, y = hoy ? ((i * 0.23 + k * 0.41) % 0.97) * 5791 : PARTES[s][1];
+                return `<div class="tel" data-k="${k}" data-y="${Math.round(y)}"><div class="pant"><img src="movil.jpg" alt="" decoding="async"></div></div>`; }).join('')}</div>`).join('')}</div>`;
+            tels = [...cont.querySelectorAll('.tel')];
+            tels.forEach(t => { t.dir = 1; ponerY(t, +t.dataset.y); });
+        };
+        const centro = el => { const r = el.getBoundingClientRect(), f = fijo.getBoundingClientRect(); return { x: r.left + r.width / 2 - f.left, y: r.top + r.height / 2 - f.top }; };
+        /* El teléfono de una parada: de la columna del medio, el más cercano al punto de lectura */
+        const delMedio = (px, py) => { let mejor = null, d0 = 1e9; tels.forEach(t => { if (t.dataset.k !== '1') return; const c = centro(t), d = Math.hypot(c.x - px, c.y - py); if (d < d0) { d0 = d; mejor = t; } }); return mejor; };
+
+        /* --- 3. CURSOR: SOLO CON MOVIMIENTO REAL --- */
+        /* El teléfono bajo el cursor se adelanta y su pantalla recorre el sitio; el scroll suelta el foco */
+        let mano = null, rec = null, ult = 0;
+        const recorrer = ahora => { const t = mano; if (!t) { rec = null; return; } const dt = Math.min(ahora - ult, 50); ult = ahora; let y = t.y + t.dir * dt * (t.max || 5800) / 16000; if (y >= t.max || y <= 0) t.dir *= -1; ponerY(t, fijar(y, 0, t.max)); rec = requestAnimationFrame(recorrer); };
+        const ponerMano = t => { if (mano === t) return; if (mano) mano.classList.remove('on'); mano = t; cont.classList.toggle('mano', !!t); if (t) { t.classList.add('on'); if (!rec && !quieto) { ult = performance.now(); rec = requestAnimationFrame(recorrer); } } };
+        if (cursor) {
+            cont.addEventListener('pointermove', e => ponerMano(e.target.closest('.tel')));
+            cont.addEventListener('pointerleave', () => ponerMano(null));
+        } else fijo.addEventListener('click', e => { const t = e.target.closest('.muro .tel'); ponerMano(t && t !== mano ? t : null); });
+
+        /* --- 4. PARADAS (M1 Y M2) --- */
+        let guia = null, parada = -1, navY = 0, navMeta = 0;
+        const soltarGuia = () => { if (guia) { guia.classList.remove('guia'); if (mano !== guia) ponerY(guia, +guia.dataset.y); guia = null; } };
+        const ponerParada = n => {
+            if (n === parada) return;
+            parada = n; soltarGuia(); cont.classList.toggle('guiado', n >= 0);
+            indice.querySelectorAll('li').forEach(li => li.classList.toggle('on', +li.dataset.n === n));
+            if (n < 0) return;
+            const W = fijo.clientWidth, H = fijo.clientHeight, m = W <= 768;
+            guia = delMedio(W * (m ? 0.5 : esc.dataset.m === 'm2' ? 0.72 : 0.62), H * (m ? (esc.dataset.m === 'm2' ? 0.6 : 0.4) : 0.5));
+            if (guia) guia.classList.add('guia');
+            navTxt.textContent = `Escritorio · ${PARTES[PARADAS[n]][0]}`;
+        };
+
+        /* --- 5. M3: UN TELÉFONO QUE SE USA --- */
+        let meta3 = null, pruebaY = 0, juega = false;
+        const ponerSolo = () => { const max = encuadrar(solo.querySelector('img'), M_ANCHO, M_ALTO, pruebaY); pruebaY = fijar(pruebaY, 0, max); solo.style.setProperty('--av', (max ? pruebaY / max : 0).toFixed(3)); return max; };
+        const ubicar = (cx, cy, w, giro) => { const h = w * 19.5 / 9; solo.style.setProperty('--w', `${w.toFixed(1)}px`); solo.style.width = `${w.toFixed(1)}px`; solo.style.transform = `translate3d(${(cx - w / 2).toFixed(1)}px, ${(cy - h / 2).toFixed(1)}px, 0) rotate(${giro.toFixed(2)}deg)`; };
+        /* Se recorre con la rueda o arrastrando; en los extremos, la rueda sigue con la página */
+        solo.addEventListener('wheel', e => { if (!juega) return; const k = solo.querySelector('.pant').clientWidth / M_ANCHO, max = ponerSolo(); if ((e.deltaY > 0 && pruebaY >= max) || (e.deltaY < 0 && pruebaY <= 0)) return; e.preventDefault(); pruebaY += e.deltaY / k; ponerSolo(); }, { passive: false });
+        let arrastre = null;
+        solo.addEventListener('pointerdown', e => { if (!juega) return; arrastre = e.clientY; solo.setPointerCapture(e.pointerId); });
+        solo.addEventListener('pointermove', e => { if (arrastre === null) return; const k = solo.querySelector('.pant').clientWidth / M_ANCHO; pruebaY -= (e.clientY - arrastre) / k; arrastre = e.clientY; ponerSolo(); });
+        ['pointerup', 'pointercancel'].forEach(t => solo.addEventListener(t, () => (arrastre = null)));
+
+        /* --- 6. ESCENA --- */
+        const pintar = () => {
+            const r = esc.getBoundingClientRect();
+            if (r.bottom < 0 || r.top > innerHeight) return;
+            const p = fijar(-r.top / (esc.offsetHeight - innerHeight)), modo = esc.dataset.m, W = fijo.clientWidth, H = fijo.clientHeight;
+            if (modo === 'hoy') { cont.style.setProperty('--q', p.toFixed(4)); return; }
+            if (modo === 'm1' || modo === 'm2') {
+                /* Cada parada: el muro quieto el 72% del tramo y luego avanza hasta la siguiente */
+                const u = fijar((p - INI) / LARGO) * PARADAS.length, n = Math.min(Math.floor(u), PARADAS.length - 1), f = fijar(u - n), avanza = n < PARADAS.length - 1 && f > QUIETA;
+                cont.style.setProperty('--q', ((n + (avanza ? curva((f - QUIETA) / (1 - QUIETA)) : 0)) / (PARADAS.length - 1)).toFixed(4));
+                ponerParada(avanza || p < INI * 0.5 ? -1 : n);
+                const s = PARADAS[n], local = fijar(f / QUIETA);
+                if (guia && mano !== guia) ponerY(guia, PARTES[s][1] + local * 420);
+                navMeta = PARTES[s][2] + local * 320;
+                return;
+            }
+            /* M3: el muro avanza hasta un tercio, se detiene y la cámara entra a un teléfono de la columna del medio */
+            cont.style.setProperty('--q', (Math.min(p / 0.3, 1) * 0.5).toFixed(4));
+            const z = curva(fijar((p - 0.34) / 0.3));
+            if (z > 0 && !meta3) { meta3 = delMedio(W * 0.6, H * 0.5); pruebaY = meta3.y; }
+            if (z <= 0 && meta3) { meta3.style.opacity = ''; meta3 = null; }
+            cont.style.opacity = (1 - z).toFixed(3); cont.style.pointerEvents = z > 0.2 ? 'none' : '';
+            titulo.style.opacity = (1 - fijar(z * 2)).toFixed(3); prueba.style.opacity = fijar((p - 0.62) / 0.1).toFixed(3); velo.style.opacity = (1 - z * 0.6).toFixed(3);
+            if (meta3) {
+                const c = centro(meta3), m = W <= 768, wG = Math.min(0.36 * H, m ? 0.5 * W : 0.3 * W);
+                ubicar(mezcla(c.x, m ? W * 0.66 : W * 0.62, z), mezcla(c.y, H * (m ? 0.4 : 0.5), z), mezcla(meta3.offsetWidth, wG, z), mezcla(-12, 0, z));
+                solo.style.opacity = 1; meta3.style.opacity = 0; ponerSolo();
+            } else solo.style.opacity = 0;
+            const ya = z >= 0.999; if (ya !== juega) { juega = ya; solo.classList.toggle('juega', ya); }
+        };
+        let pedido = false;
+        const pedir = () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; pintar(); }); } };
+        addEventListener('scroll', () => { if (mano) ponerMano(null); pedir(); }, { passive: true });
+        addEventListener('resize', () => { tels.forEach(t => ponerY(t, t.y)); parada = -2; pedir(); });
+        /* El navegador de M2 sigue a su meta con inercia */
+        const seguirNav = () => { if (esc.dataset.m === 'm2') { navY += (navMeta - navY) * (quieto ? 1 : 0.12); encuadrar(navImg, D_ANCHO, D_ALTO, navY); } requestAnimationFrame(seguirNav); };
+        requestAnimationFrame(seguirNav);
+        /* El índice lleva a cada parada */
+        indice.addEventListener('click', e => { const li = e.target.closest('li'); if (!li) return; const pf = INI + (+li.dataset.n + 0.36) / PARADAS.length * LARGO; scrollTo({ top: esc.offsetTop + pf * (esc.offsetHeight - innerHeight), behavior: quieto ? 'auto' : 'smooth' }); });
+
+        /* --- 7. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => {
+            esc.dataset.m = v; botones.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.ir === v)));
+            try { localStorage.setItem('muro-v2', v); } catch (e) { /* sin almacenamiento */ }
+            ponerMano(null); guia = null; parada = -2; meta3 = null; juega = false; solo.classList.remove('juega');
+            [titulo, prueba, solo, cont, velo].forEach(x => x.removeAttribute('style')); cont.classList.remove('guiado');
+            armar(); pedir();
+        };
+        botones.forEach(x => x.addEventListener('click', () => { elegir(x.dataset.ir); if (x.classList.contains('op')) scrollTo({ top: esc.offsetTop, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('muro-v2'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1);
+        elegir(['hoy', 'm1', 'm2', 'm3'].includes(h) ? h : ['hoy', 'm1', 'm2', 'm3'].includes(guardado) ? guardado : 'm1');
+        navImg.addEventListener('load', pedir);
+    })();
+    /* =======================================================
+       FIN JS · MURO DE TELÉFONOS
+       ======================================================= */
+</script>
