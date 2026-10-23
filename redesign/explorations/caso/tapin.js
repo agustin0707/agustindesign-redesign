@@ -10,6 +10,8 @@
     const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
     const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
     let vh = window.innerHeight;
+    /* La misma vista móvil que el CSS: teléfonos y tablets en vertical */
+    const vistaMovil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
 
     /* --- 1. LÓGICA PROPIA DE CADA ESCENA --- */
     const propias = {
@@ -750,7 +752,15 @@
     const marco11 = document.querySelector('[data-v11-marco]');
     if (marco11) {
         const g = marco11.querySelector('.tp-grilla');
-        const fijarMarco = () => { const arriba = parseFloat(getComputedStyle(g).top) || 0, h = window.innerHeight; marco11.style.setProperty('--t11', `${Math.round(Math.min(arriba, h * 0.94 - g.offsetHeight) - h)}px`); };
+        /* En móvil la grilla no cabe: se fija mostrando entera la pieza (escenario, flujo y módulos), centrada entre 16
+           y 64 px del borde, en vez de alinearla abajo y cortar el texto a media línea */
+        const pieza11 = marco11.querySelector('.tp-v11-pieza');
+        const fijarMarco = () => {
+            const arriba = parseFloat(getComputedStyle(g).top) || 0, h = window.innerHeight;
+            let meta = Math.min(arriba, h * 0.94 - g.offsetHeight);
+            if (vistaMovil.matches) { const pz = pieza11.getBoundingClientRect().top - g.getBoundingClientRect().top, bloque = g.offsetHeight - pz; meta = fijar((h - bloque) / 2, 16, 64) - pz; }
+            marco11.style.setProperty('--t11', `${Math.round(meta - h)}px`);
+        };
         fijarMarco(); window.addEventListener('resize', fijarMarco);
         if ('ResizeObserver' in window) new ResizeObserver(fijarMarco).observe(g);
     }
@@ -876,7 +886,7 @@
         new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) { desactivar(); ponerMano(null); } }), { threshold: 0.4 }).observe(fijo);
 
         sec.muro = p => {
-            const T = p * (sec.offsetHeight - vh) / vh, W = fijo.clientWidth, H = fijo.clientHeight, movil = W <= 768;
+            const T = p * (sec.offsetHeight - vh) / vh, W = fijo.clientWidth, H = fijo.clientHeight, movil = vistaMovil.matches;
             muro.style.setProperty('--q', (0.55 * (1 - Math.pow(1 - fijar(T / 1.7), 2))).toFixed(4));
             if (T > 1.2) montar();
             const z = quieto ? (T >= 1.75 ? 1 : 0) : curva(fijar((T - 1.75) / 0.7));
