@@ -1248,19 +1248,10 @@
 @media (hover: hover) { .tp-vivo-link:hover { background: rgba(238, 237, 254, 0.08); border-color: var(--acento); } }
 
 /* =======================================================
-   APRENDIZAJE Y CRÉDITOS
+   CRÉDITOS (AL CIERRE DEL RESULTADO)
    ======================================================= */
-.tp-giro { grid-column: 4 / -1; display: flex; align-items: center; gap: 24px; margin-top: clamp(56px, 6vw, 96px); }
-.tp-giro-iso { display: flex; flex-direction: column; align-items: center; gap: 14px; color: var(--texto-2); }
-.tp-giro-c { display: grid; place-items: center; width: clamp(110px, 11vw, 176px); box-shadow: 0 30px 60px -30px var(--tono); aspect-ratio: 1; border-radius: 50%; background: var(--tono); color: #FFFFFF; }
-.tp-giro-c .tp-marca { width: 56%; }
-.tp-giro-linea { position: relative; flex: 0 1 320px; height: 2px; margin-bottom: 30px; background: linear-gradient(90deg, var(--tp-campus), var(--tp-connect)); transform: scaleX(0); transform-origin: 0 50%; transition: transform 1200ms var(--ease) 300ms; }
-.tp-giro.visto .tp-giro-linea { transform: scaleX(1); }
-.tp-giro-linea::after { content: ''; position: absolute; top: 50%; left: 0; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--tp-connect); box-shadow: 0 0 0 6px rgba(107, 92, 231, 0.18); }
-.tp-giro.visto .tp-giro-linea::after { animation: tpViaje 2.8s var(--ease) 1.4s infinite; }
-@keyframes tpViaje { 0% { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
-.tp-giro b { font-weight: 400; }
-.tp-creditos { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--medianil); margin-top: clamp(72px, 8vw, 120px); }
+/* Qué hice yo y qué hizo el equipo: una franja chica bajo el link */
+.tp-creditos { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--medianil); }
 .tp-creditos > div { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--linea); }
 .tp-creditos dt { color: var(--texto-3); }
 
@@ -1401,14 +1392,13 @@
     .tp-rs-comilla { position: static; width: 40px; margin-bottom: -4px; }
     .tp-rs-cita { gap: 20px; } .tp-rs-cita p { font-size: 38px; }
     .tp-rs-cifras { grid-template-columns: 1fr 1fr; row-gap: 22px; }
-    .tp-giro { gap: 14px; }
 }
 
 /* =======================================================
    MOVIMIENTO REDUCIDO
    ======================================================= */
 @media (prefers-reduced-motion: reduce) {
-    .tp-tira-camino, .tp-wm-vivo.tap *, .tp-hero.entra *, .tp-forky-corre, .tp-sombra, .tp-hero-pista i, .tp-url-cursor, .tp-velocidad i, .tp-giro-linea::after { animation: none; }
+    .tp-tira-camino, .tp-wm-vivo.tap *, .tp-hero.entra *, .tp-forky-corre, .tp-sombra, .tp-hero-pista i, .tp-url-cursor, .tp-velocidad i { animation: none; }
     .tp-hero.entra * { animation: none !important; }
     .tp-v11-vivo i, .tp-tel-probar span::before { animation: none; }
     .tp-rs-comilla, .tp-rs-l > span, .tp-rs-clave, .tp-rs-firma { transition: none; }
