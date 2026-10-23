@@ -1,0 +1,607 @@
+<title>De la 11 al muro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@400;500;600&display=swap">
+<style>
+    /* Tres partes del caso Tap In en una página: la decisión 11 auditada (hoy y con mejoras, con el comedor en vivo),
+       seis pasos de la 11 al muro de teléfonos, y el muro auditado con tres mejoras. Un look único: papel, morado y tinta */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B; --gris-2: #8A889E; --linea-c: rgba(45, 37, 96, 0.12);
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --tint: #EEEDFE;
+        --ok: #2FB37A; --error: #E5484D;
+        --texto: #FFFFFF; --texto-2: rgba(255, 255, 255, 0.78); --texto-3: rgba(255, 255, 255, 0.5); --linea: rgba(255, 255, 255, 0.22);
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --curva: cubic-bezier(0.34, 1.25, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    button:focus-visible { outline: 2px solid var(--connect); outline-offset: 3px; }
+    .mono { font-family: var(--f-mono); font-weight: 400; font-size: 12px; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+    .intro { padding-block: 56px 40px; color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .parte { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: 18px; border-top: 1px solid var(--linea-c); color: var(--gris); }
+    .parte b { font: 600 18px var(--f-marca); letter-spacing: -0.02em; color: var(--tinta); }
+
+    /* =======================================================
+       PARTE 1 · LA DECISIÓN 11
+       ======================================================= */
+    .once { padding-block: 0 14svh; }
+    .conmuta { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea-c); }
+    .conmuta button { padding: 7px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--gris); font: 500 13px var(--f-texto); cursor: pointer; transition: background-color 200ms linear, color 200ms linear; }
+    .conmuta button[aria-pressed="true"] { background: var(--tinta); color: #FFFFFF; }
+    .v-hoy, .v-mejor { grid-column: 1 / -1; margin-top: 8svh; }
+    .v-hoy img { display: block; width: 100%; max-width: 100%; border-radius: 18px; box-shadow: 0 0 0 1px var(--linea-c); }
+    .once[data-ver="hoy"] .v-mejor, .once[data-ver="mejor"] .v-hoy { display: none; }
+    .v-mejor { display: grid; grid-template-columns: subgrid; row-gap: 40px; align-items: start; }
+
+    /* --- 1. RIEL Y TEXTO EN UN SOLO BLOQUE FIJO --- */
+    /* Se sueltan juntos al final, sin desfase */
+    .izq { grid-column: 1 / span 6; grid-row: 1 / span 2; position: sticky; top: 18svh; display: grid; grid-template-columns: subgrid; }
+    .riel { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 6px; }
+    .riel .num { font: 600 clamp(72px, 7.4vw, 128px) / 0.78 var(--f-marca); letter-spacing: -0.06em; color: var(--soft); }
+    .riel .mono, .porque .mono { display: inline-flex; align-items: center; gap: 8px; color: var(--gris); }
+    .riel .mono::before, .porque .mono::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--campus); }
+    .txt { grid-column: 4 / span 3; display: flex; flex-direction: column; gap: 16px; max-width: 34ch; }
+    .txt h3 { margin: 0; font: 600 clamp(28px, 2.7vw, 44px) / 1.02 var(--f-marca); letter-spacing: -0.04em; text-wrap: balance; }
+    .txt p { margin: 0; font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); color: var(--gris); }
+    .txt .porque { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--linea-c); color: var(--tinta); }
+    .txt mark { background: none; color: var(--connect); }
+
+    /* --- 2. ESCENARIO CON EL COMEDOR EN VIVO --- */
+    .der { grid-column: 7 / -1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .escena11 { position: relative; aspect-ratio: 3 / 2; max-width: 100%; border-radius: 26px; overflow: hidden; background: radial-gradient(80% 80% at 50% 25%, #FFFFFF, var(--tint)); box-shadow: 0 0 0 1px var(--linea-c), 0 40px 80px -46px rgba(45, 37, 96, 0.45); }
+    /* El mockup un 10% más grande y corrido hacia el centro: el teléfono y el panel se leen mejor */
+    .escena11 .mk { position: absolute; inset: 0; translate: -7% 1%; scale: 1.1; }
+    .mk img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity 400ms 300ms; }
+    .mk iframe { position: absolute; top: 0; left: 0; width: 900px; height: 600px; border: 0; background: transparent; transform-origin: 0 0; transform: scale(var(--escala, 0.5)); opacity: 0; pointer-events: none; transition: opacity 500ms; }
+    .mk.listo iframe { opacity: 1; } .mk.listo img { opacity: 0; }
+    .chip { position: absolute; left: 18px; top: 18px; z-index: 3; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.86); box-shadow: 0 0 0 1px var(--linea-c); font: 500 12px var(--f-marca); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    .chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); animation: late 1.8s ease-out infinite; }
+    @keyframes late { 0% { box-shadow: 0 0 0 0 rgba(47, 179, 122, 0.5); } 100% { box-shadow: 0 0 0 9px rgba(47, 179, 122, 0); } }
+    .modulo { position: absolute; right: 20px; top: 22px; z-index: 3; color: var(--gris-2); }
+
+    /* El antes, visible: al pasar el cursor o tocar "Antes", el escenario muestra la pantalla que había */
+    .antes-vista { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: rgba(244, 243, 250, 0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transition: opacity 250ms var(--ease); pointer-events: none; }
+    .escena11.antes .antes-vista { opacity: 1; }
+    .denegado { display: flex; flex-direction: column; align-items: center; gap: 10px; width: min(46%, 240px); padding: 28px 18px 22px; border-radius: 28px; background: #FFFFFF; box-shadow: 0 0 0 6px #1A1724, 0 30px 60px -24px rgba(28, 26, 46, 0.5); text-align: center; translate: 0 10px; scale: 0.96; transition: translate 400ms var(--curva), scale 400ms var(--curva); }
+    .escena11.antes .denegado { translate: 0 0; scale: 1; }
+    .denegado i { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: rgba(229, 72, 77, 0.12); color: var(--error); font: 600 24px var(--f-marca); font-style: normal; }
+    .denegado b { font: 600 17px var(--f-marca); letter-spacing: -0.02em; color: var(--error); }
+    .denegado span { color: var(--gris); font: 400 13px / 1.35 var(--f-marca); }
+    .denegado small { margin-top: 6px; color: var(--gris-2); }
+
+    /* --- 3. FLUJO AL RITMO DEL MOCKUP, CON UNA LÍNEA QUE DICE QUÉ PASA --- */
+    .flujo { display: grid; grid-template-columns: auto 18px repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .flujo > li { display: flex; }
+    .flujo .caja { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 12px 14px; border: 0; border-radius: 14px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea-c); text-align: left; transition: box-shadow 300ms var(--ease), translate 300ms var(--curva); }
+    .flujo small { color: var(--gris-2); font: 400 11px var(--f-mono); transition: color 300ms linear; }
+    .flujo b { font: 600 14px var(--f-marca); letter-spacing: -0.01em; }
+    .flujo .antes { background: transparent; box-shadow: inset 0 0 0 1px rgba(229, 72, 77, 0.3); color: var(--gris); cursor: pointer; }
+    .flujo .antes b { font-weight: 500; text-decoration: line-through; text-decoration-color: var(--error); text-decoration-thickness: 1.5px; }
+    .flujo .antes small::after { content: ' · ver'; color: var(--error); }
+    .flujo .flecha { display: grid; place-items: center; color: var(--gris-2); }
+    .flujo .tramo i { position: absolute; left: 0; bottom: 0; width: 100%; height: 3px; background: var(--connect); transform-origin: 0 50%; transform: scaleX(var(--av, 0)); }
+    .flujo .tramo.on { box-shadow: 0 0 0 1.5px var(--connect), 0 16px 30px -18px rgba(107, 92, 231, 0.6); translate: 0 -2px; }
+    .flujo .tramo.ya small { color: var(--ok); } .flujo .tramo.ya small::after { content: ' ✓'; } .flujo .tramo.ya i { opacity: 0.25; }
+    @media (hover: hover) { .flujo .antes:hover { box-shadow: inset 0 0 0 1.5px var(--error); } }
+    .leyenda { display: flex; align-items: baseline; gap: 10px; min-height: 22px; margin: 2px 2px 0; color: var(--gris); font: 400 14px var(--f-marca); }
+    .leyenda .mono { color: var(--connect); }
+    .leyenda span:last-child { animation: entra 400ms var(--ease); }
+    @keyframes entra { from { opacity: 0; translate: 6px 0; } }
+
+    /* --- 4. LOS OTROS MÓDULOS: QUIETOS, SE ANIMAN AL PASAR EL CURSOR --- */
+    .otros { grid-column: 7 / -1; grid-row: 2; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .otros header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; color: var(--gris-2); }
+    .otros header b { color: var(--tinta); font: 600 16px var(--f-marca); letter-spacing: -0.02em; }
+    .fila { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .mini { position: relative; display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 8px 8px 14px; border-radius: 16px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea-c); transition: translate 350ms var(--curva), box-shadow 350ms var(--ease); }
+    .mini .mk { position: relative; aspect-ratio: 3 / 2; border-radius: 10px; overflow: hidden; background: radial-gradient(80% 80% at 50% 30%, #FFFFFF, var(--tint)); }
+    .mini .estado { position: absolute; right: 14px; top: 14px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 1px var(--linea-c); color: var(--gris); font: 400 10px var(--f-mono); }
+    .mini .estado::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gris-2); transition: background-color 200ms linear; }
+    .mini.vivo .estado::before { background: var(--ok); }
+    .mini figcaption { display: flex; flex-direction: column; gap: 3px; padding: 0 6px; }
+    .mini b { font: 600 13px var(--f-marca); } .mini span { color: var(--gris); font: 400 12px / 1.35 var(--f-marca); }
+    @media (hover: hover) { .mini:hover { translate: 0 -4px; box-shadow: 0 0 0 1px var(--linea-c), 0 22px 40px -24px rgba(45, 37, 96, 0.5); } }
+
+    /* =======================================================
+       PIEZAS DEL MURO (COMPARTIDAS POR LA PARTE 2 Y LA 3)
+       ======================================================= */
+    .esc { position: relative; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+    .fondo { position: absolute; inset: 0; background: radial-gradient(120% 90% at 80% 0%, var(--connect), var(--campus) 45%, var(--empresa)); }
+    .muro { position: absolute; inset: 0; -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent); }
+    .giro { position: absolute; inset: -30% -6% -30% 18%; display: flex; justify-content: center; gap: clamp(20px, 2.6vw, 44px); rotate: -12deg; }
+    .col { display: flex; flex-direction: column; gap: clamp(20px, 2.6vw, 44px); will-change: transform; transform: translate3d(0, calc(var(--a) + (var(--b) - var(--a)) * var(--q, 0)), 0) translateY(calc(var(--sube, 0) * 130svh)); }
+    .tel { --w: min(12.5vw, 24svh); position: relative; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 2px 3px rgba(14, 11, 28, 0.35), 0 30px 50px -20px rgba(14, 11, 28, 0.6), 0 70px 120px -40px rgba(14, 11, 28, 0.8); flex: none; cursor: pointer; transition: scale 600ms var(--curva), rotate 600ms var(--ease), opacity 300ms var(--ease), filter 300ms var(--ease); }
+    .pant { position: relative; width: 100%; height: 100%; overflow: hidden; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); background: #F7F6FD; }
+    .pant::before { content: ''; position: absolute; left: 50%; top: calc(var(--w) * 0.02); z-index: 2; width: 30%; height: calc(var(--w) * 0.085); margin-left: -15%; border-radius: 99px; background: #050408; }
+    .pant::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(125deg, rgba(255, 255, 255, var(--brillo, 0.16)), transparent 38%); }
+    .pant img { position: absolute; left: 0; top: 0; width: 100%; max-width: none; will-change: transform; }
+    .tel.on { scale: 1.08; z-index: 2; }
+    .muro.mano .tel:not(.on), .muro.guiado:not(.mano) .tel:not(.guia) { opacity: 0.38; filter: saturate(0.6); }
+    .muro.guiado:not(.mano) .tel.guia { scale: 1.32; rotate: 12deg; z-index: 3; }
+    .velo { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(45, 37, 96, 0.94) 0%, rgba(45, 37, 96, 0.7) 30%, rgba(45, 37, 96, 0) 56%); }
+    .titulo { position: absolute; left: max(var(--margen), env(safe-area-inset-left, 0px)); top: 50%; translate: 0 -50%; z-index: 4; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; max-width: min(30vw, 480px); color: var(--texto); pointer-events: none; }
+    .titulo .rot { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); } .titulo .rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #FFFFFF; }
+    .titulo h2 { margin: 0; font: 600 clamp(40px, 5vw, 84px) / 0.98 var(--f-marca); letter-spacing: -0.045em; text-wrap: balance; }
+    .titulo p { margin: 0; max-width: 30ch; color: var(--texto-2); font: 400 clamp(16px, 1.25vw, 19px) / 1.45 var(--f-marca); text-wrap: pretty; }
+    .pista { display: inline-flex; align-items: center; gap: 10px; margin-top: 6px; color: var(--texto-3); transition: opacity 300ms; }
+    .pista::before { content: ''; width: 18px; height: 1px; background: currentColor; }
+    .muro.mano ~ .titulo .pista { opacity: 0; }
+    .tel.solo { position: absolute; z-index: 5; left: 0; top: 0; width: 100px; opacity: 0; pointer-events: none; transition: none; }
+
+    /* =======================================================
+       PARTE 2 · PASOS DE LA 11 AL MURO
+       ======================================================= */
+    .paso { height: 420svh; }
+    .paso .l-once { position: absolute; inset: 0; background: var(--papel); transform-origin: 50% 40%; }
+    .l-once img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 0; }
+    .paso .l-muro { position: absolute; inset: 0; overflow: hidden; }
+    .paso .lav { position: absolute; inset: 0; z-index: 3; opacity: 0; pointer-events: none; }
+    .paso .lav img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 0; }
+    .etapa { position: absolute; right: max(var(--margen), env(safe-area-inset-right, 0px)); top: calc(18px + env(safe-area-inset-top, 0px)); z-index: 8; padding: 5px 10px; border-radius: 999px; background: rgba(16, 13, 32, 0.6); color: #FFFFFF; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+
+    /* =======================================================
+       PARTE 3 · EL MURO, CON MEJORAS
+       ======================================================= */
+    .muro-v { height: 440svh; }
+    .muro-v:not([data-m="hoy"]) .tel { --brillo: 0.07; }
+    .muro-v:not([data-m="hoy"]) .velo { background: linear-gradient(90deg, rgba(45, 37, 96, 0.9) 0%, rgba(45, 37, 96, 0.5) 26%, rgba(45, 37, 96, 0) 46%); }
+    .indice { display: none; margin: 4px 0 0; padding: 0; list-style: none; pointer-events: auto; }
+    .muro-v[data-m="m1"] .indice, .muro-v[data-m="m2"] .indice { display: flex; flex-direction: column; gap: 2px; }
+    .indice button { display: flex; align-items: baseline; gap: 10px; padding: 5px 0; border: 0; background: none; color: var(--texto-3); font: 500 15px var(--f-marca); cursor: pointer; transition: color 200ms linear, translate 300ms var(--ease); }
+    .indice button .mono { width: 2ch; }
+    .indice li.on button { color: #FFFFFF; translate: 6px 0; }
+    @media (hover: hover) { .indice button:hover { color: var(--texto-2); } }
+    .muro-v:not([data-m="hoy"]) .titulo p.hoy, .muro-v[data-m="hoy"] .titulo p.nuevo { display: none; }
+
+    /* --- M2 · A LA PAR: EL ESCRITORIO AL LADO --- */
+    .navegador { position: absolute; z-index: 4; left: max(var(--margen), env(safe-area-inset-left, 0px)); bottom: 8svh; display: none; flex-direction: column; width: min(34vw, 560px); height: 38svh; overflow: hidden; border-radius: 14px; background: #FFFFFF; box-shadow: 0 40px 90px -40px rgba(14, 11, 28, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.14); }
+    .muro-v[data-m="m2"] .navegador { display: flex; }
+    .navegador .barra { flex: none; display: flex; align-items: center; gap: 7px; height: 30px; padding: 0 12px; background: #F2F1F8; border-bottom: 1px solid var(--linea-c); }
+    .navegador .barra i { width: 9px; height: 9px; border-radius: 50%; background: #D9D6EA; } .navegador .barra span { margin: 0 auto; padding: 2px 30px; border-radius: 6px; background: #FFFFFF; color: #5E5C72; font: 11px var(--f-mono); }
+    .navegador .pant { flex: 1; border: 0; border-radius: 0; }
+    .navegador .pant::before, .navegador .pant::after { display: none; }
+    .navegador figcaption { position: absolute; left: 12px; bottom: 10px; padding: 4px 9px; border-radius: 999px; background: rgba(16, 13, 32, 0.7); color: #FFFFFF; font: 11px var(--f-mono); }
+    .muro-v[data-m="m2"] .giro { inset: -30% -8% -30% 34%; }
+    .muro-v[data-m="m2"] .titulo { top: 12svh; translate: none; }
+    .muro-v[data-m="m2"] .titulo h2 { font-size: clamp(32px, 3.4vw, 56px); }
+    .muro-v[data-m="m2"] .titulo :is(p, .pista) { display: none; }
+    .muro-v[data-m="m2"] .navegador { height: 34svh; bottom: 7svh; }
+    .muro-v[data-m="m2"] .velo { background: linear-gradient(90deg, rgba(45, 37, 96, 0.92) 0%, rgba(45, 37, 96, 0.6) 34%, rgba(45, 37, 96, 0) 54%); }
+
+    /* --- M3 · PRUÉBALO: EL MURO SE ENDEREZA Y QUEDA UN TELÉFONO QUE SE USA --- */
+    .prueba { position: absolute; z-index: 6; left: max(var(--margen), env(safe-area-inset-left, 0px)); top: 50%; translate: 0 -50%; display: none; flex-direction: column; gap: 14px; max-width: min(28vw, 420px); opacity: 0; color: #FFFFFF; pointer-events: none; }
+    .muro-v[data-m="m3"] .prueba { display: flex; }
+    .prueba h2 { margin: 0; font: 600 clamp(36px, 4.2vw, 72px) / 0.98 var(--f-marca); letter-spacing: -0.045em; }
+    .prueba p { margin: 0; color: var(--texto-2); font: 400 clamp(15px, 1.2vw, 18px) / 1.45 var(--f-marca); }
+    .prueba .mono { color: var(--texto-3); }
+    .tel.solo.juega { pointer-events: auto; cursor: ns-resize; touch-action: none; }
+    .avance { position: absolute; right: calc(var(--w) * -0.09); top: 18%; width: 3px; height: 64%; border-radius: 3px; background: rgba(255, 255, 255, 0.16); opacity: 0; transition: opacity 300ms; }
+    .avance i { position: absolute; left: 0; top: 0; width: 100%; height: 18%; border-radius: inherit; background: #FFFFFF; transform: translateY(calc(var(--av, 0) * 455%)); }
+    .tel.solo.juega .avance { opacity: 1; }
+
+    /* =======================================================
+       SELECTOR Y NOTAS
+       ======================================================= */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(16, 13, 32, 0.6); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); translate: -50% 16px; opacity: 0; pointer-events: none; transition: opacity 250ms var(--ease), translate 350ms var(--ease); }
+    .selector.ver { opacity: 1; translate: -50% 0; pointer-events: auto; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 13px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; } .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; padding-top: 6px; color: rgba(238, 237, 254, 0.66); font: 400 12px var(--f-mono); }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { padding-top: 3px; color: var(--health); } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .lista .ojo { color: #F5C26B; }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 1px solid rgba(155, 142, 240, 0.22); border-radius: 18px; background: rgba(238, 237, 254, 0.03); color: inherit; font: inherit; text-align: left; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    /* =======================================================
+       VISTA MÓVIL
+       ======================================================= */
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); } .grilla > *, .v-mejor > * { grid-column: 1 !important; grid-row: auto !important; }
+        .parte { flex-direction: column; align-items: flex-start; }
+        .v-mejor { grid-template-columns: minmax(0, 1fr); row-gap: 28px; }
+        .izq { position: static; display: flex; flex-direction: column; gap: 22px; }
+        .riel { flex-direction: row; align-items: baseline; gap: 14px; } .riel .num { font-size: 56px; }
+        .escena11 { border-radius: 18px; } .chip { left: 10px; top: 10px; padding: 4px 9px; font-size: 11px; } .modulo { display: none; }
+        .flujo { grid-template-columns: repeat(3, minmax(0, 1fr)); } .flujo .flecha { display: none; } .flujo li:first-child { grid-column: 1 / -1; }
+        .flujo .antes { flex-direction: row; align-items: baseline; gap: 10px; }
+        .flujo .caja { padding: 10px 12px; } .flujo b { font-size: 13px; }
+        .leyenda { font-size: 13px; }
+        .otros header { flex-direction: column; gap: 2px; }
+        .fila { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(var(--margen) * -1); padding: 4px var(--margen) 20px; scroll-padding: 0 var(--margen); scrollbar-width: none; }
+        .fila::-webkit-scrollbar { display: none; }
+        .mini { flex: 0 0 74%; scroll-snap-align: start; }
+        .giro { inset: -24% -30%; gap: 16px; } .col { gap: 16px; } .tel { --w: 31vw; }
+        .velo, .muro-v:not([data-m="hoy"]) .velo, .muro-v[data-m="m2"] .velo { background: linear-gradient(0deg, rgba(45, 37, 96, 0.96) 0%, rgba(45, 37, 96, 0.78) 28%, rgba(45, 37, 96, 0) 52%); }
+        .titulo, .muro-v[data-m="m2"] .titulo { top: auto; bottom: 9svh; right: max(var(--margen), env(safe-area-inset-right, 0px)); translate: none; max-width: none; gap: 10px; }
+        .titulo h2, .muro-v[data-m="m2"] .titulo h2 { font-size: 36px; }
+        .muro-v:not([data-m="hoy"]) .titulo p { display: none; }
+        .indice li:not(.on) { display: none; } .indice li.on button { translate: none; }
+        .muro-v[data-m="m2"] .giro { inset: -10% -30% -30% -30%; }
+        .navegador { top: calc(64px + env(safe-area-inset-top, 0px)); bottom: auto; width: 66vw; height: 22svh; }
+        .prueba { top: auto; bottom: 7svh; translate: none; max-width: 60vw; }
+        .prueba h2 { font-size: 32px; } .prueba p { font-size: 14px; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { .chip i { animation: none; } .leyenda span:last-child { animation: none; } }
+</style>
+
+<div class="grilla intro"><span class="mono">Tap In · De la 11 al teléfono</span><p>Tres partes: la decisión 11 auditada, con un conmutador entre hoy y con mejoras; seis pasos desde la 11 al muro; y el muro auditado, con tres mejoras. Baja por cada escena y cambia con el selector de abajo. Las notas están al final.</p></div>
+
+<!-- =======================================================
+     PARTE 1 · LA DECISIÓN 11
+     ======================================================= -->
+<section class="grilla once" id="once" data-ver="mejor">
+    <div class="parte"><span><span class="mono">Parte 1 · </span><b>La decisión 11</b></span>
+        <div class="conmuta" role="group" aria-label="Versión de la decisión 11"><button type="button" data-ver="hoy" aria-pressed="false">Hoy</button><button type="button" data-ver="mejor" aria-pressed="true">Con mejoras</button></div></div>
+    <div class="v-hoy"><picture><source media="(max-width: 768px)" srcset="once-m.webp"><img src="once-d.webp" alt="La decisión 11 como está hoy en el caso"></picture></div>
+    <div class="v-mejor">
+        <div class="izq">
+            <div class="riel"><span class="num" aria-hidden="true">11</span><span class="mono">Decisión 11</span></div>
+            <div class="txt">
+                <h3>Un mockup con empatía</h3>
+                <p>En el comedor cambié un "acceso denegado" por pago, validación y <mark>el panel al día</mark>.</p>
+                <p class="porque"><span class="mono">Por qué</span>Que un niño no almuerce es duro para una familia.</p>
+            </div>
+        </div>
+        <div class="der">
+            <div class="escena11" data-escena11>
+                <div class="mk" data-mk="comedor.html" data-sinc><img src="tp-mk-comedor.webp" alt="Mockup en vivo del comedor: el apoderado paga, el pago se valida y el panel del comedor se actualiza"></div>
+                <span class="chip"><i></i>En vivo</span><span class="modulo mono">Comedor Escolar</span>
+                <div class="antes-vista" aria-hidden="true"><div class="denegado"><i>×</i><b>Acceso denegado</b><span>Sin saldo para el almuerzo de hoy</span><small class="mono">Así era, antes</small></div></div>
+            </div>
+            <ol class="flujo" aria-label="Lo que cambió en el comedor">
+                <li><button type="button" class="caja antes" data-antes aria-label="Ver cómo era antes: acceso denegado"><small>Antes</small><b>Acceso denegado</b></button></li>
+                <li class="flecha" aria-hidden="true">→</li>
+                <li><div class="caja tramo" data-p="0"><small>01</small><b>Pago</b><i></i></div></li>
+                <li><div class="caja tramo" data-p="1"><small>02</small><b>Validación</b><i></i></div></li>
+                <li><div class="caja tramo" data-p="2"><small>03</small><b>Panel al día</b><i></i></div></li>
+            </ol>
+            <p class="leyenda" aria-live="polite" data-leyenda><span class="mono">··</span><span>El flujo avanza al ritmo del mockup.</span></p>
+        </div>
+        <div class="otros">
+            <header><b>Los otros módulos, también en vivo</b><span class="mono" data-pista-mini>Pasa el cursor para animarlos</span></header>
+            <div class="fila">
+                <figure class="mini"><div class="mk" data-mk="cpa.html"><img src="tp-mk-cpa.webp" alt=""></div><span class="estado">En pausa</span><figcaption><b>Centro de Padres</b><span>La cartola bancaria se clasifica sola</span></figcaption></figure>
+                <figure class="mini"><div class="mk" data-mk="gestion.html"><img src="tp-mk-gestion.webp" alt=""></div><span class="estado">En pausa</span><figcaption><b>Gestión Interna</b><span>Una tarea que llega por WhatsApp</span></figcaption></figure>
+                <figure class="mini"><div class="mk" data-mk="talleres.html"><img src="tp-mk-talleres.webp" alt=""></div><span class="estado">En pausa</span><figcaption><b>Talleres y Ligas</b><span>Los cupos se llenan y se cierran solos</span></figcaption></figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =======================================================
+     PARTE 2 · PASOS
+     ======================================================= -->
+<div class="grilla"><div class="parte"><span><span class="mono">Parte 2 · </span><b>De la 11 al teléfono</b></span><span class="mono">Seis pasos · selector abajo</span></div></div>
+<section class="esc paso" id="paso" data-esc="paso" data-v="c">
+    <div class="fijo">
+        <div class="l-once"><picture><source media="(max-width: 768px)" srcset="once-m.webp"><img src="once-d.webp" alt="La decisión 11"></picture></div>
+        <div class="l-muro">
+            <div class="fondo"></div>
+            <div class="muro" data-muro></div>
+            <div class="velo"></div>
+            <div class="titulo"><span class="rot mono">tapin.cl en el teléfono</span><h2>Todo el sitio, también en el teléfono</h2><p>La misma web, diseñada y programada a la par.</p></div>
+            <div class="lav"><picture><source media="(max-width: 768px)" srcset="once-m.webp"><img src="once-d.webp" alt=""></picture></div>
+        </div>
+        <div class="tel solo" data-solo><div class="pant"><img src="movil.jpg" alt=""></div></div>
+        <span class="etapa mono" data-etapa>C · Un teléfono, todo el sitio</span>
+    </div>
+</section>
+
+<!-- =======================================================
+     PARTE 3 · EL MURO
+     ======================================================= -->
+<div class="grilla"><div class="parte"><span><span class="mono">Parte 3 · </span><b>El muro, con mejoras</b></span><span class="mono">Hoy y tres mejoras · selector abajo</span></div></div>
+<section class="esc muro-v" id="muro" data-esc="muro" data-m="m1">
+    <div class="fijo">
+        <div class="fondo"></div>
+        <div class="muro" data-muro></div>
+        <div class="velo"></div>
+        <div class="titulo" data-titulo3>
+            <span class="rot mono">tapin.cl en el teléfono</span>
+            <h2>Todo el sitio, también en el teléfono</h2>
+            <p class="hoy">La misma web, diseñada y programada a la par.</p>
+            <p class="nuevo">La misma web, diseñada y programada a la par. Un recorrido por sus partes:</p>
+            <ol class="indice" data-indice></ol>
+            <span class="pista mono" data-pista>Pasa el cursor por una pantalla</span>
+        </div>
+        <figure class="navegador" data-nav><div class="barra"><i></i><i></i><i></i><span>tapin.cl</span></div><div class="pant"><img src="sitio.jpg" alt="tapin.cl en escritorio"></div><figcaption data-nav-txt>Escritorio · Inicio</figcaption></figure>
+        <div class="prueba" data-prueba><span class="mono">tapin.cl en el teléfono</span><h2>Es el sitio. Pruébalo.</h2><p>Desliza dentro del teléfono: es la versión móvil, entera.</p></div>
+        <div class="tel solo" data-solo3><div class="pant"><img src="movil.jpg" alt="tapin.cl en el teléfono, se puede recorrer"></div><span class="avance" aria-hidden="true"><i></i></span></div>
+    </div>
+</section>
+
+<nav class="selector" data-sel="paso" aria-label="Pasos de la 11 al teléfono">
+    <button type="button" data-ir="a" aria-pressed="false"><b>A</b><span>Hoja</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Barrido</span></button>
+    <button type="button" data-ir="c" aria-pressed="true"><b>C</b><span>Un teléfono</span></button>
+    <button type="button" data-ir="d" aria-pressed="false"><b>D</b><span>Columnas</span></button>
+    <button type="button" data-ir="e" aria-pressed="false"><b>E</b><span>Fundido</span></button>
+    <button type="button" data-ir="f" aria-pressed="false"><b>F</b><span>Zoom</span></button>
+</nav>
+<nav class="selector" data-sel="muro" aria-label="Versiones del muro">
+    <button type="button" data-ir="hoy" aria-pressed="false"><b>Hoy</b></button>
+    <button type="button" data-ir="m1" aria-pressed="true"><b>M1</b><span>Recorrido</span></button>
+    <button type="button" data-ir="m2" aria-pressed="false"><b>M2</b><span>A la par</span></button>
+    <button type="button" data-ir="m3" aria-pressed="false"><b>M3</b><span>Pruébalo</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de la 11</h2>
+    <div class="bloque">
+        <p>La pieza está bien resuelta; lo que falta es que muestre la empatía en vez de solo contarla.</p>
+        <ul class="lista">
+            <li><span class="mono ojo">Relato · revisar</span><span>El paso 03 dice "Aviso de saldo", pero el mockup muestra otra cosa: el panel del comedor registra el pago (Juan pasa de pendiente a suscrito y suben las métricas)</span><span>Paso 03 como "Panel al día" y la frase ajustada: "…por pago, validación y el panel al día". Cambia el texto de la decisión, así que necesita tu visto bueno</span></li>
+            <li><span class="mono">El antes</span><span>"Acceso denegado" está tachado pero nunca se ve</span><span>Al pasar el cursor (o tocar) "Antes", el escenario muestra la pantalla que había. Al soltar, vuelve el flujo</span></li>
+            <li><span class="mono">Pasos</span><span>Solo el nombre: quien no mira el mockup no sabe qué pasa en cada uno</span><span>Una línea bajo el flujo que cambia con el paso ("El apoderado paga desde el celular")</span></li>
+            <li><span class="mono">Escenario</span><span>El mockup ocupa cerca del 60% del escenario y queda corrido a la derecha</span><span>Un 10% más grande y centrado: el teléfono y el panel se leen mejor</span></li>
+            <li><span class="mono">Ruido</span><span>Cuatro mockups animándose a la vez compiten con el del comedor, que es la decisión</span><span>Los tres de abajo quietos con su póster; se animan al pasar el cursor (en móvil, el que queda al centro del carrusel). También ahorra batería</span></li>
+            <li><span class="mono">Final</span><span>El número y el texto se sueltan en momentos distintos, y la sombra de la hoja queda arriba de la 11</span><span>Riel y texto en un solo bloque fijo, que se suelta entero; la sombra se apaga cuando la hoja termina de subir</span></li>
+            <li><span class="mono">Más contexto</span><span>El desplegable repite la idea de los mockups programados, que ya cuenta la fila de abajo</span><span>Sale; la fila "Los otros módulos, también en vivo" lo dice sola</span></li>
+        </ul>
+    </div>
+    <h2>Pasos de la 11 al teléfono</h2>
+    <div class="bloque">
+        <p>Hoy es un corte seco de lavanda a morado, con un hueco claro de por medio.</p>
+        <div class="ops" data-ops="paso">
+            <button type="button" class="op" data-ir="a" aria-pressed="false"><span class="mono">A · Hoja morada</span><strong>El muro sube como hoja</strong><p>La sección del teléfono sube sobre la 11 con las esquinas redondeadas y sombra; la 11 se aleja y se oscurece. Es el mismo gesto que el paso del sitio a la 11, al revés.</p></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Barrido inclinado</span><strong>El morado entra en diagonal</strong><p>El borde del morado entra con la misma inclinación del muro (12°): el ángulo anticipa lo que viene.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="true"><span class="mono">C · Un teléfono, todo el sitio</span><strong>Del mockup al sitio entero</strong><p>Un teléfono sale del comedor y crece al centro mientras el fondo se vuelve morado. Luego la cámara se aleja: el teléfono se acomoda en el muro y aparecen los demás a su alrededor. Cuenta el paso de un módulo a todo el sitio.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="d" aria-pressed="false"><span class="mono">D · Columnas que suben</span><strong>El muro tapa la 11</strong><p>Las columnas de teléfonos suben sobre la 11, cada una con su retraso; el morado llena el fondo detrás y aparece el título.</p></button>
+            <button type="button" class="op" data-ir="e" aria-pressed="false"><span class="mono">E · Del claro al morado</span><strong>Un fundido sin bordes</strong><p>La 11 sube, se desenfoca y se apaga mientras el muro aparece detrás, como la salida del manual hacia la portada del capítulo 03.</p></button>
+            <button type="button" class="op" data-ir="f" aria-pressed="false"><span class="mono">F · Zoom al escenario</span><strong>Entrar por el comedor</strong><p>El escenario del comedor se abre hasta llenar la pantalla y adentro está el muro. Es el recurso de la ventana de la portada del capítulo 03.</p></button>
+        </div>
+    </div>
+    <h2>Audit del muro</h2>
+    <div class="bloque">
+        <p>Se ve bien, pero es textura: no hay nada que leer ni que recorrer.</p>
+        <ul class="lista">
+            <li><span class="mono">Mensaje</span><span>"Todo el sitio, también en el teléfono" se ve, pero no se recorre</span><span>Que el muro nombre las partes del sitio y las muestre una a una</span></li>
+            <li><span class="mono">Encuadres</span><span>Los cortes caen a mitad de bloque y se repiten (Las dudas aparece tres veces cerca)</span><span>Cada teléfono empieza donde empieza una de las ocho partes del sitio, y los vecinos nunca repiten</span></li>
+            <li><span class="mono">Contraste</span><span>El velo y el brillo apagan las pantallas; varias se ven lavadas</span><span>Velo más corto y brillo a la mitad</span></li>
+            <li><span class="mono">Scroll</span><span>260 svh de recorrido en los que solo hay parallax</span><span>El scroll hace algo: recorre partes (M1), compara con el escritorio (M2) o termina en un teléfono que se usa (M3)</span></li>
+            <li><span class="mono">Prueba</span><span>"Diseñada y programada a la par" no se demuestra</span><span>M2 lo demuestra con el escritorio al lado; M3 deja usar el sitio</span></li>
+            <li><span class="mono">Móvil</span><span>El título y el párrafo tapan casi la mitad de la pantalla</span><span>Título más corto en altura y una sola línea de índice</span></li>
+        </ul>
+    </div>
+    <h2>Mejoras del muro</h2>
+    <div class="bloque">
+        <p>Las tres traen los encuadres, el contraste y el móvil corregidos.</p>
+        <div class="ops" data-ops="muro">
+            <button type="button" class="op" data-ir="m1" aria-pressed="true"><span class="mono">M1 · Recorrido guiado</span><strong>El scroll recorre el sitio</strong><p>Cinco paradas (Inicio, Los módulos, Todo conectado, Las dudas, La demo). En cada una, un teléfono se adelanta y se endereza, su pantalla baja por esa parte y el índice bajo el título la marca. El índice se puede tocar y el cursor sigue mandando.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="m2" aria-pressed="false"><span class="mono">M2 · A la par</span><strong>Escritorio y teléfono juntos</strong><p>Las mismas paradas, con un navegador al lado que muestra esa parte en escritorio. Demuestra literalmente "diseñada y programada a la par".</p></button>
+            <button type="button" class="op" data-ir="m3" aria-pressed="false"><span class="mono">M3 · Pruébalo</span><strong>Un teléfono que se usa</strong><p>El muro se endereza y la cámara entra a un teléfono, que queda grande y se puede recorrer con la rueda o el dedo. En el caso sería el sitio real dentro del teléfono; aquí es la captura completa.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · DE LA 11 AL MURO
+       ======================================================= */
+    (function () {
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const cursor = window.matchMedia('(hover: hover)').matches;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+        const mezcla = (a, b, t) => a + (b - a) * t;
+        const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* sin almacenamiento */ } };
+        const leer = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+
+        /* --- 1. MOCKUPS EN VIVO --- */
+        /* Igual que en el caso: el iframe se monta cerca, se escala al ancho y mockup-start lo reinicia desde cero */
+        const msj = (m, tipo) => { const f = m.querySelector('iframe'); if (!f || !m.classList.contains('listo')) return; try { f.contentWindow.postMessage({ type: tipo }, '*'); } catch (e) { /* sin acceso */ } m.dispatchEvent(new Event(tipo)); };
+        const escalar = m => { const f = m.querySelector('iframe'); if (f) f.style.setProperty('--escala', (m.clientWidth / 900).toFixed(4)); };
+        const ro = new ResizeObserver(es => es.forEach(e => escalar(e.target)));
+        const montar = (m, alListo) => {
+            if (m.querySelector('iframe')) return;
+            const f = document.createElement('iframe');
+            f.title = 'Mockup animado de tapin.cl'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+            f.onload = () => { m.classList.add('listo'); if (alListo) alListo(); };
+            f.src = m.dataset.mk + '?frameless'; m.appendChild(f); escalar(m); ro.observe(m);
+        };
+
+        /* El comedor: se monta y anima solo mientras se ve; el flujo sigue su reloj (18,3 s por vuelta) */
+        const comedor = document.querySelector('[data-sinc]');
+        const pasos = [...document.querySelectorAll('.flujo .tramo')], leyenda = document.querySelector('[data-leyenda]');
+        const TRAMOS = [[0, 4000], [4000, 10900], [10900, 17600]], VUELTA = 18300;
+        const FRASES = ['El apoderado paga la mensualidad desde el celular.', 'El pago se aprueba y llega el comprobante.', 'El panel del comedor lo registra: Juan pasa de pendiente a suscrito.'];
+        let t0 = 0, reloj = null, fraseN = -2, comedorVe = false;
+        const decir = n => { if (n === fraseN) return; fraseN = n; leyenda.innerHTML = n < 0 ? '<span class="mono">··</span><span>El comedor vuelve a empezar.</span>' : `<span class="mono">0${n + 1}</span><span>${FRASES[n]}</span>`; };
+        const marcar = ahora => {
+            const t = (ahora - t0) % VUELTA, vuelve = t >= TRAMOS[2][1]; let n = -1;
+            pasos.forEach((p, k) => { const [a, b] = TRAMOS[k], on = t >= a && t < b; if (on) n = k; p.classList.toggle('on', on); p.classList.toggle('ya', t >= b && !vuelve); p.style.setProperty('--av', vuelve ? 0 : fijar((t - a) / (b - a)).toFixed(3)); });
+            decir(n); reloj = requestAnimationFrame(marcar);
+        };
+        comedor.addEventListener('mockup-start', () => { t0 = performance.now(); if (!reloj) reloj = requestAnimationFrame(marcar); });
+        comedor.addEventListener('mockup-stop', () => { cancelAnimationFrame(reloj); reloj = null; });
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) t0 = performance.now(); });
+        new IntersectionObserver(es => es.forEach(e => { comedorVe = e.isIntersecting; if (e.isIntersecting) montar(comedor, () => { if (comedorVe && !quieto) msj(comedor, 'mockup-start'); }); if (!quieto) msj(comedor, e.isIntersecting ? 'mockup-start' : 'mockup-stop'); }), { threshold: 0.25 }).observe(comedor);
+
+        /* El antes: con el cursor encima, el foco o un toque, el escenario muestra la pantalla que había */
+        const esc11 = document.querySelector('[data-escena11]'), antes = document.querySelector('[data-antes]');
+        const verAntes = v => esc11.classList.toggle('antes', v);
+        if (cursor) { antes.addEventListener('pointerenter', () => verAntes(true)); antes.addEventListener('pointerleave', () => verAntes(false)); }
+        antes.addEventListener('focus', () => verAntes(true)); antes.addEventListener('blur', () => verAntes(false));
+        antes.addEventListener('click', () => { if (!cursor) verAntes(!esc11.classList.contains('antes')); });
+
+        /* Los otros tres: quietos con su póster; se animan con el cursor encima (en móvil, el del centro del carrusel) */
+        const minis = [...document.querySelectorAll('.mini')];
+        const animar = (fig, si) => { const m = fig.querySelector('.mk'); fig.classList.toggle('vivo', si); fig.querySelector('.estado').textContent = si ? 'En vivo' : 'En pausa'; if (si) { if (m.classList.contains('listo')) msj(m, 'mockup-start'); else montar(m, () => { if (fig.classList.contains('vivo')) msj(m, 'mockup-start'); }); } else { msj(m, 'mockup-stop'); m.classList.remove('listo'); setTimeout(() => { if (!fig.classList.contains('vivo')) { const f = m.querySelector('iframe'); if (f) { ro.unobserve(m); f.remove(); } } }, 600); } };
+        if (cursor) minis.forEach(fig => { fig.addEventListener('pointerenter', () => animar(fig, true)); fig.addEventListener('pointerleave', () => animar(fig, false)); });
+        else {
+            document.querySelector('[data-pista-mini]').textContent = 'Desliza; se anima el del centro';
+            const fila = document.querySelector('.fila');
+            new IntersectionObserver(es => es.forEach(e => animar(e.target, e.isIntersecting)), { root: fila, threshold: 0.8 }).observe(minis[0]);
+            minis.slice(1).forEach(fig => new IntersectionObserver(es => es.forEach(e => animar(e.target, e.isIntersecting)), { root: fila, threshold: 0.8 }).observe(fig));
+        }
+
+        /* Conmutador hoy / con mejoras */
+        const once = document.getElementById('once');
+        once.querySelectorAll('.conmuta button').forEach(b => b.addEventListener('click', () => { once.dataset.ver = b.dataset.ver; once.querySelectorAll('.conmuta button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); }));
+
+        /* --- 2. EL MURO --- */
+        /* Captura móvil de 390 × 6636. Las ocho partes del sitio con su altura en móvil y en escritorio (1440 × 5140) */
+        const M_ANCHO = 390, M_ALTO = 6636, D_ANCHO = 1440, D_ALTO = 5140;
+        const PARTES = [['Inicio', 0, 0], ['El día a día', 1110, 1150], ['Los módulos', 1880, 1830], ['Todo conectado', 2870, 2830], ['El ecosistema', 3330, 2830], ['Las dudas', 4210, 3330], ['La demo', 5420, 4330], ['El formulario', 6050, 4330]];
+        const TRAMOS_COL = [[4, -40], [-38, 0], [0, -42], [-36, -2]];
+        const encuadrar = (img, ancho, alto, y) => { const pant = img.parentElement, e = pant.clientWidth / ancho, vis = pant.clientHeight / e, max = Math.max(alto - vis, 0); img.style.transform = `translate3d(0, ${(-fijar(y, 0, max) * e).toFixed(1)}px, 0)`; return max; };
+        const ponerY = (t, y) => { t.y = y; t.max = encuadrar(t.querySelector('img'), M_ANCHO, M_ALTO, y); };
+        /* "hoy" repite los cortes del caso; "nuevo" usa el inicio de cada parte, sin repetir entre vecinos */
+        const armar = (cont, modo) => {
+            const n = window.innerWidth >= 1100 ? 4 : 3;
+            cont.innerHTML = `<div class="giro">${TRAMOS_COL.slice(0, n).map(([a, b], k) => `<div class="col" style="--a:${a}%;--b:${b}%">${Array.from({ length: 7 }, (_, i) => {
+                const s = modo === 'hoy' ? -1 : (i * 3 + k * 2) % 8, y = modo === 'hoy' ? ((i * 0.23 + k * 0.41) % 0.97) * 5791 : PARTES[s][1];
+                return `<div class="tel" data-s="${s}" data-y="${Math.round(y)}" data-k="${k}" data-i="${i}"><div class="pant"><img src="movil.jpg" alt="" decoding="async"></div></div>`; }).join('')}</div>`).join('')}</div>`;
+            const tels = [...cont.querySelectorAll('.tel')];
+            tels.forEach(t => { t.dir = 1; ponerY(t, +t.dataset.y); });
+            return tels;
+        };
+        /* Cursor encima (o toque): el teléfono se adelanta y su pantalla recorre el sitio de ida y vuelta */
+        const vivir = (cont, alCambiar) => {
+            const st = { mano: null }; let rec = null, ult = 0;
+            const recorrer = ahora => { const t = st.mano; if (!t) { rec = null; return; } const dt = Math.min(ahora - ult, 50); ult = ahora; let y = t.y + t.dir * dt * (t.max || 5800) / 16000; if (y >= t.max || y <= 0) t.dir *= -1; ponerY(t, fijar(y, 0, t.max)); rec = requestAnimationFrame(recorrer); };
+            const poner = t => { if (st.mano === t) return; if (st.mano) st.mano.classList.remove('on'); st.mano = t; cont.classList.toggle('mano', !!t); if (t) { t.classList.add('on'); if (!rec && !quieto) { ult = performance.now(); rec = requestAnimationFrame(recorrer); } } if (alCambiar) alCambiar(t); };
+            if (cursor) { cont.addEventListener('pointerover', e => { const t = e.target.closest('.tel'); if (t) poner(t); }); cont.addEventListener('pointerout', e => { const t = e.target.closest('.tel'); if (t && !t.contains(e.relatedTarget)) poner(null); }); }
+            else cont.closest('.fijo').addEventListener('click', e => { const t = e.target.closest('.muro .tel'); poner(t && t !== st.mano ? t : null); });
+            st.soltar = () => poner(null);
+            return st;
+        };
+        if (!cursor) document.querySelectorAll('[data-pista]').forEach(p => (p.textContent = 'Toca una pantalla para recorrerla'));
+        const centro = el => { const r = el.getBoundingClientRect(), f = el.closest('.fijo').getBoundingClientRect(); return { x: r.left + r.width / 2 - f.left, y: r.top + r.height / 2 - f.top }; };
+        const ubicar = (solo, cx, cy, w, giro) => { const h = w * 19.5 / 9; solo.style.setProperty('--w', `${w.toFixed(1)}px`); solo.style.width = `${w.toFixed(1)}px`; solo.style.transform = `translate3d(${(cx - w / 2).toFixed(1)}px, ${(cy - h / 2).toFixed(1)}px, 0) rotate(${giro.toFixed(2)}deg)`; };
+
+        /* --- 3. PARTE 2: SEIS PASOS DE LA 11 AL MURO --- */
+        const paso = document.getElementById('paso'), fijoP = paso.querySelector('.fijo');
+        const P = { once: paso.querySelector('.l-once'), muro: paso.querySelector('.l-muro'), fondo: paso.querySelector('.l-muro .fondo'), cont: paso.querySelector('[data-muro]'), velo: paso.querySelector('.l-muro .velo'), titulo: paso.querySelector('.l-muro .titulo'), lav: paso.querySelector('.lav'), solo: paso.querySelector('[data-solo]') };
+        let telsP = armar(P.cont, 'nuevo'), slotP = telsP.find(t => t.dataset.k === '1' && t.dataset.s === '0') || telsP[0];
+        const manoP = vivir(P.cont);
+        /* Rectángulos de la captura de la 11 (en px de 1440 × 900 y de 390 × 844): el escenario y el teléfono del mockup */
+        const ESCENARIO = { d: [731, 140, 637, 425, 26], m: [23, 409, 344, 230, 18] }, TEL_MK = { d: [923, 181, 184, 343], m: [126, 431, 100, 185] };
+        const enOnce = R => { const W = fijoP.clientWidth, H = fijoP.clientHeight, m = W <= 768, B = m ? [390, 844] : [1440, 900], r = m ? R.m : R.d, s = Math.max(W / B[0], H / B[1]), ox = (W - B[0] * s) / 2; return { x: ox + r[0] * s, y: r[1] * s, w: r[2] * s, h: r[3] * s, r: (r[4] || 0) * s }; };
+        const NOMBRES = { a: 'A · Hoja morada', b: 'B · Barrido inclinado', c: 'C · Un teléfono, todo el sitio', d: 'D · Columnas que suben', e: 'E · Del claro al morado', f: 'F · Zoom al escenario' };
+        const limpiarP = () => {
+            [P.once, P.muro, P.fondo, P.cont, P.velo, P.titulo, P.lav].forEach(x => x.removeAttribute('style'));
+            P.once.querySelector('img').removeAttribute('style'); P.solo.style.opacity = 0;
+            telsP.forEach(t => { t.style.opacity = ''; }); P.cont.querySelectorAll('.col').forEach(c => c.style.removeProperty('--sube'));
+        };
+        const pasoP = (el, p) => {
+            const v = paso.dataset.v, t = fijar((p - 0.1) / 0.62), W = fijoP.clientWidth, H = fijoP.clientHeight, aparece = x => (P.titulo.style.opacity = x.toFixed(3));
+            P.cont.style.setProperty('--q', p.toFixed(4));
+            if (v === 'a') {
+                P.muro.style.transform = `translate3d(0, ${((1 - t) * 100).toFixed(2)}%, 0)`;
+                const r = 36 * (1 - t); P.muro.style.borderRadius = `${r}px ${r}px 0 0`; P.muro.style.boxShadow = `0 -30px 60px rgba(28, 26, 46, ${(0.3 * Math.min(t * 6, 1) * (1 - t)).toFixed(3)})`;
+                P.once.style.transform = `scale(${(1 - 0.05 * t).toFixed(4)})`; P.once.querySelector('img').style.filter = `brightness(${(1 - 0.35 * t).toFixed(3)})`;
+                aparece(fijar((t - 0.55) / 0.35));
+            } else if (v === 'b') {
+                const d = W * Math.tan(12 * Math.PI / 180), y = H - (H + d) * t;
+                P.muro.style.clipPath = `polygon(0 ${(y + d).toFixed(1)}px, 100% ${y.toFixed(1)}px, 100% 100%, 0 100%)`;
+                P.once.style.transform = `translate3d(0, ${(-0.06 * H * t).toFixed(1)}px, 0)`;
+                aparece(fijar((t - 0.55) / 0.35));
+            } else if (v === 'c') {
+                const a = curva(fijar(t / 0.45)), b = curva(fijar((t - 0.5) / 0.45)), ini = enOnce(TEL_MK), wG = Math.min(0.323 * H, 0.42 * W), sl = centro(slotP), wS = slotP.offsetWidth;
+                P.once.style.opacity = (1 - a).toFixed(3); P.fondo.style.opacity = a.toFixed(3); P.velo.style.opacity = fijar((b - 0.4) / 0.6).toFixed(3); aparece(fijar((b - 0.4) / 0.6));
+                const cx = b > 0 ? mezcla(W / 2, sl.x, b) : mezcla(ini.x + ini.w / 2, W / 2, a), cy = b > 0 ? mezcla(H / 2, sl.y, b) : mezcla(ini.y + ini.h / 2, H / 2, a), w = b > 0 ? mezcla(wG, wS, b) : mezcla(ini.w, wG, a);
+                ubicar(P.solo, cx, cy, w, -12 * b); encuadrar(P.solo.querySelector('img'), M_ANCHO, M_ALTO, 0);
+                P.solo.style.opacity = t > 0 && b < 1 ? 1 : 0;
+                const lejos = Math.hypot(W, H) * 0.7;
+                telsP.forEach(x => { if (x === slotP) { x.style.opacity = b >= 1 ? 1 : 0; return; } const c = centro(x), dd = Math.hypot(c.x - sl.x, c.y - sl.y) / lejos; x.style.opacity = fijar(b * 1.8 - dd).toFixed(3); });
+            } else if (v === 'd') {
+                P.cont.querySelectorAll('.col').forEach((c, k) => c.style.setProperty('--sube', (1 - curva(fijar((t - k * 0.1) / 0.55))).toFixed(4)));
+                const f = fijar((t - 0.3) / 0.4); P.fondo.style.opacity = f.toFixed(3); P.velo.style.opacity = f.toFixed(3); aparece(fijar((t - 0.62) / 0.3));
+            } else if (v === 'e') {
+                const e = curva(t);
+                P.once.style.opacity = (1 - e).toFixed(3); P.once.style.transform = `translate3d(0, ${(-0.18 * H * e).toFixed(1)}px, 0)`; P.once.style.filter = `blur(${(6 * e).toFixed(2)}px)`;
+                P.muro.style.opacity = e.toFixed(3); P.cont.style.transform = `scale(${(1.08 - 0.08 * e).toFixed(4)})`;
+                P.titulo.style.transform = `translate3d(0, ${(24 * (1 - e)).toFixed(1)}px, 0)`; aparece(fijar((t - 0.4) / 0.6));
+            } else {
+                const f = curva(t), R = enOnce(ESCENARIO);
+                P.muro.style.clipPath = t <= 0 ? 'inset(50%)' : `inset(${(R.y * (1 - f)).toFixed(1)}px ${((W - R.x - R.w) * (1 - f)).toFixed(1)}px ${((H - R.y - R.h) * (1 - f)).toFixed(1)}px ${(R.x * (1 - f)).toFixed(1)}px round ${(R.r * (1 - f)).toFixed(1)}px)`;
+                P.lav.style.transformOrigin = `${(R.x + R.w / 2).toFixed(1)}px ${(R.y + R.h / 2).toFixed(1)}px`;
+                P.lav.style.transform = `scale(${(1 + (W / R.w - 1) * f).toFixed(4)})`; P.lav.style.opacity = (1 - fijar((f - 0.04) / 0.28)).toFixed(3);
+                P.cont.style.transform = `scale(${(1.2 - 0.2 * f).toFixed(4)})`; aparece(fijar((t - 0.6) / 0.3));
+            }
+        };
+
+        /* --- 4. PARTE 3: EL MURO, HOY Y CON MEJORAS --- */
+        const muroS = document.getElementById('muro'), fijoM = muroS.querySelector('.fijo');
+        const M = { cont: muroS.querySelector('[data-muro]'), indice: muroS.querySelector('[data-indice]'), navImg: muroS.querySelector('[data-nav] img'), navTxt: muroS.querySelector('[data-nav-txt]'), titulo: muroS.querySelector('[data-titulo3]'), prueba: muroS.querySelector('[data-prueba]'), solo: muroS.querySelector('[data-solo3]'), velo: muroS.querySelector('.velo') };
+        const PARADAS = [0, 2, 3, 5, 6], INI = 0.06, LARGO = 0.88;
+        M.indice.innerHTML = PARADAS.map((s, n) => `<li data-n="${n}"><button type="button"><span class="mono">0${n + 1}</span>${PARTES[s][0]}</button></li>`).join('');
+        let telsM = [], guia = null, paradaN = -1, navY = 0, navMeta = 0, pruebaY = 0, juega = false;
+        const manoM = vivir(M.cont);
+        const armarM = () => { manoM.soltar(); telsM = armar(M.cont, muroS.dataset.m === 'hoy' ? 'hoy' : 'nuevo'); guia = null; paradaN = -1; M.cont.classList.remove('guiado'); [M.titulo, M.prueba, M.solo, M.cont, M.velo].forEach(x => x.removeAttribute('style')); M.solo.classList.remove('juega'); juega = false; pruebaY = 0; };
+        /* El teléfono de cada parada: el más cercano al punto de lectura, que pasa a mostrar esa parte */
+        const elegirGuia = () => { const W = fijoM.clientWidth, H = fijoM.clientHeight, m = W <= 768, px = m ? W * 0.5 : W * (muroS.dataset.m === 'm2' ? 0.7 : 0.62), py = m ? H * (muroS.dataset.m === 'm2' ? 0.6 : 0.36) : H * 0.5; let mejor = null, dist = 1e9; telsM.forEach(t => { const c = centro(t), d = Math.hypot(c.x - px, c.y - py); if (d < dist) { dist = d; mejor = t; } }); return mejor; };
+        const pasoM = (el, p) => {
+            const modo = muroS.dataset.m, W = fijoM.clientWidth, H = fijoM.clientHeight;
+            M.cont.style.setProperty('--q', p.toFixed(4));
+            if (modo === 'm1' || modo === 'm2') {
+                const u = fijar((p - INI) / LARGO) * PARADAS.length, n = Math.min(Math.floor(u), PARADAS.length - 1), local = fijar(u - n), s = PARADAS[n];
+                M.cont.classList.toggle('guiado', p > INI * 0.5 && p < INI + LARGO + 0.03);
+                if (n !== paradaN) { paradaN = n; if (guia) { guia.classList.remove('guia'); ponerY(guia, +guia.dataset.y); } guia = elegirGuia(); if (guia) guia.classList.add('guia'); M.indice.querySelectorAll('li').forEach(li => li.classList.toggle('on', +li.dataset.n === n)); navMeta = PARTES[s][2]; M.navTxt.textContent = `Escritorio · ${PARTES[s][0]}`; }
+                if (guia && manoM.mano !== guia) ponerY(guia, PARTES[s][1] + local * 420);
+                navMeta = PARTES[s][2] + local * 320;
+            } else if (modo === 'm3') {
+                const z = curva(fijar((p - 0.32) / 0.34));
+                if (!guia) guia = telsM.find(t => t.dataset.k === '1' && t.dataset.i === '3') || telsM[0];
+                const c = centro(guia), wS = guia.offsetWidth, wG = Math.min(0.36 * H, W <= 768 ? 0.5 * W : 0.3 * W), cxF = W <= 768 ? W * 0.64 : W * 0.62;
+                M.cont.style.opacity = (1 - z).toFixed(3); M.cont.style.pointerEvents = z > 0.3 ? 'none' : ''; M.cont.style.transform = `scale(${(1 + 0.18 * z).toFixed(4)})`; M.cont.style.transformOrigin = `${c.x.toFixed(0)}px ${c.y.toFixed(0)}px`;
+                M.titulo.style.opacity = (1 - fijar(z * 2)).toFixed(3); M.prueba.style.opacity = fijar((p - 0.62) / 0.1).toFixed(3); M.velo.style.opacity = (1 - z * 0.6).toFixed(3);
+                if (z > 0) { if (!juega) pruebaY = guia.y; ubicar(M.solo, mezcla(c.x, cxF, z), mezcla(c.y, H * (W <= 768 ? 0.42 : 0.5), z), mezcla(wS, wG, z), mezcla(-12, 0, z)); M.solo.style.opacity = 1; guia.style.opacity = 0; ponerSolo(); }
+                else { M.solo.style.opacity = 0; guia.style.opacity = ''; }
+                const ahora = z >= 0.999; if (ahora !== juega) { juega = ahora; M.solo.classList.toggle('juega', juega); }
+            }
+        };
+        const ponerSolo = () => { const max = encuadrar(M.solo.querySelector('img'), M_ANCHO, M_ALTO, pruebaY); pruebaY = fijar(pruebaY, 0, max); M.solo.style.setProperty('--av', (pruebaY / max).toFixed(3)); return max; };
+        /* El teléfono de M3 se recorre con la rueda o arrastrando; en los extremos la rueda sigue con la página */
+        M.solo.addEventListener('wheel', e => { if (!juega) return; const e2 = M.solo.querySelector('.pant').clientWidth / M_ANCHO, max = ponerSolo(); if ((e.deltaY > 0 && pruebaY >= max) || (e.deltaY < 0 && pruebaY <= 0)) return; e.preventDefault(); pruebaY += e.deltaY / e2; ponerSolo(); }, { passive: false });
+        let arrastre = null;
+        M.solo.addEventListener('pointerdown', e => { if (!juega) return; arrastre = e.clientY; M.solo.setPointerCapture(e.pointerId); });
+        M.solo.addEventListener('pointermove', e => { if (arrastre === null) return; const e2 = M.solo.querySelector('.pant').clientWidth / M_ANCHO; pruebaY -= (e.clientY - arrastre) / e2; arrastre = e.clientY; ponerSolo(); });
+        ['pointerup', 'pointercancel'].forEach(t => M.solo.addEventListener(t, () => (arrastre = null)));
+        M.indice.addEventListener('click', e => { const li = e.target.closest('li'); if (!li) return; const n = +li.dataset.n, pf = INI + (n + 0.35) / PARADAS.length * LARGO; scrollTo({ top: muroS.offsetTop + pf * (muroS.offsetHeight - innerHeight), behavior: quieto ? 'auto' : 'smooth' }); });
+        /* El navegador de M2 sigue a su meta con inercia */
+        const seguirNav = () => { if (muroS.dataset.m === 'm2') { navY += (navMeta - navY) * (quieto ? 1 : 0.12); encuadrar(M.navImg, D_ANCHO, D_ALTO, navY); } requestAnimationFrame(seguirNav); };
+        requestAnimationFrame(seguirNav);
+
+        /* --- 5. MOTOR Y SELECTORES --- */
+        const escenas = { paso: pasoP, muro: pasoM };
+        const tick = () => document.querySelectorAll('[data-esc]').forEach(el => { const r = el.getBoundingClientRect(); if (r.bottom < -innerHeight || r.top > innerHeight * 2) return; escenas[el.dataset.esc](el, fijar(-r.top / (el.offsetHeight - innerHeight))); });
+        let pedido = false;
+        addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; tick(); }); } }, { passive: true });
+        addEventListener('resize', () => { telsP.forEach(t => ponerY(t, t.y)); telsM.forEach(t => ponerY(t, t.y)); tick(); });
+        const grupos = { paso: { el: paso, attr: 'v', clave: 'paso-muro-p', al: v => { limpiarP(); paso.querySelector('[data-etapa]').textContent = NOMBRES[v]; } }, muro: { el: muroS, attr: 'm', clave: 'paso-muro-m', al: () => armarM() } };
+        const elegir = (g, v) => { const G = grupos[g]; G.el.dataset[G.attr] = v; document.querySelectorAll(`[data-sel="${g}"] [data-ir], [data-ops="${g}"] [data-ir]`).forEach(x => x.setAttribute('aria-pressed', String(x.dataset.ir === v))); guardar(G.clave, v); G.al(v); requestAnimationFrame(tick); };
+        Object.keys(grupos).forEach(g => document.querySelectorAll(`[data-sel="${g}"] [data-ir], [data-ops="${g}"] [data-ir]`).forEach(x => x.addEventListener('click', () => { elegir(g, x.dataset.ir); if (x.classList.contains('op')) scrollTo({ top: grupos[g].el.offsetTop, behavior: 'smooth' }); })));
+        /* Cada selector se muestra mientras su escena está en pantalla */
+        const sels = { paso: document.querySelector('[data-sel="paso"]'), muro: document.querySelector('[data-sel="muro"]') };
+        new IntersectionObserver(es => es.forEach(e => sels[e.target.dataset.esc].classList.toggle('ver', e.isIntersecting)), { rootMargin: '-30% 0px -30% 0px' }).observe(paso);
+        new IntersectionObserver(es => es.forEach(e => sels[e.target.dataset.esc].classList.toggle('ver', e.isIntersecting)), { rootMargin: '-30% 0px -30% 0px' }).observe(muroS);
+        const h = location.hash.slice(1);
+        elegir('paso', 'abcdef'.includes(h) && h.length === 1 ? h : leer('paso-muro-p') || 'c');
+        elegir('muro', ['hoy', 'm1', 'm2', 'm3'].includes(h) ? h : leer('paso-muro-m') || 'm1');
+        document.querySelectorAll('img').forEach(i => i.addEventListener('load', () => { telsP.forEach(t => ponerY(t, t.y)); tick(); }, { once: true }));
+        tick();
+    })();
+    /* =======================================================
+       FIN JS · DE LA 11 AL MURO
+       ======================================================= */
+</script>
