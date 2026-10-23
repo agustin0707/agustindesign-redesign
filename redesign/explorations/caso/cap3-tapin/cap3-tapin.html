@@ -1,0 +1,291 @@
+<title>Capítulo 03</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@400;500;600&display=swap">
+<style>
+    /* Tres direcciones para la portada del capítulo 03 y el paso desde el manual. Cada una es una escena con scroll
+       montada sobre el último cuadro real del manual (a 1440 × 900 en desktop y 390 × 844 en móvil). En las tres, la
+       dirección tapin.cl se escribe con el scroll */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --noche: #100D20; --gris: #57556B;
+        --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0;
+        --texto: #F4F3FB; --texto-2: rgba(238, 237, 254, 0.7); --texto-3: rgba(238, 237, 254, 0.42); --linea: rgba(155, 142, 240, 0.2);
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--noche); color: var(--texto); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    .mono { font-family: var(--f-mono); font-weight: 400; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 40px; background: var(--papel); color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; font-size: 12px; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .vista-v { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc { display: block; }
+
+    /* =======================================================
+       ESCENA: UN ESCENARIO CON LA PROPORCIÓN DE LA CAPTURA
+       ======================================================= */
+    /* Las medidas van en % del escenario y en cqw (1cqw = 14,4 px a 1440), para que el cuadro del manual calce */
+    .esc { position: relative; height: 420svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; display: grid; place-items: center; overflow: hidden; background: var(--noche); }
+    .stage { position: relative; width: min(100vw, 160svh); aspect-ratio: 1440 / 900; container-type: inline-size; overflow: hidden; }
+    .antes { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; transform-origin: 75% 60%; }
+    .tapa { position: absolute; inset: 0; background: radial-gradient(70% 60% at 50% 0%, rgba(107, 92, 231, 0.32), transparent 70%), var(--noche); }
+    .num { position: absolute; right: 4.7%; top: 9%; font: 600 30cqw / 0.8 var(--f-marca); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.18); pointer-events: none; }
+    .titulo { position: absolute; left: 5%; right: 5%; bottom: 9%; display: grid; grid-template-columns: 22.9% 1fr; row-gap: 1.25cqw; }
+    .titulo .n { grid-row: 1; align-self: end; padding-bottom: 1.6cqw; color: var(--texto-2); font-size: max(10px, 0.83cqw); }
+    .titulo h2 { grid-column: 2; margin: 0; font: 600 12cqw / 0.86 var(--f-marca); letter-spacing: -0.055em; margin-left: -0.04em; }
+    .titulo p { grid-column: 2; margin: 0; max-width: 34ch; color: var(--texto-2); font: 400 max(14px, 1.45cqw) / 1.4 var(--f-marca); }
+    .sube { opacity: calc(var(--a, 0)); translate: 0 calc((1 - var(--a, 0)) * 3cqw); }
+
+    /* --- BARRA DEL NAVEGADOR COMPARTIDA --- */
+    .barra { position: absolute; display: flex; align-items: center; gap: 1cqw; padding: 0 1.2cqw; border-radius: 1.25cqw; background: rgba(238, 237, 254, 0.06); box-shadow: inset 0 0 0 1px var(--linea); color: #FFFFFF; overflow: hidden; }
+    .barra .luces { display: flex; gap: 0.5cqw; flex: none; } .barra .luces i { width: 0.78cqw; height: 0.78cqw; border-radius: 50%; background: #FF5F57; } .barra .luces i:nth-child(2) { background: #FEBC2E; } .barra .luces i:nth-child(3) { background: #28C840; }
+    .candado { position: relative; flex: none; width: 0.42em; height: 0.36em; margin-top: 0.18em; border-radius: 0.06em; background: var(--texto-3); }
+    .candado::before { content: ''; position: absolute; left: 50%; bottom: 80%; width: 60%; height: 70%; border: 0.07em solid var(--texto-3); border-bottom: 0; border-radius: 99px 99px 0 0; transform: translateX(-50%); }
+    .dir { display: flex; align-items: center; gap: 0.3em; min-width: 0; font: 500 3.6cqw / 1 var(--f-marca); letter-spacing: -0.03em; white-space: nowrap; }
+    .dir [data-dir] > span { display: none; } .dir [data-dir] > span.on { display: inline; }
+    .caret { width: 2px; height: 1em; background: var(--health); animation: parpadeo 1s steps(1) infinite; }
+    @keyframes parpadeo { 50% { opacity: 0; } }
+    .carga { position: absolute; left: 0; bottom: 0; height: 2px; width: calc(var(--c, 0) * 100%); background: var(--health); box-shadow: 0 0 12px var(--health); }
+    .fav { flex: none; display: grid; place-items: center; width: 1.1em; height: 1.1em; border-radius: 0.24em; background: var(--connect); opacity: var(--f, 0); scale: calc(0.6 + var(--f, 0) * 0.4); }
+    .fav i { width: 70%; aspect-ratio: 622.7 / 597.42; background: #FFFFFF; -webkit-mask: url('tp-cerebro.svg') center / contain no-repeat; mask: url('tp-cerebro.svg') center / contain no-repeat; }
+
+    /* =======================================================
+       A · LA VISTA PREVIA SE ABRE
+       ======================================================= */
+    /* La ventana de la vista previa del manual se agranda hasta ser la portada; su cabecera se vuelve la barra de
+       direcciones donde se escribe tapin.cl. Al cargar, la página aparece debajo y el título le cede el lugar: así entra
+       el navegador de la sección que sigue */
+    .va .tapa { clip-path: inset(var(--it) var(--ir) var(--ib) var(--il) round var(--rad)); }
+    .va .barra { left: var(--bl); top: var(--bt); width: var(--bw); height: var(--bh); background: color-mix(in srgb, #FFFFFF calc(var(--blanco) * 100%), rgba(238, 237, 254, 0.06)); color: color-mix(in srgb, var(--tinta) calc(var(--blanco) * 100%), #FFFFFF); border-radius: calc(0.9cqw + (1 - var(--blanco)) * 0.6cqw) calc(0.9cqw + (1 - var(--blanco)) * 0.6cqw) var(--brb) var(--brb); }
+    .va .barra .etq { position: absolute; left: 50%; translate: -50% 0; font: 400 0.8cqw var(--f-mono); color: #8A889E; opacity: var(--blanco); white-space: nowrap; }
+    .va .barra .dir { opacity: calc(1 - var(--blanco)); font-size: calc(1.4cqw + (1 - var(--blanco)) * 2.2cqw); }
+    .va .pagina { position: absolute; left: var(--bl); width: var(--bw); top: calc(var(--bt) + var(--bh)); height: calc(var(--pg) * 52%); border-radius: 0 0 1.4cqw 1.4cqw; overflow: hidden; background: #FFFFFF; box-shadow: 0 4cqw 8cqw -3cqw rgba(0, 0, 0, 0.8); }
+    .va .pagina { background: var(--papel); } .va .pagina img { width: 100%; height: auto; display: block; opacity: var(--pi); }
+    .va .titulo { opacity: calc(var(--a, 0) * (1 - var(--pg, 0) * 1.4)); }
+
+    /* =======================================================
+       B · VENTANA DEL NAVEGADOR
+       ======================================================= */
+    /* Los paneles del manual suben y se apagan mientras entra una ventana de navegador a la derecha; el título queda a la
+       izquierda. La dirección se escribe en su barra y la página carga adentro */
+    .vb .antes { translate: 0 calc(var(--e) * -18%); opacity: calc(1 - var(--e)); filter: blur(calc(var(--e) * 6px)); }
+    .vb .tapa { opacity: var(--e); }
+    .vb .ventana { position: absolute; left: 41.5%; right: 5%; top: 11%; height: 52%; display: flex; flex-direction: column; border-radius: 1.4cqw; background: #17142B; box-shadow: inset 0 0 0 1px var(--linea), 0 5cqw 10cqw -4cqw rgba(0, 0, 0, 0.9); overflow: hidden; translate: 0 calc((1 - var(--e)) * 30%); opacity: var(--e); }
+    .vb .chrome { flex: none; display: flex; align-items: center; gap: 1cqw; height: 3cqw; padding: 0 1.2cqw; background: #120F22; border-bottom: 1px solid var(--linea); }
+    .vb .chrome .tab { display: flex; align-items: center; gap: 0.6cqw; height: 2.1cqw; padding: 0 1cqw; border-radius: 0.6cqw; background: rgba(238, 237, 254, 0.06); color: var(--texto-2); font: 400 max(10px, 0.85cqw) var(--f-texto); }
+    .vb .chrome .tab .fav { font-size: max(12px, 1.1cqw); }
+    .vb .barra { position: relative; flex: none; margin: 1.2cqw 1.2cqw 0; height: 5cqw; border-radius: 99px; }
+    .vb .barra .dir { font-size: 2.6cqw; }
+    .vb .contenido { position: relative; flex: 1; margin: 1.2cqw; border-radius: 0.8cqw; background: repeating-linear-gradient(90deg, rgba(238, 237, 254, 0.04) 0 1px, transparent 1px 8.33%); overflow: hidden; }
+    .vb .contenido img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; clip-path: inset(0 0 calc((1 - var(--pi)) * 100%) 0); }
+    .vb .titulo { grid-template-columns: 1fr; left: 5%; right: 62%; }
+    .vb .titulo .n, .vb .titulo h2, .vb .titulo p { grid-column: 1; grid-row: auto; padding: 0; }
+    .vb .titulo h2 { font-size: 9.4cqw; }
+    .vb .num { right: auto; left: 4.7%; top: 7%; font-size: 22cqw; }
+
+    /* =======================================================
+       C · BUSCADOR CON SUGERENCIAS
+       ======================================================= */
+    /* La portada sube como una hoja sobre el manual, que se hunde y se desenfoca. El buscador ofrece sugerencias
+       mientras se escribe; al terminar se presiona Enter y una barra de carga cruza la parte de arriba de la pantalla */
+    .vc .antes { scale: calc(1 - var(--e) * 0.06); filter: blur(calc(var(--e) * 5px)) brightness(calc(1 - var(--e) * 0.55)); }
+    .vc .tapa { translate: 0 calc((1 - var(--e)) * 100%); border-radius: calc((1 - var(--e)) * 3cqw) calc((1 - var(--e)) * 3cqw) 0 0; box-shadow: 0 -2cqw 6cqw rgba(0, 0, 0, 0.5); }
+    .vc .omni { position: absolute; left: 27.9%; width: 50%; top: 24%; }
+    .vc .barra { position: relative; height: 6.4cqw; border-radius: 1.6cqw; }
+    .vc .barra.abierta { border-radius: 1.6cqw 1.6cqw 0 0; background: rgba(238, 237, 254, 0.09); }
+    .vc .enter { margin-left: auto; padding: 0.3cqw 0.7cqw; border-radius: 0.5cqw; box-shadow: inset 0 0 0 1px var(--linea), inset 0 -2px 0 rgba(155, 142, 240, 0.3); color: var(--texto-3); font: 400 max(10px, 0.9cqw) var(--f-mono); }
+    .vc .enter.pulsa { background: var(--health); color: var(--tinta); translate: 0 1px; }
+    .vc .sug { margin: 0; padding: 0.6cqw 0; list-style: none; border-radius: 0 0 1.6cqw 1.6cqw; background: rgba(238, 237, 254, 0.06); box-shadow: inset 0 0 0 1px var(--linea); clip-path: inset(0 0 calc((1 - var(--s, 0)) * 100%) 0); }
+    .vc .sug li { display: flex; align-items: center; gap: 1cqw; padding: 0.9cqw 1.4cqw; color: var(--texto-2); font: 400 max(12px, 1.25cqw) var(--f-marca); }
+    .vc .sug li.on { background: rgba(155, 142, 240, 0.12); color: #FFFFFF; } .vc .sug li b { font-weight: 600; color: #FFFFFF; } .vc .sug li small { margin-left: auto; color: var(--texto-3); font: 400 max(10px, 0.85cqw) var(--f-mono); }
+    .vc .sug .ico { display: grid; place-items: center; width: 2cqw; height: 2cqw; border-radius: 0.5cqw; background: rgba(238, 237, 254, 0.08); color: var(--texto-3); font-size: max(10px, 1cqw); }
+    .vc .progreso { position: absolute; left: 0; top: 0; height: 3px; width: calc(var(--c, 0) * 100%); background: linear-gradient(90deg, var(--connect), var(--health)); box-shadow: 0 0 14px var(--health); }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(244, 243, 250, 0.12); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; } .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; font-size: 12px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); font-size: 12px; } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    /* =======================================================
+       VISTA MÓVIL
+       ======================================================= */
+    /* En móvil el escenario toma la proporción de la captura del teléfono; las piezas se reacomodan en vertical */
+    @media (max-width: 768px) {
+        .stage { width: min(100vw, 46.2svh); aspect-ratio: 390 / 844; }
+        .num { font-size: 52cqw; top: 12%; }
+        .titulo { grid-template-columns: 1fr; bottom: 7%; } .titulo .n, .titulo h2, .titulo p { grid-column: 1; padding: 0; } .titulo h2 { font-size: 22cqw; } .titulo p { font-size: 4cqw; } .titulo .n { font-size: 3cqw; }
+        .barra { gap: 2cqw; padding: 0 3cqw; border-radius: 4cqw; } .barra .luces { display: none; } .dir { font-size: 7cqw; }
+        .vb .ventana { left: 5%; right: 5%; top: 8%; height: 44%; border-radius: 4cqw; } .vb .chrome { height: 9cqw; } .vb .chrome .tab { height: 6cqw; font-size: 3cqw; border-radius: 2cqw; } .vb .barra { height: 11cqw; margin: 3cqw 3cqw 0; } .vb .barra .dir { font-size: 5.6cqw; }
+        .vb .titulo { right: 5%; } .vb .titulo h2 { font-size: 22cqw; } .vb .num { display: none; }
+        .vc .omni { left: 6%; width: 88%; top: 20%; } .vc .barra { height: 14cqw; border-radius: 4cqw; } .vc .barra.abierta { border-radius: 4cqw 4cqw 0 0; } .vc .sug { border-radius: 0 0 4cqw 4cqw; } .vc .sug li { font-size: 3.6cqw; padding: 2.4cqw 3.4cqw; gap: 2.4cqw; } .vc .sug li small, .vc .enter { display: none; } .vc .sug .ico { width: 6cqw; height: 6cqw; font-size: 3cqw; border-radius: 1.4cqw; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Tap In · Capítulo 03</span><p>Tres maneras de pasar del manual a la portada del capítulo 03, montadas sobre el último cuadro real del manual. En las tres, tapin.cl se escribe con el scroll. Baja por la escena; cambia con el selector.</p></div>
+
+    <section class="vista-v va esc" data-esc="a">
+        <div class="fijo"><div class="stage">
+            <picture><source media="(max-width: 768px)" srcset="antes-m.webp"><img class="antes" src="antes.webp" alt=""></picture>
+            <div class="tapa">
+                <span class="num" aria-hidden="true">03</span>
+                <div class="titulo sube"><span class="n mono">Capítulo 03 · Abr a sep 2026</span><h2>La web</h2><p>Diseñada y programada por mí, para que un director entienda en segundos</p></div>
+            </div>
+            <div class="pagina"><img src="hero.webp" alt=""></div>
+            <div class="barra" data-barra><span class="luces"><i></i><i></i><i></i></span><span class="etq">Vista previa · Interfaz</span><span class="fav"><i></i></span><span class="dir"><i class="candado"></i><span data-dir></span><i class="caret"></i></span><i class="carga"></i></div>
+        </div></div>
+    </section>
+
+    <section class="vista-v vb esc" data-esc="b">
+        <div class="fijo"><div class="stage">
+            <picture><source media="(max-width: 768px)" srcset="antes-m.webp"><img class="antes" src="antes.webp" alt=""></picture>
+            <div class="tapa">
+                <span class="num" aria-hidden="true">03</span>
+                <div class="titulo sube"><span class="n mono">Capítulo 03 · Abr a sep 2026</span><h2>La web</h2><p>Diseñada y programada por mí, para que un director entienda en segundos</p></div>
+            </div>
+            <div class="ventana">
+                <div class="chrome"><span class="barra-luces luces" style="display:flex; gap:0.5cqw"><i style="width:0.78cqw;height:0.78cqw;border-radius:50%;background:#FF5F57"></i><i style="width:0.78cqw;height:0.78cqw;border-radius:50%;background:#FEBC2E"></i><i style="width:0.78cqw;height:0.78cqw;border-radius:50%;background:#28C840"></i></span><span class="tab"><span class="fav"><i></i></span><span data-tab>Nueva pestaña</span></span></div>
+                <div class="barra"><span class="dir"><i class="candado"></i><span data-dir></span><i class="caret"></i></span><i class="carga"></i></div>
+                <div class="contenido"><img src="hero.webp" alt=""></div>
+            </div>
+        </div></div>
+    </section>
+
+    <section class="vista-v vc esc" data-esc="c">
+        <div class="fijo"><div class="stage">
+            <picture><source media="(max-width: 768px)" srcset="antes-m.webp"><img class="antes" src="antes.webp" alt=""></picture>
+            <div class="tapa">
+                <i class="progreso"></i>
+                <span class="num" aria-hidden="true">03</span>
+                <div class="omni">
+                    <div class="barra" data-barra><span class="dir"><i class="candado"></i><span data-dir></span><i class="caret"></i></span><span class="enter" data-enter>↵ Enter</span></div>
+                    <ul class="sug" data-sug><li class="on"><span class="ico">◎</span><span><b data-sug-txt>tapin.cl</b> · Tap In · Gestión escolar</span><small>Ir al sitio</small></li><li><span class="ico">⌕</span><span>Buscar <span data-sug-q>tapin.cl</span></span><small>Buscador</small></li></ul>
+                </div>
+                <div class="titulo sube"><span class="n mono">Capítulo 03 · Abr a sep 2026</span><h2>La web</h2><p>Diseñada y programada por mí, para que un director entienda en segundos</p></div>
+            </div>
+        </div></div>
+    </section>
+</div>
+
+<nav class="selector" aria-label="Variantes">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>La vista se abre</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Ventana</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Buscador</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de la portada</h2>
+    <div class="bloque">
+        <p>La dirección que se escribe funciona; lo que falta es contexto antes y una recompensa después.</p>
+        <ul class="lista">
+            <li><span class="mono">Paso desde el manual</span><span>El manual se suelta y sube; aparece una costura horizontal donde empieza el degradé de la portada</span><span>Un paso con continuidad: la vista previa se abre, entra una ventana o la portada sube como hoja</span></li>
+            <li><span class="mono">Barra</span><span>Una píldora suelta, sin navegador alrededor: se lee como un campo de búsqueda cualquiera</span><span>Luces, pestaña, candado y favicon: un navegador reconocible</span></li>
+            <li><span class="mono">Grilla</span><span>La barra va centrada en la pantalla y el título en la columna 4: dos ejes</span><span>La barra se alinea a la columna 4, con el título</span></li>
+            <li><span class="mono">Espera</span><span>La barra vacía con el cursor dura mucho antes de que empiece a escribirse</span><span>Se escribe apenas la portada se asienta</span></li>
+            <li><span class="mono">Recompensa</span><span>Al terminar de escribir solo se pinta un borde y una línea de 2 px: no pasa nada</span><span>La página carga (favicon, título de la pestaña, el hero de tapin.cl) y entrega a la sección del sitio</span></li>
+            <li><span class="mono">Foco</span><span>La barra y el título compiten con el mismo peso</span><span>Primero la barra (la acción), después el título; o el título le cede el lugar a la página</span></li>
+        </ul>
+    </div>
+    <h2>Direcciones</h2>
+    <div class="bloque">
+        <p>Tres maneras; en las tres se escribe tapin.cl.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · La vista se abre</span><strong>Del manual al sitio, sin corte</strong><p>La ventana de la vista previa del manual crece hasta ser la portada y su cabecera se vuelve la barra de direcciones. Se escribe tapin.cl, aparece el favicon y la página carga debajo mientras el título se retira: entrega directo al navegador de la sección que sigue.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Ventana del navegador</span><strong>Una ventana completa</strong><p>Los paneles del manual suben y se desenfocan mientras entra una ventana de navegador a la derecha. La pestaña dice "Nueva pestaña", se escribe la dirección y la página se dibuja adentro de arriba hacia abajo; el título queda a la izquierda.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Buscador con sugerencias</span><strong>La portada como hoja</strong><p>La portada sube como una hoja sobre el manual, que se hunde y se desenfoca. Mientras se escribe, el buscador sugiere el sitio; al terminar se presiona Enter y una barra de carga cruza la parte de arriba. Es la más cercana a la actual.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · CAPÍTULO 03
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const suave = t => t * t * (3 - 2 * t);
+        const mezcla = (a, b, t) => a + (b - a) * t;
+        const DIR = 'tapin.cl';
+        document.querySelectorAll('[data-dir]').forEach(d => { d.innerHTML = [...DIR].map(c => `<span>${c}</span>`).join(''); });
+        const escribir = (el, q) => { const n = Math.round(q * DIR.length); el.querySelectorAll('[data-dir] span').forEach((s, i) => s.classList.toggle('on', i < n)); return n; };
+        const movil = () => matchMedia('(max-width: 768px)').matches;
+
+        /* --- 1. A: LA VENTANA DE LA VISTA PREVIA SE ABRE --- */
+        /* Rectángulo de la vista previa en la captura (en % del escenario) y la barra de destino en la columna 4 */
+        const rectA = () => movil() ? { l: 11.4, t: 53.8, r: 6.2, b: 10.3, bl: 6, bt: 26, bw: 88, bh: 6.2, cab: 4.3 } : { l: 63.6, t: 45.4, r: 5, b: 12, bl: 27.9, bt: 26, bw: 50, bh: 7.4, cab: 4 };
+        const escenas = {
+            a: (el, p) => {
+                const R = rectA(), e = suave(fijar(p / 0.28)), s = el.style;
+                s.setProperty('--it', mezcla(R.t, 0, e) + '%'); s.setProperty('--ir', mezcla(R.r, 0, e) + '%'); s.setProperty('--ib', mezcla(R.b, 0, e) + '%'); s.setProperty('--il', mezcla(R.l, 0, e) + '%'); s.setProperty('--rad', mezcla(18, 0, e) + 'px');
+                const eb = suave(fijar((p - 0.04) / 0.3));
+                s.setProperty('--bl', mezcla(R.l, R.bl, eb) + '%'); s.setProperty('--bt', mezcla(R.t, R.bt, eb) + '%'); s.setProperty('--bw', mezcla(100 - R.l - R.r, R.bw, eb) + '%'); s.setProperty('--bh', mezcla(R.cab, R.bh, eb) + '%');
+                s.setProperty('--blanco', (1 - fijar((p - 0.06) / 0.14)).toFixed(3));
+                el.querySelector('.antes').style.cssText = `scale:${1 - e * 0.05}; filter:brightness(${1 - e * 0.6})`;
+                el.querySelector('.titulo').style.setProperty('--a', fijar((p - 0.26) / 0.1));
+                const n = escribir(el, fijar((p - 0.34) / 0.22));
+                const c = fijar((p - 0.6) / 0.14); el.querySelector('.carga').parentElement.style.setProperty('--c', n === DIR.length ? c : 0);
+                el.querySelector('.fav').style.setProperty('--f', fijar((p - 0.68) / 0.06));
+                const pg = suave(fijar((p - 0.72) / 0.2)); s.setProperty('--pg', pg); s.setProperty('--pi', fijar((p - 0.74) / 0.1)); s.setProperty('--brb', (pg > 0.01 ? 0 : 1.2) + 'cqw');
+                el.querySelector('.carga').style.opacity = c >= 1 ? 0 : 1;
+            },
+            b: (el, p) => {
+                const e = suave(fijar(p / 0.3)); el.style.setProperty('--e', e);
+                el.querySelector('.titulo').style.setProperty('--a', fijar((p - 0.22) / 0.12));
+                const n = escribir(el, fijar((p - 0.34) / 0.22));
+                el.querySelector('.barra').style.setProperty('--c', n === DIR.length ? fijar((p - 0.6) / 0.14) : 0);
+                const f = fijar((p - 0.68) / 0.06); el.querySelector('.fav').style.setProperty('--f', f);
+                el.querySelector('[data-tab]').textContent = f > 0.5 ? 'Tap In · Gestión escolar' : 'Nueva pestaña';
+                el.style.setProperty('--pi', suave(fijar((p - 0.72) / 0.2)));
+            },
+            c: (el, p) => {
+                const e = suave(fijar(p / 0.3)); el.style.setProperty('--e', e);
+                el.querySelector('.titulo').style.setProperty('--a', fijar((p - 0.24) / 0.12));
+                const q = fijar((p - 0.3) / 0.24), n = escribir(el, q), abierta = n > 0 && p < 0.64;
+                el.querySelector('[data-barra]').classList.toggle('abierta', abierta);
+                el.querySelector('[data-sug]').style.setProperty('--s', abierta ? 1 : 0);
+                el.querySelector('[data-sug-q]').textContent = DIR.slice(0, Math.max(n, 1));
+                el.querySelector('[data-enter]').classList.toggle('pulsa', p > 0.6 && p < 0.66);
+                el.querySelector('.progreso').style.setProperty('--c', p > 0.62 ? suave(fijar((p - 0.62) / 0.3)) : 0);
+            }
+        };
+        const tick = () => document.querySelectorAll('.esc').forEach(el => {
+            if (!el.offsetParent) return;
+            const r = el.getBoundingClientRect(), pista = el.offsetHeight - innerHeight;
+            escenas[el.dataset.esc](el, fijar(-r.top / pista));
+        });
+        let pedido = false;
+        addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; tick(); }); } }, { passive: true });
+        addEventListener('resize', tick);
+
+        /* --- 2. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.ir === v))); try { localStorage.setItem('cap3-tapin', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(tick); };
+        botones.forEach(x => x.addEventListener('click', () => { elegir(x.dataset.ir); if (x.classList.contains('op')) scrollTo({ top: document.querySelector('.esc.v' + x.dataset.ir)?.offsetTop || 0, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('cap3-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['a', 'b', 'c'].includes(h) ? h : guardado || 'a');
+    })();
+    /* =======================================================
+       FIN JS · CAPÍTULO 03
+       ======================================================= */
+</script>

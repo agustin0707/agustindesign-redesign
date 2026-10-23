@@ -238,7 +238,14 @@
                 else if (e.key === 'PageUp') x = Math.min(Math.floor(xActual * 3 + 1.0001), 3) / 3; else if (e.key === 'PageDown') x = Math.max(Math.ceil(xActual * 3 - 1.0001), 0) / 3;
                 if (x === null) return; e.preventDefault(); elegido = true; ponerX(fijar(x));
             });
-            /* Con el scroll: avanza de Campus a Health y se frena en cada producto */
+            /* Con el scroll: avanza de Campus a Health y se frena en cada producto. La perilla persigue esa meta
+               con un suavizado por cuadro, así el recorrido y el color se sienten continuos aunque el scroll salte */
+            let xMeta = 1 / 3, bucle = null;
+            const seguir = () => {
+                const d = xMeta - xActual;
+                if (Math.abs(d) < 0.0006 || elegido || arrastrando) { if (!elegido && !arrastrando) ponerX(xMeta, 'sigue'); bucle = null; return; }
+                ponerX(xActual + d * (quieto ? 1 : 0.12), 'sigue'); bucle = requestAnimationFrame(seguir);
+            };
             const xPorScroll = t => { const u = fijar((t - 0.56) / 0.4) * 2, n = Math.min(Math.floor(u), 1), f = u - n, s = fijar((f - 0.25) / 0.5); return (1 + n + s * s * (3 - 2 * s)) / 3; };
             pieza.querySelectorAll('[data-k]').forEach(x => {
                 x.addEventListener('pointerenter', () => pieza.querySelectorAll(`[data-k="${x.dataset.k}"]`).forEach(y => y.classList.add('foco')));
@@ -281,7 +288,7 @@
                 el.querySelector('[data-man-ok]').textContent = `${ok} / 5`; el.querySelector('[data-man-ms]').textContent = `${[0, 12, 20, 34, 43, 54][ok]} ms`;
                 placa.querySelectorAll('[data-pr]').forEach(x => x.classList.toggle('on', +x.dataset.pr < ok));
                 placa.classList.toggle('corre', ok >= 3 && !quieto);
-                if (!elegido && !arrastrando) { const x = i < 3 ? 1 / 3 : xPorScroll(t); if (Math.abs(x - xActual) > 0.0005) ponerX(x, i < 3 ? 'anima' : 'sigue'); }
+                if (!elegido && !arrastrando) { xMeta = i < 3 ? 1 / 3 : xPorScroll(t); if (!bucle && Math.abs(xMeta - xActual) > 0.0006) bucle = requestAnimationFrame(seguir); }
             };
         },
         /* El sitio: baja por tapin.cl y se detiene en cada decisión; el foco se dibuja sobre la parte que

@@ -933,24 +933,22 @@
    del rango. Sobre los tonos claros el texto pasa a tinta, como en las tiras de la decisión 03 */
 @property --tono { syntax: '<color>'; inherits: true; initial-value: #4A3CAE; }
 .tp-man-dial { --tono: var(--tp-campus); --sobre: #FFFFFF; --suave: color-mix(in srgb, var(--tono) 16%, #F2F1F7); --borde: color-mix(in srgb, var(--tono) 34%, transparent); display: grid; gap: 14px; width: 100%; max-width: 440px; }
-.tp-man-rango { --xv: 0.3333; position: relative; height: 72px; padding-top: 24px; }
+.tp-man-rango { --xv: 0.3333; position: relative; height: 60px; padding-top: 12px; }
 .tp-man-pista { position: relative; height: 16px; border-radius: 99px; background: linear-gradient(90deg, #2D2560, #4A3CAE 33.33%, #6B5CE7 66.67%, #9B8EF0); box-shadow: inset 0 0 0 1px rgba(28, 26, 46, 0.12), inset 0 2px 4px rgba(16, 13, 32, 0.25); cursor: pointer; }
-.tp-man-paradas { position: absolute; left: 0; right: 0; top: 56px; }
+.tp-man-paradas { position: absolute; left: 0; right: 0; top: 44px; }
 .tp-man-paradas button { position: absolute; left: calc(var(--px) * 100%); translate: -50% 0; padding: 2px 4px; border: 0; background: none; color: #8A889E; font: 400 10px var(--mono); cursor: pointer; transition: color 200ms linear; }
 .tp-man-paradas button:first-child { translate: -4px 0; } .tp-man-paradas button:last-child { translate: calc(-100% + 4px) 0; }
 .tp-man-paradas button::before { content: ''; position: absolute; left: 50%; top: -23px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: rgba(255, 255, 255, 0.8); }
 .tp-man-paradas button:first-child::before { left: 10px; } .tp-man-paradas button:last-child::before { left: calc(100% - 10px); }
 .tp-man-paradas button.on { color: var(--tp-tinta); }
 @media (hover: hover) { .tp-man-paradas button:hover { color: var(--tp-tinta); } }
-.tp-man-rango .tp-man-perilla { position: absolute; top: 17px; left: calc(var(--xv) * 100%); width: 30px; height: 30px; margin-left: -15px; border-radius: 50%; background: var(--tono); box-shadow: 0 0 0 4px #FFFFFF, 0 8px 18px -6px rgba(28, 26, 46, 0.55); cursor: grab; touch-action: none; transition: left 600ms var(--tp-curva), scale 250ms var(--tp-curva); }
+.tp-man-rango .tp-man-perilla { position: absolute; top: 5px; left: calc(var(--xv) * 100%); width: 30px; height: 30px; margin-left: -15px; border-radius: 50%; background: var(--tono); box-shadow: 0 0 0 4px #FFFFFF, 0 8px 18px -6px rgba(28, 26, 46, 0.55); cursor: grab; touch-action: none; transition: left 600ms var(--tp-curva), scale 250ms var(--tp-curva); }
 .tp-man-rango .tp-man-perilla.arrastra { cursor: grabbing; scale: 1.12; transition: scale 250ms var(--tp-curva); }
 .tp-man-rango .tp-man-perilla.sigue { transition: scale 250ms var(--tp-curva); }
 .tp-man-perilla:focus-visible { outline: 2px solid var(--tp-health); outline-offset: 6px; }
 @media (hover: hover) { .tp-man-perilla:hover { scale: 1.08; } }
-.tp-man-perilla .tp-man-tag { left: 50%; top: -30px; translate: -50% 4px; }
-.tp-man-vista .tp-man-perilla.ya > .tp-man-tag { translate: -50% 0; }
 /* Al pasar por la pista, una ficha muestra el tono que hay debajo del cursor */
-.tp-man-fantasma { position: absolute; top: 50px; left: calc(var(--gx, 0) * 100%); z-index: 4; display: flex; align-items: center; gap: 5px; padding: 3px 7px 3px 4px; border-radius: 6px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.08), 0 6px 14px -6px rgba(28, 26, 46, 0.4); color: var(--tp-tinta); font-size: 10px; translate: -50% 0; opacity: 0; transition: opacity 150ms linear; pointer-events: none; }
+.tp-man-fantasma { position: absolute; top: 38px; left: calc(var(--gx, 0) * 100%); z-index: 4; display: flex; align-items: center; gap: 5px; padding: 3px 7px 3px 4px; border-radius: 6px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.08), 0 6px 14px -6px rgba(28, 26, 46, 0.4); color: var(--tp-tinta); font-size: 10px; translate: -50% 0; opacity: 0; transition: opacity 150ms linear; pointer-events: none; }
 .tp-man-fantasma::before { content: ''; width: 10px; height: 10px; border-radius: 3px; background: var(--gc, #4A3CAE); }
 .tp-man-fantasma.ver { opacity: 1; }
 .tp-man-hoja { border-radius: 16px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.06), 0 18px 34px -18px rgba(28, 26, 46, 0.4); }
