@@ -181,7 +181,9 @@
             const caja = el.querySelector('[data-url]'), txt = caja.dataset.url, man = document.querySelector('.tp-man'), tab = el.querySelector('[data-c3-tab]');
             caja.innerHTML = [...txt].map(c => `<span>${c}</span>`).join('');
             const letras = [...caja.children];
-            return p => {
+            /* Termina una pantalla antes del final de su pista: ese tramo lo cubre el sitio, que toma su ventana */
+            return pista => {
+                const p = fijar(pista * (el.offsetHeight - vh) / (el.offsetHeight - 2 * vh));
                 const e = curva(fijar(p / 0.3)), f = fijar((p - 0.68) / 0.06);
                 el.style.setProperty('--e', e.toFixed(3)); if (man) man.style.setProperty('--sale', e.toFixed(3));
                 el.style.setProperty('--a', fijar((p - 0.22) / 0.12).toFixed(3));
@@ -320,11 +322,56 @@
             medir();
             window.addEventListener('resize', medir);
             /* Clic en el índice: lleva el scroll al momento en que esa decisión está quieta */
+            /* El primer tramo de la pista (una pantalla) es el vuelo desde la portada; el recorrido usa el resto */
+            const vuelo = () => vh / (el.offsetHeight - vh);
             items.forEach((li, i) => li.querySelector('button').addEventListener('click', () => {
-                const r = el.getBoundingClientRect(), u = i === 0 ? 0.5 : i + VIAJE + 0.3;
-                window.scrollTo({ top: window.scrollY + r.top + (u / U) * (r.height - vh), behavior: quieto ? 'auto' : 'smooth' });
+                const r = el.getBoundingClientRect(), u = i === 0 ? 0.5 : i + VIAJE + 0.3, M = vuelo();
+                window.scrollTo({ top: window.scrollY + r.top + (M + (u / U) * (1 - M)) * (r.height - vh), behavior: quieto ? 'auto' : 'smooth' });
             }));
-            return p => {
+            /* --- Vuelo: el navegador parte donde está la ventana de la portada y viaja a su lugar --- */
+            const nav = el.querySelector('.tp-sitio-nav'), fijo = el.querySelector('.tp-fijo'), cap3 = document.getElementById('cap-3');
+            const ventana3 = cap3 && cap3.querySelector('.tp-c3-ventana');
+            let destino = null, volaba = false;
+            const medirDestino = () => {
+                nav.classList.remove('volando'); el.classList.remove('volando');
+                const F = fijo.getBoundingClientRect(), N = nav.getBoundingClientRect();
+                destino = { x: N.left - F.left, y: N.top - F.top, w: N.width, h: N.height };
+                el.style.setProperty('--bh', N.height + 'px');
+            };
+            window.addEventListener('resize', () => { destino = null; });
+            const volar = q => {
+                if (!destino) medirDestino();
+                const A = ventana3.getBoundingClientRect(), F = fijo.getBoundingClientRect(), m = curva(q);
+                const x = A.left - F.left + (destino.x - (A.left - F.left)) * m, y = A.top - F.top + (destino.y - (A.top - F.top)) * m;
+                const w = A.width + (destino.w - A.width) * m, h = A.height + (destino.h - A.height) * m;
+                nav.classList.add('volando'); el.classList.add('volando');
+                nav.style.setProperty('--nx', x.toFixed(1) + 'px'); nav.style.setProperty('--ny', y.toFixed(1) + 'px');
+                nav.style.setProperty('--nw', w.toFixed(1) + 'px'); nav.style.setProperty('--nh', h.toFixed(1) + 'px');
+                nav.style.setProperty('--lz', fijar((q - 0.18) / 0.5).toFixed(3));
+                /* La luz se abre desde el centro del navegador; el índice entra en cascada al final */
+                const k = curva(fijar((q - 0.08) / 0.7));
+                el.style.setProperty('--lx', ((x + w / 2) / F.width * 100).toFixed(2) + '%'); el.style.setProperty('--ly', ((y + h / 2) / F.height * 100).toFixed(2) + '%');
+                el.style.setProperty('--lr', (k * 150).toFixed(1) + '%'); el.style.setProperty('--iv', fijar((q - 0.5) / 0.45).toFixed(3));
+                cap3.style.setProperty('--cede', curva(fijar(q / 0.4)).toFixed(3));
+            };
+            const aterrizar = () => {
+                nav.classList.remove('volando'); el.classList.remove('volando');
+                ['--nx', '--ny', '--nw', '--nh', '--lz'].forEach(k => nav.style.removeProperty(k));
+                ['--lr', '--iv'].forEach(k => el.style.removeProperty(k));
+                cap3.style.setProperty('--cede', 1);
+            };
+            return pista => {
+                /* Mientras entra por abajo no se ve; al fijarse, la portada le cede su ventana */
+                el.classList.toggle('antes', pista <= 0);
+                if (cap3) cap3.classList.toggle('cedida', pista > 0);
+                const M = vuelo();
+                if (pista < M && ventana3) {
+                    volar(fijar(pista / M)); volaba = true;
+                    if (actual !== -2) { actual = -2; el.dataset.parada = -1; caja.classList.remove('on'); items.forEach(li => li.classList.remove('actual', 'ya')); lienzo.style.transform = 'translate3d(0, 0, 0)'; }
+                    return;
+                }
+                if (volaba) { aterrizar(); medir(); volaba = false; }
+                const p = fijar((pista - M) / (1 - M));
                 const u = p * U, i = Math.floor(u), t = u - i;
                 let y, act = -1;
                 if (i >= paradas.length) y = paradas[paradas.length - 1].top + (ALTO - vis - paradas[paradas.length - 1].top) * curva(fijar(t / FINAL));
