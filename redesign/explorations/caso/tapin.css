@@ -1243,6 +1243,8 @@
 .tp-rs-cifras small { margin-right: 0.04em; font-size: 0.6em; vertical-align: 0.3em; color: var(--texto-2); }
 .tp-rs-cifras span { max-width: 22ch; color: var(--texto-2); font-size: 14px; line-height: 1.4; }
 .tp-resultado .tp-vivo-link { margin-top: 0; }
+/* El siguiente proyecto se abre sobre la misma noche del Resultado, sin franja clara de por medio */
+.tp .sig { background: var(--tp-noche); }
 .tp-vivo-link { grid-column: 4 / -1; justify-self: start; display: inline-flex; align-items: center; gap: 12px; margin-top: 72px; padding: 16px 26px; font-size: 17px; border-radius: 999px; border: 1px solid var(--linea); font-weight: 500; transition: background-color 300ms var(--ease), border-color 300ms; }
 .tp-punto { width: 8px; height: 8px; border-radius: 50%; background: var(--acento); }
 @media (hover: hover) { .tp-vivo-link:hover { background: rgba(238, 237, 254, 0.08); border-color: var(--acento); } }
