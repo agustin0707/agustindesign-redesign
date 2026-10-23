@@ -34,16 +34,17 @@
     radial-gradient(60% 65% at 0% 100%, rgba(30, 77, 87, 0.95) 0%, rgba(30, 77, 87, 0) 72%),
     linear-gradient(90deg, #2A5960 0%, #3A6970 22%, #5E8C91 46%, #84AEB2 70%, #8EB8BB 100%); }
 .sig-e-mend .sig-campo::after { content: ''; position: absolute; inset: 0; opacity: 0.7; mix-blend-mode: soft-light; background-size: 200px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); }
-.sig-mend-logo { position: absolute; left: var(--margen); top: 14svh; width: clamp(52px, 4.6vw, 76px); overflow: visible; fill: #FFFFFF; }
-.sig-mend-logo .trazo { display: none; }
+/* El logo horizontal ocupa el lugar del nombre: se dibuja el trazo, se rellena y el isotipo encaja */
+.sig-mend-logo { display: block; width: clamp(300px, 46vw, 760px); overflow: visible; fill: #FFFFFF; }
+.sig:has(.sig-e-mend) .sig-nombre { margin-left: 0; line-height: 0; }
 .sig-panel:not(.dentro) .sig-mend-logo { opacity: 0; }
 .sig-mend-logo .ej-pair { opacity: 0; }
 .sig-mend-logo .trazo { stroke: #FFFFFF; stroke-width: 0.7; stroke-dasharray: 1; stroke-opacity: 0; }
 .sig-panel.dentro .sig-mend-logo .trazo { animation: sigTrazo 2s cubic-bezier(0.6, 0.1, 0.3, 1) 0.2s both, sigRelleno 0.7s ease 1.5s both; }
-.sig-panel.dentro .sig-mend-logo .ej-full { transform-box: fill-box; transform-origin: 50% 50%; animation: sigEjFull 2.4s linear 0.3s both; }
-.sig-panel.dentro .sig-mend-logo .ej-pair { animation: sigEjPair 2.4s linear 0.3s both; }
-.sig-panel.dentro .sig-mend-logo .ej-a { animation: sigGlideA 2.4s linear 0.3s both, sigCloseA 2.4s linear 0.3s both; }
-.sig-panel.dentro .sig-mend-logo .ej-b { animation: sigGlideB 2.4s linear 0.3s both, sigCloseB 2.4s linear 0.3s both; }
+.sig-panel.dentro .sig-mend-logo .ej-full { transform-box: fill-box; transform-origin: 50% 50%; animation: sigEjFull 2.4s linear 1.9s both; }
+.sig-panel.dentro .sig-mend-logo .ej-pair { animation: sigEjPair 2.4s linear 1.9s both; }
+.sig-panel.dentro .sig-mend-logo .ej-a { animation: sigGlideA 2.4s linear 1.9s both, sigCloseA 2.4s linear 1.9s both; }
+.sig-panel.dentro .sig-mend-logo .ej-b { animation: sigGlideB 2.4s linear 1.9s both, sigCloseB 2.4s linear 1.9s both; }
 @keyframes sigTrazo { 0% { stroke-dashoffset: 1; stroke-opacity: 1; } 88% { stroke-dashoffset: 0; stroke-opacity: 1; } 100% { stroke-dashoffset: 0; stroke-opacity: 0; } }
 @keyframes sigRelleno { from { fill-opacity: 0; } to { fill-opacity: 1; } }
 @keyframes sigGlideA { 0% { translate: 13.57px -3.46px; animation-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1); } 80%, 100% { translate: 0 0; } }
@@ -65,8 +66,6 @@
 .sig:has(.sig-e-mend) .sig-txt { right: 40vw; }
 /* Una luz suave que sigue el avance: el campo de Mend se ilumina hacia el caso */
 .sig-e-mend .sig-luz { position: absolute; inset: 0; background: radial-gradient(40% 50% at 78% 40%, rgba(201, 233, 232, 0.55), transparent 70%); opacity: var(--p); }
-/* El nombre de Mend en su tipografía (Neue Haas Grotesk; en el Mac, Helvetica Neue como respaldo) */
-.sig:has(.sig-e-mend) { --sig-f: "Neue Haas Grotesk Display Pro", "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /* --- 2. ESCENA TAP IN --- */
 .sig-e-tapin { background: radial-gradient(120% 90% at 70% 0%, #6B5CE7 0%, #4A3CAE 38%, #2D2560 100%); }
@@ -82,7 +81,7 @@
 @media (max-width: 768px) {
     .sig-e-mend .sig-tel { --w: 38vw; left: 50%; top: 18svh; translate: -50% calc((1 - var(--p)) * 12svh); opacity: clamp(0, var(--p) * 2.4, 1); }
     .sig:has(.sig-e-mend) .sig-txt { right: var(--margen); }
-    .sig-mend-logo { top: 9svh; width: 48px; }
+    .sig-mend-logo { width: 78vw; }
     .sig-progreso { top: auto; bottom: 24px; }
 }
 @media (prefers-reduced-motion: reduce) {
