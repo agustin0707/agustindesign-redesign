@@ -1219,7 +1219,7 @@
 .tp-verificar { display: inline-block; margin-top: 10px; padding: 3px 9px; border-radius: 6px; border: 1px dashed #F5C26B; color: #F5C26B; font-size: 11px; }
 
 /* --- 1. LA CITA --- */
-/* La comilla cuelga en el riel; cada línea sube desde su máscara y después se subraya "una sola imagen" (el
+/* La comilla cuelga en el riel; cada línea sube desde su máscara y después se subraya "en una sola pantalla" (el
    resumen y el aprendizaje ya se encienden palabra por palabra) */
 .tp-rs-cita { grid-column: 4 / -1; position: relative; display: flex; flex-direction: column; gap: 28px; margin: 0; }
 .tp-rs-comilla { position: absolute; right: calc(100% + clamp(14px, 1.6vw, 28px)); top: 0.12em; width: clamp(40px, 4.4vw, 76px); height: auto; fill: var(--tp-health); opacity: 0; translate: 0 0.2em; transition: opacity 700ms var(--ease), translate 900ms var(--ease); }

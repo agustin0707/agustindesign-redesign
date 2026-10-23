@@ -594,10 +594,10 @@
 
     /* --- 8. RESULTADO: LA CITA SUBE LÍNEA POR LÍNEA --- */
     /* Las líneas se arman según el ancho real (y se rearman si cambia); al aparecer suben en cascada y después se
-       subraya "una sola imagen" */
+       subraya "en una sola pantalla" */
     const cita = document.querySelector('[data-rs-cita]');
     if (cita) {
-        const parrafo = cita.querySelector('p'), texto = parrafo.textContent.trim(), CLAVE = [1, 2, 3];
+        const parrafo = cita.querySelector('p'), texto = parrafo.textContent.trim(), CLAVE = [6, 7, 8, 9];
         let ancho = 0;
         const armar = () => {
             if (parrafo.clientWidth === ancho) return;
