@@ -48,6 +48,8 @@
             const entrada = Math.min(Math.max(1 - r.top / window.innerHeight, 0), 1);
             if (Math.abs(p - ultimo) > 0.002 || p === 1) { panel.style.setProperty('--p', p.toFixed(3)); ultimo = p; }
             panel.style.setProperty('--e', entrada.toFixed(3));
+            /* El logo se arma con el scroll: empieza a media entrada y queda completo al 40% de la pista */
+            panel.style.setProperty('--l', quieto ? 1 : (Math.min(Math.max((entrada - 0.45) / 0.55, 0), 1) * 0.6 + Math.min(p / 0.4, 1) * 0.4).toFixed(4));
             panel.classList.toggle('dentro', entrada > 0.6);
             if (p >= 0.995 && !abriendo && !quieto && C.siguiente.url) {
                 abriendo = true; panel.classList.add('abriendo'); estado.textContent = `Abriendo ${C.siguiente.nombre}`;

@@ -37,14 +37,15 @@
 /* El logo horizontal ocupa el lugar del nombre: se dibuja el trazo, se rellena y el isotipo encaja */
 .sig-mend-logo { display: block; width: clamp(300px, 46vw, 760px); overflow: visible; fill: #FFFFFF; }
 .sig:has(.sig-e-mend) .sig-nombre { margin-left: 0; line-height: 0; }
-.sig-panel:not(.dentro) .sig-mend-logo { opacity: 0; }
 .sig-mend-logo .ej-pair { opacity: 0; }
 .sig-mend-logo .trazo { stroke: #FFFFFF; stroke-width: 0.7; stroke-dasharray: 1; stroke-opacity: 0; }
-.sig-panel.dentro .sig-mend-logo .trazo { animation: sigTrazo 2s cubic-bezier(0.6, 0.1, 0.3, 1) 0.2s both, sigRelleno 0.7s ease 1.5s both; }
-.sig-panel.dentro .sig-mend-logo .ej-full { transform-box: fill-box; transform-origin: 50% 50%; animation: sigEjFull 2.4s linear 1.9s both; }
-.sig-panel.dentro .sig-mend-logo .ej-pair { animation: sigEjPair 2.4s linear 1.9s both; }
-.sig-panel.dentro .sig-mend-logo .ej-a { animation: sigGlideA 2.4s linear 1.9s both, sigCloseA 2.4s linear 1.9s both; }
-.sig-panel.dentro .sig-mend-logo .ej-b { animation: sigGlideB 2.4s linear 1.9s both, sigCloseB 2.4s linear 1.9s both; }
+/* La animación la lleva el scroll: todas en pausa, y --l (0 a 1, lo publica el JS) fija su momento en una línea de
+   4,3 s (trazo de 0,2 a 2,2 s, relleno de 1,5 a 2,2 s, encaje de 1,9 a 4,3 s). Al subir, retrocede */
+.sig-mend-logo .trazo { animation: sigTrazo 2s cubic-bezier(0.6, 0.1, 0.3, 1) both, sigRelleno 0.7s ease both; animation-delay: calc(0.2s - var(--l, 0) * 4.35s), calc(1.5s - var(--l, 0) * 4.35s); animation-play-state: paused; }
+.sig-mend-logo .ej-full { transform-box: fill-box; transform-origin: 50% 50%; animation: sigEjFull 2.4s linear both; animation-delay: calc(1.9s - var(--l, 0) * 4.35s); animation-play-state: paused; }
+.sig-mend-logo .ej-pair { animation: sigEjPair 2.4s linear both; animation-delay: calc(1.9s - var(--l, 0) * 4.35s); animation-play-state: paused; }
+.sig-mend-logo .ej-a { animation: sigGlideA 2.4s linear both, sigCloseA 2.4s linear both; animation-delay: calc(1.9s - var(--l, 0) * 4.35s); animation-play-state: paused; }
+.sig-mend-logo .ej-b { animation: sigGlideB 2.4s linear both, sigCloseB 2.4s linear both; animation-delay: calc(1.9s - var(--l, 0) * 4.35s); animation-play-state: paused; }
 @keyframes sigTrazo { 0% { stroke-dashoffset: 1; stroke-opacity: 1; } 88% { stroke-dashoffset: 0; stroke-opacity: 1; } 100% { stroke-dashoffset: 0; stroke-opacity: 0; } }
 @keyframes sigRelleno { from { fill-opacity: 0; } to { fill-opacity: 1; } }
 @keyframes sigGlideA { 0% { translate: 13.57px -3.46px; animation-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1); } 80%, 100% { translate: 0 0; } }
