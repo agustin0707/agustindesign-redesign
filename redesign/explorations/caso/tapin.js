@@ -395,9 +395,10 @@
             const vivoIn = vivo && vivo.querySelector(':scope > .tp-grilla');
             const hoja = () => {
                 if (!vivo) return;
-                const T = vivo.getBoundingClientRect().top, m = fijar(1 - T / vh);
+                const T = vivo.getBoundingClientRect().top, m = fijar(-T / vh);
                 el.style.setProperty('--hoja', m.toFixed(4));
-                if (T > 0 && T < vh) { vivoIn.style.transform = `translateY(${(-T).toFixed(1)}px) scale(${quieto ? 1 : (0.94 + 0.06 * curva(m)).toFixed(4)})`; vivo.style.setProperty('--velo', ((1 - m) * 0.32).toFixed(3)); }
+                /* La 11 ya está quieta por sticky; aquí solo se acerca y se aclara */
+                if (m < 1) { vivoIn.style.transform = quieto ? '' : `scale(${(0.94 + 0.06 * curva(m)).toFixed(4)})`; vivo.style.setProperty('--velo', ((1 - m) * 0.32).toFixed(3)); }
                 else { vivoIn.style.transform = ''; vivo.style.setProperty('--velo', 0); }
             };
             return pista => {

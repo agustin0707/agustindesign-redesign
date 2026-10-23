@@ -1068,9 +1068,12 @@
    ======================================================= */
 /* La decisión 11 queda debajo de la hoja: se monta una pantalla antes, se queda quieta mientras la hoja sube (el JS
    compensa su desplazamiento) y se acerca con un velo que se disuelve */
-.tp-vivo { position: relative; z-index: 1; margin-top: -100svh; }
-.tp-vivo::after { content: ''; position: absolute; inset: 0; background: var(--tp-tinta); opacity: var(--velo, 0); pointer-events: none; }
-.tp-vivo > .tp-grilla { transform-origin: 50% 0; }
+.tp-vivo { position: relative; z-index: 1; margin-top: -200svh; }
+.tp-vivo::before { content: ''; position: absolute; inset: 0; z-index: 2; background: var(--tp-tinta); opacity: var(--velo, 0); pointer-events: none; }
+.tp-vivo::after { content: ''; display: block; height: 100svh; }
+/* Quieta con sticky (sin compensar el scroll por código, que temblaba): se fija apenas la sección llega arriba y el
+   espacio extra de abajo la sostiene una pantalla, lo que dura la hoja */
+.tp-vivo > .tp-grilla { position: sticky; top: clamp(96px, 11vw, 176px); transform-origin: 50% 0; }
 .tp-vivo .tp-grilla { align-items: start; }
 .tp-vivo .tp-dec { grid-column: 1 / span 4; position: sticky; top: 22svh; }
 .tp-vivo-grilla { grid-column: 5 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }

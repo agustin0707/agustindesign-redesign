@@ -1,0 +1,168 @@
+<title>Decisión 11</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@400;500;600&display=swap">
+<style>
+    /* Mejora gráfica de la decisión 11: la historia del comedor al centro (antes, acceso denegado; ahora, pago,
+       validación y aviso de saldo), el mockup en vivo grande y los otros tres módulos como una fila secundaria */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B; --gris-2: #8A889E; --linea: rgba(45, 37, 96, 0.12);
+        --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8; --tint: #EEEDFE; --ok: #2FB37A; --error: #E5484D;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --curva: cubic-bezier(0.34, 1.25, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    .mono { font-family: var(--f-mono); font-weight: 400; font-size: 12px; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 40px; color: var(--gris); border-bottom: 1px solid var(--linea); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .tabs { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(45, 37, 96, 0.07); }
+    .tabs button { padding: 8px 16px; border: 0; border-radius: 999px; background: none; color: var(--gris); font: 500 13px var(--f-texto); cursor: pointer; } .tabs button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); box-shadow: 0 2px 6px -2px rgba(28, 26, 46, 0.3); }
+    .barra-v { display: flex; justify-content: center; padding: 20px 0; position: sticky; top: 0; z-index: 10; background: rgba(244, 243, 250, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .vista { display: none; } [data-v="hoy"] .v-hoy, [data-v="nueva"] .v-nueva { display: block; }
+    .v-hoy img { display: block; width: min(100%, 1440px); margin: 0 auto; }
+
+    /* =======================================================
+       PROPUESTA
+       ======================================================= */
+    .d11 { padding-block: clamp(96px, 11vw, 160px); row-gap: 56px; background: radial-gradient(60% 50% at 70% 30%, rgba(155, 142, 240, 0.18), transparent 70%), var(--papel); }
+
+    /* --- 1. RIEL Y TEXTO: EL PATRÓN DE LAS DECISIONES --- */
+    .riel { grid-column: 1 / span 3; grid-row: 1; align-self: start; position: sticky; top: 18svh; display: flex; flex-direction: column; gap: 14px; }
+    .riel .n { font: 600 clamp(72px, 7.4vw, 128px) / 0.78 var(--f-marca); letter-spacing: -0.06em; color: var(--soft); }
+    .rot { display: inline-flex; align-items: center; gap: 8px; color: var(--gris); } .rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--campus); }
+    .txt { grid-column: 4 / span 3; grid-row: 1; align-self: start; position: sticky; top: 18svh; display: flex; flex-direction: column; gap: 16px; }
+    .txt h3 { margin: 0; font: 600 clamp(28px, 2.7vw, 44px) / 1.02 var(--f-marca); letter-spacing: -0.04em; text-wrap: balance; }
+    .txt > p { margin: 0; color: var(--gris); font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); }
+    .porque { padding-top: 14px; border-top: 1px solid var(--linea); } .porque .mono { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--gris); } .porque .mono::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--campus); }
+    .porque p { margin: 0; font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); }
+    .mas { display: inline-flex; align-items: center; gap: 8px; color: var(--gris); }
+
+    /* --- 2. LA PIEZA: EL COMEDOR EN VIVO Y SU FLUJO --- */
+    /* Un escenario con el mockup grande; debajo, la decisión como recorrido: lo que había (tachado) y los tres pasos que
+       lo reemplazan, que se encienden en orden como en el mockup */
+    .pieza { grid-column: 7 / -1; grid-row: 1; display: flex; flex-direction: column; gap: 14px; }
+    .escenario { position: relative; border-radius: 26px; background: radial-gradient(80% 80% at 50% 25%, #FFFFFF, var(--tint)); box-shadow: 0 0 0 1px var(--linea), 0 40px 80px -46px rgba(45, 37, 96, 0.45); overflow: hidden; }
+    .escenario img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; transition: scale 900ms var(--ease); }
+    @media (hover: hover) { .escenario:hover img { scale: 1.03; } }
+    .vivo { position: absolute; left: 18px; top: 18px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 1px var(--linea); color: var(--tinta); font: 500 12px var(--f-texto); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    .vivo i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(47, 179, 122, 0.5); animation: late 1.8s ease-out infinite; }
+    @keyframes late { to { box-shadow: 0 0 0 8px rgba(47, 179, 122, 0); } }
+    .modulo { position: absolute; right: 18px; top: 18px; color: var(--gris-2); }
+    .flujo { display: grid; grid-template-columns: auto 18px repeat(3, minmax(0, 1fr)); align-items: stretch; gap: 8px; }
+    .antes, .paso { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 14px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea); }
+    .antes { background: transparent; box-shadow: inset 0 0 0 1px rgba(229, 72, 77, 0.3); color: var(--gris); }
+    .antes small, .paso small { color: var(--gris-2); font: 400 11px var(--f-mono); }
+    .antes b { font: 500 14px var(--f-marca); text-decoration: line-through; text-decoration-color: var(--error); text-decoration-thickness: 1.5px; }
+    .flecha { display: grid; place-items: center; color: var(--gris-2); }
+    .paso b { font: 600 14px var(--f-marca); letter-spacing: -0.01em; }
+    .paso { position: relative; overflow: hidden; transition: box-shadow 300ms ease; }
+    .paso::after { content: ''; position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--connect); transform-origin: 0 50%; scale: 0 1; }
+    .paso.on { box-shadow: 0 0 0 1.5px var(--connect), 0 16px 30px -18px rgba(107, 92, 231, 0.6); } .paso.on::after { animation: llena 2.2s linear forwards; }
+    .paso.ya small { color: var(--ok); }
+    @keyframes llena { to { scale: 1 1; } }
+
+    /* --- 3. LOS OTROS MÓDULOS: UNA FILA SECUNDARIA --- */
+    .otros { grid-column: 7 / -1; grid-row: 2; display: flex; flex-direction: column; gap: 12px; }
+    .otros > header { display: flex; justify-content: space-between; align-items: baseline; color: var(--gris); }
+    .otros > header b { color: var(--tinta); font: 600 16px var(--f-marca); letter-spacing: -0.02em; }
+    .fila { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .mini { display: flex; flex-direction: column; gap: 10px; padding: 8px 8px 12px; border-radius: 16px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea); transition: translate 350ms var(--curva), box-shadow 350ms ease; cursor: pointer; }
+    .mini img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; border-radius: 10px; background: radial-gradient(80% 80% at 50% 30%, #FFFFFF, var(--tint)); }
+    .mini b { padding: 0 6px; font: 600 13px var(--f-marca); } .mini span { padding: 0 6px; color: var(--gris); font: 400 12px / 1.35 var(--f-texto); }
+    @media (hover: hover) { .mini:hover { translate: 0 -3px; box-shadow: 0 0 0 1px var(--linea), 0 20px 36px -22px rgba(45, 37, 96, 0.5); } }
+
+    /* --- NOTAS --- */
+    .notas { padding-block: 80px 120px; background: var(--tinta); color: #F4F3FB; row-gap: 40px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+
+    @media (prefers-reduced-motion: reduce) { .vivo i, .paso.on::after { animation: none; } }
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); } .grilla > * { grid-column: 1 !important; grid-row: auto !important; position: static !important; }
+        .flujo { grid-template-columns: 1fr 1fr; } .flecha { display: none; } .antes { grid-column: 1 / -1; }
+        .fila { grid-template-columns: 1fr 1fr 1fr; } .mini span { display: none; }
+        .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    }
+</style>
+
+<div class="grilla intro"><span class="mono">Tap In · Decisión 11</span><p>La decisión 11 hoy y una propuesta de mejora. Cambia entre las dos con el selector de arriba.</p></div>
+<div class="barra-v"><div class="tabs"><button type="button" data-ir="hoy" aria-pressed="false">Hoy</button><button type="button" data-ir="nueva" aria-pressed="true">Propuesta</button></div></div>
+
+<div data-v="nueva" id="raiz">
+    <div class="vista v-hoy"><img src="hoy.jpg" alt="La decisión 11 hoy"></div>
+    <section class="vista v-nueva">
+        <div class="grilla d11">
+            <div class="riel"><span class="n">11</span><span class="rot mono">Decisión 11</span></div>
+            <div class="txt">
+                <h3>Un mockup con empatía</h3>
+                <p>En el comedor cambié un "acceso denegado" por pago, validación y aviso de saldo.</p>
+                <div class="porque"><span class="mono">Por qué</span><p>Que un niño no almuerce es duro para una familia.</p></div>
+                <span class="mas mono">+ Más contexto</span>
+            </div>
+            <div class="pieza">
+                <div class="escenario"><img src="tp-mk-comedor.webp" alt="Mockup del módulo de comedor"><span class="vivo"><i></i>En vivo</span><span class="modulo mono">Comedor Escolar</span></div>
+                <div class="flujo" data-flujo>
+                    <div class="antes"><small>Antes</small><b>Acceso denegado</b></div>
+                    <span class="flecha">→</span>
+                    <div class="paso" data-p="0"><small>01</small><b>Pago</b></div>
+                    <div class="paso" data-p="1"><small>02</small><b>Validación</b></div>
+                    <div class="paso" data-p="2"><small>03</small><b>Aviso de saldo</b></div>
+                </div>
+            </div>
+            <div class="otros">
+                <header><b>Los otros módulos, también en vivo</b><span class="mono">8 mockups en tapin.cl</span></header>
+                <div class="fila">
+                    <div class="mini"><img src="tp-mk-cpa.webp" alt=""><b>Centro de Padres</b><span>La cartola bancaria se clasifica sola</span></div>
+                    <div class="mini"><img src="tp-mk-gestion.webp" alt=""><b>Gestión Interna</b><span>Una tarea que llega por WhatsApp</span></div>
+                    <div class="mini"><img src="tp-mk-talleres.webp" alt=""><b>Talleres y Ligas</b><span>Los cupos se llenan y se cierran solos</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<main class="grilla notas">
+    <h2>Audit</h2>
+    <div class="bloque">
+        <p>La decisión habla de un cambio en el comedor, pero la pieza muestra cuatro módulos con el mismo peso.</p>
+        <ul class="lista">
+            <li><span class="mono">Historia</span><span>El cambio (de "acceso denegado" a pago, validación y aviso) solo está en el texto</span><span>La pieza lo cuenta: lo que había, tachado, y los tres pasos que lo reemplazan, encendiéndose en orden</span></li>
+            <li><span class="mono">Jerarquía</span><span>Grilla 2 × 2 de tarjetas iguales: el comedor, que es la decisión, pesa lo mismo que los otros tres</span><span>El comedor grande, de la 7 a la 12; los otros tres en una fila secundaria más chica</span></li>
+            <li><span class="mono">En vivo</span><span>Los mockups se animan solos, pero nada lo dice: parecen capturas</span><span>Una etiqueta "En vivo" con un punto que late</span></li>
+            <li><span class="mono">Grilla</span><span>Texto en las columnas 1 a 4 y tarjetas de la 5 a la 12: distinto de las decisiones 01 a 05</span><span>El patrón del caso: número en el riel, texto de la 4 a la 6, pieza de la 7 a la 12</span></li>
+            <li><span class="mono">Detalle</span><span>La etiqueta "Decisión 11" se repite dentro de la primera tarjeta</span><span>Sale; el número grande ya lo dice</span></li>
+            <li><span class="mono">Interacción</span><span>Solo el fundido de entrada</span><span>El flujo avanza solo; hover suave en el mockup y en las tarjetas chicas</span></li>
+        </ul>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · DECISIÓN 11
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        /* --- 1. EL FLUJO SE ENCIENDE EN ORDEN, EN BUCLE --- */
+        const pasos = [...document.querySelectorAll('[data-flujo] .paso')]; let k = 0;
+        const avanzar = () => { pasos.forEach((p, i) => { p.classList.toggle('on', i === k); p.classList.toggle('ya', i < k); }); k = (k + 1) % pasos.length; };
+        avanzar(); setInterval(avanzar, 2200);
+        /* --- 2. HOY / PROPUESTA --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ir === v))); };
+        botones.forEach(b => b.addEventListener('click', () => elegir(b.dataset.ir)));
+    })();
+    /* =======================================================
+       FIN JS · DECISIÓN 11
+       ======================================================= */
+</script>

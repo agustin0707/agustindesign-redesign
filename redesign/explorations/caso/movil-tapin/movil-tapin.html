@@ -1,0 +1,293 @@
+<title>tapin.cl en el teléfono</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@400;500;600&display=swap">
+<style>
+    /* Cinco variantes para la sección "tapin.cl en el teléfono": todas con el sitio real en móvil (captura completa a
+       390 px) y escenas que avanzan con el scroll, sobre el morado de la sección */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --gris: #57556B;
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0;
+        --texto: #FFFFFF; --texto-2: rgba(255, 255, 255, 0.78); --texto-3: rgba(255, 255, 255, 0.5); --linea: rgba(255, 255, 255, 0.22);
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --curva: cubic-bezier(0.34, 1.25, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--empresa); color: var(--texto); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    .mono { font-family: var(--f-mono); font-weight: 400; font-size: 12px; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 40px; background: var(--papel); color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .vista-v { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc, [data-v="d"] .vd, [data-v="e"] .ve { display: block; }
+
+    /* =======================================================
+       ESCENA Y PIEZAS COMPARTIDAS
+       ======================================================= */
+    .esc { position: relative; height: 460svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; align-content: center; background: radial-gradient(120% 90% at 80% 0%, var(--connect), var(--campus) 45%, var(--empresa)); }
+    .titulo { display: flex; flex-direction: column; gap: 14px; }
+    .titulo .rot { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); } .titulo .rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #FFFFFF; }
+    .titulo h2 { margin: 0; font: 600 clamp(32px, 3.4vw, 56px) / 1 var(--f-marca); letter-spacing: -0.045em; text-wrap: balance; }
+    .titulo p { margin: 0; max-width: 30ch; color: var(--texto-2); font: 400 clamp(15px, 1.15vw, 17px) / 1.45 var(--f-marca); }
+    /* Teléfono: marco de titanio, bisel fino e isla; la pantalla recorre la captura del sitio en móvil */
+    .tel { --w: 240px; position: relative; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 2px 3px rgba(14, 11, 28, 0.35), 0 30px 50px -20px rgba(14, 11, 28, 0.6), 0 70px 120px -40px rgba(14, 11, 28, 0.8); flex: none; }
+    .tel .pant { position: relative; width: 100%; height: 100%; overflow: hidden; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); background: #F7F6FD; }
+    .tel .pant::before { content: ''; position: absolute; left: 50%; top: calc(var(--w) * 0.02); z-index: 3; width: 30%; height: calc(var(--w) * 0.085); margin-left: -15%; border-radius: 99px; background: #050408; }
+    .tel .pant > img { position: absolute; left: 0; top: 0; width: 100%; will-change: transform; }
+    .tel .pant > img.fija { height: 100%; object-fit: cover; object-position: 50% 0; }
+    .nav { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; background: #FFFFFF; box-shadow: 0 40px 90px -40px rgba(14, 11, 28, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.12); }
+    .nav .barra { flex: none; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; background: #F2F1F8; border-bottom: 1px solid rgba(45, 37, 96, 0.08); }
+    .nav .barra > i { width: 11px; height: 11px; border-radius: 50%; background: #D9D6EA; } .nav .barra > span { margin: 0 auto; padding: 4px 48px; border-radius: 8px; background: #FFFFFF; font: 12px var(--f-mono); color: #5E5C72; }
+    .nav .pant { position: relative; flex: 1; overflow: hidden; } .nav .pant > img { position: absolute; left: 0; top: 0; width: 100%; will-change: transform; }
+    .seccion { display: inline-flex; align-items: center; gap: 10px; color: var(--texto-2); }
+    .seccion b { font-weight: 400; color: #FFFFFF; }
+
+    /* =======================================================
+       A · A LA PAR
+       ======================================================= */
+    /* El navegador y el teléfono muestran la misma página y bajan juntos con el scroll: la frase del pie se vuelve la
+       prueba. Un rótulo dice en qué parte del sitio se está */
+    .va .titulo { grid-column: 1 / span 4; grid-row: 1; align-self: start; padding-top: 4svh; }
+    .va .nav { grid-column: 1 / span 8; grid-row: 1; height: 62svh; align-self: end; margin-top: 26svh; }
+    .va .tel { grid-column: 9 / span 4; grid-row: 1; justify-self: center; align-self: center; --w: min(17vw, 34svh); }
+    .va .seccion { grid-column: 9 / -1; grid-row: 1; align-self: start; justify-self: center; padding-top: 5svh; }
+
+    /* =======================================================
+       B · UN TELÉFONO QUE RECORRE
+       ======================================================= */
+    /* Un solo teléfono grande al centro; la pantalla recorre el sitio entero y a los costados aparece el nombre de cada
+       parte, alternando lados */
+    .vb .fijo { place-items: center; display: grid; }
+    .vb .tel { --w: min(22vw, 38svh); grid-area: 1 / 1; }
+    .vb .titulo { position: absolute; left: var(--margen); bottom: 8svh; }
+    .vb .etq { position: absolute; top: 50%; display: flex; align-items: center; gap: 12px; color: #FFFFFF; font: 600 clamp(20px, 2vw, 30px) / 1 var(--f-marca); letter-spacing: -0.03em; opacity: 0; translate: 0 12px; transition: opacity 300ms ease, translate 450ms var(--ease); }
+    .vb .etq small { color: var(--texto-3); font: 400 12px var(--f-mono); letter-spacing: 0; }
+    .vb .etq.on { opacity: 1; translate: 0 0; }
+    .vb .etq.izq { right: calc(50% + min(11vw, 19svh) + 48px); flex-direction: row-reverse; text-align: right; } .vb .etq.der { left: calc(50% + min(11vw, 19svh) + 48px); }
+    .vb .etq::before { content: ''; width: 40px; height: 1px; background: var(--linea); }
+
+    /* =======================================================
+       C · ABANICO
+       ======================================================= */
+    /* Tres teléfonos en abanico que giran con el scroll como un carrusel: el del centro crece y nombra su pantalla */
+    .vc .fijo { display: grid; place-items: center; }
+    .vc .rueda { position: relative; width: 100%; height: 76svh; }
+    .vc .tel { --w: min(17vw, 32svh); position: absolute; left: 50%; top: 50%; translate: -50% -50%; transition: none; }
+    .vc .titulo { position: absolute; left: var(--margen); top: 9svh; }
+    .vc .nombre { position: absolute; left: 50%; bottom: 7svh; translate: -50% 0; display: grid; text-align: center; }
+    .vc .nombre span { grid-area: 1 / 1; opacity: 0; translate: 0 10px; transition: opacity 250ms ease, translate 400ms var(--ease); color: #FFFFFF; font: 500 15px var(--f-marca); } .vc .nombre span.on { opacity: 1; translate: 0 0; }
+
+    /* =======================================================
+       D · MURO DE PANTALLAS
+       ======================================================= */
+    /* Tres columnas de teléfonos con distintas partes del sitio que suben a distinta velocidad, inclinadas: todo el
+       sitio cabe en el bolsillo */
+    .vd .muro { position: absolute; inset: -30% -10%; display: flex; justify-content: center; gap: clamp(20px, 3vw, 48px); rotate: -12deg; }
+    .vd .col { display: flex; flex-direction: column; gap: clamp(20px, 3vw, 44px); will-change: transform; }
+    .vd .tel { --w: min(15vw, 26svh); }
+    .vd .velo { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(45, 37, 96, 0.92) 0%, rgba(45, 37, 96, 0.55) 38%, transparent 62%); pointer-events: none; }
+    .vd .titulo { position: absolute; left: var(--margen); top: 50%; translate: 0 -50%; max-width: 30%; }
+
+    /* =======================================================
+       E · DE 1440 A 390
+       ======================================================= */
+    /* El navegador de escritorio se angosta con el scroll; cuando pasa el quiebre, la página cambia a su versión móvil y
+       el marco se vuelve teléfono. Una regla marca el ancho */
+    .ve .fijo { display: grid; place-items: center; }
+    .ve .marco { position: relative; margin-top: 8svh; width: var(--mw); height: var(--mh); border-radius: var(--mr); overflow: hidden; background: #FFFFFF; box-shadow: 0 40px 90px -40px rgba(14, 11, 28, 0.7), 0 0 0 calc(var(--bz) * 1px) #1A1724, 0 0 0 calc(var(--bz) * 1px + 1px) rgba(255, 255, 255, 0.2); }
+    .ve .marco .barra { position: absolute; left: 0; right: 0; top: 0; z-index: 2; display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; background: #F2F1F8; border-bottom: 1px solid rgba(45, 37, 96, 0.08); opacity: var(--ba); }
+    .ve .marco .barra i { width: 10px; height: 10px; border-radius: 50%; background: #D9D6EA; } .ve .marco .barra span { margin: 0 auto; padding: 3px 26px; border-radius: 7px; background: #FFFFFF; font: 11px var(--f-mono); color: #5E5C72; }
+    .ve .marco img { position: absolute; left: 0; top: 34px; width: 100%; height: calc(100% - 34px); object-fit: cover; object-position: 50% 0; transition: opacity 250ms linear; }
+    .ve .marco img.m { top: 0; height: 100%; }
+    .ve .isla { position: absolute; left: 50%; top: 10px; z-index: 3; width: 30%; height: 22px; margin-left: -15%; border-radius: 99px; background: #050408; opacity: calc(1 - var(--ba)); }
+    .ve .regla { position: absolute; left: 50%; bottom: 7svh; translate: -50% 0; display: flex; align-items: center; gap: 12px; color: var(--texto-2); }
+    .ve .regla i { display: block; width: var(--rw); height: 1px; background: var(--linea); position: relative; } .ve .regla i::before, .ve .regla i::after { content: ''; position: absolute; top: -4px; width: 1px; height: 9px; background: var(--texto-3); } .ve .regla i::before { left: 0; } .ve .regla i::after { right: 0; }
+    .ve .regla b { font-weight: 400; color: #FFFFFF; min-width: 5ch; text-align: center; }
+    .ve .titulo { position: absolute; left: var(--margen); top: 9svh; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(16, 13, 32, 0.6); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 13px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; } .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); } .grilla > * { grid-column: 1 !important; }
+        .va .fijo { align-content: start; padding-top: 8svh; row-gap: 14px; } .va .titulo, .va .nav, .va .tel, .va .seccion { grid-row: auto !important; margin: 0; padding: 0; }
+        .va .nav { display: none; } .va .tel { --w: 46vw; } .va .titulo p { display: none; }
+        .vb .tel { --w: 52vw; } .vb .etq { top: auto; bottom: 18svh; left: 50% !important; right: auto !important; translate: -50% 12px; flex-direction: row !important; } .vb .etq.on { translate: -50% 0; } .vb .etq::before { display: none; } .vb .titulo { display: none; }
+        .vc .tel { --w: 40vw; } .vd .tel { --w: 34vw; } .vd .titulo { max-width: 70%; top: auto; bottom: 10svh; translate: none; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Tap In · tapin.cl en el teléfono</span><p>Cinco variantes para la sección del teléfono, con el sitio real en móvil. Baja por cada escena; cambia con el selector.</p></div>
+    <section class="vista-v va esc" data-esc="a">
+        <div class="fijo grilla">
+            <div class="titulo"><span class="rot mono">tapin.cl en el teléfono</span><h2>La misma web, a la par</h2><p>Diseñada y programada para escritorio y teléfono al mismo tiempo, no adaptada después.</p></div>
+            <div class="nav"><div class="barra"><i></i><i></i><i></i><span>tapin.cl</span></div><div class="pant"><img src="sitio.jpg" alt="tapin.cl en escritorio" data-d></div></div>
+            <span class="seccion mono">Viendo · <b data-sec>Inicio</b></span>
+            <div class="tel"><div class="pant"><img src="movil.jpg" alt="tapin.cl en el teléfono" data-m></div></div>
+        </div>
+    </section>
+    <section class="vista-v vb esc" data-esc="b">
+        <div class="fijo">
+            <div class="tel"><div class="pant"><img src="movil.jpg" alt="tapin.cl en el teléfono" data-m></div></div>
+            <div data-etqs></div>
+            <div class="titulo"><span class="rot mono">tapin.cl en el teléfono</span><h2>Todo el sitio, en el bolsillo</h2></div>
+        </div>
+    </section>
+    <section class="vista-v vc esc" data-esc="c">
+        <div class="fijo">
+            <div class="titulo"><span class="rot mono">tapin.cl en el teléfono</span><h2>Cada módulo, también en móvil</h2></div>
+            <div class="rueda">
+                <div class="tel" data-t="0"><div class="pant"><img class="fija" src="tp-cel-inicio.jpg" alt=""></div></div>
+                <div class="tel" data-t="1"><div class="pant"><img class="fija" src="tp-cel-comedor.jpg" alt=""></div></div>
+                <div class="tel" data-t="2"><div class="pant"><img class="fija" src="tp-cel-gestion.jpg" alt=""></div></div>
+            </div>
+            <div class="nombre"><span data-n="0">Inicio</span><span data-n="1">Comedor Escolar</span><span data-n="2">Gestión Interna</span></div>
+        </div>
+    </section>
+    <section class="vista-v vd esc" data-esc="d">
+        <div class="fijo">
+            <div class="muro" data-muro></div>
+            <div class="velo"></div>
+            <div class="titulo"><span class="rot mono">tapin.cl en el teléfono</span><h2>Todo el sitio, también en el teléfono</h2><p>La misma web, diseñada y programada a la par.</p></div>
+        </div>
+    </section>
+    <section class="vista-v ve esc" data-esc="e">
+        <div class="fijo">
+            <div class="titulo"><span class="rot mono">tapin.cl en el teléfono</span><h2>De 1440 a 390</h2></div>
+            <div class="marco" data-marco><div class="barra"><i></i><i></i><i></i><span>tapin.cl</span></div><img class="d" src="sitio.jpg" alt=""><img class="m" src="movil-top.jpg" alt=""><span class="isla"></span></div>
+            <div class="regla mono"><i></i><b data-ancho>1440 px</b><i></i></div>
+        </div>
+    </section>
+</div>
+
+<nav class="selector" aria-label="Variantes">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>A la par</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Un teléfono</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Abanico</span></button>
+    <button type="button" data-ir="d" aria-pressed="false"><b>D</b><span>Muro</span></button>
+    <button type="button" data-ir="e" aria-pressed="false"><b>E</b><span>1440 a 390</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de la sección</h2>
+    <div class="bloque">
+        <p>Tres capturas quietas sobre morado: se ve bonito, pero no dice nada que el caso no haya dicho.</p>
+        <ul class="lista">
+            <li><span class="mono">Mensaje</span><span>"La misma web, diseñada y programada a la par" va en un pie de 11 px; es la idea de la sección y nadie la lee</span><span>La frase como título, y una pieza que la demuestre</span></li>
+            <li><span class="mono">Pieza</span><span>Tres pantallas estáticas, cortadas arriba, con un parallax leve</span><span>El sitio real en móvil, recorrido entero o comparado con el escritorio</span></li>
+            <li><span class="mono">Composición</span><span>Tres teléfonos centrados en fila: el recurso más común de un portafolio</span><span>Una composición pensada para esta idea (a la par, un recorrido, un muro, un cambio de ancho)</span></li>
+            <li><span class="mono">Interacción</span><span>Ninguna más allá del parallax</span><span>El scroll mueve las pantallas; en A, las dos a la vez</span></li>
+            <li><span class="mono">Relato</span><span>Llega después de los mockups y antes del resultado sin conectar con ninguno</span><span>Cierra el capítulo de la web: lo que se programó funciona en cualquier pantalla</span></li>
+        </ul>
+    </div>
+    <h2>Variantes</h2>
+    <div class="bloque">
+        <p>Cinco maneras de mostrar tapin.cl en el teléfono.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · A la par</span><strong>Escritorio y teléfono juntos</strong><p>El navegador y el teléfono muestran la misma página y bajan juntos con el scroll; un rótulo dice en qué parte se está. Demuestra literalmente "diseñada y programada a la par".</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Un teléfono que recorre</span><strong>El sitio entero en una pantalla</strong><p>Un teléfono grande al centro recorre todo el sitio; a los costados aparece el nombre de cada parte, alternando lados.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Abanico</span><strong>Un carrusel de teléfonos</strong><p>Tres teléfonos en abanico giran con el scroll; el del centro crece y nombra su pantalla.</p></button>
+            <button type="button" class="op" data-ir="d" aria-pressed="false"><span class="mono">D · Muro de pantallas</span><strong>Todo cabe en el bolsillo</strong><p>Tres columnas inclinadas de teléfonos con distintas partes del sitio suben a distinta velocidad; el título queda a la izquierda.</p></button>
+            <button type="button" class="op" data-ir="e" aria-pressed="false"><span class="mono">E · De 1440 a 390</span><strong>Un cambio de ancho</strong><p>El navegador se angosta con el scroll; al pasar el quiebre la página cambia a su versión móvil y el marco se vuelve teléfono. Una regla marca el ancho.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · TAPIN.CL EN EL TELÉFONO
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+        /* Alto de cada página en px de su ancho: escritorio 5140 a 1440, móvil 6636 a 390 */
+        const D_ANCHO = 1440, D_ALTO = 5140, M_ANCHO = 390, M_ALTO = 6636;
+        const SECC = [['Inicio', 0], ['Los colegios', 0.17], ['El día a día', 0.23], ['Los módulos', 0.38], ['Todo conectado', 0.53], ['Las dudas', 0.66], ['La demo', 0.82]];
+        const bajar = (img, ancho, alto, f) => { const pant = img.parentElement, e = pant.clientWidth / ancho, vis = pant.clientHeight / e; img.style.transform = `translate3d(0, ${(-f * (alto - vis) * e).toFixed(1)}px, 0)`; };
+        const seccionDe = f => SECC.reduce((a, s) => (f >= s[1] ? s : a), SECC[0]);
+
+        /* --- 1. B: ETIQUETAS ALTERNADAS --- */
+        document.querySelector('[data-etqs]').innerHTML = SECC.map((s, i) => `<span class="etq ${i % 2 ? 'der' : 'izq'}" data-s="${i}"><small>${String(i + 1).padStart(2, '0')}</small>${s[0]}</span>`).join('');
+        /* --- 2. D: EL MURO, CON RECORTES DEL SITIO EN MÓVIL A DISTINTAS ALTURAS --- */
+        const cortes = [[0.0, 0.22, 0.47, 0.71, 0.9], [0.12, 0.36, 0.58, 0.82, 0.05], [0.28, 0.5, 0.76, 0.95, 0.16]];
+        document.querySelector('[data-muro]').innerHTML = cortes.map((c, k) => `<div class="col" data-col="${k}">${c.map(f => `<div class="tel"><div class="pant"><img src="movil.jpg" alt="" data-f="${f}"></div></div>`).join('')}</div>`).join('');
+
+        const escenas = {
+            a: (el, p) => {
+                const f = curva(fijar((p - 0.05) / 0.9));
+                bajar(el.querySelector('[data-d]'), D_ANCHO, D_ALTO, f); bajar(el.querySelector('[data-m]'), M_ANCHO, M_ALTO, f);
+                el.querySelector('[data-sec]').textContent = seccionDe(f)[0];
+            },
+            b: (el, p) => {
+                const f = fijar((p - 0.03) / 0.94); bajar(el.querySelector('[data-m]'), M_ANCHO, M_ALTO, f);
+                const s = SECC.indexOf(seccionDe(f)); el.querySelectorAll('.etq').forEach(x => x.classList.toggle('on', +x.dataset.s === s));
+            },
+            c: (el, p) => {
+                /* Cada teléfono ocupa una posición en un círculo; el scroll gira el círculo y se detiene en cada uno */
+                const u = fijar(p) * 2, base = Math.floor(u), t = u - base, giro = base + curva(fijar((t - 0.3) / 0.4));
+                el.querySelectorAll('.tel').forEach(tel => {
+                    const k = +tel.dataset.t, a = (k - giro) * (2 * Math.PI / 3), x = Math.sin(a), z = Math.cos(a);
+                    tel.style.transform = `translateX(${(x * 34).toFixed(2)}vw) scale(${(0.72 + 0.28 * (z + 1) / 2).toFixed(3)}) rotate(${(x * 8).toFixed(2)}deg)`;
+                    tel.style.zIndex = Math.round((z + 1) * 10); tel.style.opacity = (0.45 + 0.55 * (z + 1) / 2).toFixed(2);
+                });
+                const centro = ((Math.round(giro) % 3) + 3) % 3; el.querySelectorAll('[data-n]').forEach(n => n.classList.toggle('on', +n.dataset.n === centro));
+            },
+            d: (el, p) => {
+                el.querySelectorAll('[data-col]').forEach(c => { const k = +c.dataset.col, v = [-38, -22, -46][k]; c.style.transform = `translate3d(0, ${(v * p).toFixed(2)}%, 0)`; });
+                el.querySelectorAll('[data-f]').forEach(img => { if (!img.dataset.puesto && img.complete) { bajar(img, M_ANCHO, M_ALTO, +img.dataset.f); img.dataset.puesto = 1; } });
+            },
+            e: (el, p) => {
+                /* El ancho baja de 1440 a 390 (en la escala del escenario); el quiebre está en 768 */
+                const m = curva(fijar((p - 0.08) / 0.7)), ancho = Math.round(1440 - (1440 - 390) * m), esc = Math.min(innerWidth * 0.62, 1000) / 1440;
+                const mk = el.querySelector('[data-marco]'), movil = ancho < 768, k = fijar((768 - ancho) / 180);
+                mk.style.setProperty('--mw', (ancho * esc * (movil ? 1.25 : 1)).toFixed(1) + 'px');
+                mk.style.setProperty('--mh', (Math.min(innerHeight * 0.66, 620) * (1 + 0.12 * k)).toFixed(1) + 'px');
+                mk.style.setProperty('--mr', (12 + 30 * k).toFixed(1) + 'px'); mk.style.setProperty('--bz', (8 * k).toFixed(1)); mk.style.setProperty('--ba', (1 - k).toFixed(2));
+                mk.querySelector('img.d').style.opacity = movil ? 0 : 1; mk.querySelector('img.m').style.opacity = movil ? 1 : 0;
+                el.querySelector('[data-ancho]').textContent = ancho + ' px'; el.querySelector('.regla').style.setProperty('--rw', (40 + 160 * (1 - m)) + 'px');
+            }
+        };
+        const tick = () => document.querySelectorAll('.esc').forEach(el => {
+            if (!el.offsetParent) return;
+            const r = el.getBoundingClientRect(), pista = el.offsetHeight - innerHeight;
+            escenas[el.dataset.esc](el, fijar(-r.top / pista));
+        });
+        let pedido = false;
+        addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; tick(); }); } }, { passive: true });
+        addEventListener('resize', () => { document.querySelectorAll('[data-puesto]').forEach(i => delete i.dataset.puesto); tick(); });
+        document.querySelectorAll('img').forEach(i => i.addEventListener('load', tick));
+
+        /* --- 3. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.ir === v))); try { localStorage.setItem('movil-tapin', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(tick); };
+        botones.forEach(x => x.addEventListener('click', () => { elegir(x.dataset.ir); if (x.classList.contains('op')) scrollTo({ top: document.querySelector('.esc.v' + x.dataset.ir).offsetTop, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('movil-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(h && 'abcde'.includes(h) ? h : guardado || 'a');
+    })();
+    /* =======================================================
+       FIN JS · TAPIN.CL EN EL TELÉFONO
+       ======================================================= */
+</script>
