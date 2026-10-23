@@ -1,0 +1,314 @@
+<title>Una variable</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+    /* Tres maneras de mostrar el paso 04 del manual ("Una variable mueve todo") sin contenido de un producto: la pieza
+       muestra el sistema, no una pantalla de Campus o Connect. Cada variante reproduce el editor y la vista previa del caso */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --noche: #100D20; --gris: #57556B;
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --n50: #F2F1F7;
+        --texto: #F4F3FB; --texto-2: rgba(238, 237, 254, 0.7); --texto-3: rgba(238, 237, 254, 0.42); --linea: rgba(155, 142, 240, 0.2);
+        --ed: #1B1733; --ed-2: #100D1E; --cod: #CFCBEA; --ok: #2FB37A;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1); --curva: cubic-bezier(0.34, 1.25, 0.64, 1);
+        color-scheme: dark;
+    }
+    @property --tono { syntax: '<color>'; inherits: true; initial-value: #4A3CAE; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--noche); color: var(--texto); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    .mono { font-family: var(--f-mono); font-size: 12px; font-weight: 400; }
+    .marca { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .wm { --svg: url('tp-wordmark.svg'); aspect-ratio: 389.87 / 150.6; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 40px; background: var(--papel); color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .vista-v { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc { display: grid; }
+
+    /* =======================================================
+       ESCENA: TEXTO DEL PASO 04 Y LA PIEZA DEL CASO
+       ======================================================= */
+    .escena { min-height: 100svh; align-content: center; padding-block: 60px; position: relative; }
+    .escena::before { content: ''; position: absolute; inset: 0; background: radial-gradient(50% 60% at 76% 52%, rgba(107, 92, 231, 0.24), transparent 70%); pointer-events: none; }
+    .txt { position: relative; grid-column: 4 / span 3; grid-row: 1; align-self: end; }
+    .txt .mono { display: block; margin-bottom: 10px; color: var(--health); }
+    .txt b { display: block; margin-bottom: 10px; font: 600 clamp(28px, 2.9vw, 46px) / 0.98 var(--f-marca); letter-spacing: -0.045em; }
+    .txt p { margin: 0; max-width: 30ch; color: var(--texto-2); font: 400 clamp(15px, 1.1vw, 16px) / 1.42 var(--f-marca); }
+    .pieza { position: relative; grid-column: 8 / -1; grid-row: 1; height: min(76svh, 720px); }
+    .editor { position: absolute; left: -16%; right: 18%; top: 0; height: 44%; display: flex; flex-direction: column; border-radius: 16px; background: linear-gradient(180deg, var(--ed), #151229); box-shadow: inset 0 0 0 1px var(--linea), 0 50px 100px -40px rgba(0, 0, 0, 0.95); overflow: hidden; }
+    .ed-cab { flex: none; display: flex; align-items: flex-end; height: 42px; padding: 0 12px 0 14px; background: var(--ed-2); border-bottom: 1px solid var(--linea); }
+    .luces { display: flex; gap: 7px; align-self: center; margin-right: 18px; } .luces i { width: 11px; height: 11px; border-radius: 50%; background: #FF5F57; } .luces i:nth-child(2) { background: #FEBC2E; } .luces i:nth-child(3) { background: #28C840; }
+    .pest { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 9px 9px 0 0; background: var(--ed); color: var(--texto); font: 400 12px var(--f-mono); }
+    .pest i { display: grid; place-items: center; width: 20px; height: 16px; border-radius: 4px; background: rgba(155, 142, 240, 0.16); color: var(--health); font: 500 8.5px / 1 var(--f-mono); font-style: normal; }
+    .codigo { padding: 14px 0; font: 400 clamp(11.5px, 0.92vw, 14px) / 1.9 var(--f-mono); counter-reset: l; }
+    .codigo div { position: relative; padding: 0 16px 0 50px; white-space: pre; color: var(--cod); border-radius: 0; transition: background-color 300ms ease; }
+    .codigo div::before { counter-increment: l; content: counter(l, decimal) ; position: absolute; left: 0; width: 34px; text-align: right; color: rgba(238, 237, 254, 0.24); }
+    .codigo .c { color: rgba(238, 237, 254, 0.42); } .codigo .p { color: #A99EF5; } .codigo .v { color: #F4F3FB; } .codigo .k { color: #EBA9F4; }
+    .codigo .chip { display: inline-block; vertical-align: -1px; margin-left: 8px; width: 10px; height: 10px; border-radius: 3px; background: var(--c); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); transition: background-color 300ms ease; }
+    .codigo .foco { background-color: rgba(155, 142, 240, 0.16); }
+    .vista { position: absolute; left: 14%; right: 0; bottom: 0; height: 66%; display: flex; flex-direction: column; border-radius: 18px; background: var(--papel); color: var(--tinta); box-shadow: 0 0 0 1px rgba(16, 13, 32, 0.25), 0 24px 48px -20px rgba(0, 0, 0, 0.6), 0 70px 120px -40px rgba(0, 0, 0, 0.9); overflow: hidden; cursor: default; -webkit-user-select: none; user-select: none; }
+    .vi-cab { flex: none; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 36px; padding: 0 12px; background: #FFFFFF; border-bottom: 1px solid rgba(45, 37, 96, 0.08); color: #8A889E; font: 400 11px var(--f-mono); }
+    .vi-cab b { font-weight: 400; color: var(--tinta); } .vi-cab .vivo { justify-self: end; color: var(--ok); } .vi-cab .vivo::before { content: '● '; }
+    .lienzo { position: relative; flex: 1; display: grid; place-items: center; padding: clamp(16px, 1.8vw, 24px); }
+    .tag { position: absolute; z-index: 3; left: 8px; top: -9px; padding: 2px 7px; border-radius: 6px; background: var(--ed); color: #B5ABF5; box-shadow: inset 0 0 0 1px rgba(155, 142, 240, 0.35), 0 0 0 2px var(--papel); font: 400 10px / 1.4 var(--f-mono); white-space: nowrap; pointer-events: none; }
+
+    /* --- KIT DE COMPONENTES COMPARTIDO: SIN CONTENIDO DE NINGÚN PRODUCTO --- */
+    /* Todo lo que lleva color sale de --tono o de --suave (color-mix del tono con el neutro claro) */
+    .kit { --sobre: #FFFFFF; --tono: var(--campus); --suave: color-mix(in srgb, var(--tono) 16%, var(--n50)); --borde: color-mix(in srgb, var(--tono) 34%, transparent); transition: --tono 500ms ease; }
+    .c-boton { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: 999px; background: var(--tono); color: var(--sobre); font: 500 12px var(--f-marca); box-shadow: 0 8px 18px -10px var(--tono); transition: color 300ms ease; }
+    .c-boton.sec { background: transparent; color: var(--tono); box-shadow: inset 0 0 0 1.5px var(--borde); }
+    .c-toggle { position: relative; width: 36px; height: 20px; border-radius: 999px; background: var(--tono); } .c-toggle::after { content: ''; position: absolute; right: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); }
+    .c-toggle.off { background: #D9D7E3; } .c-toggle.off::after { right: auto; left: 2px; }
+    .c-check { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 5px; background: var(--tono); color: var(--sobre); font: 700 11px / 1 var(--f-texto); }
+    .c-radio { width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 5px var(--tono); background: #FFFFFF; }
+    .c-tabs { display: flex; gap: 14px; font: 500 12px var(--f-marca); color: #8A889E; } .c-tabs span.on { position: relative; color: var(--tinta); } .c-tabs span.on::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; border-radius: 2px; background: var(--tono); }
+    .c-barra { height: 8px; border-radius: 99px; background: var(--suave); overflow: hidden; } .c-barra i { display: block; width: 72%; height: 100%; border-radius: inherit; background: var(--tono); }
+    .c-insignia { display: inline-flex; padding: 3px 9px; border-radius: 999px; background: var(--suave); color: var(--tono); font: 600 10px var(--f-marca); }
+    .c-punto { display: grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--tono); color: var(--sobre); font: 600 10px var(--f-marca); }
+    .c-campo { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; background: #FFFFFF; box-shadow: 0 0 0 1.5px var(--tono), 0 0 0 5px var(--suave); color: #8A889E; font: 400 12px var(--f-marca); } .c-campo::after { content: ''; width: 1.5px; height: 14px; margin-left: -6px; background: var(--tono); animation: parpadeo 1s steps(1) infinite; }
+    .c-enlace { color: var(--tono); font: 500 12px var(--f-marca); }
+    .c-avatar { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--suave); color: var(--tono); font: 600 10px var(--f-marca); box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3.5px var(--tono); }
+    @keyframes parpadeo { 50% { opacity: 0; } }
+
+    /* =======================================================
+       A · KIT DEL SISTEMA
+       ======================================================= */
+    /* Una hoja de componentes genéricos, como la de un sistema de diseño: ocho piezas, todas del mismo tono */
+    .hoja { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
+    .celda { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; min-height: 74px; padding: 10px 12px; border-radius: 12px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.06); }
+    .celda { transition: transform 350ms var(--curva), box-shadow 350ms ease; } .vista .celda.foco { transform: translateY(-3px); box-shadow: 0 0 0 1.5px rgba(155, 142, 240, 0.55), 0 18px 30px -16px rgba(45, 37, 96, 0.5); }
+    .celda > small { color: #8A889E; font: 400 10px var(--f-mono); }
+    .celda > div { display: flex; align-items: center; gap: 10px; }
+    .celda.ancha { grid-column: 1 / -1; min-height: 0; }
+    .barra-prod { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; width: 100%; margin-top: 10px; color: #6E6B84; font: 400 10px var(--f-mono); }
+    .barra-prod button { padding: 4px 9px; border: 0; border-radius: 999px; background: rgba(45, 37, 96, 0.06); color: #6E6B84; font: 500 11px var(--f-marca); cursor: pointer; } .barra-prod button.on { background: var(--tinta); color: #FFFFFF; }
+
+    /* =======================================================
+       B · DIAL DEL TONO
+       ======================================================= */
+    /* Una perilla recorre el rango morado del manual, de Empresa a Health; cada valor intermedio también funciona.
+       Con el scroll se detiene en los productos; también se arrastra */
+    .dial { width: 100%; display: grid; gap: 14px; }
+    .rango { position: relative; height: 54px; }
+    .rango .pista { position: absolute; left: 0; right: 0; top: 14px; height: 14px; border-radius: 99px; background: linear-gradient(90deg, #2D2560, #4A3CAE 33%, #6B5CE7 66%, #9B8EF0); box-shadow: inset 0 0 0 1px rgba(28, 26, 46, 0.1); cursor: pointer; }
+    .rango .marcas span { position: absolute; top: 34px; translate: -50% 0; color: #8A889E; font: 400 10px var(--f-mono); white-space: nowrap; transition: color 200ms linear; } .rango .marcas span.on { color: var(--tinta); }
+    .rango .marcas span:first-child { translate: 0 0; } .rango .marcas span:last-child { translate: -100% 0; }
+    .rango .marcas span::before { content: ''; position: absolute; left: var(--a, 50%); top: -8px; width: 1px; height: 5px; background: rgba(28, 26, 46, 0.25); }
+    .perilla { position: absolute; top: 6px; left: calc(var(--x, 0.33) * 100%); width: 30px; height: 30px; margin-left: -15px; border-radius: 50%; background: var(--tono); box-shadow: 0 0 0 4px #FFFFFF, 0 6px 16px -4px rgba(28, 26, 46, 0.5); cursor: grab; touch-action: none; transition: left 600ms var(--curva); }
+    .perilla.arrastra { transition: none; cursor: grabbing; }
+    .perilla .tag { left: 50%; top: -26px; translate: -50% 0; }
+    .lectura { display: flex; justify-content: space-between; align-items: baseline; color: #6E6B84; font: 400 11px var(--f-mono); } .lectura b { color: var(--tinta); font: 400 12px var(--f-mono); }
+    .mini { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .mini .celda { min-height: 64px; }
+
+    /* =======================================================
+       C · TRES A LA VEZ
+       ======================================================= */
+    /* El mismo componente tres veces, cada uno con su valor de --tono: la estructura no cambia, solo la variable */
+    .tres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; width: 100%; }
+    .tres .kit { position: relative; display: grid; gap: 10px; padding: 12px; border-radius: 14px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.06), 0 14px 28px -16px rgba(28, 26, 46, 0.35); transition: transform 350ms var(--curva), box-shadow 350ms ease; }
+    .tres .kit:hover { transform: translateY(-3px); box-shadow: 0 0 0 1.5px var(--borde), 0 18px 30px -16px rgba(45, 37, 96, 0.5); }
+    .tres .cab-k { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid rgba(45, 37, 96, 0.08); }
+    .tres .cab-k b { font: 600 12px var(--f-marca); } .tres .cab-k span { width: 10px; height: 10px; border-radius: 50%; background: var(--tono); }
+    .tres .fila { display: flex; align-items: center; justify-content: space-between; }
+    .tres .c-boton { width: 100%; }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(244, 243, 250, 0.12); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; } .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (prefers-reduced-motion: reduce) { .c-campo::after { animation: none; } .perilla { transition: none; } }
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); }
+        .grilla > * { grid-column: 1 !important; grid-row: auto !important; }
+        .escena { align-content: start; row-gap: 20px; }
+        .pieza { height: 76svh; } .editor { left: 0; right: 0; height: 36%; } .vista { left: 4%; height: 70%; }
+        .codigo { font-size: 10.5px; } .codigo div { padding-left: 34px; } .codigo div::before { width: 22px; }
+        .celda { min-height: 0; padding: 8px 10px; gap: 8px; min-width: 0; } .celda > div { flex-wrap: wrap; } .hoja .celda:nth-child(n+5) { display: none; } .c-boton.sec { display: none; } .mini { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mini .celda:nth-child(n+5) { display: none; }
+        .tres { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; } .tres .kit { padding: 8px; gap: 8px; } .tres .c-boton { padding: 7px 6px; font-size: 10px; } .tres .c-tabs { display: none; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="b" id="raiz">
+    <div class="grilla intro"><span class="mono">Tap In · Manual · Paso 04</span><p>Tres maneras de mostrar que una variable mueve todo sin contenido de un producto: la pieza muestra el sistema, no una pantalla de comedor. Cambia con el selector.</p></div>
+
+    <!-- A · KIT DEL SISTEMA -->
+    <section class="vista-v va grilla escena">
+        <div class="txt"><span class="mono">04 / 04 · Interfaz</span><b>Una variable mueve todo</b><p>Cambia el tono y todo el sistema lo sigue.</p></div>
+        <div class="pieza">
+            <div class="editor"><div class="ed-cab"><span class="luces"><i></i><i></i><i></i></span><span class="pest"><i>{ }</i>marca.css</span></div>
+                <div class="codigo"><div><span class="c">/* 04 · Interfaz */</span></div><div><span class="p">.producto</span> {</div><div data-foco="tono">  <span class="p">--tono</span>: <span class="k">var</span>(<span class="p">--<b data-nombre style="font-weight:400">campus</b></span>);<i class="chip" data-chip style="--c:var(--campus)"></i></div><div data-foco="suave">  <span class="p">--suave</span>: <span class="k">color-mix</span>(<span class="k">in</span> srgb, <span class="k">var</span>(<span class="p">--tono</span>) <span class="v">16%</span>, …);</div><div>}</div></div>
+            </div>
+            <div class="vista"><div class="vi-cab"><span class="luces"><i></i><i></i><i></i></span><span>Vista previa · <b>Interfaz</b></span><span class="vivo">en vivo</span></div>
+                <div class="lienzo">
+                    <div class="kit hoja" data-kit>
+                        <div class="celda" data-foco="tono"><span class="tag">tono</span><small>Botón</small><div><span class="c-boton">Continuar</span><span class="c-boton sec">Volver</span></div></div>
+                        <div class="celda"><small>Interruptor · casilla</small><div><span class="c-toggle"></span><span class="c-toggle off"></span><span class="c-check">✓</span><span class="c-radio"></span></div></div>
+                        <div class="celda"><small>Pestañas</small><div class="c-tabs"><span class="on">Hoy</span><span>Semana</span><span>Mes</span></div></div>
+                        <div class="celda"><small>Progreso</small><div style="display:block"><div class="c-barra"><i></i></div></div></div>
+                        <div class="celda" data-foco="suave"><span class="tag">suave</span><small>Insignia · aviso</small><div><span class="c-insignia">Nuevo</span><span class="c-punto">3</span><span class="c-avatar">AB</span></div></div>
+                        <div class="celda"><small>Campo · enlace</small><div><span class="c-campo">Buscar</span><span class="c-enlace">Ver más →</span></div></div>
+                        <div class="barra-prod mono"><span>producto</span><button type="button" data-p="0" class="on">Campus</button><button type="button" data-p="1">Connect</button><button type="button" data-p="2">Health</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- B · DIAL DEL TONO -->
+    <section class="vista-v vb grilla escena">
+        <div class="txt"><span class="mono">04 / 04 · Interfaz</span><b>Una variable mueve todo</b><p>Cualquier tono del rango funciona; el sistema lo sigue.</p></div>
+        <div class="pieza">
+            <div class="editor"><div class="ed-cab"><span class="luces"><i></i><i></i><i></i></span><span class="pest"><i>{ }</i>marca.css</span></div>
+                <div class="codigo"><div><span class="c">/* 04 · Interfaz */</span></div><div><span class="p">.producto</span> {</div><div data-foco="tono">  <span class="p">--tono</span>: <span class="v" data-hex>#4A3CAE</span>;<i class="chip" data-chip style="--c:#4A3CAE"></i>  <span class="c" data-cerca>/* campus */</span></div><div data-foco="suave">  <span class="p">--suave</span>: <span class="k">color-mix</span>(<span class="k">in</span> srgb, <span class="k">var</span>(<span class="p">--tono</span>) <span class="v">16%</span>, …);</div><div>}</div></div>
+            </div>
+            <div class="vista"><div class="vi-cab"><span class="luces"><i></i><i></i><i></i></span><span>Vista previa · <b>Interfaz</b></span><span class="vivo">en vivo</span></div>
+                <div class="lienzo">
+                    <div class="kit dial" data-kit>
+                        <div class="rango" data-rango>
+                            <div class="pista" data-pista></div>
+                            <div class="marcas"><span style="left:0%; --a:0">Empresa</span><span style="left:33.3%">Campus</span><span style="left:66.6%">Connect</span><span style="left:100%; --a:100%">Health</span></div>
+                            <span class="perilla" data-perilla role="slider" aria-label="Tono" aria-valuemin="0" aria-valuemax="100" tabindex="0"><span class="tag">tono</span></span>
+                        </div>
+                        <div class="lectura"><span>Rango del manual · de oscuro a claro</span><b data-lectura>#4A3CAE</b></div>
+                        <div class="mini">
+                            <div class="celda"><small>Botón</small><div><span class="c-boton">Continuar</span></div></div>
+                            <div class="celda"><small>Interruptor</small><div><span class="c-toggle"></span><span class="c-check">✓</span><span class="c-radio"></span></div></div>
+                            <div class="celda"><small>Pestañas</small><div class="c-tabs"><span class="on">Hoy</span><span>Mes</span></div></div>
+                            <div class="celda"><small>Progreso</small><div style="display:block"><div class="c-barra"><i></i></div></div></div>
+                            <div class="celda" data-foco="suave"><span class="tag">suave</span><small>Insignia</small><div><span class="c-insignia">Nuevo</span><span class="c-punto">3</span></div></div>
+                            <div class="celda"><small>Campo</small><div><span class="c-campo">Buscar</span></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- C · TRES A LA VEZ -->
+    <section class="vista-v vc grilla escena">
+        <div class="txt"><span class="mono">04 / 04 · Interfaz</span><b>Una variable, tres productos</b><p>El mismo componente; solo cambia el valor del tono.</p></div>
+        <div class="pieza">
+            <div class="editor"><div class="ed-cab"><span class="luces"><i></i><i></i><i></i></span><span class="pest"><i>{ }</i>marca.css</span></div>
+                <div class="codigo"><div><span class="c">/* 04 · Interfaz: el mismo componente */</span></div><div data-foco="campus"><span class="p">.campus</span>  { <span class="p">--tono</span>: <span class="v">#4A3CAE</span>; }<i class="chip" style="--c:#4A3CAE"></i></div><div data-foco="connect"><span class="p">.connect</span> { <span class="p">--tono</span>: <span class="v">#6B5CE7</span>; }<i class="chip" style="--c:#6B5CE7"></i></div><div data-foco="health"><span class="p">.health</span>  { <span class="p">--tono</span>: <span class="v">#9B8EF0</span>; }<i class="chip" style="--c:#9B8EF0"></i></div></div>
+            </div>
+            <div class="vista"><div class="vi-cab"><span class="luces"><i></i><i></i><i></i></span><span>Vista previa · <b>Interfaz</b></span><span class="vivo">en vivo</span></div>
+                <div class="lienzo">
+                    <div class="tres">
+                        <div class="kit" data-foco="campus" style="--tono:#4A3CAE"><span class="tag">campus</span><div class="cab-k"><b>Campus</b><span></span></div><span class="c-boton">Continuar</span><div class="fila"><span class="c-toggle"></span><span class="c-check">✓</span></div><div class="c-tabs"><span class="on">Hoy</span><span>Mes</span></div><div class="c-barra"><i></i></div><div class="fila"><span class="c-insignia">Nuevo</span><span class="c-punto">3</span></div></div>
+                        <div class="kit" data-foco="connect" style="--tono:#6B5CE7"><span class="tag">connect</span><div class="cab-k"><b>Connect</b><span></span></div><span class="c-boton">Continuar</span><div class="fila"><span class="c-toggle"></span><span class="c-check">✓</span></div><div class="c-tabs"><span class="on">Hoy</span><span>Mes</span></div><div class="c-barra"><i></i></div><div class="fila"><span class="c-insignia">Nuevo</span><span class="c-punto">3</span></div></div>
+                        <div class="kit" data-foco="health" style="--tono:#9B8EF0; --sobre:#1C1A2E"><span class="tag">health</span><div class="cab-k"><b>Health</b><span></span></div><span class="c-boton">Continuar</span><div class="fila"><span class="c-toggle"></span><span class="c-check">✓</span></div><div class="c-tabs"><span class="on">Hoy</span><span>Mes</span></div><div class="c-barra"><i></i></div><div class="fila"><span class="c-insignia">Nuevo</span><span class="c-punto">3</span></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<nav class="selector" aria-label="Variantes">
+    <button type="button" data-ir="a" aria-pressed="false"><b>A</b><span>Kit</span></button>
+    <button type="button" data-ir="b" aria-pressed="true"><b>B</b><span>Dial</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Tres a la vez</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit del panel</h2>
+    <div class="bloque">
+        <p>La pantalla de comedor cuenta un producto, no el sistema, y por eso el cambio de tono se pierde.</p>
+        <ul class="lista">
+            <li><span class="mono">Contenido</span><span>Consumos, almuerzo, alumnos y "Pagado" son del mundo de Campus y Connect</span><span>Componentes genéricos (botón, interruptor, pestañas, progreso, insignia, campo) que sirven a cualquier producto</span></li>
+            <li><span class="mono">Health</span><span>Al pasar a Health la pantalla sigue mostrando "Almuerzo": no tiene sentido, y Health está en definición</span><span>Sin contenido de producto, el tono de Health se puede mostrar sin inventarle funciones</span></li>
+            <li><span class="mono">Lectura</span><span>El ojo se va a los datos (184, Sofía, 12:40) y no al color</span><span>Piezas sin datos: lo único que cambia es lo que hay que mirar</span></li>
+            <li><span class="mono">Superficie</span><span>El tono toca pocas cosas: la banda, la curva y un chip; casi todo es blanco y gris</span><span>Cada pieza de la vista lleva el tono o el suave: el cambio se ve en todas a la vez</span></li>
+            <li><span class="mono">Anticipa</span><span>Una pantalla de comedor adelanta la decisión 11, que muestra los mockups reales del comedor</span><span>El paso 04 queda en el sistema y deja el producto para el capítulo 03</span></li>
+            <li><span class="mono">Control</span><span>Un selector segmentado dentro de la pantalla se confunde con la interfaz que se está mostrando</span><span>El control se separa de la pieza (A), es la pieza (B) o no hace falta (C)</span></li>
+        </ul>
+    </div>
+    <h2>Variantes</h2>
+    <div class="bloque">
+        <p>Tres maneras de mostrar que una variable mueve todo.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="false"><span class="mono">A · Kit del sistema</span><strong>Una hoja de componentes</strong><p>Seis celdas con piezas genéricas (botón, interruptor, casilla, pestañas, progreso, insignia, campo, enlace) y el producto como una línea aparte. Con el scroll el tono pasa por Campus, Connect y Health y toda la hoja cambia junta.</p></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="true"><span class="mono">B · Dial del tono</span><strong>Una perilla sobre el rango</strong><p>La variable se vuelve un control: una perilla recorre el rango morado del manual, de Empresa a Health. Con el scroll se detiene en cada producto; también se arrastra y cualquier tono intermedio funciona. El código muestra el hex en vivo. Retoma la cita del paso 01 ("dentro del mismo rango").</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Tres a la vez</span><strong>El mismo componente, tres valores</strong><p>Sin animación de cambio: tres copias idénticas del mismo componente, cada una con su valor de --tono. Pasar el cursor por una enciende su línea. Es la lectura más directa, pero la menos viva.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · UNA VARIABLE
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const prods = [['#4A3CAE', 'campus', 'Campus'], ['#6B5CE7', 'connect', 'Connect'], ['#9B8EF0', 'health', 'Health']];
+
+        /* --- 1. FOCO CRUZADO: LA LÍNEA DE CÓDIGO Y SU PIEZA SE ENCIENDEN JUNTAS --- */
+        document.querySelectorAll('.pieza').forEach(pz => pz.querySelectorAll('[data-foco]').forEach(x => {
+            x.addEventListener('pointerenter', () => pz.querySelectorAll(`[data-foco="${x.dataset.foco}"]`).forEach(y => y.classList.add('foco')));
+            x.addEventListener('pointerleave', () => pz.querySelectorAll('.foco').forEach(y => y.classList.remove('foco')));
+        }));
+
+        /* --- 2. A: EL PRODUCTO CAMBIA SOLO CADA 2,2 S, O CON SUS BOTONES --- */
+        const a = document.querySelector('.va'), kitA = a.querySelector('[data-kit]');
+        let k = 0, manual = false;
+        const ponerA = n => { k = n; kitA.style.setProperty('--tono', prods[n][0]); kitA.style.setProperty('--sobre', n === 2 ? '#1C1A2E' : '#FFFFFF'); a.querySelector('[data-nombre]').textContent = prods[n][1]; a.querySelector('[data-chip]').style.setProperty('--c', prods[n][0]); a.querySelectorAll('[data-p]').forEach(b => b.classList.toggle('on', +b.dataset.p === n)); };
+        a.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => { manual = true; ponerA(+b.dataset.p); }));
+        setInterval(() => { if (!manual && raiz.dataset.v === 'a') ponerA((k + 1) % 3); }, 2200);
+
+        /* --- 3. B: LA PERILLA RECORRE EL RANGO; EL COLOR SE INTERPOLA ENTRE LOS CUATRO TONOS --- */
+        const b = document.querySelector('.vb'), kitB = b.querySelector('[data-kit]'), pista = b.querySelector('[data-pista]'), perilla = b.querySelector('[data-perilla]');
+        const paradas = ['#2D2560', '#4A3CAE', '#6B5CE7', '#9B8EF0'].map(h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)));
+        const nombres = ['empresa', 'campus', 'connect', 'health'];
+        const colorEn = x => { const s = Math.min(x * 3, 2.9999), i = Math.floor(s), f = s - i; return '#' + paradas[i].map((c, j) => Math.round(c + (paradas[i + 1][j] - c) * f).toString(16).padStart(2, '0')).join('').toUpperCase(); };
+        const ponerB = (x, animar) => {
+            perilla.classList.toggle('arrastra', !animar); perilla.style.setProperty('--x', x);
+            const hex = colorEn(x), cerca = Math.round(x * 3);
+            kitB.style.setProperty('--tono', hex); kitB.style.setProperty('--sobre', x > 0.82 ? '#1C1A2E' : '#FFFFFF'); b.querySelector('[data-hex]').textContent = hex; b.querySelector('[data-lectura]').textContent = hex;
+            b.querySelector('[data-chip]').style.setProperty('--c', hex);
+            b.querySelector('[data-cerca]').textContent = Math.abs(x * 3 - cerca) < 0.04 ? `/* ${nombres[cerca]} */` : '/* entre tonos */';
+            b.querySelectorAll('.marcas span').forEach((s, i) => s.classList.toggle('on', i === cerca && Math.abs(x * 3 - cerca) < 0.04));
+            perilla.setAttribute('aria-valuenow', Math.round(x * 100));
+        };
+        let arrastrando = false, autoB = true;
+        const desdeEvento = e => { const r = pista.getBoundingClientRect(); return Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1); };
+        perilla.addEventListener('pointerdown', e => { arrastrando = true; autoB = false; perilla.setPointerCapture(e.pointerId); });
+        perilla.addEventListener('pointermove', e => { if (arrastrando) ponerB(desdeEvento(e), false); });
+        perilla.addEventListener('pointerup', () => { arrastrando = false; });
+        pista.addEventListener('click', e => { autoB = false; ponerB(desdeEvento(e), true); });
+        perilla.addEventListener('keydown', e => { const x = +perilla.style.getPropertyValue('--x') || 0; if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { autoB = false; ponerB(Math.min(Math.max(x + (e.key === 'ArrowRight' ? 0.05 : -0.05), 0), 1), true); e.preventDefault(); } });
+        /* Recorrido automático: se detiene en Campus, Connect y Health (en el caso, con el scroll) */
+        const ruta = [1 / 3, 2 / 3, 1]; let rb = 0;
+        ponerB(1 / 3, true);
+        setInterval(() => { if (autoB && raiz.dataset.v === 'b') { rb = (rb + 1) % 3; ponerB(ruta[rb], true); } }, 2200);
+
+        /* --- 4. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.ir === v))); try { localStorage.setItem('interfaz-tapin', v); } catch (e) { /* sin almacenamiento */ } };
+        botones.forEach(x => x.addEventListener('click', () => { elegir(x.dataset.ir); if (x.classList.contains('op')) scrollTo({ top: 0, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('interfaz-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(['a', 'b', 'c'].includes(h) ? h : guardado || 'b');
+    })();
+    /* =======================================================
+       FIN JS · UNA VARIABLE
+       ======================================================= */
+</script>
