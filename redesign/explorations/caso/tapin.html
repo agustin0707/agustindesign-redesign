@@ -358,7 +358,7 @@
                         <div data-man-paso="0"><span class="mono">01 / 04 · Color</span><b>Grises con intención</b><p>Hasta los neutros llevan violeta. Ningún acento entra de afuera.</p></div>
                         <div data-man-paso="1"><span class="mono">02 / 04 · Tipografía</span><b>Una familia, tres niveles</b><p>Poppins en tres pesos, sin excepciones.</p></div>
                         <div data-man-paso="2"><span class="mono">03 / 04 · ADN</span><b>Cinco reglas por símbolo</b><p>Por qué funcionan los isotipos, para que el próximo nazca igual.</p></div>
-                        <div data-man-paso="3"><span class="mono">04 / 04 · Interfaz</span><b>Una variable mueve todo</b><p>Cambia el tono y la interfaz completa lo sigue.</p></div>
+                        <div data-man-paso="3"><span class="mono">04 / 04 · Interfaz</span><b>Una variable mueve todo</b><p>Cualquier tono del rango funciona; el sistema lo sigue.</p></div>
                     </div>
                 </div>
                 <div class="tp-man-pieza" aria-label="El manual escrito como código, con una vista previa de lo que produce cada regla" role="img">
@@ -398,7 +398,7 @@
                                 <div data-s="3"><span class="tp-man-tipeo"> </span></div>
                                 <div data-s="3"><span class="tp-man-tipeo"><span class="c">/* 04 · Interfaz */</span></span></div>
                                 <div data-s="3"><span class="tp-man-tipeo"><span class="p">.producto</span> {</span></div>
-                                <div data-s="3" data-k="tono"><span class="tp-man-tipeo">  <span class="p">--tono</span>: <span class="k">var</span>(<span class="p">--<b data-man-prod>campus</b></span>);</span></div>
+                                <div data-s="3" data-k="tono"><span class="tp-man-tipeo">  <span class="p">--tono</span>: <span class="v" data-man-hex>#4A3CAE</span>;<i class="chip" data-man-chip style="--c:#4A3CAE"></i>  <span class="c" data-man-cerca>/* campus */</span></span></div>
                                 <div data-s="3" data-k="suave"><span class="tp-man-tipeo">  <span class="p">--suave</span>: <span class="k">color-mix</span>(<span class="k">in</span> srgb,</span></div>
                                 <div data-s="3"><span class="tp-man-tipeo">    <span class="k">var</span>(<span class="p">--tono</span>) <span class="v">18%</span>, <span class="k">var</span>(<span class="p">--n-50</span>));</span></div>
                                 <div data-s="3"><span class="tp-man-tipeo">}</span></div>
@@ -452,19 +452,19 @@
                                 </div>
                             </div>
                             <div class="tp-man-prev" data-man-paso="3">
-                                <div class="tp-man-ui" data-man-ui>
-                                    <div class="tp-man-app">
-                                        <div class="tp-man-band" data-k="tono"><span class="tp-man-tag">tono</span><span class="tp-marca tp-wm" style="--svg:url('media/tp-wordmark.svg')"></span><span data-man-ui-n>Campus</span><span class="tp-man-av">SM</span></div>
-                                        <div class="tp-man-metrica">
-                                            <div><small>Consumos hoy</small><b>184</b><span class="tp-man-delta">↑ 8 %</span></div>
-                                            <svg viewBox="0 0 200 64" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="tp-man-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--tono)" stop-opacity="0.28"/><stop offset="1" stop-color="var(--tono)" stop-opacity="0"/></linearGradient></defs><path class="area" d="M0,48 C20,44 30,30 50,34 S80,50 100,38 S140,14 160,20 S190,10 200,8 L200,64 L0,64 Z"/><path class="linea" d="M0,48 C20,44 30,30 50,34 S80,50 100,38 S140,14 160,20 S190,10 200,8"/></svg>
-                                        </div>
-                                        <ul class="tp-man-filas">
-                                            <li><span class="tp-man-ini">SM</span><div><b>Sofía Martínez · 5°B</b><small>Almuerzo · 12:40</small></div><span class="tp-man-chip" data-k="suave"><span class="tp-man-tag">suave</span>Pagado</span></li>
-                                            <li><span class="tp-man-ini">TR</span><div><b>Tomás Rojas · 3°A</b><small>Almuerzo · 12:44</small></div><span class="tp-man-chip">Pagado</span></li>
-                                        </ul>
+                                <div class="tp-man-dial" data-man-dial>
+                                    <div class="tp-man-rango" data-man-rango>
+                                        <div class="tp-man-pista" data-man-pista></div>
+                                        <span class="tp-man-fantasma mono" data-man-fantasma></span>
+                                        <div class="tp-man-paradas"><button type="button" data-x="0" style="--px:0">Empresa</button><button type="button" data-x="0.3333" style="--px:0.3333">Campus</button><button type="button" data-x="0.6667" style="--px:0.6667">Connect</button><button type="button" data-x="1" style="--px:1">Health</button></div>
+                                        <span class="tp-man-perilla" data-man-perilla data-k="tono" role="slider" tabindex="0" aria-label="Tono del producto" aria-valuemin="0" aria-valuemax="100" aria-valuenow="33"><span class="tp-man-tag">tono</span></span>
                                     </div>
-                                    <div class="tp-man-seg" data-man-seg><button type="button" data-p="0">Campus</button><button type="button" data-p="1">Connect</button><button type="button" data-p="2">Health</button></div>
+                                    <div class="tp-man-hoja" data-man-hoja>
+                                        <div class="tp-man-fila" style="--i:0"><small class="mono">Acción</small><div><span class="tp-man-c-boton">Continuar</span><span class="tp-man-c-boton sec">Volver</span><span class="tp-man-c-ico">→</span></div></div>
+                                        <div class="tp-man-fila" style="--i:1"><small class="mono">Control</small><div><span class="tp-man-c-toggle"></span><span class="tp-man-c-check">✓</span><span class="tp-man-c-radio"></span><span class="tp-man-c-tabs"><span class="on">Hoy</span><span>Semana</span></span></div></div>
+                                        <div class="tp-man-fila" data-k="suave" style="--i:2"><span class="tp-man-tag">suave</span><small class="mono">Estado</small><div><span class="tp-man-c-barra"><i></i></span><span class="tp-man-c-insignia">Nuevo</span><span class="tp-man-c-punto">3</span></div></div>
+                                        <div class="tp-man-fila" style="--i:3"><small class="mono">Entrada</small><div><span class="tp-man-c-campo">Buscar</span><span class="tp-man-c-enlace">Ver más →</span></div></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

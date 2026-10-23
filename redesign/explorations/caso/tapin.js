@@ -188,25 +188,58 @@
         },
         /* El manual en código: el bloque del paso se escribe con el scroll y la vista previa lo vuelve gráfica. Cada
            variable que compila enciende su etiqueta con un pulso; pasar el cursor por una línea o por una pieza enciende
-           el par. En el paso 4 el producto cambia solo, o con el selector */
+           el par. En el paso 4 una perilla recorre el rango morado: con el scroll se frena en cada producto, y también
+           se arrastra, se ajusta sola cerca de un producto y resiste fuera del rango */
         manual: el => {
             const N = 4, codigo = el.querySelector('[data-man-codigo]'), lineas = [...codigo.children];
             const nombres = ['Color', 'Tipografía', 'ADN', 'Interfaz'], rutas = ['color', 'tipografia', 'adn', 'interfaz'];
-            const prods = [['#4A3CAE', 'campus', 'Campus'], ['#6B5CE7', 'connect', 'Connect'], ['#9B8EF0', 'health', 'Health']];
-            const ui = el.querySelector('[data-man-ui]'), seg = el.querySelector('[data-man-seg]'), placa = el.querySelector('[data-man-placa]');
+            const placa = el.querySelector('[data-man-placa]');
             const ajena = el.querySelector('[data-man-ajena]'), pest = el.querySelector('[data-man-pest]'), kbd = el.querySelector('[data-man-kbd]');
             const runner = el.querySelector('[data-man-runner]'), vivo = el.querySelector('[data-man-vivo]'), pieza = el.querySelector('.tp-man-pieza');
             const mapa = el.querySelector('[data-man-mapa]');
             mapa.innerHTML = lineas.map(l => `<i style="--w:${Math.min(Math.max(l.textContent.length * 0.55, 3), 26)}px"></i>`).join('');
             const barritas = [...mapa.children], compiladas = new Set();
-            let elegido = null, pasoAntes = -1;
-            const ponerProd = k => {
-                ui.style.setProperty('--tono', prods[k][0]); seg.style.setProperty('--k', k);
-                ui.querySelector('[data-man-ui-n]').textContent = prods[k][2];
-                seg.querySelectorAll('[data-p]').forEach(b => b.classList.toggle('on', +b.dataset.p === k));
-                el.querySelector('[data-man-prod]').textContent = prods[k][1];
+            let elegido = false, pasoAntes = -1;
+            /* --- Dial del tono: el color se interpola entre los cuatro tonos del manual --- */
+            const dial = el.querySelector('[data-man-dial]'), rango = el.querySelector('[data-man-rango]'), pista = el.querySelector('[data-man-pista]');
+            const perilla = el.querySelector('[data-man-perilla]'), fantasma = el.querySelector('[data-man-fantasma]'), hoja = el.querySelector('[data-man-hoja]');
+            const paradas = ['#2D2560', '#4A3CAE', '#6B5CE7', '#9B8EF0'].map(h => [1, 3, 5].map(n => parseInt(h.slice(n, n + 2), 16)));
+            const marcas = ['empresa', 'campus', 'connect', 'health'], botonesP = [...el.querySelectorAll('.tp-man-paradas button')];
+            const colorEn = x => { const v = fijar(x) * 3, n = Math.min(Math.floor(v), 2), f = v - n; return '#' + paradas[n].map((c, j) => Math.round(c + (paradas[n + 1][j] - c) * f).toString(16).padStart(2, '0')).join('').toUpperCase(); };
+            let xActual = 1 / 3, paradaAntes = 1;
+            const ponerX = (x, modo = 'anima') => {
+                const xv = x < 0 ? x * 0.15 : x > 1 ? 1 + (x - 1) * 0.15 : x, xc = fijar(x), hex = colorEn(xc), cerca = Math.round(xc * 3), justo = Math.abs(xc * 3 - cerca) < 0.04;
+                xActual = xc; perilla.classList.toggle('arrastra', modo === 'arrastra'); perilla.classList.toggle('sigue', modo === 'sigue'); rango.style.setProperty('--xv', xv.toFixed(4));
+                dial.style.setProperty('--tono', hex); dial.style.setProperty('--sobre', xc > 0.82 ? '#1C1A2E' : '#FFFFFF');
+                el.querySelector('[data-man-hex]').textContent = hex; el.querySelector('[data-man-chip]').style.setProperty('--c', hex);
+                el.querySelector('[data-man-cerca]').textContent = justo ? `/* ${marcas[cerca]} */` : '/* entre tonos */';
+                botonesP.forEach((b, n) => b.classList.toggle('on', justo && n === cerca));
+                perilla.setAttribute('aria-valuenow', Math.round(xc * 100)); perilla.setAttribute('aria-valuetext', justo ? marcas[cerca] : hex);
+                /* Al llegar a un producto, la hoja responde con una ola del tono suave */
+                if (justo && cerca !== paradaAntes) { hoja.classList.remove('ola'); void hoja.offsetWidth; hoja.classList.add('ola'); }
+                paradaAntes = justo ? cerca : -1;
             };
-            seg.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => { elegido = +b.dataset.p; ponerProd(elegido); }));
+            const xDesde = e => { const R = pista.getBoundingClientRect(); return (e.clientX - R.left) / R.width; };
+            const imantar = x => { const c = Math.round(fijar(x) * 3) / 3; return Math.abs(fijar(x) - c) < 0.05 ? c : fijar(x); };
+            let arrastrando = false;
+            perilla.addEventListener('pointerdown', e => { arrastrando = true; elegido = true; perilla.setPointerCapture(e.pointerId); ponerX(xActual, 'arrastra'); });
+            perilla.addEventListener('pointermove', e => { if (arrastrando) ponerX(xDesde(e), 'arrastra'); });
+            const soltar = e => { if (!arrastrando) return; arrastrando = false; ponerX(imantar(xDesde(e))); };
+            perilla.addEventListener('pointerup', soltar); perilla.addEventListener('pointercancel', soltar);
+            pista.addEventListener('click', e => { elegido = true; ponerX(imantar(xDesde(e))); });
+            pista.addEventListener('pointermove', e => { const x = fijar(xDesde(e)), hex = colorEn(x); fantasma.style.setProperty('--gx', x); fantasma.style.setProperty('--gc', hex); fantasma.textContent = hex; fantasma.classList.add('ver'); });
+            pista.addEventListener('pointerleave', () => fantasma.classList.remove('ver'));
+            botonesP.forEach(b => b.addEventListener('click', () => { elegido = true; ponerX(+b.dataset.x); }));
+            perilla.addEventListener('keydown', e => {
+                const pasos = { ArrowRight: 0.02, ArrowUp: 0.02, ArrowLeft: -0.02, ArrowDown: -0.02 };
+                let x = null;
+                if (e.key in pasos) x = xActual + pasos[e.key] * (e.shiftKey ? 5 : 1);
+                else if (e.key === 'Home') x = 0; else if (e.key === 'End') x = 1;
+                else if (e.key === 'PageUp') x = Math.min(Math.floor(xActual * 3 + 1.0001), 3) / 3; else if (e.key === 'PageDown') x = Math.max(Math.ceil(xActual * 3 - 1.0001), 0) / 3;
+                if (x === null) return; e.preventDefault(); elegido = true; ponerX(fijar(x));
+            });
+            /* Con el scroll: avanza de Campus a Health y se frena en cada producto */
+            const xPorScroll = t => { const u = fijar((t - 0.56) / 0.4) * 2, n = Math.min(Math.floor(u), 1), f = u - n, s = fijar((f - 0.25) / 0.5); return (1 + n + s * s * (3 - 2 * s)) / 3; };
             pieza.querySelectorAll('[data-k]').forEach(x => {
                 x.addEventListener('pointerenter', () => pieza.querySelectorAll(`[data-k="${x.dataset.k}"]`).forEach(y => y.classList.add('foco')));
                 x.addEventListener('pointerleave', () => pieza.querySelectorAll('.foco').forEach(y => y.classList.remove('foco')));
@@ -240,7 +273,7 @@
                 if (pest.classList.contains('sucio') && listo) { kbd.classList.remove('pulsa'); void kbd.offsetWidth; kbd.classList.add('pulsa'); }
                 pest.classList.toggle('sucio', !listo);
                 const tachar = i > 0 || listo; codigo.querySelector('[data-man-mal]').classList.toggle('tachado', tachar); ajena.classList.toggle('fuera', tachar);
-                if (i !== pasoAntes) { codigo.style.translate = `0 ${-Math.max(bloque[0].offsetTop - 10, 0)}px`; pasoAntes = i; if (i !== 3) elegido = null; }
+                if (i !== pasoAntes) { codigo.style.translate = `0 ${-Math.max(bloque[0].offsetTop - 10, 0)}px`; pasoAntes = i; if (i !== 3) elegido = false; }
                 /* ADN: los cinco tests pasan en orden; la placa muestra su prueba y el isotipo corre */
                 const ok = i > 2 ? 5 : i < 2 ? 0 : Math.min(Math.floor(fijar((t - 0.56) / 0.36) * 5.99), 5);
                 runner.querySelectorAll('li').forEach((li, k) => li.classList.toggle('ok', k < ok));
@@ -248,7 +281,7 @@
                 el.querySelector('[data-man-ok]').textContent = `${ok} / 5`; el.querySelector('[data-man-ms]').textContent = `${[0, 12, 20, 34, 43, 54][ok]} ms`;
                 placa.querySelectorAll('[data-pr]').forEach(x => x.classList.toggle('on', +x.dataset.pr < ok));
                 placa.classList.toggle('corre', ok >= 3 && !quieto);
-                if (elegido === null) ponerProd(i < 3 ? 0 : Math.min(Math.floor(fijar((t - 0.56) / 0.44) * 3), 2));
+                if (!elegido && !arrastrando) { const x = i < 3 ? 1 / 3 : xPorScroll(t); if (Math.abs(x - xActual) > 0.0005) ponerX(x, i < 3 ? 'anima' : 'sigue'); }
             };
         },
         /* El sitio: baja por tapin.cl y se detiene en cada decisión; el foco se dibuja sobre la parte que
