@@ -552,7 +552,7 @@
         if (e.target.matches('[data-cuenta]')) contar(e.target);
         io.unobserve(e.target);
     }), { threshold: 0.2, rootMargin: '0px 0px -8% 0px' });
-    document.querySelectorAll('[data-revela], .tp-cifras, .tp-datos, .tp-cap-txt').forEach(el => io.observe(el));
+    document.querySelectorAll('[data-revela], .tp-datos, .tp-cap-txt').forEach(el => io.observe(el));
     /* Las cifras de la decisión 02 vuelven a contar al pasar el mouse */
     if (window.matchMedia('(hover: hover)').matches) document.querySelectorAll('.tp-datos li').forEach(li => li.addEventListener('mouseenter', () => {
         const b = li.querySelector('[data-cuenta]'), ahora = performance.now();
@@ -592,13 +592,32 @@
         el.querySelectorAll('path').forEach(pth => { pth.removeAttribute('class'); pth.style.setProperty('--len', Math.ceil(pth.getTotalLength())); });
     });
 
-    /* --- 8. CITAS QUE ROTAN --- */
-    document.querySelectorAll('[data-citas]').forEach(c => {
-        const citas = [...c.querySelectorAll('blockquote')];
-        if (citas.length < 2 || quieto) return;
-        let k = 0;
-        setInterval(() => { citas[k].classList.remove('on'); k = (k + 1) % citas.length; citas[k].classList.add('on'); }, 7000);
-    });
+    /* --- 8. RESULTADO: LA CITA SUBE LÍNEA POR LÍNEA --- */
+    /* Las líneas se arman según el ancho real (y se rearman si cambia); al aparecer suben en cascada y después se
+       subraya "una sola imagen" */
+    const cita = document.querySelector('[data-rs-cita]');
+    if (cita) {
+        const parrafo = cita.querySelector('p'), texto = parrafo.textContent.trim(), CLAVE = [1, 2, 3];
+        let ancho = 0;
+        const armar = () => {
+            if (parrafo.clientWidth === ancho) return;
+            ancho = parrafo.clientWidth;
+            const palabras = texto.split(' ');
+            parrafo.innerHTML = palabras.map(w => `<span class="tp-rs-w">${w}</span>`).join(' ');
+            const lineas = [];
+            parrafo.querySelectorAll('.tp-rs-w').forEach((w, i) => { const top = w.offsetTop; let l = lineas.find(x => Math.abs(x.top - top) < 4); if (!l) { l = { top, ws: [] }; lineas.push(l); } l.ws.push(i); });
+            parrafo.innerHTML = lineas.map((l, n) => `<span class="tp-rs-l"><span style="--i:${n}">${l.ws.map(i => {
+                const k = CLAVE.indexOf(i), ultima = i === CLAVE[CLAVE.length - 1];
+                return k < 0 ? palabras[i] : `<span class="tp-rs-clave" style="--k:${k}">${palabras[i]}${ultima ? '' : ' '}</span>`; }).join(' ').replace(/<\/span> (?=<span class="tp-rs-clave")/g, '</span>')}</span></span>`).join('');
+        };
+        armar();
+        /* Con Poppins ya cargada las líneas cambian: se rearman */
+        if (document.fonts) document.fonts.ready.then(() => { ancho = 0; armar(); });
+        let espera = null;
+        window.addEventListener('resize', () => { clearTimeout(espera); espera = setTimeout(armar, 200); });
+        if (quieto) cita.classList.add('visto');
+        else { const ver = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { cita.classList.add('visto'); ver.disconnect(); } }), { threshold: 0.35 }); ver.observe(cita); }
+    }
 
     /* --- 9. HERO VIVO CON EL MOUSE --- */
     /* Como el home, pero en clave Tap In: el sitio recostado se inclina hacia el cursor con inercia, la luz del

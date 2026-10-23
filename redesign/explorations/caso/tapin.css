@@ -1212,19 +1212,41 @@
 /* =======================================================
    RESULTADO
    ======================================================= */
-.tp-cifras { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--medianil); list-style: none; margin-top: clamp(64px, 7vw, 112px); }
-.tp-cifras li { display: flex; flex-direction: column; gap: 12px; padding-top: 18px; border-top: 1px solid var(--linea); }
-.tp-cifras small { font-size: 0.5em; vertical-align: 0.45em; margin-right: 0.04em; color: var(--texto-2); }
-.tp-cifras b { font: 600 clamp(52px, 6vw, 108px) / 0.9 var(--tp-f); letter-spacing: -0.055em; color: var(--texto); font-variant-numeric: tabular-nums; }
-.tp-cifras span { max-width: 24ch; color: var(--texto-2); }
-.tp-contexto { grid-column: 4 / span 7; margin-top: 56px; font-size: var(--tp-t4); line-height: 1.5; color: var(--texto-2); }
+/* El cliente primero: la cita como titular y las cifras como notas al pie. Entra desde el morado del muro con un
+   fundido, sin corte */
+.tp-resultado { background: linear-gradient(var(--tp-empresa), var(--tp-noche) 30svh); }
+.tp-resultado .tp-grilla { row-gap: clamp(56px, 6vw, 96px); }
 .tp-verificar { display: inline-block; margin-top: 10px; padding: 3px 9px; border-radius: 6px; border: 1px dashed #F5C26B; color: #F5C26B; font-size: 11px; }
-.tp-citas { position: relative; grid-column: 4 / -1; display: grid; margin-top: clamp(96px, 10vw, 160px); }
-.tp-citas blockquote { position: relative; grid-area: 1 / 1; display: flex; flex-direction: column; gap: 18px; opacity: 0; translate: 0 16px; transition: opacity 700ms var(--ease), translate 700ms var(--ease); }
-.tp-citas blockquote.on { opacity: 1; translate: 0 0; }
-.tp-citas p { font: 500 clamp(30px, 3.2vw, 54px) / 1.12 var(--tp-f); letter-spacing: -0.035em; max-width: 26ch; text-wrap: balance; }
-.tp-citas cite { font-style: normal; color: var(--texto-2); }
-.tp-citas .tp-verificar { grid-area: 2 / 1; justify-self: start; margin-top: 24px; }
+
+/* --- 1. LA CITA --- */
+/* La comilla cuelga en el riel; cada línea sube desde su máscara y después se subraya "una sola imagen" (el
+   resumen y el aprendizaje ya se encienden palabra por palabra) */
+.tp-rs-cita { grid-column: 4 / -1; position: relative; display: flex; flex-direction: column; gap: 28px; margin: 0; }
+.tp-rs-comilla { position: absolute; right: calc(100% + clamp(14px, 1.6vw, 28px)); top: 0.12em; width: clamp(40px, 4.4vw, 76px); height: auto; fill: var(--tp-health); opacity: 0; translate: 0 0.2em; transition: opacity 700ms var(--ease), translate 900ms var(--ease); }
+.tp-rs-cita p { max-width: 19ch; font: 500 clamp(40px, 5.4vw, 92px) / 1.04 var(--tp-f); letter-spacing: -0.045em; }
+.tp-rs-l { display: block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+.tp-rs-l > span { display: block; transform: translateY(110%); transition: transform 1000ms var(--ease); transition-delay: calc(var(--i) * 90ms); }
+.tp-rs-clave { background: linear-gradient(var(--tp-health), var(--tp-health)) 0 94% / 0 0.07em no-repeat; transition: background-size 450ms var(--ease); transition-delay: calc(900ms + var(--k) * 110ms); }
+.tp-rs-firma { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; color: var(--texto-2); opacity: 0; translate: 0 10px; transition: opacity 600ms 700ms var(--ease), translate 600ms 700ms var(--ease); }
+.tp-rs-firma cite { font-style: normal; }
+.tp-rs-firma .tp-verificar { margin-top: 0; }
+.tp-rs-marca { width: 54px; height: 21px; background: var(--texto); -webkit-mask: url('media/tp-wordmark.svg') left center / contain no-repeat; mask: url('media/tp-wordmark.svg') left center / contain no-repeat; }
+.tp-rs-cita.visto .tp-rs-comilla { opacity: 1; translate: 0 0; }
+.tp-rs-cita.visto .tp-rs-l > span { transform: none; }
+.tp-rs-cita.visto .tp-rs-clave { background-size: 100% 0.07em; }
+.tp-rs-cita.visto .tp-rs-firma { opacity: 1; translate: 0 0; }
+
+/* --- 2. LAS CIFRAS, AL PIE --- */
+.tp-rs-pie { grid-column: 4 / -1; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+.tp-rs-rot { color: var(--texto-3); }
+.tp-rs-cifras { align-self: stretch; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--medianil); padding-top: 18px; border-top: 1px solid var(--linea); list-style: none; }
+.tp-rs-cifras li { display: flex; flex-direction: column; gap: 6px; }
+.tp-rs-cifras b { font: 600 clamp(28px, 2.6vw, 40px) / 1 var(--tp-f); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.tp-rs-cifras small { margin-right: 0.04em; font-size: 0.6em; vertical-align: 0.3em; color: var(--texto-2); }
+.tp-rs-cifras span { max-width: 22ch; color: var(--texto-2); font-size: 14px; line-height: 1.4; }
+.tp-rs-cifras sup { color: #F5C26B; }
+.tp-rs-pie .tp-verificar { margin-top: 0; }
+.tp-resultado .tp-vivo-link { margin-top: 0; }
 .tp-vivo-link { grid-column: 4 / -1; justify-self: start; display: inline-flex; align-items: center; gap: 12px; margin-top: 72px; padding: 16px 26px; font-size: 17px; border-radius: 999px; border: 1px solid var(--linea); font-weight: 500; transition: background-color 300ms var(--ease), border-color 300ms; }
 .tp-punto { width: 8px; height: 8px; border-radius: 50%; background: var(--acento); }
 @media (hover: hover) { .tp-vivo-link:hover { background: rgba(238, 237, 254, 0.08); border-color: var(--acento); } }
@@ -1380,7 +1402,9 @@
     .tp-prueba h2 { font-size: 34px; } .tp-prueba p { display: none; }
     .tp-tel-avance { right: calc(var(--w) * -0.09); }
     .tp-pie { flex-direction: column; gap: 4px; }
-    .tp-cifras { grid-template-columns: 1fr 1fr; row-gap: 40px; }
+    .tp-rs-comilla { position: static; width: 40px; margin-bottom: -4px; }
+    .tp-rs-cita { gap: 20px; } .tp-rs-cita p { font-size: 38px; }
+    .tp-rs-cifras { grid-template-columns: 1fr 1fr; row-gap: 22px; }
     .tp-giro { gap: 14px; }
 }
 
@@ -1391,4 +1415,5 @@
     .tp-tira-camino, .tp-wm-vivo.tap *, .tp-hero.entra *, .tp-forky-corre, .tp-sombra, .tp-hero-pista i, .tp-url-cursor, .tp-velocidad i, .tp-giro-linea::after { animation: none; }
     .tp-hero.entra * { animation: none !important; }
     .tp-v11-vivo i, .tp-tel-probar span::before { animation: none; }
+    .tp-rs-comilla, .tp-rs-l > span, .tp-rs-clave, .tp-rs-firma { transition: none; }
 }
