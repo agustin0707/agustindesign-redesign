@@ -309,7 +309,7 @@
         /* El sitio: baja por tapin.cl y se detiene en cada decisión; el foco se dibuja sobre la parte que
            explica. Las cajas están en píxeles del sitio a 1440 de ancho */
         sitio: el => {
-            const ANCHO = 1440, ALTO = 5140, VIAJE = 0.4, FINAL = 0.6;
+            const ANCHO = 1440, ALTO = 5140, VIAJE = 0.4, FINAL = 1.2;
             const pant = el.querySelector('.tp-sitio-pantalla'), lienzo = el.querySelector('.tp-sitio-lienzo');
             const caja = el.querySelector('.tp-sitio-caja'), cajaTxt = caja.querySelector('span');
             const items = [...el.querySelectorAll('[data-parada]')];
@@ -390,7 +390,18 @@
                 ['--lr', '--iv'].forEach(k => el.style.removeProperty(k));
                 cap3.style.setProperty('--cede', 1);
             };
+            /* --- Hoja: en la última pantalla la sección sube y deja ver la decisión 11, que espera quieta debajo --- */
+            const vivo = el.nextElementSibling && el.nextElementSibling.classList.contains('tp-vivo') ? el.nextElementSibling : null;
+            const vivoIn = vivo && vivo.querySelector(':scope > .tp-grilla');
+            const hoja = () => {
+                if (!vivo) return;
+                const T = vivo.getBoundingClientRect().top, m = fijar(1 - T / vh);
+                el.style.setProperty('--hoja', m.toFixed(4));
+                if (T > 0 && T < vh) { vivoIn.style.transform = `translateY(${(-T).toFixed(1)}px) scale(${quieto ? 1 : (0.94 + 0.06 * curva(m)).toFixed(4)})`; vivo.style.setProperty('--velo', ((1 - m) * 0.32).toFixed(3)); }
+                else { vivoIn.style.transform = ''; vivo.style.setProperty('--velo', 0); }
+            };
             return pista => {
+                hoja();
                 /* Mientras entra por abajo no se ve; al fijarse, la portada le cede su ventana */
                 el.classList.toggle('antes', pista <= 0);
                 if (cap3) cap3.classList.toggle('cedida', pista > 0);

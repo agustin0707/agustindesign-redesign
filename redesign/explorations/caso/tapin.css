@@ -1013,7 +1013,9 @@
 /* tapin.cl baja con el scroll y se detiene en cada decisión; fuera del foco, el sitio se apaga */
 /* El sitio se monta sobre el final de la portada (margen negativo, fondo transparente). Su luz es un círculo claro que
    se abre desde el navegador mientras este viaja desde la ventana de la portada; mientras entra por abajo, no se ve */
-.tp-sitio { position: relative; z-index: 3; height: 800svh; margin-top: -200svh; background: transparent; }
+.tp-sitio { position: relative; z-index: 3; height: 900svh; margin-top: -200svh; background: transparent; }
+/* Al final la sección sube como una hoja (el JS la traslada) con las esquinas de abajo redondeadas y sombra */
+.tp-sitio .tp-fijo { transform: translateY(calc(var(--hoja, 0) * -100%)); border-radius: 0 0 calc(min(var(--hoja, 0) * 6, 1) * 32px) calc(min(var(--hoja, 0) * 6, 1) * 32px); box-shadow: 0 24px 60px rgba(28, 26, 46, calc(min(var(--hoja, 0) * 6, 1) * 0.28)); }
 .tp-sitio.antes .tp-fijo { visibility: hidden; }
 .tp-sitio-luz { position: absolute; inset: 0; background: radial-gradient(60% 50% at 30% 30%, rgba(155, 142, 240, 0.22), transparent 70%), var(--tp-papel); clip-path: circle(var(--lr, 150%) at var(--lx, 50%) var(--ly, 50%)); }
 .tp-sitio-indice > li { opacity: clamp(0, var(--iv, 1) * 7 - var(--i, 0), 1); translate: calc((1 - clamp(0, var(--iv, 1) * 7 - var(--i, 0), 1)) * 24px) 0; }
@@ -1064,6 +1066,11 @@
 /* =======================================================
    DECISIÓN 11 · MÓDULOS EN VIVO
    ======================================================= */
+/* La decisión 11 queda debajo de la hoja: se monta una pantalla antes, se queda quieta mientras la hoja sube (el JS
+   compensa su desplazamiento) y se acerca con un velo que se disuelve */
+.tp-vivo { position: relative; z-index: 1; margin-top: -100svh; }
+.tp-vivo::after { content: ''; position: absolute; inset: 0; background: var(--tp-tinta); opacity: var(--velo, 0); pointer-events: none; }
+.tp-vivo > .tp-grilla { transform-origin: 50% 0; }
 .tp-vivo .tp-grilla { align-items: start; }
 .tp-vivo .tp-dec { grid-column: 1 / span 4; position: sticky; top: 22svh; }
 .tp-vivo-grilla { grid-column: 5 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
