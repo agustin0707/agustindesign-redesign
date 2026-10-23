@@ -1013,7 +1013,9 @@
 /* tapin.cl baja con el scroll y se detiene en cada decisión; fuera del foco, el sitio se apaga */
 /* El sitio se monta sobre el final de la portada (margen negativo, fondo transparente). Su luz es un círculo claro que
    se abre desde el navegador mientras este viaja desde la ventana de la portada; mientras entra por abajo, no se ve */
-.tp-sitio { position: relative; z-index: 3; height: 900svh; margin-top: -200svh; background: transparent; }
+.tp-sitio { position: relative; z-index: 3; height: 900svh; margin-top: -200svh; background: transparent; pointer-events: none; }
+/* La pista cubre la decisión 11 cuando la hoja ya subió: solo el panel recibe el puntero */
+.tp-sitio .tp-fijo { pointer-events: auto; }
 /* Al final la sección sube como una hoja (el JS la traslada) con las esquinas de abajo redondeadas y sombra */
 .tp-sitio .tp-fijo { transform: translateY(calc(var(--hoja, 0) * -100%)); border-radius: 0 0 calc(min(var(--hoja, 0) * 6, 1) * 32px) calc(min(var(--hoja, 0) * 6, 1) * 32px); box-shadow: 0 24px 60px rgba(28, 26, 46, calc(min(var(--hoja, 0) * 6, 1) * 0.28)); }
 .tp-sitio.antes .tp-fijo { visibility: hidden; }
@@ -1074,27 +1076,92 @@
 /* Quieta con sticky (sin compensar el scroll por código, que temblaba): se fija apenas la sección llega arriba y el
    espacio extra de abajo la sostiene una pantalla, lo que dura la hoja */
 .tp-vivo > .tp-grilla { position: sticky; top: clamp(96px, 11vw, 176px); transform-origin: 50% 0; }
-.tp-vivo .tp-grilla { align-items: start; }
-.tp-vivo .tp-dec { grid-column: 1 / span 4; position: sticky; top: 22svh; }
-.tp-vivo-grilla { grid-column: 5 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.tp-vivo-c { position: relative; display: flex; flex-direction: column; gap: 14px; padding: 14px 14px 18px; border-radius: var(--tp-radio); background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea), 0 30px 60px -40px rgba(45, 37, 96, 0.4); opacity: 0; translate: 0 40px; transition: opacity 800ms var(--ease), translate 800ms var(--ease); }
-.tp-vivo-c:nth-child(2) { transition-delay: 90ms; } .tp-vivo-c:nth-child(3) { transition-delay: 180ms; } .tp-vivo-c:nth-child(4) { transition-delay: 270ms; }
-.tp-vivo-c.visto { opacity: 1; translate: 0 0; }
-.tp-vivo-c .tp-mk { border-radius: 14px; overflow: hidden; background: radial-gradient(80% 80% at 50% 30%, #FFFFFF, var(--tp-tint)); }
-.tp-vivo-c figcaption { display: flex; flex-direction: column; gap: 4px; padding: 0 6px; }
-.tp-vivo-c b { font: 600 16px var(--tp-f); letter-spacing: -0.02em; }
-.tp-vivo-c span { font-size: 14px; color: var(--texto-2); }
-.tp-destacado { box-shadow: 0 0 0 2px var(--tp-connect), 0 30px 60px -40px rgba(45, 37, 96, 0.5); }
-.tp-destacado::before { content: 'Decisión 11'; position: absolute; top: 24px; left: 24px; z-index: 2; padding: 5px 10px; border-radius: 999px; background: var(--tp-connect); color: #FFFFFF; font: 11px var(--mono); }
+.tp-vivo { --ok: #2FB37A; --error: #E5484D; }
+.tp-vivo .tp-grilla { align-items: start; row-gap: clamp(32px, 3vw, 48px); }
+
+/* --- 1. RIEL Y TEXTO --- */
+/* El número en el riel (columnas 1 a 3) y la decisión en la 4 a 6; los dos se quedan mientras pasa la pieza */
+.tp-v11-riel { grid-column: 1 / span 3; grid-row: 1 / span 2; position: sticky; top: 22svh; display: flex; flex-direction: column; gap: 6px; }
+.tp-vivo .tp-v11-txt { grid-column: 4 / span 3; grid-row: 1 / span 2; position: sticky; top: 22svh; max-width: 34ch; }
+
+/* --- 2. EL COMEDOR EN ESCENA --- */
+/* El mockup grande sobre un fondo de luz; se inclina apenas hacia el cursor y un brillo lo sigue */
+.tp-v11-pieza { grid-column: 7 / -1; grid-row: 1; display: flex; flex-direction: column; gap: 12px; opacity: 0; translate: 0 40px; transition: opacity 800ms var(--ease), translate 800ms var(--ease); perspective: 1400px; }
+.tp-v11-pieza.visto { opacity: 1; translate: 0 0; }
+.tp-v11-escenario { --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 30%; position: relative; border-radius: 26px; overflow: hidden; background: radial-gradient(80% 80% at 50% 25%, #FFFFFF, var(--tp-tint)); box-shadow: 0 0 0 1px var(--linea), 0 40px 80px -46px rgba(45, 37, 96, 0.45); transform: rotateX(var(--rx)) rotateY(var(--ry)); will-change: transform; }
+.tp-v11-escenario::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(40% 50% at var(--mx) var(--my), rgba(255, 255, 255, 0.55), transparent 70%); mix-blend-mode: soft-light; opacity: 0; transition: opacity 400ms var(--ease); }
+.tp-v11-escenario.cerca::after { opacity: 1; }
+.tp-v11-vivo { position: absolute; left: 18px; top: 18px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 1px var(--linea); color: var(--tp-tinta); font: 500 12px var(--tp-f); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.tp-v11-vivo i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); animation: tp-late 1.8s ease-out infinite; }
+@keyframes tp-late { 0% { box-shadow: 0 0 0 0 rgba(47, 179, 122, 0.5); } 100% { box-shadow: 0 0 0 9px rgba(47, 179, 122, 0); } }
+.tp-v11-mod { position: absolute; right: 20px; top: 22px; z-index: 2; color: var(--texto-3); font-size: 11px; }
+
+/* --- 3. EL CAMBIO, PASO A PASO --- */
+/* Lo que había, tachado, y los tres pasos que lo reemplazan. Avanzan al ritmo real del mockup (el JS lee su reloj):
+   el paso actual se marca y su barra se llena; los anteriores quedan con un visto */
+.tp-v11-flujo { display: grid; grid-template-columns: auto 18px repeat(3, minmax(0, 1fr)); gap: 8px; list-style: none; }
+.tp-v11-flujo li { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 14px; }
+.tp-v11-flujo small { color: var(--texto-3); font-size: 11px; transition: color 300ms linear; }
+.tp-v11-flujo b { font: 600 14px var(--tp-f); letter-spacing: -0.01em; }
+.tp-v11-antes { box-shadow: inset 0 0 0 1px rgba(229, 72, 77, 0.3); color: var(--texto-2); }
+.tp-v11-antes b { font-weight: 500; text-decoration: line-through; text-decoration-color: var(--error); text-decoration-thickness: 1.5px; }
+.tp-vivo .tp-v11-flecha { display: grid; place-items: center; padding: 0; color: var(--texto-3); }
+.tp-v11-paso { --av: 0; position: relative; overflow: hidden; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea); transition: box-shadow 300ms var(--ease), translate 300ms var(--tp-curva); }
+.tp-v11-paso i { position: absolute; left: 0; bottom: 0; width: 100%; height: 3px; background: var(--tp-connect); transform-origin: 0 50%; transform: scaleX(var(--av)); }
+.tp-v11-paso.on { box-shadow: 0 0 0 1.5px var(--tp-connect), 0 16px 30px -18px rgba(107, 92, 231, 0.6); translate: 0 -2px; }
+.tp-v11-paso.ya small { color: var(--ok); } .tp-v11-paso.ya i { opacity: 0.25; }
+.tp-v11-paso.ya small::after { content: ' ✓'; }
+
+/* --- 4. LOS OTROS MÓDULOS --- */
+/* Tres mockups chicos, también en vivo; al pasar el cursor la tarjeta sube y el mockup se acerca */
+.tp-v11-otros { grid-column: 7 / -1; grid-row: 2; display: flex; flex-direction: column; gap: 12px; opacity: 0; translate: 0 30px; transition: opacity 800ms 150ms var(--ease), translate 800ms 150ms var(--ease); }
+.tp-v11-otros.visto { opacity: 1; translate: 0 0; }
+.tp-v11-otros header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; color: var(--texto-3); font-size: 12px; }
+.tp-v11-otros header b { color: var(--texto); font: 600 16px var(--tp-f); letter-spacing: -0.02em; }
+.tp-v11-fila { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.tp-v11-mini { display: flex; flex-direction: column; gap: 10px; padding: 8px 8px 14px; border-radius: 16px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea); transition: translate 350ms var(--tp-curva), box-shadow 350ms var(--ease); }
+.tp-v11-mini .tp-mk { border-radius: 10px; overflow: hidden; background: radial-gradient(80% 80% at 50% 30%, #FFFFFF, var(--tp-tint)); }
+.tp-v11-mini .tp-mk > * { transition-property: opacity, scale; }
+.tp-v11-mini figcaption { display: flex; flex-direction: column; gap: 3px; padding: 0 6px; }
+.tp-v11-mini b { font: 600 13px var(--tp-f); letter-spacing: -0.01em; }
+.tp-v11-mini span { color: var(--texto-2); font-size: 12px; line-height: 1.35; }
+@media (hover: hover) {
+    .tp-v11-mini:hover { translate: 0 -4px; box-shadow: 0 0 0 1px var(--linea), 0 22px 40px -24px rgba(45, 37, 96, 0.5); }
+}
 
 /* =======================================================
-   EN EL TELÉFONO
+   EN EL TELÉFONO · MURO DE PANTALLAS
    ======================================================= */
-.tp-movil { overflow: hidden; }
-.tp-movil-tels { display: flex; justify-content: center; align-items: center; gap: clamp(16px, 4vw, 72px); padding: 80px 0; }
-.tp-cel { width: clamp(150px, 20vw, 310px); border: 10px solid #0E0B1C; border-radius: 46px; overflow: hidden; background: #0E0B1C; box-shadow: 0 60px 100px -40px rgba(14, 11, 28, 0.7); transform: translateY(calc(var(--v, 0) * var(--vel) * 1px)); }
-.tp-cel img { aspect-ratio: 1170 / 2532; border-radius: 36px; }
-.tp-movil .tp-pie { color: var(--texto-2); max-width: 1440px; margin: 24px auto 0; }
+/* Columnas inclinadas de teléfonos, cada uno con otra parte del sitio en móvil; con el scroll suben y bajan a
+   distinta velocidad. Al pasar el cursor (o tocar) un teléfono, se adelanta, los demás se apagan y su pantalla
+   recorre el sitio. El título queda a la izquierda sobre un velo */
+.tp-movil { height: 260svh; }
+.tp-movil .tp-fijo { display: flex; align-items: center; }
+.tp-muro { position: absolute; inset: 0; -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent); }
+.tp-muro-giro { position: absolute; inset: -30% -6% -30% 18%; display: flex; justify-content: center; gap: clamp(20px, 2.6vw, 44px); rotate: -12deg; }
+/* Cada columna va de --a a --b (en % de su alto) mientras la sección cruza la pantalla: --v lo publica el parallax */
+.tp-muro-col { display: flex; flex-direction: column; gap: clamp(20px, 2.6vw, 44px); will-change: transform; transform: translate3d(0, calc(var(--a) + (var(--b) - var(--a)) * (var(--v, -1) + 1) / 2), 0); }
+
+/* --- 1. TELÉFONO --- */
+/* Marco de titanio, bisel fino e isla; la pantalla muestra la captura del sitio en móvil */
+.tp-tel { --w: min(12.5vw, 24svh); position: relative; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 2px 3px rgba(14, 11, 28, 0.35), 0 30px 50px -20px rgba(14, 11, 28, 0.6), 0 70px 120px -40px rgba(14, 11, 28, 0.8); flex: none; transition: scale 450ms var(--tp-curva), opacity 300ms var(--ease), filter 300ms var(--ease); cursor: pointer; }
+.tp-tel-pant { position: relative; width: 100%; height: 100%; overflow: hidden; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); background: #F7F6FD; }
+.tp-tel-pant::before { content: ''; position: absolute; left: 50%; top: calc(var(--w) * 0.02); z-index: 2; width: 30%; height: calc(var(--w) * 0.085); margin-left: -15%; border-radius: 99px; background: #050408; }
+.tp-tel-pant::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(125deg, rgba(255, 255, 255, 0.16), transparent 38%); }
+.tp-tel-pant img { position: absolute; left: 0; top: 0; width: 100%; will-change: transform; }
+.tp-tel.on { scale: 1.08; z-index: 2; }
+.tp-muro.foco .tp-tel:not(.on) { opacity: 0.4; filter: saturate(0.6); }
+
+/* --- 2. VELO Y TÍTULO --- */
+.tp-muro-velo { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(45, 37, 96, 0.94) 0%, rgba(45, 37, 96, 0.7) 30%, rgba(45, 37, 96, 0) 56%); }
+.tp-muro-txt { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; max-width: min(30vw, 480px); margin-left: var(--margen); pointer-events: none; }
+.tp-muro-rot { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); }
+.tp-muro-rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.tp-muro-txt h2 { font: 600 var(--tp-t2) / 0.98 var(--tp-f); letter-spacing: -0.045em; text-wrap: balance; }
+.tp-muro-txt p { font-size: var(--tp-t4); line-height: 1.45; color: var(--texto-2); max-width: 30ch; text-wrap: pretty; }
+.tp-muro-pista { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; color: var(--texto-3); font-size: 12px; transition: opacity 300ms var(--ease); }
+.tp-muro-pista::before { content: ''; width: 18px; height: 1px; background: currentColor; }
+.tp-movil:has(.tp-muro.foco) .tp-muro-pista { opacity: 0; }
 
 /* =======================================================
    RESULTADO
@@ -1244,11 +1311,25 @@
     .tp-sitio-indice > li { display: none; }
     .tp-sitio-indice > li.actual { display: block; padding: 12px 14px; }
     .tp-sn-cuerpo { padding-left: 0; } .tp-sitio-indice p { font-size: 14px; }
-    .tp-vivo .tp-dec { position: static; }
-    .tp-vivo-grilla { grid-template-columns: 1fr; }
-    .tp-movil-tels { padding: 32px 0; }
-    .tp-cel { width: 30vw; border-width: 6px; border-radius: 28px; }
-    .tp-cel img { border-radius: 22px; }
+    .tp-vivo .tp-grilla { row-gap: 28px; }
+    .tp-v11-riel, .tp-vivo .tp-v11-txt, .tp-v11-pieza, .tp-v11-otros { grid-column: 1 / -1; grid-row: auto; position: static; }
+    .tp-v11-riel { flex-direction: row; align-items: baseline; gap: 14px; }
+    .tp-v11-escenario { border-radius: 18px; }
+    .tp-v11-vivo { left: 10px; top: 10px; padding: 4px 9px; font-size: 11px; } .tp-v11-mod { display: none; }
+    .tp-v11-flujo { grid-template-columns: repeat(3, minmax(0, 1fr)); } .tp-vivo .tp-v11-flecha { display: none; } .tp-v11-antes { grid-column: 1 / -1; flex-direction: row !important; align-items: baseline; gap: 10px !important; }
+    .tp-v11-flujo li { padding: 10px 12px; } .tp-v11-flujo b { font-size: 13px; }
+    .tp-v11-otros header { flex-direction: column; gap: 2px; }
+    .tp-v11-fila { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(var(--margen) * -1); padding: 4px var(--margen) 24px; scroll-padding: 0 var(--margen); scrollbar-width: none; }
+    .tp-v11-fila::-webkit-scrollbar { display: none; }
+    .tp-v11-mini { flex: 0 0 74%; scroll-snap-align: start; }
+    .tp-movil { height: 220svh; }
+    .tp-movil .tp-fijo { align-items: flex-end; }
+    .tp-muro-giro { inset: -24% -30% -24% -30%; gap: 16px; }
+    .tp-muro-col { gap: 16px; }
+    .tp-tel { --w: 31vw; }
+    .tp-muro-velo { background: linear-gradient(0deg, rgba(45, 37, 96, 0.96) 0%, rgba(45, 37, 96, 0.78) 30%, rgba(45, 37, 96, 0) 56%); }
+    .tp-muro-txt { max-width: none; margin: 0 var(--margen) 9svh; gap: 12px; }
+    .tp-muro-txt p { max-width: 34ch; }
     .tp-pie { flex-direction: column; gap: 4px; }
     .tp-cifras { grid-template-columns: 1fr 1fr; row-gap: 40px; }
     .tp-giro { gap: 14px; }
@@ -1260,4 +1341,5 @@
 @media (prefers-reduced-motion: reduce) {
     .tp-tira-camino, .tp-wm-vivo.tap *, .tp-hero.entra *, .tp-forky-corre, .tp-sombra, .tp-hero-pista i, .tp-url-cursor, .tp-velocidad i, .tp-giro-linea::after { animation: none; }
     .tp-hero.entra * { animation: none !important; }
+    .tp-v11-vivo i { animation: none; }
 }

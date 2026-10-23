@@ -556,7 +556,8 @@
 
     /* --- 6. MOCKUPS EN VIVO --- */
     /* Se montan cerca de la pantalla y solo animan mientras se ven; el PNG queda de póster hasta que cargan */
-    const msj = (f, tipo) => { try { f.contentWindow.postMessage({ type: tipo }, '*'); } catch (err) { /* sin acceso */ } };
+    /* Además avisa al contenedor (mockup-start reinicia el loop desde cero), para que la página pueda seguir su reloj */
+    const msj = (f, tipo) => { try { f.contentWindow.postMessage({ type: tipo }, '*'); } catch (err) { /* sin acceso */ } f.parentElement.dispatchEvent(new Event(tipo)); };
     const escalar = m => { const f = m.querySelector('iframe'); if (f) f.style.setProperty('--escala', (m.clientWidth / 900).toFixed(4)); };
     const ro = 'ResizeObserver' in window ? new ResizeObserver(es => es.forEach(e => escalar(e.target))) : null;
     const cerca = new IntersectionObserver(es => es.forEach(e => {
@@ -719,6 +720,95 @@
         window.addEventListener('resize', marcar);
         marcar();
     });
+
+    /* --- 12. DECISIÓN 11: EL COMEDOR, EN VIVO --- */
+    /* Los pasos del flujo siguen el reloj real del mockup del comedor (18,3 s por vuelta): pago hasta los 4 s,
+       validación hasta los 10,9 y aviso de saldo hasta los 17,6; después el mockup se reinicia */
+    const v11 = document.querySelector('[data-v11-mk]');
+    if (v11) {
+        const pasos = [...document.querySelectorAll('[data-v11-flujo] .tp-v11-paso')];
+        const TRAMOS = [[0, 4000], [4000, 10900], [10900, 17600]], VUELTA = 18300;
+        let t0 = 0, reloj = null;
+        const marcar = ahora => {
+            const t = (ahora - t0) % VUELTA, vuelve = t >= TRAMOS[2][1];
+            pasos.forEach((p, k) => {
+                const [a, b] = TRAMOS[k];
+                p.classList.toggle('on', t >= a && t < b); p.classList.toggle('ya', t >= b && !vuelve);
+                p.style.setProperty('--av', vuelve ? 0 : fijar((t - a) / (b - a)).toFixed(3));
+            });
+            reloj = requestAnimationFrame(marcar);
+        };
+        const apagar = () => { cancelAnimationFrame(reloj); reloj = null; pasos.forEach(p => { p.classList.remove('on', 'ya'); p.style.setProperty('--av', 0); }); };
+        v11.addEventListener('mockup-start', () => { t0 = performance.now(); if (!reloj) reloj = requestAnimationFrame(marcar); });
+        v11.addEventListener('mockup-stop', apagar);
+        /* Al volver a la pestaña el mockup arranca de cero: el reloj también */
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) t0 = performance.now(); });
+        if (quieto) pasos.forEach(p => { p.classList.add('ya'); p.style.setProperty('--av', 1); });
+
+        /* El escenario se inclina hasta 3° hacia el cursor, con inercia, y un brillo sigue al puntero */
+        const esc = document.querySelector('[data-v11-tilt]');
+        if (esc && !quieto && window.matchMedia('(hover: hover)').matches) {
+            let meta = { x: 0, y: 0 }, act = { x: 0, y: 0 }, giro = null;
+            const inclinar = () => {
+                act.x += (meta.x - act.x) * 0.12; act.y += (meta.y - act.y) * 0.12;
+                esc.style.setProperty('--ry', `${(act.x * 3).toFixed(3)}deg`); esc.style.setProperty('--rx', `${(-act.y * 3).toFixed(3)}deg`);
+                giro = Math.abs(meta.x - act.x) + Math.abs(meta.y - act.y) > 0.001 ? requestAnimationFrame(inclinar) : null;
+            };
+            esc.addEventListener('pointermove', e => {
+                const r = esc.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+                meta = { x: x * 2 - 1, y: y * 2 - 1 };
+                esc.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`); esc.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
+                esc.classList.add('cerca'); if (!giro) giro = requestAnimationFrame(inclinar);
+            });
+            esc.addEventListener('pointerleave', () => { meta = { x: 0, y: 0 }; esc.classList.remove('cerca'); if (!giro) giro = requestAnimationFrame(inclinar); });
+        }
+    }
+
+    /* --- 13. MURO DE TELÉFONOS --- */
+    /* Columnas de teléfonos con distintas partes del sitio en móvil (captura de 390 × 6636). Las columnas se mueven
+       solo con CSS (--v del parallax, entre --a y --b); el JS arma el muro, encuadra cada pantalla y, al pasar el
+       cursor o tocar un teléfono, lo adelanta y hace que su pantalla recorra el sitio, de ida y vuelta */
+    const muro = document.querySelector('[data-muro]');
+    if (muro) {
+        const M_ANCHO = 390, M_ALTO = 6636, POR_COL = 7;
+        const tramos = [[4, -40], [-38, 0], [0, -42], [-36, -2]].slice(0, window.innerWidth >= 1100 ? 4 : 3);
+        muro.innerHTML = `<div class="tp-muro-giro">${tramos.map(([a, b], k) => `<div class="tp-muro-col" style="--a:${a}%;--b:${b}%">${Array.from({ length: POR_COL }, (_, i) =>
+            `<div class="tp-tel" data-f="${((i * 0.23 + k * 0.41) % 0.97).toFixed(3)}"><div class="tp-tel-pant"><img src="media/tp-movil.jpg" alt="" decoding="async"></div></div>`).join('')}</div>`).join('')}</div>`;
+        const tels = [...muro.querySelectorAll('.tp-tel')];
+        const encuadrar = tel => {
+            const img = tel.querySelector('img'), pant = img.parentElement, e = pant.clientWidth / M_ANCHO, vis = pant.clientHeight / e;
+            img.style.transform = `translate3d(0, ${(-tel.f * (M_ALTO - vis) * e).toFixed(1)}px, 0)`;
+        };
+        tels.forEach(t => { t.f = +t.dataset.f; t.dir = 1; encuadrar(t); });
+        window.addEventListener('resize', () => tels.forEach(encuadrar));
+        let activo = null, ultimo = 0, recorre = null;
+        const recorrer = ahora => {
+            if (!activo) { recorre = null; return; }
+            const t = activo, dt = Math.min(ahora - ultimo, 50);
+            ultimo = ahora;
+            t.f += t.dir * dt / 16000;
+            if (t.f >= 1 || t.f <= 0) { t.f = fijar(t.f); t.dir *= -1; }
+            encuadrar(t);
+            recorre = requestAnimationFrame(recorrer);
+        };
+        const enfocar = tel => {
+            if (activo === tel) return;
+            if (activo) activo.classList.remove('on');
+            activo = tel;
+            muro.classList.toggle('foco', !!tel);
+            if (!tel) return;
+            tel.classList.add('on');
+            if (!recorre && !quieto) { ultimo = performance.now(); recorre = requestAnimationFrame(recorrer); }
+        };
+        if (window.matchMedia('(hover: hover)').matches) tels.forEach(t => { t.addEventListener('pointerenter', () => enfocar(t)); t.addEventListener('pointerleave', () => enfocar(null)); });
+        else {
+            const pista = document.querySelector('[data-muro-pista]');
+            if (pista) pista.textContent = 'Toca una pantalla para recorrerla';
+            muro.closest('section').addEventListener('click', e => { const t = e.target.closest('.tp-tel'); enfocar(t && t !== activo ? t : null); });
+        }
+        /* Fuera de la pantalla se suelta el foco */
+        new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) enfocar(null); })).observe(muro);
+    }
 
     pintar(); luces(); barra();
 })();
