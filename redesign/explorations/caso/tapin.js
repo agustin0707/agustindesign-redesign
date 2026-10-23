@@ -177,8 +177,8 @@
         },
         /* Capítulo 03: la portada entra sobre el final del manual (que sube y se apaga), la dirección se escribe con el
            scroll, la pestaña toma el nombre del sitio y la página se dibuja adentro de la ventana */
-        /* Muro: el barrido destapa el panel en la primera pantalla de su pista */
-        muro: el => p => el.style.setProperty('--barre', fijar(p * (el.offsetHeight - vh) / vh).toFixed(4)),
+        /* Muro: el barrido destapa el panel en la primera pantalla de su pista; el resto lo lleva el bloque 13 */
+        muro: el => p => { el.style.setProperty('--barre', fijar(p * (el.offsetHeight - vh) / vh).toFixed(4)); if (el.muro) el.muro(p); },
         url: el => {
             const caja = el.querySelector('[data-url]'), txt = caja.dataset.url, man = document.querySelector('.tp-man'), tab = el.querySelector('[data-c3-tab]');
             caja.innerHTML = [...txt].map(c => `<span>${c}</span>`).join('');
@@ -777,50 +777,104 @@
         }
     }
 
-    /* --- 13. MURO DE TELÉFONOS --- */
-    /* Columnas de teléfonos con distintas partes del sitio en móvil (captura de 390 × 6636). Las columnas se mueven
-       solo con CSS (--v del parallax, entre --a y --b); el JS arma el muro, encuadra cada pantalla y, al pasar el
-       cursor o tocar un teléfono, lo adelanta y hace que su pantalla recorra el sitio, de ida y vuelta */
+    /* --- 13. MURO DE TELÉFONOS Y UN TELÉFONO QUE SE USA --- */
+    /* Columnas de teléfonos con las partes del sitio en móvil (captura de 390 × 6636): cada pantalla empieza donde
+       empieza una parte y los vecinos no repiten. Con el cursor (movimiento real, el scroll lo suelta) un teléfono
+       se adelanta y recorre el sitio. La pista, en pantallas: 0 a 1 barrido, hasta 1,7 el muro avanza y se detiene,
+       de 1,75 a 2,45 la cámara entra a un teléfono, y el resto queda el sitio real adentro para probarlo */
     const muro = document.querySelector('[data-muro]');
     if (muro) {
-        const M_ANCHO = 390, M_ALTO = 6636, POR_COL = 7;
+        const sec = muro.closest('section'), fijo = muro.closest('.tp-fijo'), cursorReal = window.matchMedia('(hover: hover)').matches;
+        const M_ANCHO = 390, M_ALTO = 6636, PARTES = [0, 1110, 1880, 2870, 3330, 4210, 5420, 6050];
         const tramos = [[4, -40], [-38, 0], [0, -42]];
-        muro.innerHTML = `<div class="tp-muro-giro">${tramos.map(([a, b], k) => `<div class="tp-muro-col" style="--a:${a}%;--b:${b}%">${Array.from({ length: POR_COL }, (_, i) =>
-            `<div class="tp-tel" data-f="${((i * 0.23 + k * 0.41) % 0.97).toFixed(3)}"><div class="tp-tel-pant"><img src="media/tp-movil.jpg" alt="" decoding="async"></div></div>`).join('')}</div>`).join('')}</div>`;
+        muro.innerHTML = `<div class="tp-muro-giro">${tramos.map(([a, b], k) => `<div class="tp-muro-col" style="--a:${a}%;--b:${b}%">${Array.from({ length: 7 }, (_, i) =>
+            `<div class="tp-tel" data-k="${k}" data-y="${PARTES[(i * 3 + k * 2) % 8]}"><div class="tp-tel-pant"><img src="media/tp-movil.jpg" alt="" decoding="async"></div></div>`).join('')}</div>`).join('')}</div>`;
         const tels = [...muro.querySelectorAll('.tp-tel')];
-        const encuadrar = tel => {
-            const img = tel.querySelector('img'), pant = img.parentElement, e = pant.clientWidth / M_ANCHO, vis = pant.clientHeight / e;
-            img.style.transform = `translate3d(0, ${(-tel.f * (M_ALTO - vis) * e).toFixed(1)}px, 0)`;
-        };
-        tels.forEach(t => { t.f = +t.dataset.f; t.dir = 1; encuadrar(t); });
-        window.addEventListener('resize', () => tels.forEach(encuadrar));
-        let activo = null, ultimo = 0, recorre = null;
+        const encuadrar = (img, y, ancho) => { const e = ancho / M_ANCHO, vis = img.parentElement.clientHeight / e, max = Math.max(M_ALTO - vis, 0); img.style.transform = `translate3d(0, ${(-fijar(y, 0, max) * e).toFixed(1)}px, 0)`; return max; };
+        const ponerY = (t, y) => { const img = t.querySelector('img'); t.y = y; t.max = encuadrar(img, y, img.parentElement.clientWidth); };
+        tels.forEach(t => { t.dir = 1; ponerY(t, +t.dataset.y); });
+
+        /* --- Cursor sobre el muro --- */
+        let mano = null, recorre = null, ultimo = 0;
         const recorrer = ahora => {
-            if (!activo) { recorre = null; return; }
-            const t = activo, dt = Math.min(ahora - ultimo, 50);
-            ultimo = ahora;
-            t.f += t.dir * dt / 16000;
-            if (t.f >= 1 || t.f <= 0) { t.f = fijar(t.f); t.dir *= -1; }
-            encuadrar(t);
-            recorre = requestAnimationFrame(recorrer);
+            const t = mano; if (!t) { recorre = null; return; }
+            const dt = Math.min(ahora - ultimo, 50); ultimo = ahora;
+            let y = t.y + t.dir * dt * (t.max || 5800) / 16000;
+            if (y >= t.max || y <= 0) t.dir *= -1;
+            ponerY(t, fijar(y, 0, t.max)); recorre = requestAnimationFrame(recorrer);
         };
-        const enfocar = tel => {
-            if (activo === tel) return;
-            if (activo) activo.classList.remove('on');
-            activo = tel;
-            muro.classList.toggle('foco', !!tel);
-            if (!tel) return;
-            tel.classList.add('on');
-            if (!recorre && !quieto) { ultimo = performance.now(); recorre = requestAnimationFrame(recorrer); }
-        };
-        if (window.matchMedia('(hover: hover)').matches) tels.forEach(t => { t.addEventListener('pointerenter', () => enfocar(t)); t.addEventListener('pointerleave', () => enfocar(null)); });
+        const ponerMano = t => { if (mano === t) return; if (mano) mano.classList.remove('on'); mano = t; muro.classList.toggle('foco', !!t); if (t) { t.classList.add('on'); if (!recorre && !quieto) { ultimo = performance.now(); recorre = requestAnimationFrame(recorrer); } } };
+        if (cursorReal) { muro.addEventListener('pointermove', e => ponerMano(e.target.closest('.tp-tel'))); muro.addEventListener('pointerleave', () => ponerMano(null)); window.addEventListener('scroll', () => { if (mano) ponerMano(null); }, { passive: true }); }
         else {
-            const pista = document.querySelector('[data-muro-pista]');
-            if (pista) pista.textContent = 'Toca una pantalla para recorrerla';
-            muro.closest('section').addEventListener('click', e => { const t = e.target.closest('.tp-tel'); enfocar(t && t !== activo ? t : null); });
+            const pista = sec.querySelector('[data-muro-pista]'); if (pista) pista.textContent = 'Toca una pantalla para recorrerla';
+            muro.addEventListener('click', e => { const t = e.target.closest('.tp-tel'); ponerMano(t && t !== mano ? t : null); });
         }
-        /* Fuera de la pantalla se suelta el foco */
-        new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) enfocar(null); })).observe(muro);
+
+        /* --- El teléfono vivo --- */
+        const vivo = sec.querySelector('[data-tel-vivo]'), web = vivo.querySelector('[data-tel-web]'), poster = web.querySelector('img'), probar = vivo.querySelector('[data-tel-probar]');
+        const txt = sec.querySelector('.tp-muro-txt'), prueba = sec.querySelector('[data-prueba]'), estado = sec.querySelector('[data-prueba-estado]'), velo = sec.querySelector('.tp-muro-velo'), hora = vivo.querySelector('[data-tel-hora]');
+        const LINK = estado.innerHTML;
+        let meta = null, y0 = 0, juega = false, activo = false, marco = null, aviso = null;
+        const decir = (html, vivoEstado) => { estado.innerHTML = html; estado.classList.toggle('vivo', !!vivoEstado); estado.style.animation = 'none'; void estado.offsetWidth; estado.style.animation = ''; };
+        const reposo = () => decir(activo ? (cursorReal ? 'Usando tapin.cl · Esc o clic afuera para salir' : 'Usando tapin.cl · toca afuera para salir') : LINK, activo);
+        /* Hora en vivo en la barra de estado */
+        const reloj = new Intl.DateTimeFormat('es-CL', { hour: 'numeric', minute: '2-digit', hour12: false });
+        const ponerHora = () => { hora.textContent = reloj.format(new Date()).replace(/^0/, ''); };
+        ponerHora(); setInterval(ponerHora, 15000);
+        /* El iframe se monta al acercarse a la cámara; el póster (la captura) queda hasta que carga */
+        const progreso = () => { try { const w = marco.contentWindow, d = w.document.documentElement, max = d.scrollHeight - w.innerHeight; vivo.style.setProperty('--av', (max > 0 ? w.scrollY / max : 0).toFixed(3)); } catch (err) { /* sin acceso */ } };
+        const montar = () => {
+            if (marco) return;
+            marco = document.createElement('iframe');
+            marco.title = 'tapin.cl en su versión móvil, dentro del teléfono'; marco.tabIndex = -1; marco.loading = 'eager';
+            marco.addEventListener('load', () => {
+                let d = null; try { d = marco.contentDocument; } catch (err) { /* sin acceso */ }
+                if (!d) return;
+                /* Es una demostración: el formulario de demo no se envía desde el portafolio */
+                d.addEventListener('submit', e => { e.preventDefault(); e.stopPropagation(); decir('Es una demostración: desde aquí el formulario no se envía', true); clearTimeout(aviso); aviso = setTimeout(reposo, 4500); }, true);
+                d.addEventListener('keydown', e => { if (e.key === 'Escape') desactivar(); });
+                marco.contentWindow.addEventListener('scroll', progreso, { passive: true });
+                if (!activo) marco.contentWindow.scrollTo(0, y0);
+                web.classList.add('cargado'); progreso();
+            });
+            marco.src = web.dataset.src; web.appendChild(marco); escalar();
+        };
+        /* Tamaño: ancho del teléfono w; la pantalla útil es 0,912 w y el sitio (390 px) se escala a ese ancho */
+        const escalar = () => {
+            const w = vivo.offsetWidth, k = (w * 0.912) / M_ANCHO, alto = w * 19.5 / 9 - w * 0.088 - w * 0.11;
+            web.style.setProperty('--k', k.toFixed(4)); web.style.setProperty('--alto', `${Math.ceil(alto / k)}px`);
+            poster.style.transform = `translate3d(0, ${(-Math.min(y0, M_ALTO - alto / k) * k).toFixed(1)}px, 0)`;
+        };
+        const ubicar = (cx, cy, w, giro) => { const h = w * 19.5 / 9; vivo.style.setProperty('--w', `${w.toFixed(1)}px`); vivo.style.width = `${w.toFixed(1)}px`; vivo.style.transform = `translate3d(${(cx - w / 2).toFixed(1)}px, ${(cy - h / 2).toFixed(1)}px, 0) rotate(${giro.toFixed(2)}deg)`; escalar(); };
+        const centro = el => { const r = el.getBoundingClientRect(), f = fijo.getBoundingClientRect(); return { x: r.left + r.width / 2 - f.left, y: r.top + r.height / 2 - f.top }; };
+        /* El teléfono que se elige: de la columna del medio, el más cercano al punto de lectura */
+        const delMedio = (px, py) => { let mejor = null, d0 = 1e9; tels.forEach(t => { if (t.dataset.k !== '1') return; const c = centro(t), d = Math.hypot(c.x - px, c.y - py); if (d < d0) { d0 = d; mejor = t; } }); return mejor; };
+        const activar = () => { if (!juega || activo) return; activo = true; vivo.classList.add('activo'); reposo(); montar(); if (marco) marco.focus(); };
+        const desactivar = () => { if (!activo) return; activo = false; vivo.classList.remove('activo'); reposo(); };
+        probar.tabIndex = -1; probar.addEventListener('click', activar);
+        window.addEventListener('keydown', e => { if (e.key === 'Escape') desactivar(); });
+        fijo.addEventListener('click', e => { if (activo && !vivo.contains(e.target)) desactivar(); });
+        new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) { desactivar(); ponerMano(null); } }), { threshold: 0.4 }).observe(fijo);
+
+        sec.muro = p => {
+            const T = p * (sec.offsetHeight - vh) / vh, W = fijo.clientWidth, H = fijo.clientHeight, movil = W <= 768;
+            muro.style.setProperty('--q', (0.55 * (1 - Math.pow(1 - fijar(T / 1.7), 2))).toFixed(4));
+            if (T > 1.2) montar();
+            const z = quieto ? (T >= 1.75 ? 1 : 0) : curva(fijar((T - 1.75) / 0.7));
+            if (z > 0 && !meta) { ponerMano(null); meta = delMedio(W * (movil ? 0.5 : 0.6), H * (movil ? 0.4 : 0.5)); y0 = meta.y; meta.classList.add('oculto'); if (marco && web.classList.contains('cargado') && !activo) try { marco.contentWindow.scrollTo(0, y0); } catch (err) { /* sin acceso */ } }
+            if (z <= 0 && meta) { meta.classList.remove('oculto'); meta = null; }
+            muro.style.opacity = (1 - 0.88 * z).toFixed(3); muro.style.pointerEvents = z > 0.2 ? 'none' : '';
+            velo.style.opacity = (1 - 0.5 * z).toFixed(3); txt.style.opacity = (1 - fijar(z * 2)).toFixed(3);
+            prueba.style.opacity = fijar((z - 0.55) / 0.45).toFixed(3); prueba.style.pointerEvents = z >= 0.999 ? 'auto' : 'none';
+            if (meta) {
+                const c = centro(meta), wF = movil ? Math.min(0.62 * W, 0.62 * H * 9 / 19.5) : Math.min(0.378 * H, 0.3 * W);
+                ubicar(c.x + ((movil ? 0.5 : 0.63) * W - c.x) * z, c.y + ((movil ? 0.4 : 0.5) * H - c.y) * z, meta.offsetWidth + (wF - meta.offsetWidth) * z, -12 * (1 - z));
+                vivo.style.opacity = 1;
+            } else vivo.style.opacity = 0;
+            const ya = z >= 0.999;
+            if (ya !== juega) { juega = ya; vivo.classList.toggle('juega', ya); probar.tabIndex = ya ? 0 : -1; if (!ya) desactivar(); }
+        };
+        window.addEventListener('resize', () => { tels.forEach(t => ponerY(t, t.y)); if (meta) sec.muro(fijar(-sec.getBoundingClientRect().top / (sec.offsetHeight - vh))); });
     }
 
     pintar(); luces(); barra();

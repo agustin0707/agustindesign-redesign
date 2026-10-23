@@ -1139,7 +1139,7 @@
 /* Columnas inclinadas de teléfonos, cada uno con otra parte del sitio en móvil; con el scroll suben y bajan a
    distinta velocidad. Al pasar el cursor (o tocar) un teléfono, se adelanta, los demás se apagan y su pantalla
    recorre el sitio. El título queda a la izquierda sobre un velo */
-.tp-movil { --barre: 0; height: 360svh; margin-top: calc(-200svh - clamp(96px, 11vw, 176px)); z-index: 2; background: transparent; pointer-events: none; }
+.tp-movil { --barre: 0; height: 460svh; margin-top: calc(-200svh - clamp(96px, 11vw, 176px)); z-index: 2; background: transparent; pointer-events: none; }
 .tp-movil.tp-grano::before { display: none; }
 /* Barrido: el panel queda fijo y un borde inclinado 12° (el ángulo del muro) lo destapa de abajo hacia arriba sobre la
    11 quieta. --barre va de 0 a 1 en la primera pantalla de la pista; 21.26vw es el desnivel del borde (tan 12°) */
@@ -1147,21 +1147,23 @@
 .tp-movil .tp-fijo::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: var(--tp-grano); background-size: 180px; mix-blend-mode: soft-light; opacity: 0.55; }
 .tp-muro { position: absolute; inset: 0; -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent); }
 .tp-muro-giro { position: absolute; inset: -30% -6% -30% 18%; display: flex; justify-content: center; gap: clamp(20px, 2.6vw, 44px); rotate: -12deg; }
-/* Cada columna va de --a a --b (en % de su alto) mientras la sección cruza la pantalla: --v lo publica el parallax */
-.tp-muro-col { display: flex; flex-direction: column; gap: clamp(20px, 2.6vw, 44px); will-change: transform; transform: translate3d(0, calc(var(--a) + (var(--b) - var(--a)) * (var(--v, -1) + 1) / 2), 0); }
+/* Cada columna va de --a a --b (en % de su alto) según --q, que publica el JS: avanza con el scroll y se detiene
+   antes de que la cámara entre al teléfono */
+.tp-muro-col { display: flex; flex-direction: column; gap: clamp(20px, 2.6vw, 44px); will-change: transform; transform: translate3d(0, calc(var(--a) + (var(--b) - var(--a)) * var(--q, 0)), 0); }
 
 /* --- 1. TELÉFONO --- */
 /* Marco de titanio, bisel fino e isla; la pantalla muestra la captura del sitio en móvil */
 .tp-tel { --w: min(14.5vw, 27svh); position: relative; width: var(--w); aspect-ratio: 9 / 19.5; padding: calc(var(--w) * 0.014); border-radius: calc(var(--w) * 0.18); background: linear-gradient(150deg, #5B5670 0%, #23202F 22%, #3A3649 52%, #15131D 78%, #48435A 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 2px 3px rgba(14, 11, 28, 0.35), 0 30px 50px -20px rgba(14, 11, 28, 0.6), 0 70px 120px -40px rgba(14, 11, 28, 0.8); flex: none; transition: scale 450ms var(--tp-curva), opacity 300ms var(--ease), filter 300ms var(--ease); cursor: pointer; }
 .tp-tel-pant { position: relative; width: 100%; height: 100%; overflow: hidden; border: calc(var(--w) * 0.03) solid #050408; border-radius: calc(var(--w) * 0.166); background: #F7F6FD; }
 .tp-tel-pant::before { content: ''; position: absolute; left: 50%; top: calc(var(--w) * 0.02); z-index: 2; width: 30%; height: calc(var(--w) * 0.085); margin-left: -15%; border-radius: 99px; background: #050408; }
-.tp-tel-pant::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(125deg, rgba(255, 255, 255, 0.16), transparent 38%); }
+.tp-tel-pant::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(125deg, rgba(255, 255, 255, 0.07), transparent 38%); }
 .tp-tel-pant img { position: absolute; left: 0; top: 0; width: 100%; will-change: transform; }
 .tp-tel.on { scale: 1.08; z-index: 2; }
 .tp-muro.foco .tp-tel:not(.on) { opacity: 0.4; filter: saturate(0.6); }
+.tp-tel.oculto { opacity: 0 !important; transition: none; }
 
 /* --- 2. VELO Y TÍTULO --- */
-.tp-muro-velo { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(45, 37, 96, 0.94) 0%, rgba(45, 37, 96, 0.7) 30%, rgba(45, 37, 96, 0) 56%); }
+.tp-muro-velo { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(45, 37, 96, 0.9) 0%, rgba(45, 37, 96, 0.5) 26%, rgba(45, 37, 96, 0) 46%); }
 .tp-muro-txt { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; max-width: min(30vw, 480px); margin-left: var(--margen); pointer-events: none; }
 .tp-muro-rot { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); }
 .tp-muro-rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
@@ -1170,6 +1172,42 @@
 .tp-muro-pista { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; color: var(--texto-3); font-size: 12px; transition: opacity 300ms var(--ease); }
 .tp-muro-pista::before { content: ''; width: 18px; height: 1px; background: currentColor; }
 .tp-movil:has(.tp-muro.foco) .tp-muro-pista { opacity: 0; }
+
+/* --- 3. PRUÉBALO: LA CÁMARA ENTRA A UN TELÉFONO Y QUEDA EL SITIO REAL --- */
+/* El muro se detiene, un teléfono de la columna del medio crece, se endereza y pasa a tener tapin.cl de verdad
+   adentro (un iframe a 390 px, escalado a la pantalla). Se activa con un clic para que el scroll no quede atrapado */
+.tp-prueba { position: absolute; z-index: 3; left: var(--margen); top: 50%; translate: 0 -50%; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; max-width: min(28vw, 440px); opacity: 0; pointer-events: none; }
+.tp-prueba h2 { font: 600 var(--tp-t2) / 0.98 var(--tp-f); letter-spacing: -0.045em; text-wrap: balance; }
+.tp-prueba p { font-size: var(--tp-t4); line-height: 1.45; color: var(--texto-2); max-width: 32ch; text-wrap: pretty; }
+.tp-prueba-estado { display: inline-flex; align-items: center; gap: 10px; min-height: 20px; margin-top: 4px; color: var(--texto-3); font-size: 12px; animation: tp-entra 400ms var(--ease); }
+.tp-prueba-estado::before { content: ''; width: 18px; height: 1px; background: currentColor; }
+.tp-prueba-estado a { color: var(--texto-2); text-decoration: none; border-bottom: 1px solid var(--linea); transition: color 200ms linear, border-color 200ms linear; }
+.tp-prueba-estado.vivo { color: #FFFFFF; } .tp-prueba-estado.vivo::before { width: 7px; height: 7px; border-radius: 50%; background: #2FB37A; box-shadow: 0 0 0 3px rgba(47, 179, 122, 0.25); }
+@keyframes tp-entra { from { opacity: 0; translate: 0 4px; } }
+@media (hover: hover) { .tp-prueba-estado a:hover { color: #FFFFFF; border-color: #FFFFFF; } }
+.tp-tel-vivo { position: absolute; left: 0; top: 0; z-index: 4; opacity: 0; pointer-events: none; cursor: default; transition: none; }
+.tp-tel-vivo .tp-tel-pant { background: #F7F6FD; }
+.tp-tel-vivo .tp-tel-pant::after { z-index: 5; }
+/* Barra de estado con la hora en vivo; el sitio empieza debajo, como en Safari */
+.tp-tel-estado { position: absolute; inset: 0 0 auto; z-index: 3; display: flex; align-items: center; justify-content: space-between; height: calc(var(--w) * 0.11); padding: calc(var(--w) * 0.01) calc(var(--w) * 0.085) 0; background: #F7F6FD; color: var(--tp-tinta); }
+.tp-tel-estado b { font: 600 calc(var(--w) * 0.042) / 1 'Geist', var(--tp-f); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.tp-tel-estado span { display: flex; align-items: center; gap: calc(var(--w) * 0.018); }
+.tp-tel-estado svg { height: calc(var(--w) * 0.032); width: auto; fill: currentColor; }
+.tp-tel-web { position: absolute; left: 0; right: 0; bottom: 0; top: calc(var(--w) * 0.11); overflow: hidden; background: #F7F6FD; }
+.tp-tel-web img { position: absolute; left: 0; top: 0; width: 100%; transition: opacity 400ms 200ms; }
+.tp-tel-web iframe { position: absolute; left: 0; top: 0; width: 390px; height: var(--alto, 844px); border: 0; transform-origin: 0 0; transform: scale(var(--k, 1)); opacity: 0; pointer-events: none; color-scheme: light; transition: opacity 400ms; }
+.tp-tel-web.cargado iframe { opacity: 1; } .tp-tel-web.cargado img { opacity: 0; }
+.tp-tel-vivo.activo iframe { pointer-events: auto; }
+/* Toda la pantalla es el botón; la pastilla dice qué pasa */
+.tp-tel-probar { position: absolute; inset: 0; z-index: 4; display: flex; align-items: flex-end; justify-content: center; padding: 0 0 12%; border: 0; background: linear-gradient(transparent 55%, rgba(28, 26, 46, 0.28)); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 300ms var(--ease); }
+.tp-tel-probar span { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 999px; background: var(--tp-tinta); color: #FFFFFF; font: 500 14px var(--tp-f); box-shadow: 0 12px 30px -10px rgba(14, 11, 28, 0.6); transition: scale 300ms var(--tp-curva); }
+.tp-tel-probar span::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #2FB37A; animation: tp-late 1.8s ease-out infinite; }
+.tp-tel-vivo.juega { pointer-events: auto; }
+.tp-tel-vivo.juega:not(.activo) .tp-tel-probar { opacity: 1; pointer-events: auto; }
+@media (hover: hover) { .tp-tel-probar:hover span { scale: 1.05; } }
+.tp-tel-avance { position: absolute; right: calc(var(--w) * -0.08); top: 20%; width: 3px; height: 60%; border-radius: 3px; background: rgba(255, 255, 255, 0.16); opacity: 0; transition: opacity 300ms; }
+.tp-tel-avance i { position: absolute; left: 0; top: 0; width: 100%; height: 16%; border-radius: inherit; background: #FFFFFF; transform: translateY(calc(var(--av, 0) * 525%)); }
+.tp-tel-vivo.juega .tp-tel-avance { opacity: 1; }
 
 /* =======================================================
    RESULTADO
@@ -1330,7 +1368,7 @@
     .tp-v11-fila { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(var(--margen) * -1); padding: 4px var(--margen) 24px; scroll-padding: 0 var(--margen); scrollbar-width: none; }
     .tp-v11-fila::-webkit-scrollbar { display: none; }
     .tp-v11-mini { flex: 0 0 74%; scroll-snap-align: start; }
-    .tp-movil { height: 330svh; }
+    .tp-movil { height: 460svh; }
     .tp-movil .tp-fijo { align-items: flex-end; }
     .tp-muro-giro { inset: -24% -30% -24% -30%; gap: 16px; }
     .tp-muro-col { gap: 16px; }
@@ -1338,6 +1376,9 @@
     .tp-muro-velo { background: linear-gradient(0deg, rgba(45, 37, 96, 0.96) 0%, rgba(45, 37, 96, 0.78) 30%, rgba(45, 37, 96, 0) 56%); }
     .tp-muro-txt { max-width: none; margin: 0 var(--margen) 9svh; gap: 12px; }
     .tp-muro-txt p { max-width: 34ch; }
+    .tp-prueba { top: auto; bottom: 6svh; right: var(--margen); translate: none; max-width: none; gap: 8px; }
+    .tp-prueba h2 { font-size: 34px; } .tp-prueba p { display: none; }
+    .tp-tel-avance { right: calc(var(--w) * -0.09); }
     .tp-pie { flex-direction: column; gap: 4px; }
     .tp-cifras { grid-template-columns: 1fr 1fr; row-gap: 40px; }
     .tp-giro { gap: 14px; }
@@ -1349,5 +1390,5 @@
 @media (prefers-reduced-motion: reduce) {
     .tp-tira-camino, .tp-wm-vivo.tap *, .tp-hero.entra *, .tp-forky-corre, .tp-sombra, .tp-hero-pista i, .tp-url-cursor, .tp-velocidad i, .tp-giro-linea::after { animation: none; }
     .tp-hero.entra * { animation: none !important; }
-    .tp-v11-vivo i { animation: none; }
+    .tp-v11-vivo i, .tp-tel-probar span::before { animation: none; }
 }
