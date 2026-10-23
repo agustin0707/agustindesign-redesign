@@ -1,0 +1,240 @@
+<title>Paso al sitio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@400;500;600&display=swap">
+<style>
+    /* Cinco pasos de la portada del capítulo 03 (ventana oscura a la derecha) a la sección del sitio (navegador claro a la
+       izquierda con el índice de decisiones). Cada paso es una escena con scroll sobre una réplica de ambas secciones */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --noche: #100D20; --gris: #57556B;
+        --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0;
+        --texto: #F4F3FB; --texto-2: rgba(238, 237, 254, 0.7); --texto-3: rgba(238, 237, 254, 0.42); --linea: rgba(155, 142, 240, 0.2);
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--noche); color: var(--texto); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    .mono { font-family: var(--f-mono); font-weight: 400; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 40px; background: var(--papel); color: var(--gris); }
+    .intro span { grid-column: 1 / span 3; font-size: 12px; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+
+    /* =======================================================
+       ESCENA Y RÉPLICA
+       ======================================================= */
+    .esc { position: relative; height: 380svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; display: grid; place-items: center; overflow: hidden; background: var(--noche); }
+    .stage { position: relative; width: min(100vw, 160svh); aspect-ratio: 1440 / 900; container-type: inline-size; overflow: hidden; background: var(--noche); }
+    /* La luz del sitio: un círculo claro que se abre desde el centro de la ventana mientras viaja (sin pasar por gris) */
+    .luz { position: absolute; inset: 0; background: radial-gradient(60% 50% at 30% 30%, rgba(155, 142, 240, 0.22), transparent 70%), var(--papel); clip-path: circle(var(--lr, 0%) at var(--lx, 50%) var(--ly, 50%)); }
+    .capa { position: absolute; inset: 0; overflow: hidden; }
+    .capa.oscura { background: radial-gradient(80% 60% at 50% 0%, rgba(107, 92, 231, 0.32), transparent 70%), var(--noche); }
+    .capa.clara { background: radial-gradient(60% 50% at 30% 30%, rgba(155, 142, 240, 0.22), transparent 70%), var(--papel); }
+    .stage > .halo { position: absolute; inset: 0; background: radial-gradient(80% 60% at 50% 0%, rgba(107, 92, 231, 0.32), transparent 70%); opacity: calc(1 - var(--k, 0)); pointer-events: none; }
+    .num { position: absolute; left: 4.7%; top: 7%; font: 600 22cqw / 0.8 var(--f-marca); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.18); opacity: var(--nv, 1); pointer-events: none; }
+    .titulo { position: absolute; left: 5%; width: 35%; bottom: 9%; display: flex; flex-direction: column; gap: 1cqw; opacity: var(--tv, 1); translate: var(--tx, 0) var(--ty, 0); transform-origin: 0 100%; scale: var(--ts, 1); }
+    .titulo .n { color: var(--texto-2); font-size: max(10px, 0.83cqw); }
+    .titulo h2 { margin: 0; font: 600 9.4cqw / 0.86 var(--f-marca); letter-spacing: -0.055em; margin-left: -0.04em; color: color-mix(in srgb, var(--tinta) calc(var(--k, 0) * 100%), #FFFFFF); }
+    .titulo p { margin: 0; max-width: 34ch; color: var(--texto-2); font: 400 max(13px, 1.4cqw) / 1.4 var(--f-marca); }
+
+    /* --- LA VENTANA: DE OSCURA (PORTADA) A CLARA (SITIO), SEGÚN --lz --- */
+    .ventana { --lz: 0; position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: calc(var(--w) * 1%); height: calc(var(--h) * 1%); display: flex; flex-direction: column; border-radius: var(--rad, 1.4cqw); overflow: hidden; background: color-mix(in srgb, #FFFFFF calc(var(--lz) * 100%), #17142B); box-shadow: 0 0 0 1px color-mix(in srgb, rgba(45, 37, 96, 0.1) calc(var(--lz) * 100%), rgba(155, 142, 240, 0.22)), 0 4cqw 9cqw -3cqw color-mix(in srgb, rgba(45, 37, 96, 0.45) calc(var(--lz) * 100%), rgba(0, 0, 0, 0.9)); }
+    .cab { position: relative; flex: none; height: calc(3cqw - var(--lz) * 0.4cqw); background: color-mix(in srgb, #F4F3FA calc(var(--lz) * 100%), #120F22); border-bottom: 1px solid color-mix(in srgb, rgba(45, 37, 96, 0.08) calc(var(--lz) * 100%), rgba(155, 142, 240, 0.2)); }
+    .cab > div { position: absolute; inset: 0; display: flex; align-items: center; gap: 1cqw; padding: 0 1.1cqw; }
+    .cab-osc { opacity: calc(1 - var(--lz)); } .cab-clara { opacity: var(--lz); justify-content: center; }
+    .luces { display: flex; gap: 0.5cqw; } .luces i { width: 0.75cqw; height: 0.75cqw; border-radius: 50%; background: #FF5F57; } .luces i:nth-child(2) { background: #FEBC2E; } .luces i:nth-child(3) { background: #28C840; }
+    .cab-clara .luces { position: absolute; left: 1.1cqw; } .cab-clara .luces i { background: #D9D7E3; }
+    .tab { display: flex; align-items: center; gap: 0.6cqw; height: 2cqw; padding: 0 1cqw; border-radius: 0.6cqw; background: rgba(238, 237, 254, 0.06); color: var(--texto-2); font: 400 max(9px, 0.85cqw) var(--f-texto); white-space: nowrap; }
+    .fav { display: grid; place-items: center; width: 1.1cqw; height: 1.1cqw; border-radius: 0.25cqw; background: var(--connect); } .fav i { width: 70%; aspect-ratio: 622.7 / 597.42; background: #FFFFFF; -webkit-mask: url('tp-cerebro.svg') center / contain no-repeat; mask: url('tp-cerebro.svg') center / contain no-repeat; }
+    .url-c { padding: 0.3cqw 3.6cqw; border-radius: 0.5cqw; background: #FFFFFF; color: #5E5C72; font: 400 max(9px, 0.9cqw) var(--f-mono); }
+    .pill { flex: none; display: flex; align-items: center; gap: 0.8cqw; margin: calc((1 - var(--lz)) * 1.1cqw) calc((1 - var(--lz)) * 1.1cqw) 0; padding: 0 1.7cqw; height: calc((1 - var(--lz)) * 5cqw); border-radius: 99px; background: rgba(238, 237, 254, 0.06); box-shadow: inset 0 0 0 1px var(--health); color: #FFFFFF; font: 500 2.6cqw / 1 var(--f-marca); letter-spacing: -0.03em; overflow: hidden; opacity: calc(1 - var(--lz) * 1.6); }
+    .candado { position: relative; flex: none; width: 0.42em; height: 0.36em; margin-top: 0.18em; border-radius: 0.06em; background: var(--texto-3); }
+    .candado::before { content: ''; position: absolute; left: 50%; bottom: 80%; width: 60%; height: 70%; border: 0.07em solid var(--texto-3); border-bottom: 0; border-radius: 99px 99px 0 0; transform: translateX(-50%); }
+    .cont { position: relative; flex: 1; margin: calc((1 - var(--lz)) * 1.1cqw); border-radius: calc((1 - var(--lz)) * 0.8cqw); overflow: hidden; }
+    .cont img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+    .foco { position: absolute; left: 0.6%; top: 2.4%; width: 13%; height: 6%; border: 1.5px solid var(--connect); border-radius: 0.8cqw; box-shadow: 0 0 0 200vmax rgba(28, 26, 46, 0.34); opacity: var(--fo, 0); }
+    .foco span { position: absolute; top: 100%; left: -1.5px; margin-top: 0.5cqw; padding: 0.3cqw 0.8cqw; border-radius: 99px; background: var(--connect); color: #FFFFFF; font: 400 max(9px, 0.76cqw) var(--f-mono); white-space: nowrap; }
+
+    /* --- ÍNDICE DE DECISIONES (TEMA CLARO) --- */
+    .indice { position: absolute; left: 73.75%; width: 21.25%; top: 50%; translate: 0 -50%; margin: 0; padding: 0; list-style: none; color: var(--tinta); }
+    .indice li { padding: 1.1cqw 0; border-top: 1px solid rgba(45, 37, 96, 0.12); opacity: clamp(0, var(--iv, 0) * 7 - var(--i) * 1, 1); translate: calc((1 - clamp(0, var(--iv, 0) * 7 - var(--i), 1)) * 2cqw) 0; }
+    .indice li.cabeza { display: flex; justify-content: space-between; padding: 0 0 1cqw; border: 0; color: #57556B; font: 400 max(9px, 0.83cqw) var(--f-mono); } .indice li.cabeza span:last-child { color: var(--campus); }
+    .indice li:last-child { border-bottom: 1px solid rgba(45, 37, 96, 0.12); }
+    .indice small { display: flex; align-items: center; gap: 0.5cqw; color: #8A889E; font: 400 max(9px, 0.76cqw) var(--f-mono); } .indice small::before { content: ''; width: 0.4cqw; height: 0.4cqw; border-radius: 50%; background: var(--campus); }
+    .indice b { display: block; margin-top: 0.5cqw; font: 600 max(12px, 1.5cqw) / 1.1 var(--f-marca); letter-spacing: -0.03em; color: #8A889E; }
+    .indice li.actual b { color: var(--tinta); } .indice p { margin: 0.7cqw 0 0; color: #57556B; font: 400 max(11px, 1cqw) / 1.5 var(--f-texto); }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .vista-v { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc, [data-v="d"] .vd, [data-v="e"] .ve { display: block; }
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.6); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 13px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; } .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; font-size: 12px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); font-size: 12px; } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    /* =======================================================
+       VISTA MÓVIL
+       ======================================================= */
+    @media (max-width: 768px) {
+        .stage { width: min(100vw, 46.2svh); aspect-ratio: 390 / 844; }
+        .num { display: none; }
+        .titulo { width: auto; right: 6%; left: 6%; bottom: 7%; gap: 2cqw; } .titulo h2 { font-size: 22cqw; } .titulo p { font-size: 4cqw; } .titulo .n { font-size: 3cqw; }
+        .cab { height: calc(9cqw - var(--lz) * 2cqw); } .cab > div { gap: 2cqw; padding: 0 3cqw; } .luces { gap: 1.4cqw; } .luces i { width: 2.2cqw; height: 2.2cqw; } .cab-clara .luces { left: 3cqw; }
+        .tab { height: 6cqw; padding: 0 2.4cqw; font-size: 3cqw; border-radius: 1.6cqw; } .fav { width: 3.2cqw; height: 3.2cqw; } .url-c { font-size: 2.8cqw; padding: 0.8cqw 6cqw; }
+        .pill { height: calc((1 - var(--lz)) * 12cqw); margin: calc((1 - var(--lz)) * 3cqw) calc((1 - var(--lz)) * 3cqw) 0; font-size: 6cqw; padding: 0 4cqw; }
+        .cont { margin: calc((1 - var(--lz)) * 3cqw); }
+        .indice { left: 6%; width: 88%; top: auto; bottom: 6%; translate: none; } .indice li:not(.cabeza):not(.actual) { display: none; } .indice b { font-size: 5cqw; } .indice p { font-size: 3.4cqw; } .indice small, .indice li.cabeza { font-size: 2.8cqw; }
+        .foco span { font-size: 2.6cqw; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Tap In · Capítulo 03 → El sitio</span><p>Cinco pasos de la portada "La web" a la sección del sitio. Hoy son dos navegadores distintos y el corte es de golpe. Baja por la escena; cambia con el selector.</p></div>
+    <section class="vista-v va esc" data-esc="a"></section>
+    <section class="vista-v vb esc" data-esc="b"></section>
+    <section class="vista-v vc esc" data-esc="c"></section>
+    <section class="vista-v vd esc" data-esc="d"></section>
+    <section class="vista-v ve esc" data-esc="e"></section>
+</div>
+
+<nav class="selector" aria-label="Variantes">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>Una ventana</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Entrar</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Amanecer</span></button>
+    <button type="button" data-ir="d" aria-pressed="false"><b>D</b><span>Hoja</span></button>
+    <button type="button" data-ir="e" aria-pressed="false"><b>E</b><span>Título al índice</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit del paso</h2>
+    <div class="bloque">
+        <p>Son dos navegadores distintos uno detrás del otro: el lector siente un corte, no que entró al sitio.</p>
+        <ul class="lista">
+            <li><span class="mono">Corte</span><span>La portada oscura sube y aparece una franja clara: el cambio de oscuro a claro es una costura</span><span>Un paso con continuidad: la misma ventana, una luz que se expande o una hoja que se levanta</span></li>
+            <li><span class="mono">Dos ventanas</span><span>La de la portada es oscura, chica y a la derecha; la del sitio es clara, grande y a la izquierda: se leen como dos cosas</span><span>Que sea la misma ventana: viaja, crece y cambia de tema</span></li>
+            <li><span class="mono">Repetición</span><span>El hero de tapin.cl se muestra dos veces seguidas</span><span>Se muestra una vez: la carga de la portada es el mismo sitio que después se recorre</span></li>
+            <li><span class="mono">Arranque</span><span>La sección empieza con el foco de la decisión 06 ya puesto y la pantalla oscurecida</span><span>El foco entra después de que la ventana se asienta</span></li>
+            <li><span class="mono">Índice</span><span>Las cinco decisiones aparecen de una vez</span><span>Entran en cascada cuando la ventana llega a su lugar</span></li>
+        </ul>
+    </div>
+    <h2>Pasos</h2>
+    <div class="bloque">
+        <p>Cinco maneras de pasar de la portada al sitio.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · Una ventana</span><strong>La misma ventana viaja</strong><p>La ventana de la portada viaja a la izquierda y crece hasta ser el navegador del sitio; su cromo pasa de oscuro a claro y la barra se recoge. El fondo amanece, el título se retira y el índice entra en cascada. Al final se pone el foco de la decisión 06.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Entrar a la página</span><strong>Zoom adentro y afuera</strong><p>La ventana crece hasta llenar la pantalla (se entra al sitio) y, con el sitio a pantalla completa, retrocede a su lugar como navegador claro. Es el más cinematográfico; pide más scroll.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Amanecer</span><strong>La luz sale de la barra</strong><p>Desde la barra de direcciones se expande un círculo claro que convierte la portada oscura en la sección clara. Anticipa la decisión 09 ("De oscuro a claro").</p></button>
+            <button type="button" class="op" data-ir="d" aria-pressed="false"><span class="mono">D · Hoja</span><strong>La portada se levanta</strong><p>La portada sube como una hoja con esquinas redondeadas y sombra, y deja ver el sitio debajo, que se acerca y se aclara. Simple y limpio.</p></button>
+            <button type="button" class="op" data-ir="e" aria-pressed="false"><span class="mono">E · Título al índice</span><strong>La web se vuelve el índice</strong><p>Como A, pero el título "La web" viaja y se achica hacia la cabecera del índice ("Cinco decisiones en tapin.cl"): continuidad tipográfica además de la ventana.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · PASO AL SITIO
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const suave = t => t * t * (3 - 2 * t);
+        const mezcla = (a, b, t) => a + (b - a) * t;
+        const movil = () => matchMedia('(max-width: 768px)').matches;
+        /* Rectángulos de la ventana (en % del escenario): A en la portada, B en el sitio, P pantalla completa */
+        const R = () => movil() ? { A: [6.2, 9, 87.6, 46], B: [6.2, 12, 87.6, 56], P: [0, 0, 100, 100] } : { A: [43.2, 11, 51.8, 54], B: [5, 8.4, 59.4, 87.1], P: [0, 0, 100, 100] };
+        const rect = (el, r, rad) => { ['--x', '--y', '--w', '--h'].forEach((k, i) => el.style.setProperty(k, r[i].toFixed(3))); if (rad !== undefined) el.style.setProperty('--rad', rad + 'cqw'); };
+        const entre = (a, b, t) => a.map((v, i) => mezcla(v, b[i], t));
+
+        /* --- 1. RÉPLICA: PORTADA, VENTANA E ÍNDICE --- */
+        const ventana = () => `<div class="ventana"><div class="cab"><div class="cab-osc"><span class="luces"><i></i><i></i><i></i></span><span class="tab"><span class="fav"><i></i></span>Tap In · Gestión escolar</span></div><div class="cab-clara"><span class="luces"><i></i><i></i><i></i></span><span class="url-c">tapin.cl</span></div></div><div class="pill"><i class="candado"></i>tapin.cl</div><div class="cont"><img src="sitio.webp" alt=""><div class="foco"><span>Menú · Soluciones</span></div></div></div>`;
+        const portada = `<span class="num" aria-hidden="true">03</span><div class="titulo"><span class="n mono">Capítulo 03 · Abr a sep 2026</span><h2>La web</h2><p>Diseñada y programada por mí, para que un director entienda en segundos</p></div>`;
+        const indice = `<ol class="indice"><li class="cabeza" style="--i:0"><span>Cinco decisiones en tapin.cl</span><span>06 / 10</span></li><li class="actual" style="--i:1"><small>Decisión 06</small><b>Un menú, cuatro preguntas</b><p>Qué hace, si funciona en mi colegio, quiénes son y cómo los contacto.</p></li><li style="--i:2"><small>Decisión 07</small><b>Primero, confianza</b></li><li style="--i:3"><small>Decisión 08</small><b>Módulos, no pasos</b></li><li style="--i:4"><small>Decisión 09</small><b>De oscuro a claro</b></li><li style="--i:5"><small>Decisión 10</small><b>Las objeciones, sin acordeón</b></li></ol>`;
+        const una = `<div class="fijo"><div class="stage"><div class="halo"></div><div class="luz"></div>${portada}${indice}${ventana()}</div></div>`;
+        const dos = `<div class="fijo"><div class="stage"><div class="capa clara">${indice}${ventana()}</div><div class="capa oscura">${portada}${ventana()}</div></div></div>`;
+        document.querySelectorAll('.esc').forEach(s => { s.innerHTML = 'cd'.includes(s.dataset.esc) ? dos : una; });
+
+        /* --- 2. LOS CINCO PASOS --- */
+        const comun = (el, p, m) => {
+            const st = el.querySelector('.stage'), v = el.querySelector('.ventana');
+            return { st, v, set: (k, x) => st.style.setProperty(k, x) };
+        };
+        const luz = (st, ra, k) => { st.style.setProperty('--lx', ra[0] + ra[2] / 2 + '%'); st.style.setProperty('--ly', ra[1] + ra[3] / 2 + '%'); st.style.setProperty('--lr', suave(k) * 120 + '%'); };
+        const escenas = {
+            a: (el, p) => {
+                const { st, v } = comun(el), m = suave(fijar(p / 0.55)), k = fijar((p - 0.08) / 0.4);
+                const ra = entre(R().A, R().B, m); rect(v, ra, mezcla(1.4, 1.1, m)); v.style.setProperty('--lz', fijar((p - 0.12) / 0.32)); luz(st, ra, k);
+                st.style.setProperty('--k', k); st.style.setProperty('--nv', 1 - k); st.style.setProperty('--tv', 1 - fijar(p / 0.25)); st.style.setProperty('--tx', -m * 6 + 'cqw');
+                st.style.setProperty('--iv', fijar((p - 0.45) / 0.35)); v.style.setProperty('--fo', fijar((p - 0.85) / 0.08));
+            },
+            b: (el, p) => {
+                const { st, v } = comun(el), z = suave(fijar(p / 0.32)), s = suave(fijar((p - 0.5) / 0.32)), r = R();
+                const pos = p < 0.5 ? entre(r.A, r.P, z) : entre(r.P, r.B, s);
+                rect(v, pos, p < 0.5 ? mezcla(1.4, 0, z) : mezcla(0, 1.1, s)); v.style.setProperty('--lz', fijar((p - 0.32) / 0.16));
+                const k = fijar((p - 0.3) / 0.15); st.style.setProperty('--k', k); st.style.setProperty('--lr', k * 150 + '%'); st.style.setProperty('--nv', 1 - z); st.style.setProperty('--tv', 1 - z);
+                st.style.setProperty('--iv', fijar((p - 0.7) / 0.22)); v.style.setProperty('--fo', fijar((p - 0.9) / 0.06));
+            },
+            c: (el, p) => {
+                const clara = el.querySelector('.capa.clara'), osc = el.querySelector('.capa.oscura'), r = R();
+                const [vc, vo] = [clara.querySelector('.ventana'), osc.querySelector('.ventana')];
+                rect(vc, r.B, 1.1); vc.style.setProperty('--lz', 1); rect(vo, r.A, 1.4);
+                /* Centro del círculo: la barra de direcciones de la ventana oscura */
+                const cx = r.A[0] + r.A[2] / 2, cy = r.A[1] + (movil() ? 4.5 : 10.6);
+                const t = suave(fijar((p - 0.06) / 0.55)); clara.style.clipPath = `circle(${t * 150}% at ${cx}% ${cy}%)`; clara.style.zIndex = 2;
+                osc.style.scale = 1 + t * 0.04;
+                clara.style.setProperty('--iv', fijar((p - 0.5) / 0.35)); vc.style.setProperty('--fo', fijar((p - 0.86) / 0.08));
+            },
+            d: (el, p) => {
+                const clara = el.querySelector('.capa.clara'), osc = el.querySelector('.capa.oscura'), r = R(), m = suave(fijar(p / 0.55));
+                const [vc, vo] = [clara.querySelector('.ventana'), osc.querySelector('.ventana')];
+                rect(vc, r.B, 1.1); vc.style.setProperty('--lz', 1); rect(vo, r.A, 1.4);
+                osc.style.translate = `0 ${-m * 100}%`; osc.style.borderRadius = `0 0 ${m > 0 ? 3 : 0}cqw ${m > 0 ? 3 : 0}cqw`; osc.style.boxShadow = '0 3cqw 6cqw rgba(0, 0, 0, 0.45)';
+                clara.style.scale = 0.94 + m * 0.06; clara.style.filter = `brightness(${0.55 + m * 0.45})`;
+                clara.style.setProperty('--iv', fijar((p - 0.45) / 0.35)); vc.style.setProperty('--fo', fijar((p - 0.85) / 0.08));
+            },
+            e: (el, p) => {
+                const { st, v } = comun(el), m = suave(fijar(p / 0.55)), k = fijar((p - 0.08) / 0.4), mv = movil();
+                const ra = entre(R().A, R().B, m); rect(v, ra, mezcla(1.4, 1.1, m)); v.style.setProperty('--lz', fijar((p - 0.12) / 0.32)); luz(st, ra, k);
+                st.style.setProperty('--k', k); st.style.setProperty('--nv', 1 - k);
+                /* El título viaja y se achica hacia la cabecera del índice, y se apaga cuando la cabecera aparece */
+                const tt = suave(fijar(p / 0.5));
+                st.style.setProperty('--tx', (mv ? 0 : tt * 68.75) + '%'); st.style.setProperty('--ty', -tt * (mv ? 2 : 30) + 'cqw'); st.style.setProperty('--ts', 1 - tt * 0.82);
+                st.style.setProperty('--tv', 1 - fijar((p - 0.38) / 0.12));
+                st.style.setProperty('--iv', fijar((p - 0.45) / 0.35)); v.style.setProperty('--fo', fijar((p - 0.85) / 0.08));
+            }
+        };
+        const tick = () => document.querySelectorAll('.esc').forEach(el => {
+            if (!el.offsetParent) return;
+            const r = el.getBoundingClientRect(), pista = el.offsetHeight - innerHeight;
+            escenas[el.dataset.esc](el, fijar(-r.top / pista));
+        });
+        let pedido = false;
+        addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; tick(); }); } }, { passive: true });
+        addEventListener('resize', tick);
+
+        /* --- 3. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.ir === v))); try { localStorage.setItem('sitio-paso', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(tick); };
+        botones.forEach(x => x.addEventListener('click', () => { elegir(x.dataset.ir); if (x.classList.contains('op')) scrollTo({ top: document.querySelector('.esc.v' + x.dataset.ir).offsetTop, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('sitio-paso'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir('abcde'.includes(h) && h ? h : guardado || 'a');
+    })();
+    /* =======================================================
+       FIN JS · PASO AL SITIO
+       ======================================================= */
+</script>
