@@ -224,8 +224,6 @@
                 el.querySelector('[data-man-cerca]').textContent = justo ? `/* ${marcas[cerca]} */` : '/* entre tonos */';
                 botonesP.forEach((b, n) => b.classList.toggle('on', justo && n === cerca));
                 perilla.setAttribute('aria-valuenow', Math.round(xc * 100)); perilla.setAttribute('aria-valuetext', justo ? marcas[cerca] : hex);
-                /* Al llegar a un producto, la hoja responde con una ola del tono suave */
-                if (justo && cerca !== paradaAntes) { hoja.classList.remove('ola'); void hoja.offsetWidth; hoja.classList.add('ola'); }
                 paradaAntes = justo ? cerca : -1;
             };
             const xDesde = e => { const R = pista.getBoundingClientRect(); return (e.clientX - R.left) / R.width; };

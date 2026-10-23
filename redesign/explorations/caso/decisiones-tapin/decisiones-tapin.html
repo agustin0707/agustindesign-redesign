@@ -1,0 +1,322 @@
+<title>Cinco decisiones</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@400;500;600&display=swap">
+<style>
+    /* Cinco formas de contar las decisiones 06 a 10 sobre tapin.cl. Todas usan la captura real del sitio y avanzan con el
+       scroll por las cinco paradas; los números y los marcadores llevan a cada una */
+    :root {
+        --papel: #F4F3FA; --tinta: #1C1A2E; --noche: #100D20; --gris: #57556B; --gris-2: #8A889E;
+        --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --linea: rgba(45, 37, 96, 0.12);
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --curva: cubic-bezier(0.34, 1.25, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button { font: inherit; color: inherit; }
+    .mono { font-family: var(--f-mono); font-weight: 400; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .intro { padding-block: 56px 40px; color: var(--gris); border-bottom: 1px solid var(--linea); }
+    .intro span { grid-column: 1 / span 3; font-size: 12px; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .vista-v { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc, [data-v="d"] .vd, [data-v="e"] .ve { display: block; }
+
+    /* =======================================================
+       PIEZAS COMPARTIDAS
+       ======================================================= */
+    .esc { position: relative; height: 720svh; }
+    .fijo { position: sticky; top: 0; height: 100svh; align-content: center; overflow: hidden; background: radial-gradient(60% 50% at 30% 30%, rgba(155, 142, 240, 0.22), transparent 70%), var(--papel); }
+    .nav { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; background: #FFFFFF; box-shadow: 0 40px 90px -40px rgba(45, 37, 96, 0.45), 0 0 0 1px rgba(45, 37, 96, 0.08); }
+    .barra { flex: none; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; background: #F2F1F8; border-bottom: 1px solid rgba(45, 37, 96, 0.08); }
+    .barra > i { width: 12px; height: 12px; border-radius: 50%; background: #D9D6EA; } .barra > span { margin: 0 auto; padding: 5px 56px; border-radius: 8px; background: #FFFFFF; font: 13px var(--f-mono); color: #5E5C72; }
+    .pant { position: relative; flex: 1; overflow: hidden; }
+    .capa { position: absolute; left: 0; top: 0; width: 100%; will-change: transform; }
+    .capa > img { display: block; width: 100%; }
+    .caja { position: absolute; left: var(--cx); top: var(--cy); width: var(--cw); height: var(--ch); border: 1.5px solid var(--connect); border-radius: 12px; pointer-events: none; transition: opacity 300ms ease; }
+    .caja > span { position: absolute; bottom: calc(100% + 8px); left: -1.5px; padding: 4px 10px; border-radius: 99px; background: var(--connect); color: #FFFFFF; font: 400 11px var(--f-mono); white-space: nowrap; }
+    .rot { display: inline-flex; align-items: center; gap: 8px; color: var(--gris); font-size: 12px; } .rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--campus); }
+    .cambia { display: grid; } .cambia > * { grid-area: 1 / 1; opacity: 0; translate: 0 14px; clip-path: inset(0 0 100% 0); transition: opacity 200ms linear, translate 420ms var(--ease), clip-path 420ms var(--ease); }
+    .cambia > .on { opacity: 1; translate: 0 0; clip-path: inset(0 0 -10% 0); }
+    .dec-n { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: var(--campus); font-size: 12px; }
+    .dec-t { display: block; margin-bottom: 12px; font: 600 clamp(26px, 2.6vw, 40px) / 1.02 var(--f-marca); letter-spacing: -0.04em; text-wrap: balance; }
+    .dec-p { margin: 0; max-width: 34ch; color: var(--gris); font: 400 clamp(15px, 1.1vw, 17px) / 1.45 var(--f-marca); }
+    .num { display: grid; place-items: center; min-width: 26px; height: 26px; padding: 0 7px; border-radius: 99px; background: var(--campus); color: #FFFFFF; font: 500 11px var(--f-mono); }
+
+    /* =======================================================
+       A · DECISIÓN A DECISIÓN (EL PATRÓN DEL CASO)
+       ======================================================= */
+    /* Igual que las decisiones 01 a 05: números grandes en el riel, el texto en las columnas 4 a 6 y la pieza de la 7 a
+       la 12. El foco ya no oscurece: un velo claro alrededor y un marco que viaja de una parada a la otra */
+    .va .fijo { align-items: stretch; }
+    .va .riel { grid-column: 1 / span 3; grid-row: 1; display: flex; flex-direction: column; justify-content: space-between; height: 80svh; }
+    .va .pasos { display: flex; flex-direction: column; }
+    .va .pasos button { display: flex; align-items: baseline; gap: 12px; padding: 0; border: 0; background: none; color: rgba(28, 26, 46, 0.24); text-align: left; cursor: pointer; transition: color 200ms linear; }
+    .va .pasos b { font: 600 clamp(30px, 2.8vw, 46px) / 1.04 var(--f-marca); letter-spacing: -0.05em; } .va .pasos span { font: 400 12px var(--f-mono); }
+    .va .pasos button.on { color: var(--tinta); }
+    @media (hover: hover) { .va .pasos button:not(.on):hover { color: var(--gris); } }
+    .va .txt { grid-column: 4 / span 3; grid-row: 1; align-self: end; padding-bottom: 2svh; }
+    .va .nav { grid-column: 7 / -1; grid-row: 1; height: 80svh; }
+    .va .caja { box-shadow: 0 0 0 200vmax rgba(244, 243, 250, 0.6); }
+
+    /* =======================================================
+       B · LUPA
+       ======================================================= */
+    /* El navegador muestra la página con un marco numerado; al lado, una lupa amplía la parte que explica la decisión.
+       El mismo número une el marco y la lupa, sin líneas */
+    .vb .nav { grid-column: 1 / span 7; grid-row: 1; height: 82svh; }
+    .vb .lado { grid-column: 8 / -1; grid-row: 1; display: flex; flex-direction: column; gap: 22px; }
+    .vb .lupa { position: relative; height: 34svh; margin-left: -18%; border-radius: 18px; overflow: hidden; background: #FFFFFF; box-shadow: 0 0 0 4px #FFFFFF, 0 0 0 5.5px var(--connect), 0 40px 80px -30px rgba(45, 37, 96, 0.55); }
+    .vb .lupa .capa { transform-origin: 0 0; }
+    .vb .lupa .num { position: absolute; left: 12px; top: 12px; z-index: 2; }
+    .vb .caja > span { left: auto; right: -1.5px; }
+    .vb .caja .num { position: absolute; left: -13px; top: -13px; }
+
+    /* =======================================================
+       C · NOTAS AL MARGEN
+       ======================================================= */
+    /* Cada parada deja un marcador numerado sobre el sitio, como en una revisión de diseño; al margen, las notas se apilan:
+       la actual abierta y las anteriores cerradas con su número */
+    .vc .nav { grid-column: 1 / span 8; grid-row: 1; height: 84svh; }
+    .vc .notas-m { grid-column: 9 / -1; grid-row: 1; display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .vc .notas-m li { padding: 14px 16px; border-radius: 14px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(45, 37, 96, 0.08); opacity: 0.55; transition: opacity 300ms ease, box-shadow 300ms ease; cursor: pointer; }
+    .vc .notas-m li.on { opacity: 1; box-shadow: 0 0 0 1.5px var(--connect), 0 20px 40px -24px rgba(45, 37, 96, 0.5); }
+    .vc .notas-m li header { display: flex; align-items: center; gap: 10px; } .vc .notas-m li b { font: 600 15px / 1.15 var(--f-marca); letter-spacing: -0.02em; }
+    .vc .notas-m li p { margin: 0; max-height: 0; overflow: hidden; color: var(--gris); font: 400 14px / 1.45 var(--f-marca); transition: max-height 500ms var(--ease), margin 500ms var(--ease); }
+    .vc .notas-m li.on p { max-height: 120px; margin-top: 10px; }
+    .vc .notas-m li:not(.on):not(.ya) .num { background: #D9D6EA; color: var(--gris); }
+    .pin { position: absolute; z-index: 2; translate: -50% -50%; scale: 0; transition: scale 450ms var(--curva); box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9), 0 8px 18px -6px rgba(45, 37, 96, 0.6); }
+    .pin.ya, .pin.on { scale: 1; } .pin.on { animation: late 1.6s ease-in-out infinite; }
+    @keyframes late { 50% { box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9), 0 0 0 10px rgba(107, 92, 231, 0.25); } }
+    .vc .caja { border-style: dashed; border-color: rgba(107, 92, 231, 0.7); } .vc .caja > span { display: none; }
+
+    /* =======================================================
+       D · REVISIÓN EN VIVO
+       ======================================================= */
+    /* Un cursor con mi nombre recorre el sitio, hace clic en cada parte y deja un comentario con la decisión, como en una
+       revisión en Figma. Abajo, los cinco puntos del recorrido */
+    .vd .nav { grid-column: 2 / span 10; grid-row: 1; height: 80svh; }
+    .vd .puntos { grid-column: 2 / span 10; grid-row: 2; display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
+    .vd .puntos button { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: 0; border-radius: 99px; background: rgba(45, 37, 96, 0.06); color: var(--gris); font: 400 11px var(--f-mono); cursor: pointer; } .vd .puntos button.on { background: var(--tinta); color: #FFFFFF; }
+    .cursor { position: absolute; z-index: 4; left: 0; top: 0; translate: var(--kx, 50%) var(--ky, 40%); transition: translate 750ms cubic-bezier(0.65, 0, 0.35, 1); pointer-events: none; }
+    .cursor svg { display: block; width: 22px; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)); }
+    .cursor .quien { position: absolute; left: 18px; top: 18px; padding: 3px 9px; border-radius: 7px 7px 7px 2px; background: var(--connect); color: #FFFFFF; font: 500 11px var(--f-texto); white-space: nowrap; }
+    .cursor .clic { position: absolute; left: 2px; top: 2px; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; border: 2px solid var(--connect); opacity: 0; }
+    .cursor.clica .clic { animation: clic 600ms ease-out; }
+    @keyframes clic { from { opacity: 1; scale: 0.3; } to { opacity: 0; scale: 1.6; } }
+    .burbuja { position: absolute; z-index: 3; width: min(320px, 70%); padding: 14px 16px; border-radius: 4px 16px 16px 16px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(45, 37, 96, 0.08), 0 24px 48px -20px rgba(45, 37, 96, 0.55); opacity: 0; scale: 0.92; transform-origin: 0 0; transition: opacity 250ms ease, scale 400ms var(--curva); }
+    .burbuja.on { opacity: 1; scale: 1; } .burbuja header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--gris-2); font: 400 11px var(--f-mono); }
+    .burbuja .av { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--connect); color: #FFFFFF; font: 600 10px var(--f-marca); }
+    .burbuja b { display: block; margin-bottom: 4px; font: 600 15px / 1.2 var(--f-marca); } .burbuja p { margin: 0; color: var(--gris); font: 400 13px / 1.45 var(--f-marca); }
+    .vd .caja { border-color: transparent; background: rgba(107, 92, 231, 0.08); } .vd .caja > span { display: none; }
+
+    /* =======================================================
+       E · MAPA Y DETALLE
+       ======================================================= */
+    /* A la izquierda, la página completa en miniatura con un marco que baja por ella; al centro, el detalle de la parte
+       que explica la decisión, ampliado; a la derecha, el número grande y el texto */
+    .ve .mapa { grid-column: 1 / span 3; grid-row: 1; position: relative; height: 84svh; justify-self: start; aspect-ratio: 1200 / 3833; border-radius: 10px; overflow: hidden; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(45, 37, 96, 0.1), 0 30px 60px -30px rgba(45, 37, 96, 0.45); }
+    .ve .mapa img { display: block; width: 100%; height: 100%; }
+    .ve .mapa .marco { position: absolute; left: 0; right: 0; top: var(--my); height: var(--mh); border: 1.5px solid var(--connect); border-radius: 4px; box-shadow: 0 0 0 200vmax rgba(244, 243, 250, 0.55); transition: top 0ms; }
+    .ve .mapa button { position: absolute; right: 6px; translate: 0 -50%; border: 0; cursor: pointer; font: 500 10px var(--f-mono); }
+    .ve .detalle { grid-column: 4 / span 5; grid-row: 1; position: relative; height: 56svh; border-radius: 18px; overflow: hidden; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(45, 37, 96, 0.08), 0 40px 80px -36px rgba(45, 37, 96, 0.5); }
+    .ve .detalle .capa { transform-origin: 0 0; }
+    .ve .txt { grid-column: 9 / -1; grid-row: 1; }
+    .ve .grande { display: block; margin-bottom: 14px; font: 600 clamp(64px, 6vw, 104px) / 0.8 var(--f-marca); letter-spacing: -0.06em; color: var(--health); }
+
+    /* --- SELECTOR Y NOTAS --- */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(28, 26, 46, 0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 13px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; } .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; font: 400 12px var(--f-mono); color: rgba(238, 237, 254, 0.66); padding-top: 6px; }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { color: var(--health); padding-top: 3px; font-size: 12px; } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; border: 1px solid rgba(155, 142, 240, 0.22); background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; font: inherit; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); font-size: 12px; } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    @media (prefers-reduced-motion: reduce) { .pin.on { animation: none; } .cursor { transition: none; } }
+    @media (max-width: 768px) {
+        .grilla { grid-template-columns: minmax(0, 1fr); } .grilla > * { grid-column: 1 !important; grid-row: auto !important; }
+        .fijo { align-content: start; padding-top: 9svh; row-gap: 12px; }
+        .va .riel { height: auto; order: 2; } .va .riel .rot { display: none; } .va .pasos { flex-direction: row; gap: 12px; } .va .pasos b { font-size: 24px; } .va .pasos span { display: none; }
+        .va .txt { order: 1; } .va .nav { order: 3; height: 52svh; } .dec-p { font-size: 14px; } .dec-t { font-size: 24px; }
+        .vb .nav { height: 46svh; } .vb .lupa { height: 20svh; margin-left: 0; } .vb .lado { gap: 12px; }
+        .vc .nav { height: 52svh; } .vc .notas-m li:not(.on) { display: none; }
+        .vd .nav { height: 66svh; } .burbuja { width: 78%; }
+        .ve .mapa { display: none; } .ve .detalle { height: 36svh; } .ve .grande { font-size: 56px; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+</style>
+
+<div data-v="a" id="raiz">
+    <div class="grilla intro"><span class="mono">Tap In · Decisiones 06 a 10</span><p>Cinco formas de contar las decisiones sobre tapin.cl. Baja por cada escena; los números y los marcadores llevan a cada parada. Cambia con el selector.</p></div>
+    <section class="vista-v va esc" data-esc="a"></section>
+    <section class="vista-v vb esc" data-esc="b"></section>
+    <section class="vista-v vc esc" data-esc="c"></section>
+    <section class="vista-v vd esc" data-esc="d"></section>
+    <section class="vista-v ve esc" data-esc="e"></section>
+</div>
+
+<nav class="selector" aria-label="Variantes">
+    <button type="button" data-ir="a" aria-pressed="true"><b>A</b><span>Decisión a decisión</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Lupa</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Notas</span></button>
+    <button type="button" data-ir="d" aria-pressed="false"><b>D</b><span>En vivo</span></button>
+    <button type="button" data-ir="e" aria-pressed="false"><b>E</b><span>Mapa</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de la sección</h2>
+    <div class="bloque">
+        <p>El sitio que programé queda debajo de un velo gris, y las decisiones se leen como un menú lateral.</p>
+        <ul class="lista">
+            <li><span class="mono">Foco</span><span>El foco oscurece todo el sitio con un velo gris: el trabajo se ve apagado, como un tutorial</span><span>Velo claro o ninguno: marco, lupa, marcador o cursor</span></li>
+            <li><span class="mono">Grilla</span><span>Navegador de la 1 a la 8 e índice de la 10 a la 12: rompe el patrón de las decisiones 01 a 05</span><span>Volver al patrón (riel, texto en 4 a 6, pieza a la derecha) o una disposición propia y pensada</span></li>
+            <li><span class="mono">Índice</span><span>Cinco títulos grises en una columna angosta; el número de decisión es una etiqueta de 11 px</span><span>Números grandes como en la 05, o el número como marcador sobre el sitio</span></li>
+            <li><span class="mono">Tiempos muertos</span><span>Entre paradas no hay nada activo: el índice queda todo gris y el foco desaparece</span><span>El marco viaja de una parada a la otra; nunca queda la pantalla sin foco</span></li>
+            <li><span class="mono">Transición</span><span>El foco aparece y desaparece con un fundido</span><span>Se mueve: cambia de lugar y de tamaño con la página</span></li>
+            <li><span class="mono">Lectura</span><span>La etiqueta del foco (11 px) es lo único junto a la pieza; el texto está a cuatro columnas</span><span>El texto o el número junto a lo que explica</span></li>
+            <li><span class="mono">Interacción</span><span>Solo el clic en el índice</span><span>Números, marcadores y puntos clicables; en D y C, la historia del recorrido queda marcada en el sitio</span></li>
+        </ul>
+    </div>
+    <h2>Formas</h2>
+    <div class="bloque">
+        <p>Cinco formas mejoradas; en todas el sitio se ve en su color.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="true"><span class="mono">A · Decisión a decisión</span><strong>El patrón del caso</strong><p>Números grandes 06 a 10 en el riel, el texto en las columnas 4 a 6 y el navegador de la 7 a la 12. El marco viaja de una parada a la siguiente con un velo claro alrededor. Coherente con todo lo anterior.</p><span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Lupa</span><strong>La parte, ampliada</strong><p>El navegador con un marco numerado y, al lado, una lupa que amplía esa parte del sitio a tamaño de lectura. El texto va bajo la lupa.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · Notas al margen</span><strong>Revisión de diseño</strong><p>Cada parada deja un marcador numerado sobre el sitio, que queda marcado; al margen las notas se apilan, la actual abierta. Al final se ve el sitio con sus cinco marcas.</p></button>
+            <button type="button" class="op" data-ir="d" aria-pressed="false"><span class="mono">D · Revisión en vivo</span><strong>Un cursor con mi nombre</strong><p>Mi cursor recorre el sitio, hace clic en cada parte y deja un comentario con la decisión, como en Figma. El navegador va casi a todo el ancho.</p></button>
+            <button type="button" class="op" data-ir="e" aria-pressed="false"><span class="mono">E · Mapa y detalle</span><strong>La página completa y su parte</strong><p>La página entera en miniatura con un marco que baja por ella, el detalle ampliado al centro y el número grande con el texto a la derecha.</p></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · CINCO DECISIONES
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+        const ANCHO = 1440, ALTO = 4600, VIAJE = 0.38;
+        const D = [
+            ['06', 'Un menú, cuatro preguntas', 'Qué hace, si funciona en mi colegio, quiénes son y cómo los contacto. "Soluciones" y no "Productos": nadie quiere comprar un catálogo.', 'Menú · Soluciones', 90, 18, 1280, 200],
+            ['07', 'Primero, confianza', 'El producto funcionando en el hero y, justo debajo, los colegios que ya lo usan. El director ve a sus pares antes de dudar.', 'Los colegios que ya lo usan', 200, 930, 1100, 170],
+            ['08', 'Módulos, no pasos', 'Sin números: pestañas para elegir qué resolver primero, porque cada módulo se contrata por separado.', 'Pestañas de módulos', 180, 2075, 1080, 590],
+            ['09', 'De oscuro a claro', 'Cuando llegó el producto real, la web se reestructuró y pasó a fondo claro: institucional antes que tecnológico.', 'Todo conectado, en claro', 150, 2790, 1140, 380],
+            ['10', 'Las objeciones, sin acordeón', 'Las dudas del directivo con la respuesta abierta al lado: nada que tenga que adivinar ni desplegar.', 'Las dudas, a la vista', 120, 3400, 1200, 600]
+        ].map(([n, t, p, nota, x, y, w, h]) => ({ n, t, p, nota, x, y, w, h }));
+
+        /* --- 1. MARCADO --- */
+        const nav = (extra = '') => `<div class="nav"><div class="barra"><i></i><i></i><i></i><span>tapin.cl</span></div><div class="pant"><div class="capa"><img src="sitio.webp" alt="El sitio tapin.cl">${extra}</div><div class="caja"><span class="mono"></span></div></div></div>`;
+        const textos = D.map((d, i) => `<div data-k="${i}"><span class="dec-n mono"><span class="num">${d.n}</span>Decisión ${d.n}</span><b class="dec-t">${d.t}</b><p class="dec-p">${d.p}</p></div>`).join('');
+        const pins = D.map((d, i) => `<span class="num pin" data-pin="${i}" style="left:${(d.x / ANCHO) * 100}%; top:${(d.y / ALTO) * 100}%">${d.n}</span>`).join('');
+        const html = {
+            a: `<div class="fijo grilla"><div class="riel"><span class="rot mono">Cinco decisiones en tapin.cl</span><div class="pasos">${D.map((d, i) => `<button type="button" data-ir-k="${i}"><b>${d.n}</b><span>${d.nota}</span></button>`).join('')}</div></div><div class="txt cambia">${textos}</div>${nav()}</div>`,
+            b: `<div class="fijo grilla">${nav()}<div class="lado"><div class="lupa"><div class="capa"><img src="sitio.webp" alt=""></div><span class="num" data-lupa-n>06</span></div><div class="txt cambia">${textos}</div></div></div>`,
+            c: `<div class="fijo grilla">${nav(pins)}<ol class="notas-m">${D.map((d, i) => `<li data-ir-k="${i}"><header><span class="num">${d.n}</span><b>${d.t}</b></header><p>${d.p}</p></li>`).join('')}</ol></div>`,
+            d: `<div class="fijo grilla">${nav(pins)}<div class="puntos">${D.map((d, i) => `<button type="button" data-ir-k="${i}">${d.n}</button>`).join('')}</div></div>`,
+            e: `<div class="fijo grilla"><div class="mapa"><img src="sitio.webp" alt=""><span class="marco"></span>${D.map((d, i) => `<button type="button" class="num" data-ir-k="${i}" style="top:${((d.y + d.h / 2) / ALTO) * 100}%">${d.n}</button>`).join('')}</div><div class="detalle"><div class="capa"><img src="sitio.webp" alt=""></div></div><div class="txt">${D.map((d, i) => `<div data-k="${i}"><span class="grande">${d.n}</span></div>`).join('')}<div class="cambia">${textos}</div></div></div>`
+        };
+        document.querySelectorAll('.esc').forEach(s => { s.innerHTML = html[s.dataset.esc]; });
+        /* D: cursor y burbuja dentro de la pantalla del navegador */
+        const pd = document.querySelector('.vd .pant');
+        pd.insertAdjacentHTML('beforeend', `<div class="cursor"><span class="clic"></span><svg viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.8L21 10.6z" fill="#1C1A2E" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="quien">Agustín</span></div><div class="burbuja"><header><span class="av">AA</span><span>Agustín · Decisión <span data-bn>06</span></span></header><b data-bt></b><p data-bp></p></div>`);
+        /* E: el número grande cambia junto al texto */
+        document.querySelectorAll('.ve .txt > [data-k]').forEach(x => x.remove());
+        document.querySelector('.ve .txt').insertAdjacentHTML('afterbegin', `<div class="cambia grandes">${D.map((d, i) => `<span class="grande" data-k="${i}">${d.n}</span>`).join('')}</div>`);
+
+        /* --- 2. RECORRIDO: PARADA ACTUAL, VIAJE Y POSICIÓN DEL SITIO --- */
+        const estado = (p, vis) => {
+            const top = D.map(d => fijar(d.y - vis * 0.22, 0, ALTO - vis));
+            const u = p * D.length, i = Math.min(Math.floor(u), D.length - 1), t = u - i;
+            if (i === 0 || t >= VIAJE) return { i, k: i, m: 1, y: top[i], a: i };
+            const m = curva(t / VIAJE); return { i, k: m > 0.5 ? i : i - 1, m, y: top[i - 1] + (top[i] - top[i - 1]) * m, a: i - 1 };
+        };
+        const lerp = (a, b, m) => a + (b - a) * m;
+        const rectEn = (st) => { const A = D[st.a], B = D[st.i]; return ['x', 'y', 'w', 'h'].map(k => lerp(A[k], B[k], st.m)); };
+        const navSitio = (el, p) => {
+            const pant = el.querySelector('.pant'), capa = pant.querySelector('.capa'), e = pant.clientWidth / ANCHO, vis = pant.clientHeight / e;
+            const st = estado(p, vis), [x, y, w, h] = rectEn(st);
+            capa.style.transform = `translate3d(0, ${(-st.y * e).toFixed(1)}px, 0)`;
+            const caja = pant.querySelector('.caja'); caja.style.setProperty('--cx', x * e + 'px'); caja.style.setProperty('--cy', (y - st.y) * e + 'px'); caja.style.setProperty('--cw', w * e + 'px'); caja.style.setProperty('--ch', h * e + 'px');
+            caja.querySelector('span').textContent = D[st.k].nota;
+            return { st, e, vis, x, y, w, h, pant };
+        };
+        const marcar = (el, k) => { el.querySelectorAll('[data-k]').forEach(x => x.classList.toggle('on', +x.dataset.k === k)); el.querySelectorAll('[data-ir-k]').forEach(x => { x.classList.toggle('on', +x.dataset.irK === k); x.classList.toggle('ya', +x.dataset.irK < k); }); };
+        let antesD = -1;
+        const escenas = {
+            a: (el, p) => { const r = navSitio(el, p); marcar(el, r.st.k); },
+            b: (el, p) => {
+                const r = navSitio(el, p); marcar(el, r.st.k);
+                const lupa = el.querySelector('.lupa'), capa = lupa.querySelector('.capa'), s = lupa.clientWidth / (r.w + 60);
+                capa.style.width = ANCHO * s + 'px';
+                capa.style.transform = `translate3d(${(-(r.x - 30) * s).toFixed(1)}px, ${(-(r.y + r.h / 2) * s + lupa.clientHeight / 2).toFixed(1)}px, 0)`;
+                el.querySelector('[data-lupa-n]').textContent = D[r.st.k].n;
+                const caja = el.querySelector('.caja'); if (!caja.querySelector('.num')) caja.insertAdjacentHTML('beforeend', '<span class="num">06</span>'); caja.querySelector('.num').textContent = D[r.st.k].n;
+            },
+            c: (el, p) => {
+                const r = navSitio(el, p); marcar(el, r.st.k);
+                el.querySelectorAll('[data-pin]').forEach(pn => { const k = +pn.dataset.pin; pn.classList.toggle('on', k === r.st.k && r.st.m === 1); pn.classList.toggle('ya', k < r.st.k || (k === r.st.k && r.st.m < 1 && k === r.st.a)); });
+            },
+            d: (el, p) => {
+                const r = navSitio(el, p); marcar(el, r.st.k);
+                const cur = el.querySelector('.cursor'), bur = el.querySelector('.burbuja'), d = D[r.st.k];
+                const cx = (d.x + Math.min(d.w * 0.18, 140)) * r.e, cy = (d.y + Math.min(d.h * 0.4, 60) - r.st.y) * r.e;
+                cur.style.setProperty('--kx', cx + 'px'); cur.style.setProperty('--ky', cy + 'px');
+                const listo = r.st.m === 1;
+                if (listo && antesD !== r.st.k) { cur.classList.remove('clica'); void cur.offsetWidth; cur.classList.add('clica'); antesD = r.st.k; }
+                if (!listo) antesD = -1;
+                const bx = Math.min(cx + 28, r.pant.clientWidth - bur.offsetWidth - 16), by = Math.min(cy + 34, r.pant.clientHeight - bur.offsetHeight - 16);
+                bur.style.left = bx + 'px'; bur.style.top = by + 'px'; bur.classList.toggle('on', listo);
+                el.querySelector('[data-bn]').textContent = d.n; el.querySelector('[data-bt]').textContent = d.t; el.querySelector('[data-bp]').textContent = d.p;
+                el.querySelectorAll('[data-pin]').forEach(pn => { const k = +pn.dataset.pin; pn.classList.toggle('ya', k < r.st.k); pn.classList.remove('on'); });
+            },
+            e: (el, p) => {
+                const det = el.querySelector('.detalle'), capa = det.querySelector('.capa'), mapa = el.querySelector('.mapa');
+                const st = estado(p, 900), [x, y, w, h] = rectEn(st); marcar(el, st.k);
+                const s = Math.min(det.clientWidth / (w + 80), det.clientHeight / (h + 80));
+                capa.style.width = ANCHO * s + 'px';
+                capa.style.transform = `translate3d(${(det.clientWidth / 2 - (x + w / 2) * s).toFixed(1)}px, ${(det.clientHeight / 2 - (y + h / 2) * s).toFixed(1)}px, 0)`;
+                mapa.querySelector('.marco').style.setProperty('--my', (y / ALTO) * 100 + '%'); mapa.querySelector('.marco').style.setProperty('--mh', (h / ALTO) * 100 + '%');
+            }
+        };
+        const tick = () => document.querySelectorAll('.esc').forEach(el => {
+            if (!el.offsetParent) return;
+            const r = el.getBoundingClientRect(), pista = el.offsetHeight - innerHeight;
+            escenas[el.dataset.esc](el, fijar(-r.top / pista));
+        });
+        let pedido = false;
+        addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; tick(); }); } }, { passive: true });
+        addEventListener('resize', tick);
+
+        /* --- 3. NÚMEROS, NOTAS Y MARCADORES: LLEVAN A SU PARADA --- */
+        document.querySelectorAll('.esc').forEach(el => el.querySelectorAll('[data-ir-k]').forEach(b => b.addEventListener('click', () => {
+            const k = +b.dataset.irK, u = k === 0 ? 0.5 : k + VIAJE + 0.3;
+            scrollTo({ top: el.offsetTop + (u / D.length) * (el.offsetHeight - innerHeight), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        })));
+
+        /* --- 4. SELECTOR --- */
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.ir === v))); try { localStorage.setItem('decisiones-tapin', v); } catch (e) { /* sin almacenamiento */ } requestAnimationFrame(tick); };
+        botones.forEach(x => x.addEventListener('click', () => { elegir(x.dataset.ir); if (x.classList.contains('op')) scrollTo({ top: document.querySelector('.esc.v' + x.dataset.ir).offsetTop, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('decisiones-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1); elegir(h && 'abcde'.includes(h) ? h : guardado || 'a');
+        addEventListener('load', tick);
+    })();
+    /* =======================================================
+       FIN JS · CINCO DECISIONES
+       ======================================================= */
+</script>
