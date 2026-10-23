@@ -608,7 +608,7 @@
             parrafo.querySelectorAll('.tp-rs-w').forEach((w, i) => { const top = w.offsetTop; let l = lineas.find(x => Math.abs(x.top - top) < 4); if (!l) { l = { top, ws: [] }; lineas.push(l); } l.ws.push(i); });
             parrafo.innerHTML = lineas.map((l, n) => `<span class="tp-rs-l"><span style="--i:${n}">${l.ws.map(i => {
                 const k = CLAVE.indexOf(i), ultima = i === CLAVE[CLAVE.length - 1];
-                return k < 0 ? palabras[i] : `<span class="tp-rs-clave" style="--k:${k}">${palabras[i]}${ultima ? '' : ' '}</span>`; }).join(' ').replace(/<\/span> (?=<span class="tp-rs-clave")/g, '</span>')}</span></span>`).join('');
+                return k < 0 ? palabras[i] : `<span class="tp-rs-clave" style="--k:${k}">${palabras[i]}${ultima ? '' : ' '}</span>`; }).join(' ').replace(/<\/span> (?=<span class="tp-rs-clave")/g, '</span>')}</span></span>`).join(' ');
         };
         armar();
         /* Con Poppins ya cargada las líneas cambian: se rearman */
