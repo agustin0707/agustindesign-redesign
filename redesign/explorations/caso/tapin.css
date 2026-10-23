@@ -1072,7 +1072,7 @@
    compensa su desplazamiento) y se acerca con un velo que se disuelve */
 .tp-vivo { position: relative; z-index: 1; margin-top: -200svh; }
 .tp-vivo::before { content: ''; position: absolute; inset: 0; z-index: 2; background: var(--tp-tinta); opacity: var(--velo, 0); pointer-events: none; }
-.tp-vivo::after { content: ''; display: block; height: 110svh; }
+.tp-vivo::after { content: ''; display: block; height: 240svh; }
 /* Quieta con sticky (sin compensar el scroll por código, que temblaba): se fija apenas la sección llega arriba y el
    espacio extra de abajo la sostiene una pantalla, lo que dura la hoja */
 .tp-v11-marco > .tp-grilla { position: sticky; top: clamp(96px, 11vw, 176px); transform-origin: 50% 0; }

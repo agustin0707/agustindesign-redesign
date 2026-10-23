@@ -1,0 +1,405 @@
+<title>Resultado Tap In</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@400;500;600&display=swap">
+<style>
+    /* Cinco propuestas para la sección Resultado del caso Tap In, sobre la noche del caso. Grilla de 12 columnas,
+       riel de rótulos en las columnas 1 a 3. Look único: noche, lavanda y verde solo para "en línea" */
+    :root {
+        --noche: #100D20; --noche-2: #17132B; --tinta: #1C1A2E; --papel: #F4F3FA;
+        --empresa: #2D2560; --campus: #4A3CAE; --connect: #6B5CE7; --health: #9B8EF0; --soft: #C8C0F8;
+        --texto: #F4F3FB; --texto-2: rgba(238, 237, 254, 0.7); --texto-3: rgba(238, 237, 254, 0.46); --linea: rgba(155, 142, 240, 0.2);
+        --ok: #2FB37A; --ojo: #F5C26B;
+        --f-marca: 'Poppins', system-ui, sans-serif; --f-texto: 'Geist', system-ui, sans-serif; --f-mono: 'Geist Mono', ui-monospace, monospace;
+        --t2: clamp(40px, 5vw, 84px); --t4: clamp(16px, 1.25vw, 19px);
+        --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2)); --medianil: 24px;
+        --curva: cubic-bezier(0.34, 1.25, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--noche); color: var(--texto); font: 15px/1.5 var(--f-texto); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button, a { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--health); outline-offset: 3px; }
+    .mono { font-family: var(--f-mono); font-weight: 400; font-size: 12px; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+    .intro { padding-block: 56px 40px; background: var(--papel); color: #57556B; }
+    .intro span { grid-column: 1 / span 3; } .intro p { grid-column: 4 / span 6; margin: 0; font: 400 15px / 1.45 var(--f-marca); }
+    .v { display: none; } [data-v="a"] .va, [data-v="b"] .vb, [data-v="c"] .vc, [data-v="d"] .vd, [data-v="e"] .ve { display: block; }
+
+    /* =======================================================
+       PIEZAS COMPARTIDAS
+       ======================================================= */
+    /* Entrada desde el morado del muro: los primeros 30svh funden hacia la noche, sin corte seco */
+    .mod { position: relative; padding-block: clamp(140px, 16vw, 220px) clamp(96px, 11vw, 176px); background: linear-gradient(var(--empresa), var(--noche) 30svh); }
+    .etq { grid-column: 1 / span 3; padding-top: 0.9em; color: var(--texto-2); }
+    .titulo { grid-column: 4 / -1; margin: 0; font: 600 var(--t2) / 1 var(--f-marca); letter-spacing: -0.045em; text-wrap: balance; }
+    .ojo { display: inline-block; padding: 3px 9px; border: 1px dashed var(--ojo); border-radius: 6px; color: var(--ojo); font: 400 11px var(--f-mono); }
+    .num { font-variant-numeric: tabular-nums; }
+    .boton { display: inline-flex; align-items: center; gap: 12px; padding: 16px 26px; border: 1px solid var(--linea); border-radius: 999px; font: 500 17px var(--f-marca); text-decoration: none; transition: background-color 300ms var(--ease), border-color 300ms; }
+    .boton i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(47, 179, 122, 0.5); animation: late 1.8s ease-out infinite; }
+    .boton.lleno { border-color: transparent; background: #FFFFFF; color: var(--tinta); }
+    @media (hover: hover) { .boton:hover { border-color: var(--health); background: rgba(238, 237, 254, 0.08); } .boton.lleno:hover { background: var(--soft); } }
+    @keyframes late { 0% { box-shadow: 0 0 0 0 rgba(47, 179, 122, 0.5); } 100% { box-shadow: 0 0 0 9px rgba(47, 179, 122, 0); } }
+    .esc { position: relative; }
+    .fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+
+    /* =======================================================
+       A · TABLERO
+       ======================================================= */
+    /* El resultado como un panel del propio producto: tarjetas que cuentan, el alcance en barras y las citas que
+       entran como notificaciones */
+    .va .grilla { row-gap: 56px; }
+    .va .lado { grid-column: 1 / span 4; display: flex; flex-direction: column; gap: 22px; align-self: start; position: sticky; top: 16svh; }
+    .va .lado h2 { margin: 0; font: 600 clamp(36px, 4vw, 64px) / 1 var(--f-marca); letter-spacing: -0.045em; text-wrap: balance; }
+    .va .lado p { margin: 0; max-width: 32ch; color: var(--texto-2); font: 400 var(--t4) / 1.45 var(--f-marca); }
+    .panel { grid-column: 6 / -1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; padding: 14px; border-radius: 26px; background: var(--noche-2); box-shadow: inset 0 0 0 1px var(--linea), 0 50px 100px -50px rgba(0, 0, 0, 0.8); }
+    .panel-cab { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; padding: 6px 8px 10px; color: var(--texto-3); }
+    .panel-cab .marca { width: 66px; height: 26px; background: var(--texto); -webkit-mask: url(tp-wordmark.svg) left center / contain no-repeat; mask: url(tp-wordmark.svg) left center / contain no-repeat; }
+    .panel-cab .vivo { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); } .panel-cab .vivo::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); animation: late 1.8s ease-out infinite; }
+    .kpi { grid-column: span 2; display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: 16px; background: rgba(238, 237, 254, 0.04); box-shadow: inset 0 0 0 1px var(--linea); }
+    .kpi small { color: var(--texto-3); }
+    .kpi b { font: 600 clamp(36px, 3.6vw, 56px) / 0.9 var(--f-marca); letter-spacing: -0.05em; }
+    .kpi span { color: var(--texto-2); font-size: 14px; line-height: 1.35; }
+    .alcance { grid-column: 1 / span 4; display: flex; flex-direction: column; gap: 16px; padding: 18px; border-radius: 16px; background: rgba(238, 237, 254, 0.04); box-shadow: inset 0 0 0 1px var(--linea); }
+    .alcance header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; color: var(--texto-3); }
+    .barra { display: grid; grid-template-columns: 34px 1fr; gap: 6px 12px; align-items: center; }
+    .barra .iso { grid-row: span 2; width: 34px; height: 34px; border-radius: 10px; background: var(--tono); display: grid; place-items: center; }
+    .barra .iso i { width: 60%; height: 60%; background: #FFFFFF; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .barra div { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+    .barra b { font: 600 22px var(--f-marca); letter-spacing: -0.03em; } .barra span { color: var(--texto-2); font-size: 13px; }
+    .barra em { height: 6px; border-radius: 6px; background: rgba(238, 237, 254, 0.08); overflow: hidden; }
+    .barra em::after { content: ''; display: block; height: 100%; width: calc(var(--lleno, 0) * 1%); border-radius: inherit; background: var(--tono); transition: width 1400ms var(--ease); }
+    .notifs { grid-column: 5 / -1; position: relative; display: flex; flex-direction: column; gap: 8px; padding: 18px; border-radius: 16px; background: rgba(238, 237, 254, 0.04); box-shadow: inset 0 0 0 1px var(--linea); overflow: hidden; min-height: 220px; }
+    .notifs small { color: var(--texto-3); }
+    .notif { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 12px; background: rgba(238, 237, 254, 0.07); animation: llega 600ms var(--curva); }
+    .notif p { margin: 0; font: 500 15px / 1.35 var(--f-marca); } .notif cite { font-style: normal; color: var(--texto-3); }
+    @keyframes llega { from { opacity: 0; translate: 0 14px; scale: 0.97; } }
+    .va .pie { grid-column: 6 / -1; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+    /* =======================================================
+       B · UNA CIFRA POR PANTALLA
+       ======================================================= */
+    .vb .esc { height: 560svh; background: linear-gradient(var(--empresa), var(--noche) 30svh); }
+    .vb .fijo { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); align-content: center; padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+    .riel { grid-column: 1 / span 3; align-self: center; display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
+    .riel li { display: flex; align-items: center; gap: 10px; color: var(--texto-3); transition: color 250ms linear; }
+    .riel li::before { content: ''; width: 14px; height: 1px; background: currentColor; transition: width 300ms var(--ease); }
+    .riel li.on { color: #FFFFFF; } .riel li.on::before { width: 28px; }
+    .gigante { grid-column: 4 / -1; display: flex; flex-direction: column; gap: 18px; }
+    .gigante .rot { color: var(--texto-2); }
+    .gigante b { font: 600 clamp(96px, 17vw, 300px) / 0.82 var(--f-marca); letter-spacing: -0.065em; }
+    .gigante b small { font-size: 0.42em; vertical-align: 0.9em; margin-right: 0.04em; color: var(--texto-2); letter-spacing: -0.02em; }
+    .gigante p { margin: 0; max-width: 28ch; font: 500 clamp(20px, 2vw, 32px) / 1.2 var(--f-marca); letter-spacing: -0.02em; }
+    .gigante p span { display: block; animation: sube 450ms var(--ease); }
+    @keyframes sube { from { opacity: 0; translate: 0 12px; } }
+    .gigante .ojo { align-self: flex-start; opacity: 0; transition: opacity 250ms; } .gigante .ojo.on { opacity: 1; }
+    .vb .cierre { position: absolute; left: 0; right: 0; bottom: 8svh; display: flex; justify-content: center; opacity: 0; transition: opacity 300ms; } .vb .cierre.on { opacity: 1; }
+
+    /* =======================================================
+       C · EL SITIO, MEDIDO
+       ======================================================= */
+    .vc .grilla { row-gap: 48px; }
+    .vc .bajada { grid-column: 4 / span 6; margin: -24px 0 0; color: var(--texto-2); font: 400 var(--t4) / 1.45 var(--f-marca); }
+    .medidores { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--medianil); }
+    .medidor { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+    .medidor svg { width: min(100%, 150px); aspect-ratio: 1; }
+    .medidor circle { fill: none; stroke-width: 7; }
+    .medidor .fondo-c { stroke: rgba(238, 237, 254, 0.08); }
+    .medidor .arco { stroke: var(--ok); stroke-linecap: round; stroke-dasharray: 289; stroke-dashoffset: calc(289 - 289 * var(--m, 0) / 100); transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 1600ms var(--ease); }
+    .medidor text { fill: var(--texto); font: 600 30px var(--f-marca); letter-spacing: -0.04em; text-anchor: middle; dominant-baseline: central; }
+    .medidor span { color: var(--texto-2); }
+    .filas { grid-column: 4 / -1; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--linea); }
+    .filas li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--linea); }
+    .filas li b { font: 500 18px var(--f-marca); } .filas li span { color: var(--texto-2); }
+    .vc .pie { grid-column: 4 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+
+    /* =======================================================
+       D · EL CLIENTE PRIMERO
+       ======================================================= */
+    .vd .grilla { row-gap: 64px; }
+    .cita { grid-column: 4 / -1; margin: 0; display: flex; flex-direction: column; gap: 26px; }
+    .cita p { margin: 0; max-width: 20ch; font: 500 clamp(40px, 5.4vw, 92px) / 1.04 var(--f-marca); letter-spacing: -0.045em; text-wrap: balance; }
+    .cita p .w { color: rgba(238, 237, 254, 0.18); transition: color 300ms linear; } .cita p .w.on { color: var(--texto); }
+    .cita p .w.on.clave { color: var(--soft); }
+    .cita footer { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; color: var(--texto-2); }
+    .notas-pie { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--medianil); margin: 0; padding: 18px 0 0; list-style: none; border-top: 1px solid var(--linea); }
+    .notas-pie li { display: flex; flex-direction: column; gap: 6px; } .notas-pie b { font: 600 28px var(--f-marca); letter-spacing: -0.04em; } .notas-pie span { color: var(--texto-2); font-size: 14px; }
+    .vd .pie { grid-column: 4 / -1; }
+
+    /* =======================================================
+       E · SIGUE EN LÍNEA
+       ======================================================= */
+    /* Cierra el capítulo 03 con la misma ventana con que empezó: tapin.cl, en línea, recorrido por el scroll; las
+       cifras cuentan al lado */
+    .ve .esc { height: 380svh; background: linear-gradient(var(--empresa), var(--noche) 30svh); }
+    .ve .fijo { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); align-items: center; padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+    .ve .lado { grid-column: 1 / span 4; display: flex; flex-direction: column; gap: 22px; }
+    .ve .lado h2 { margin: 0; font: 600 clamp(36px, 4.2vw, 70px) / 1 var(--f-marca); letter-spacing: -0.045em; }
+    .ve .lado > p { margin: 0; max-width: 30ch; color: var(--texto-2); font: 400 var(--t4) / 1.45 var(--f-marca); }
+    .cuentas { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 24px; margin: 6px 0 0; padding: 18px 0 0; list-style: none; border-top: 1px solid var(--linea); }
+    .cuentas li { display: flex; flex-direction: column; gap: 4px; } .cuentas b { font: 600 clamp(26px, 2.4vw, 38px) / 1 var(--f-marca); letter-spacing: -0.04em; } .cuentas span { color: var(--texto-2); font-size: 13px; line-height: 1.35; }
+    .ventana { grid-column: 6 / -1; position: relative; display: flex; flex-direction: column; height: min(72svh, 720px); border-radius: 16px; overflow: hidden; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 60px 120px -50px rgba(0, 0, 0, 0.9); }
+    .ventana .cromo { flex: none; display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 14px; background: #ECEAF6; color: #57556B; }
+    .ventana .luces { display: flex; gap: 7px; } .ventana .luces i { width: 11px; height: 11px; border-radius: 50%; background: #D3D0E4; }
+    .ventana .url { flex: 1; display: flex; align-items: center; gap: 10px; max-width: 460px; margin: 0 auto; padding: 6px 14px; border-radius: 9px; background: #FFFFFF; font: 13px var(--f-mono); color: var(--tinta); }
+    .ventana .url .vivo { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; color: #23895D; font-size: 11px; } .ventana .url .vivo::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); animation: late 1.8s ease-out infinite; }
+    .ventana .pant { position: relative; flex: 1; overflow: hidden; }
+    .ventana .pant img { position: absolute; left: 0; top: 0; width: 100%; max-width: none; will-change: transform; }
+    .ventana .parte { position: absolute; left: 14px; bottom: 14px; padding: 5px 10px; border-radius: 999px; background: rgba(16, 13, 32, 0.78); color: #FFFFFF; font: 11px var(--f-mono); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .ve .pie { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+
+    /* =======================================================
+       SELECTOR Y NOTAS
+       ======================================================= */
+    .selector { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(16, 13, 32, 0.7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); translate: -50% 0; }
+    .selector button { display: flex; align-items: center; gap: 8px; padding: 9px 13px; border: 0; border-radius: 999px; background: transparent; color: rgba(255, 255, 255, 0.72); font: 500 14px var(--f-texto); white-space: nowrap; cursor: pointer; }
+    .selector button b { font: 400 11px var(--f-mono); opacity: 0.7; } .selector button[aria-pressed="true"] { background: #FFFFFF; color: var(--tinta); }
+    .notas { padding-block: 80px 140px; background: var(--tinta); color: #F4F3FB; row-gap: 56px; }
+    .notas h2 { grid-column: 1 / span 3; margin: 0; padding-top: 6px; color: rgba(238, 237, 254, 0.66); font: 400 12px var(--f-mono); }
+    .notas .bloque { grid-column: 4 / -1; min-width: 0; }
+    .notas .bloque > p:first-child { margin: 0 0 24px; max-width: 44ch; font: 600 clamp(22px, 2.2vw, 32px) / 1.12 var(--f-marca); letter-spacing: -0.035em; }
+    .lista { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 142, 240, 0.22); }
+    .lista li .mono { padding-top: 3px; color: var(--health); } .lista li span:nth-child(2) { color: rgba(238, 237, 254, 0.7); }
+    .ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .op { display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 1px solid rgba(155, 142, 240, 0.22); border-radius: 18px; background: rgba(238, 237, 254, 0.03); color: inherit; text-align: left; cursor: pointer; }
+    .op[aria-pressed="true"] { border-color: var(--health); background: rgba(155, 142, 240, 0.1); }
+    .op .mono { color: var(--health); } .op strong { font: 600 20px / 1.1 var(--f-marca); } .op p { margin: 0; color: rgba(238, 237, 254, 0.72); }
+    .op .rec { align-self: flex-start; padding: 3px 9px; border-radius: 999px; background: var(--health); color: var(--tinta); font: 500 11px var(--f-mono); }
+
+    /* =======================================================
+       VISTA MÓVIL
+       ======================================================= */
+    @media (max-width: 768px) {
+        .grilla, .vb .fijo, .ve .fijo { grid-template-columns: minmax(0, 1fr); } .grilla > *, .vb .fijo > *, .ve .fijo > * { grid-column: 1 !important; }
+        .etq { padding-top: 0; } .titulo { font-size: 40px; }
+        .va .lado { position: static; } .panel { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px; } .kpi { grid-column: span 1; padding: 14px; } .kpi:last-of-type { grid-column: 1 / -1; } .alcance, .notifs { grid-column: 1 / -1; }
+        .riel { flex-direction: row; flex-wrap: wrap; gap: 4px 12px; align-self: start; margin-bottom: 28px; } .riel li:not(.on) { display: none; }
+        .vb .fijo { align-content: center; }
+        .vc .bajada { margin: 0; } .medidores { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
+        .notas-pie { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 20px; }
+        .filas li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .ve .fijo { align-content: start; padding-top: 9svh; row-gap: 20px; } .ve .lado > p { display: none; } .ve .lado { gap: 12px; } .ventana { height: 40svh; order: 2; } .ve .lado { order: 1; } .cuentas { gap: 12px 18px; } .ve .pie { order: 3; }
+        .ops { grid-template-columns: minmax(0, 1fr); } .lista li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+        .selector button span { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { .boton i, .panel-cab .vivo::before, .ventana .url .vivo::before { animation: none; } .notif, .gigante p span { animation: none; } }
+</style>
+
+<div data-v="e" id="raiz">
+    <div class="grilla intro"><span class="mono">Tap In · Resultado</span><p>Cinco propuestas para la sección que sigue al muro. Todas usan los datos del caso: las cifras de la empresa y las citas siguen marcadas como pendientes de confirmar. Cambia con el selector; las notas están al final.</p></div>
+
+    <!-- A · TABLERO -->
+    <section class="v va mod">
+        <div class="grilla">
+            <div class="lado"><span class="mono" style="color: var(--texto-2)">Resultado</span><h2>Lo que quedó andando</h2><p>Un sitio en producción que vende tres productos como una familia. Medido como lo mediría el propio Tap In.</p></div>
+            <div class="panel">
+                <div class="panel-cab"><span class="marca" aria-label="Tap In"></span><span class="vivo mono">tapin.cl · en línea</span></div>
+                <div class="kpi"><small class="mono">Páginas</small><b class="num" data-cuenta="9">9</b><span>en producción, diseñadas y programadas</span></div>
+                <div class="kpi"><small class="mono">Código propio</small><b class="num" data-cuenta="40000" data-pre="≈">≈40.000</b><span>líneas, sin frameworks</span></div>
+                <div class="kpi"><small class="mono">Productos</small><b class="num" data-cuenta="3">3</b><span>en una sola familia de marca</span></div>
+                <div class="alcance"><header><span class="mono">Alcance de los productos</span><span class="ojo">Según la empresa, por confirmar</span></header>
+                    <div class="barra" style="--tono: var(--campus); --svg: url(tp-forky.svg)"><span class="iso"><i></i></span><div><b class="num" data-cuenta="27000" data-pre="+">+27.000</b><span>estudiantes en Campus</span></div><em data-lleno="100"></em></div>
+                    <div class="barra" style="--tono: var(--connect); --svg: url(tp-cerebro.svg)"><span class="iso"><i></i></span><div><b class="num" data-cuenta="15000" data-pre="+">+15.000</b><span>familias en Connect</span></div><em data-lleno="56"></em></div>
+                </div>
+                <div class="notifs" data-notifs><small class="mono">Lo que dijo el cliente</small></div>
+            </div>
+            <div class="pie"><span class="ojo">Citas suavizadas: publicar solo con aprobación</span><a class="boton" href="https://tapin.cl" target="_blank" rel="noopener"><i></i>Ver tapin.cl en vivo ↗</a></div>
+        </div>
+    </section>
+
+    <!-- B · UNA CIFRA POR PANTALLA -->
+    <section class="v vb">
+        <div class="esc" data-esc="b">
+            <div class="fijo">
+                <ol class="riel" data-riel></ol>
+                <div class="gigante"><span class="rot mono">Resultado · lo que quedó andando</span><b class="num" data-gigante>9</b><p data-gtxt><span>páginas en producción, diseñadas y programadas</span></p><span class="ojo" data-gojo>Cifra de la empresa, por confirmar</span></div>
+                <div class="cierre" data-cierre><a class="boton lleno" href="https://tapin.cl" target="_blank" rel="noopener"><i></i>Ver tapin.cl en vivo ↗</a></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- C · EL SITIO, MEDIDO -->
+    <section class="v vc mod">
+        <div class="grilla">
+            <span class="etq mono">Resultado</span>
+            <h2 class="titulo">Rápido, accesible y en línea</h2>
+            <p class="bajada">Lo que cualquiera puede comprobar en tapin.cl. Sin frameworks, el sitio pesa poco y carga rápido.</p>
+            <div class="medidores" data-medidores>
+                <div class="medidor" data-m="98"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="fondo-c" cx="50" cy="50" r="46"/><circle class="arco" cx="50" cy="50" r="46"/><text x="50" y="50" data-mtxt>0</text></svg><span>Rendimiento</span></div>
+                <div class="medidor" data-m="100"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="fondo-c" cx="50" cy="50" r="46"/><circle class="arco" cx="50" cy="50" r="46"/><text x="50" y="50" data-mtxt>0</text></svg><span>Accesibilidad</span></div>
+                <div class="medidor" data-m="100"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="fondo-c" cx="50" cy="50" r="46"/><circle class="arco" cx="50" cy="50" r="46"/><text x="50" y="50" data-mtxt>0</text></svg><span>Buenas prácticas</span></div>
+                <div class="medidor" data-m="100"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="fondo-c" cx="50" cy="50" r="46"/><circle class="arco" cx="50" cy="50" r="46"/><text x="50" y="50" data-mtxt>0</text></svg><span>SEO</span></div>
+            </div>
+            <ul class="filas">
+                <li><b>Páginas en producción</b><span class="num">9</span></li>
+                <li><b>Código propio, sin frameworks</b><span class="num">≈40.000 líneas</span></li>
+                <li><b>Productos en una sola familia</b><span class="num">3</span></li>
+                <li><b>Alcance de los productos (según la empresa)</b><span class="num">+27.000 estudiantes · +15.000 familias</span></li>
+            </ul>
+            <div class="pie"><span class="ojo">Puntajes de ejemplo: se miden con PageSpeed antes de publicar</span><a class="boton" href="https://pagespeed.web.dev/analysis?url=https%3A%2F%2Ftapin.cl" target="_blank" rel="noopener"><i></i>Mídelo tú en PageSpeed ↗</a></div>
+        </div>
+    </section>
+
+    <!-- D · EL CLIENTE PRIMERO -->
+    <section class="v vd mod">
+        <div class="grilla">
+            <span class="etq mono">Resultado</span>
+            <blockquote class="cita"><p data-luz>En una sola imagen se entiende cómo funciona. Eso es lo que teníamos que lograr.</p><footer><span class="mono">Cofundador de Tap In</span><span class="ojo">Cita suavizada: publicar solo con aprobación</span></footer></blockquote>
+            <ul class="notas-pie">
+                <li><b class="num" data-cuenta="9">9</b><span>páginas en producción</span></li>
+                <li><b class="num" data-cuenta="40000" data-pre="≈">≈40.000</b><span>líneas de código propio</span></li>
+                <li><b class="num" data-cuenta="27000" data-pre="+">+27.000</b><span>estudiantes en Campus*</span></li>
+                <li><b class="num" data-cuenta="15000" data-pre="+">+15.000</b><span>familias en Connect*</span></li>
+            </ul>
+            <div class="pie"><a class="boton" href="https://tapin.cl" target="_blank" rel="noopener"><i></i>Ver tapin.cl en vivo ↗</a></div>
+        </div>
+    </section>
+
+    <!-- E · SIGUE EN LÍNEA -->
+    <section class="v ve">
+        <div class="esc" data-esc="e">
+            <div class="fijo">
+                <div class="lado">
+                    <span class="mono" style="color: var(--texto-2)">Resultado</span>
+                    <h2>Sigue en línea</h2>
+                    <p>El capítulo empezó escribiendo tapin.cl en una pestaña vacía. Termina con el sitio en producción, vendiendo tres productos como una familia.</p>
+                    <ul class="cuentas" data-cuentas>
+                        <li><b class="num" data-cuenta="9">9</b><span>páginas diseñadas y programadas</span></li>
+                        <li><b class="num" data-cuenta="40000" data-pre="≈">≈40.000</b><span>líneas de código propio</span></li>
+                        <li><b class="num" data-cuenta="27000" data-pre="+">+27.000</b><span>estudiantes en Campus*</span></li>
+                        <li><b class="num" data-cuenta="15000" data-pre="+">+15.000</b><span>familias en Connect*</span></li>
+                    </ul>
+                    <div class="pie"><span class="ojo">* Según la empresa, por confirmar</span><a class="boton lleno" href="https://tapin.cl" target="_blank" rel="noopener"><i></i>Visitar tapin.cl ↗</a></div>
+                </div>
+                <div class="ventana">
+                    <div class="cromo"><span class="luces"><i></i><i></i><i></i></span><span class="url">tapin.cl<span class="vivo">En línea</span></span></div>
+                    <div class="pant"><img src="sitio.jpg" alt="tapin.cl en escritorio, recorrido con el scroll" data-sitio><span class="parte" data-parte>Inicio</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<nav class="selector" aria-label="Propuestas">
+    <button type="button" data-ir="a" aria-pressed="false"><b>A</b><span>Tablero</span></button>
+    <button type="button" data-ir="b" aria-pressed="false"><b>B</b><span>Una cifra</span></button>
+    <button type="button" data-ir="c" aria-pressed="false"><b>C</b><span>Medido</span></button>
+    <button type="button" data-ir="d" aria-pressed="false"><b>D</b><span>El cliente</span></button>
+    <button type="button" data-ir="e" aria-pressed="true"><b>E</b><span>En línea</span></button>
+</nav>
+
+<main class="grilla notas">
+    <h2>Audit de Resultado</h2>
+    <div class="bloque">
+        <p>Hoy cuenta esfuerzo, no resultados, y no se parece a nada de lo que vino antes.</p>
+        <ul class="lista">
+            <li><span class="mono">Mensaje</span><span>Las cuatro cifras (páginas, líneas, mockups, productos) miden lo que hice, no lo que cambió para Tap In</span><span>Separar lo que hice de lo que logró el sitio, y llevar las cifras de la empresa (por confirmar) a primer plano</span></li>
+            <li><span class="mono">Repetición</span><span>"8 mockups animados" repite la decisión 11, que acaba de verse</span><span>Sale; quedan páginas, código propio, productos y alcance</span></li>
+            <li><span class="mono">Prueba</span><span>Nada se puede comprobar en la sección; el link a tapin.cl queda al final y chico</span><span>Algo verificable (el sitio en línea, o sus puntajes medidos) y el link como acción principal</span></li>
+            <li><span class="mono">Composición</span><span>Una fila de cuatro cifras, un párrafo y una cita que rota: el bloque de estadísticas de cualquier sitio</span><span>Una pieza pensada para el caso (panel, cifra gigante, medidores, cita, ventana)</span></li>
+            <li><span class="mono">Paso</span><span>Del morado del muro a la noche hay un corte seco</span><span>Los primeros 30svh funden del morado a la noche (aplicado en las cinco)</span></li>
+            <li><span class="mono">Citas</span><span>Dos citas que rotan cada 7 segundos: la segunda casi no se lee</span><span>Una sola cita, la más fuerte, bien puesta; la otra puede ir en otro lugar del caso</span></li>
+        </ul>
+    </div>
+    <h2>Propuestas</h2>
+    <div class="bloque">
+        <p>Cinco maneras de cerrar el caso con resultados.</p>
+        <div class="ops">
+            <button type="button" class="op" data-ir="a" aria-pressed="false"><span class="mono">A · Tablero</span><strong>Un panel de Tap In</strong><p>El resultado con el lenguaje del producto: tarjetas que cuentan, el alcance de Campus y Connect en barras, y las citas que entran como notificaciones.</p></button>
+            <button type="button" class="op" data-ir="b" aria-pressed="false"><span class="mono">B · Una cifra por pantalla</span><strong>Cifras gigantes que cambian</strong><p>Una sola cifra enorme que se transforma con el scroll (9, 40.000, 3, 27.000, 15.000), con un riel que dice en cuál vas. Al final, el link al sitio.</p></button>
+            <button type="button" class="op" data-ir="c" aria-pressed="false"><span class="mono">C · El sitio, medido</span><strong>Puntajes que se verifican</strong><p>Rendimiento, accesibilidad, buenas prácticas y SEO en medidores, con un link para que el visitante lo mida en PageSpeed. Hay que medir los valores reales antes de publicar.</p></button>
+            <button type="button" class="op" data-ir="d" aria-pressed="false"><span class="mono">D · El cliente primero</span><strong>La cita como titular</strong><p>Las palabras del cofundador, enormes, se encienden palabra por palabra con el scroll; las cifras quedan como notas al pie. Depende de que aprueben la cita.</p></button>
+            <button type="button" class="op" data-ir="e" aria-pressed="true"><span class="mono">E · Sigue en línea</span><strong>Cerrar con la misma ventana</strong><p>El capítulo 03 empezó con un navegador escribiendo tapin.cl; termina con esa ventana, el sitio en línea recorrido por el scroll y las cifras contando al lado. El link es el botón principal.</p><span class="rec">Recomendada</span></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    /* =======================================================
+       INICIO JS · RESULTADO TAP IN
+       ======================================================= */
+    (function () {
+        const raiz = document.getElementById('raiz');
+        const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
+        const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+        const formato = n => Math.round(n).toLocaleString('es-CL');
+
+        /* --- 1. CIFRAS QUE CUENTAN AL APARECER --- */
+        const contar = el => {
+            const fin = +el.dataset.cuenta, pre = el.dataset.pre || '';
+            if (quieto) { el.textContent = pre + formato(fin); return; }
+            const t0 = performance.now(), dur = fin > 100 ? 1600 : 900;
+            const paso = ahora => { const t = fijar((ahora - t0) / dur); el.textContent = pre + formato(fin * (1 - Math.pow(1 - t, 4))); if (t < 1) requestAnimationFrame(paso); };
+            requestAnimationFrame(paso);
+        };
+        const io = new IntersectionObserver(es => es.forEach(e => {
+            if (!e.isIntersecting) return;
+            const el = e.target;
+            if (el.matches('[data-cuenta]')) contar(el);
+            if (el.matches('[data-lleno]')) el.style.setProperty('--lleno', el.dataset.lleno);
+            if (el.matches('[data-m]')) { const m = +el.dataset.m, txt = el.querySelector('[data-mtxt]'); el.style.setProperty('--m', m); const t0 = performance.now(); const paso = ahora => { const t = fijar((ahora - t0) / 1600); txt.textContent = Math.round(m * (1 - Math.pow(1 - t, 4))); if (t < 1) requestAnimationFrame(paso); }; requestAnimationFrame(paso); }
+            io.unobserve(el);
+        }), { threshold: 0.4 });
+        const observar = () => document.querySelectorAll(`.v${raiz.dataset.v} [data-cuenta], .v${raiz.dataset.v} [data-lleno], .v${raiz.dataset.v} [data-m]`).forEach(el => io.observe(el));
+
+        /* --- 2. A: CITAS COMO NOTIFICACIONES --- */
+        const CITAS = [['En una sola imagen se entiende cómo funciona. Eso es lo que teníamos que lograr.', 'Cofundador de Tap In'], ['Está súper profesional, parece una empresa real. Es lo más clave para generar confianza.', 'Cofundador de Tap In']];
+        const notifs = document.querySelector('[data-notifs]'); let ci = 0;
+        const notificar = () => { const n = document.createElement('div'); n.className = 'notif'; n.innerHTML = `<p>${CITAS[ci][0]}</p><cite class="mono">${CITAS[ci][1]}</cite>`; notifs.insertBefore(n, notifs.children[1] || null); ci = (ci + 1) % CITAS.length; [...notifs.querySelectorAll('.notif')].slice(2).forEach(x => x.remove()); };
+        notificar(); if (!quieto) setInterval(() => { if (raiz.dataset.v === 'a') notificar(); }, 6000);
+
+        /* --- 3. B: UNA CIFRA POR PANTALLA --- */
+        const CIFRAS = [[9, '', 'páginas en producción, diseñadas y programadas', 0], [40000, '≈', 'líneas de código propio, sin frameworks', 0], [3, '', 'productos en una sola familia de marca', 0], [27000, '+', 'estudiantes en Campus, en dos campus de la UC', 1], [15000, '+', 'familias en Connect, en Chile y Perú', 1]];
+        const ETQ = ['Páginas', 'Código propio', 'Productos', 'Campus', 'Connect'];
+        const riel = document.querySelector('[data-riel]'), gigante = document.querySelector('[data-gigante]'), gtxt = document.querySelector('[data-gtxt]'), gojo = document.querySelector('[data-gojo]'), cierre = document.querySelector('[data-cierre]');
+        riel.innerHTML = ETQ.map((t, i) => `<li data-i="${i}"><span class="mono">${t}</span></li>`).join('');
+        let bN = -1;
+        const escenaB = p => {
+            const u = fijar(p / 0.88) * CIFRAS.length, n = Math.min(Math.floor(u), CIFRAS.length - 1), f = fijar(u - n), [fin, pre, txt, ojo] = CIFRAS[n];
+            /* Cada cifra cuenta desde cero al llegar; bajar de 40.000 a 3 se leía como un error */
+            const t = quieto ? 1 : 1 - Math.pow(1 - fijar(f / 0.4), 3), v = fin * t;
+            gigante.innerHTML = (pre ? `<small>${pre}</small>` : '') + formato(v);
+            if (n !== bN) { bN = n; gtxt.innerHTML = `<span>${txt}</span>`; gojo.classList.toggle('on', !!ojo); riel.querySelectorAll('li').forEach(li => li.classList.toggle('on', +li.dataset.i === n)); }
+            cierre.classList.toggle('on', p > 0.86);
+        };
+
+        /* --- 4. D: LA CITA SE ENCIENDE PALABRA POR PALABRA --- */
+        const luz = document.querySelector('[data-luz]');
+        luz.innerHTML = luz.textContent.split(' ').map(w => `<span class="w${/imagen|entiende|lograr/.test(w) ? ' clave' : ''}">${w}</span>`).join(' ');
+        const palabras = [...luz.querySelectorAll('.w')];
+        const escenaD = () => { const r = luz.getBoundingClientRect(), l = quieto ? 1 : fijar((innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.3)), n = Math.round(l * palabras.length); palabras.forEach((w, i) => w.classList.toggle('on', i < n)); };
+
+        /* --- 5. E: LA VENTANA RECORRE EL SITIO --- */
+        /* Captura de escritorio de 1440 × 5140; cada parte con su altura, para nombrar dónde va */
+        const PARTES = [['Inicio', 0], ['Los colegios', 880], ['El día a día', 1150], ['Los módulos', 1830], ['Todo conectado', 2830], ['Las dudas', 3330], ['La demo', 4330]];
+        const sitio = document.querySelector('[data-sitio]'), parte = document.querySelector('[data-parte]');
+        const escenaE = p => {
+            const pant = sitio.parentElement, e = pant.clientWidth / 1440, vis = pant.clientHeight / e, y = curva(fijar((p - 0.06) / 0.86)) * (5140 - vis);
+            sitio.style.transform = `translate3d(0, ${(-y * e).toFixed(1)}px, 0)`;
+            parte.textContent = PARTES.reduce((a, s) => (y + vis * 0.35 >= s[1] ? s : a), PARTES[0])[0];
+        };
+
+        /* --- 6. MOTOR Y SELECTOR --- */
+        const tick = () => {
+            const v = raiz.dataset.v;
+            document.querySelectorAll(`.v${v} [data-esc]`).forEach(el => { const r = el.getBoundingClientRect(), p = fijar(-r.top / (el.offsetHeight - innerHeight)); if (el.dataset.esc === 'b') escenaB(p); else escenaE(p); });
+            if (v === 'd') escenaD();
+        };
+        let pedido = false;
+        addEventListener('scroll', () => { if (!pedido) { pedido = true; requestAnimationFrame(() => { pedido = false; tick(); }); } }, { passive: true });
+        addEventListener('resize', tick); sitio.addEventListener('load', tick);
+        const botones = [...document.querySelectorAll('[data-ir]')];
+        const elegir = v => { raiz.dataset.v = v; botones.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.ir === v))); try { localStorage.setItem('resultado-tapin', v); } catch (e) { /* sin almacenamiento */ } bN = -1; observar(); requestAnimationFrame(tick); };
+        botones.forEach(x => x.addEventListener('click', () => { elegir(x.dataset.ir); if (x.classList.contains('op')) scrollTo({ top: document.querySelector('.v' + x.dataset.ir).offsetTop, behavior: 'smooth' }); }));
+        let guardado = null; try { guardado = localStorage.getItem('resultado-tapin'); } catch (e) { /* sin almacenamiento */ }
+        const h = location.hash.slice(1);
+        elegir('abcde'.includes(h) && h.length === 1 ? h : guardado && 'abcde'.includes(guardado) ? guardado : 'e');
+    })();
+    /* =======================================================
+       FIN JS · RESULTADO TAP IN
+       ======================================================= */
+</script>
