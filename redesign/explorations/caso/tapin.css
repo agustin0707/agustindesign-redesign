@@ -955,24 +955,36 @@
    del rango. Sobre los tonos claros el texto pasa a tinta, como en las tiras de la decisión 03 */
 @property --tono { syntax: '<color>'; inherits: true; initial-value: #4A3CAE; }
 .tp-man-dial { --tono: var(--tp-campus); --sobre: #FFFFFF; --suave: color-mix(in srgb, var(--tono) 16%, #F2F1F7); --borde: color-mix(in srgb, var(--tono) 34%, transparent); display: grid; gap: 14px; width: 100%; max-width: 440px; }
-.tp-man-rango { --xv: 0.3333; position: relative; height: 60px; padding-top: 12px; }
+.tp-man-rango { --xv: 0.3333; position: relative; height: 92px; padding-top: 44px; }
 .tp-man-pista { position: relative; height: 16px; border-radius: 99px; background: linear-gradient(90deg, #2D2560, #4A3CAE 33.33%, #6B5CE7 66.67%, #9B8EF0); box-shadow: inset 0 0 0 1px rgba(28, 26, 46, 0.12), inset 0 2px 4px rgba(16, 13, 32, 0.25); cursor: pointer; }
-.tp-man-paradas { position: absolute; left: 0; right: 0; top: 44px; }
+.tp-man-paradas { position: absolute; left: 0; right: 0; top: 76px; }
 .tp-man-paradas button { position: absolute; left: calc(var(--px) * 100%); translate: -50% 0; padding: 2px 4px; border: 0; background: none; color: #8A889E; font: 400 10px var(--mono); cursor: pointer; transition: color 200ms linear; }
 .tp-man-paradas button:first-child { translate: -4px 0; } .tp-man-paradas button:last-child { translate: calc(-100% + 4px) 0; }
 .tp-man-paradas button::before { content: ''; position: absolute; left: 50%; top: -23px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: rgba(255, 255, 255, 0.8); }
 .tp-man-paradas button:first-child::before { left: 10px; } .tp-man-paradas button:last-child::before { left: calc(100% - 10px); }
 .tp-man-paradas button.on { color: var(--tp-tinta); }
 @media (hover: hover) { .tp-man-paradas button:hover { color: var(--tp-tinta); } }
-.tp-man-rango .tp-man-perilla { position: absolute; top: 5px; left: calc(var(--xv) * 100%); width: 30px; height: 30px; margin-left: -15px; border-radius: 50%; background: var(--tono); box-shadow: 0 0 0 4px #FFFFFF, 0 8px 18px -6px rgba(28, 26, 46, 0.55); cursor: grab; touch-action: none; transition: left 600ms var(--tp-curva), scale 250ms var(--tp-curva); }
+.tp-man-rango .tp-man-perilla { position: absolute; top: 37px; left: calc(var(--xv) * 100%); width: 30px; height: 30px; margin-left: -15px; border-radius: 50%; background: var(--tono); box-shadow: 0 0 0 4px #FFFFFF, 0 8px 18px -6px rgba(28, 26, 46, 0.55); cursor: grab; touch-action: none; transition: left 600ms var(--tp-curva), scale 250ms var(--tp-curva); }
 .tp-man-rango .tp-man-perilla.arrastra { cursor: grabbing; scale: 1.12; transition: scale 250ms var(--tp-curva); }
 .tp-man-rango .tp-man-perilla.sigue { transition: scale 250ms var(--tp-curva); }
 .tp-man-perilla:focus-visible { outline: 2px solid var(--tp-health); outline-offset: 6px; }
 @media (hover: hover) { .tp-man-perilla:hover { scale: 1.08; } }
 /* Al pasar por la pista, una ficha muestra el tono que hay debajo del cursor */
-.tp-man-fantasma { position: absolute; top: 38px; left: calc(var(--gx, 0) * 100%); z-index: 4; display: flex; align-items: center; gap: 5px; padding: 3px 7px 3px 4px; border-radius: 6px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.08), 0 6px 14px -6px rgba(28, 26, 46, 0.4); color: var(--tp-tinta); font-size: 10px; translate: -50% 0; opacity: 0; transition: opacity 150ms linear; pointer-events: none; }
+.tp-man-fantasma { position: absolute; top: 70px; left: calc(var(--gx, 0) * 100%); z-index: 4; display: flex; align-items: center; gap: 5px; padding: 3px 7px 3px 4px; border-radius: 6px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.08), 0 6px 14px -6px rgba(28, 26, 46, 0.4); color: var(--tp-tinta); font-size: 10px; translate: -50% 0; opacity: 0; transition: opacity 150ms linear; pointer-events: none; }
 .tp-man-fantasma::before { content: ''; width: 10px; height: 10px; border-radius: 3px; background: var(--gc, #4A3CAE); }
 .tp-man-fantasma.ver { opacity: 1; }
+/* Etiqueta del producto: una pastilla clara que viaja sobre la perilla con el isotipo en el tono actual; al llegar a un
+   producto rebota, y entre productos muestra el hex */
+.tp-man-globo { position: absolute; top: 0; left: calc(var(--xv) * 100%); display: flex; align-items: center; gap: 7px; height: 28px; padding: 0 11px 0 8px; border-radius: 9px; background: #FFFFFF; color: var(--tp-tinta); box-shadow: 0 0 0 1px rgba(45, 37, 96, 0.1), 0 8px 18px -8px rgba(45, 37, 96, 0.45); font: 500 12px var(--tp-f); white-space: nowrap; translate: calc(var(--xv) * -100%) 0; transition: left 600ms var(--tp-curva), translate 600ms var(--tp-curva); }
+.tp-man-globo::after { content: ''; position: absolute; left: clamp(12px, calc(var(--xv) * 100%), calc(100% - 12px)); bottom: -4px; width: 8px; height: 8px; margin-left: -4px; background: #FFFFFF; box-shadow: 1px 1px 0 rgba(45, 37, 96, 0.1); rotate: 45deg; border-radius: 1px; }
+.tp-man-rango:has(.tp-man-perilla.sigue, .tp-man-perilla.arrastra) .tp-man-globo { transition: none; }
+.tp-man-giso { position: relative; flex: none; width: 15px; height: 15px; color: var(--tono); }
+.tp-man-giso > * { position: absolute; inset: 0; margin: auto; width: 100%; aspect-ratio: 1; opacity: 0; transition: opacity 150ms linear; } .tp-man-giso > .on { opacity: 1; }
+.tp-man-giso .tp-marca[data-i="1"] { aspect-ratio: 142 / 158; } .tp-man-giso .tp-marca[data-i="2"] { aspect-ratio: 622.7 / 597.42; }
+.tp-man-orb { width: 80%; height: 80%; border: 1.5px solid currentColor; border-radius: 50%; }
+.tp-man-globo .tp-man-ghex { color: #6E6B84; font: 400 11px var(--mono); } .tp-man-globo .tp-man-ghex::before { content: ''; display: inline-block; width: 9px; height: 9px; margin-right: 6px; border-radius: 3px; background: var(--tono); vertical-align: -1px; }
+.tp-man-globo.salto { animation: tpManSalto 450ms var(--tp-curva); }
+@keyframes tpManSalto { 0% { scale: 0.86; } 60% { scale: 1.08; } 100% { scale: 1; } }
 .tp-man-hoja { border-radius: 16px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(28, 26, 46, 0.06), 0 18px 34px -18px rgba(28, 26, 46, 0.4); }
 .tp-man-fila { display: grid; grid-template-columns: 58px 1fr; gap: 10px; align-items: center; min-height: 52px; padding: 8px 14px; border-top: 1px solid rgba(45, 37, 96, 0.06); }
 .tp-man-fila:first-child { border-top: 0; border-radius: 16px 16px 0 0; } .tp-man-fila:last-child { border-radius: 0 0 16px 16px; }
@@ -1019,22 +1031,37 @@
 .tp-sitio-lienzo { position: absolute; top: 0; left: 0; width: 100%; will-change: transform; }
 .tp-sitio-dd { position: absolute; left: calc(106px * var(--e, 1)); top: calc(80px * var(--e, 1)); width: calc(149px * var(--e, 1)); border-radius: calc(12px * var(--e, 1)); box-shadow: 0 12px 30px -8px rgba(17, 12, 60, 0.45); opacity: 0; transform: translateY(-8px); transition: opacity 400ms var(--ease), transform 500ms var(--tp-curva); }
 .tp-sitio[data-parada="0"] .tp-sitio-dd { opacity: 1; transform: none; transition-delay: 250ms; }
-.tp-sitio-caja { position: absolute; top: 0; left: 0; width: var(--w); height: var(--h); transform: translate(var(--x), var(--y)); border: 1.5px solid var(--tp-connect); border-radius: 12px; box-shadow: 0 0 0 200vmax rgba(28, 26, 46, 0.34); opacity: 0; transition: opacity 350ms var(--ease); pointer-events: none; }
+/* Marco: enmarca exacto lo que nombra la decisión, con el radio del elemento; viaja de una parada a la siguiente y lleva
+   el número de la nota. Sin velo: el sitio se ve en su color */
+.tp-sitio-caja { position: absolute; top: 0; left: 0; width: var(--w); height: var(--h); transform: translate(var(--x), var(--y)); border: 2px solid var(--tp-connect); border-radius: var(--r, 12px); box-shadow: 0 0 0 5px rgba(107, 92, 231, 0.14); opacity: 0; transition: opacity 350ms var(--ease); pointer-events: none; }
 .tp-sitio-caja.on { opacity: 1; }
-.tp-sitio-caja span { position: absolute; bottom: 100%; left: -1.5px; margin-bottom: 8px; padding: 5px 11px; border-radius: 999px; background: var(--tp-connect); color: #FFFFFF; white-space: nowrap; font-size: 11px; }
-.tp-sitio-caja.abajo span { bottom: auto; top: 100%; margin: 8px 0 0; }
-.tp-sitio-indice { grid-column: 10 / -1; list-style: none; align-self: center; }
-.tp-sitio-indice li { padding: 16px 0; border-top: 1px solid var(--linea); }
-.tp-sitio-indice .tp-sitio-cab { display: flex; justify-content: space-between; padding: 0 0 14px; border: 0; color: var(--texto-2); }
-.tp-sitio-cab span:last-child { color: var(--acento); }
-.tp-sitio-indice li:last-child { border-bottom: 1px solid var(--linea); }
-.tp-sitio-indice button { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; text-align: left; }
-.tp-sitio-indice b { font: 600 clamp(18px, 1.5vw, 23px) / 1.1 var(--tp-f); letter-spacing: -0.03em; color: var(--texto-3); transition: color 300ms; }
-.tp-sitio-indice p { max-height: 0; overflow: hidden; opacity: 0; font-size: 15px; line-height: 1.5; color: var(--texto-2); transition: max-height 600ms var(--ease), opacity 400ms, margin 600ms var(--ease); }
-.tp-sitio-indice li.actual b { color: var(--texto); }
-.tp-sitio-indice li.actual p { max-height: 140px; opacity: 1; margin-top: 10px; }
-.tp-sitio-indice li:not(.actual):not(.ya) .tp-dec-n::before { background: var(--texto-3); }
-@media (hover: hover) { .tp-sitio-indice li:not(.actual) button:hover b { color: var(--texto-2); } }
+.tp-sitio-caja span { position: absolute; left: -14px; top: -14px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--tp-connect); color: #FFFFFF; font-size: 11px; box-shadow: 0 0 0 3px #FFFFFF, 0 6px 14px -4px rgba(45, 37, 96, 0.5); }
+.tp-sitio-caja.abajo span { top: 50%; translate: 0 -50%; }
+/* Los marcadores de las paradas ya vistas quedan sobre el sitio, como en una revisión de diseño */
+.tp-sitio-pin { position: absolute; z-index: 1; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--tp-campus); color: #FFFFFF; font-size: 10px; box-shadow: 0 0 0 2.5px #FFFFFF, 0 4px 10px -3px rgba(45, 37, 96, 0.5); translate: -50% -50%; scale: 0; transition: scale 450ms var(--tp-curva); }
+.tp-sitio-pin.ya { scale: 1; }
+/* Notas al margen: la actual en una tarjeta abierta, las demás en filas con su número (lleno si ya se vio) */
+.tp-sitio-indice { grid-column: 9 / -1; list-style: none; align-self: center; display: flex; flex-direction: column; gap: 4px; }
+.tp-sitio-indice > li { padding: 12px 16px; border-radius: 16px; transition: background-color 350ms ease, box-shadow 350ms ease; }
+.tp-sitio-indice .tp-sitio-cab { display: flex; flex-wrap: wrap; justify-content: space-between; row-gap: 12px; padding: 0 16px 14px; color: var(--texto-2); }
+.tp-sn-rot { display: inline-flex; align-items: center; gap: 8px; } .tp-sn-rot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--tp-campus); }
+.tp-sitio-cab span:nth-child(2) { color: var(--tp-campus); }
+.tp-sn-avance { flex: 0 0 100%; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.tp-sn-avance i { height: 3px; border-radius: 3px; background: rgba(45, 37, 96, 0.1); transition: background-color 300ms ease; } .tp-sn-avance i.ya { background: var(--tp-campus); } .tp-sn-avance i.on { background: var(--tp-connect); }
+.tp-sitio-indice li.actual { background: #FFFFFF; box-shadow: 0 0 0 1px rgba(45, 37, 96, 0.06), 0 24px 44px -26px rgba(45, 37, 96, 0.5); }
+.tp-sitio-indice button { display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: center; width: 100%; text-align: left; }
+.tp-sn-num { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px rgba(45, 37, 96, 0.2); color: var(--texto-3); font-size: 11px; transition: background-color 300ms ease, color 300ms ease, box-shadow 300ms ease; }
+.tp-sitio-indice li.ya .tp-sn-num { background: var(--tp-campus); color: #FFFFFF; box-shadow: none; }
+.tp-sitio-indice li.actual .tp-sn-num { background: var(--tp-connect); color: #FFFFFF; box-shadow: 0 0 0 4px rgba(107, 92, 231, 0.18); }
+.tp-sitio-indice b { font: 600 clamp(16px, 1.3vw, 20px) / 1.15 var(--tp-f); letter-spacing: -0.025em; color: var(--texto-3); transition: color 300ms; }
+.tp-sitio-indice li.ya b { color: var(--texto-2); } .tp-sitio-indice li.actual b { color: var(--texto); }
+.tp-sn-cuerpo { display: grid; grid-template-rows: 0fr; padding-left: 40px; transition: grid-template-rows 500ms var(--ease); }
+.tp-sn-cuerpo > div { overflow: hidden; min-height: 0; } .tp-sn-cuerpo span { display: flex; }
+.tp-sitio-indice li.actual .tp-sn-cuerpo { grid-template-rows: 1fr; }
+.tp-sitio-indice p { margin: 0; padding-top: 10px; font-size: 15px; line-height: 1.5; color: var(--texto-2); }
+.tp-sn-marca { display: flex; align-items: center; gap: 8px; padding-top: 12px; color: var(--tp-connect); font-size: 11px; }
+.tp-sn-marca::before { content: ''; flex: none; width: 14px; height: 10px; border: 1.5px solid currentColor; border-radius: 3px; }
+@media (hover: hover) { .tp-sitio-indice li:not(.actual) button:hover b { color: var(--texto); } .tp-sitio-indice li:not(.actual) button:hover .tp-sn-num { box-shadow: inset 0 0 0 1.5px var(--tp-campus); } }
 
 /* =======================================================
    DECISIÓN 11 · MÓDULOS EN VIVO
@@ -1206,8 +1233,9 @@
     .tp-sitio-nav { height: 56svh; width: 100%; flex: none; }
     .tp-sitio.volando .tp-sitio-indice { width: 100%; margin-top: calc(var(--bh, 56svh) + 18px); }
     .tp-sn-dir { height: 44px; font-size: 18px; padding: 0 16px; } .tp-sn-pill { height: calc((1 - var(--lz)) * 56px); padding: 12px 12px 0; } .tp-sitio-nav .tp-sitio-pantalla { margin: calc((1 - var(--lz)) * 12px); }
-    .tp-sitio-indice li { display: none; border: 0 !important; padding: 0; }
-    .tp-sitio-indice li.actual { display: block; }
+    .tp-sitio-indice > li { display: none; }
+    .tp-sitio-indice > li.actual { display: block; padding: 12px 14px; }
+    .tp-sn-cuerpo { padding-left: 0; } .tp-sitio-indice p { font-size: 14px; }
     .tp-vivo .tp-dec { position: static; }
     .tp-vivo-grilla { grid-template-columns: 1fr; }
     .tp-movil-tels { padding: 32px 0; }

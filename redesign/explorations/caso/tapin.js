@@ -211,7 +211,7 @@
             let elegido = false, pasoAntes = -1;
             /* --- Dial del tono: el color se interpola entre los cuatro tonos del manual --- */
             const dial = el.querySelector('[data-man-dial]'), rango = el.querySelector('[data-man-rango]'), pista = el.querySelector('[data-man-pista]');
-            const perilla = el.querySelector('[data-man-perilla]'), fantasma = el.querySelector('[data-man-fantasma]'), hoja = el.querySelector('[data-man-hoja]');
+            const perilla = el.querySelector('[data-man-perilla]'), fantasma = el.querySelector('[data-man-fantasma]'), globo = el.querySelector('[data-man-globo]');
             const paradas = ['#2D2560', '#4A3CAE', '#6B5CE7', '#9B8EF0'].map(h => [1, 3, 5].map(n => parseInt(h.slice(n, n + 2), 16)));
             const marcas = ['empresa', 'campus', 'connect', 'health'], botonesP = [...el.querySelectorAll('.tp-man-paradas button')];
             const colorEn = x => { const v = fijar(x) * 3, n = Math.min(Math.floor(v), 2), f = v - n; return '#' + paradas[n].map((c, j) => Math.round(c + (paradas[n + 1][j] - c) * f).toString(16).padStart(2, '0')).join('').toUpperCase(); };
@@ -224,6 +224,12 @@
                 el.querySelector('[data-man-cerca]').textContent = justo ? `/* ${marcas[cerca]} */` : '/* entre tonos */';
                 botonesP.forEach((b, n) => b.classList.toggle('on', justo && n === cerca));
                 perilla.setAttribute('aria-valuenow', Math.round(xc * 100)); perilla.setAttribute('aria-valuetext', justo ? marcas[cerca] : hex);
+                /* La etiqueta dice el producto al llegar (con un rebote) y el hex entre productos */
+                const nombresP = ['Empresa', 'Campus', 'Connect', 'Health'];
+                globo.querySelector('[data-man-gtxt]').innerHTML = justo ? nombresP[cerca] : `<span class="tp-man-ghex">${hex}</span>`;
+                globo.querySelectorAll('.tp-man-giso > *').forEach(g => g.classList.toggle('on', justo && +g.dataset.i === cerca));
+                globo.querySelector('.tp-man-giso').style.display = justo && cerca > 0 ? '' : 'none';
+                if (justo && cerca !== paradaAntes) { globo.classList.remove('salto'); void globo.offsetWidth; globo.classList.add('salto'); }
                 paradaAntes = justo ? cerca : -1;
             };
             const xDesde = e => { const R = pista.getBoundingClientRect(); return (e.clientX - R.left) / R.width; };
@@ -307,7 +313,8 @@
             const pant = el.querySelector('.tp-sitio-pantalla'), lienzo = el.querySelector('.tp-sitio-lienzo');
             const caja = el.querySelector('.tp-sitio-caja'), cajaTxt = caja.querySelector('span');
             const items = [...el.querySelectorAll('[data-parada]')];
-            const paradas = items.map(li => { const [x, y, w, h] = li.dataset.caja.split(',').map(Number); return { li, x, y, w, h, nota: li.dataset.nota }; });
+            const paradas = items.map(li => { const [x, y, w, h, rad] = li.dataset.caja.split(',').map(Number); return { li, x, y, w, h, rad, nota: li.dataset.nota }; });
+            const pins = [...el.querySelectorAll('[data-pin]')], segs = [...el.querySelectorAll('.tp-sn-avance i')];
             const contador = el.querySelector('[data-sitio-n]');
             const U = paradas.length + FINAL;
             let e = 1, vis = 0, actual = -2;
@@ -365,7 +372,7 @@
                 const M = vuelo();
                 if (pista < M && ventana3) {
                     volar(fijar(pista / M)); volaba = true;
-                    if (actual !== -2) { actual = -2; el.dataset.parada = -1; caja.classList.remove('on'); items.forEach(li => li.classList.remove('actual', 'ya')); lienzo.style.transform = 'translate3d(0, 0, 0)'; }
+                    if (actual !== -2) { actual = -2; el.dataset.parada = -1; caja.classList.remove('on'); items.forEach(li => li.classList.remove('actual', 'ya')); pins.forEach(x => x.classList.remove('ya')); segs.forEach(x => x.classList.remove('ya', 'on')); lienzo.style.transform = 'translate3d(0, 0, 0)'; }
                     return;
                 }
                 if (volaba) { aterrizar(); medir(); volaba = false; }
@@ -376,19 +383,24 @@
                 else if (i === 0 || t >= VIAJE) { y = paradas[i].top; act = i; }
                 else y = paradas[i - 1].top + (paradas[i].top - paradas[i - 1].top) * curva(t / VIAJE);
                 lienzo.style.transform = `translate3d(0, ${(-y * e).toFixed(1)}px, 0)`;
-                if (act !== actual) {
-                    actual = act;
-                    el.dataset.parada = act;
-                    items.forEach((li, k) => { li.classList.toggle('actual', k === act); li.classList.toggle('ya', k < (act < 0 ? i : act)); });
-                    caja.classList.toggle('on', act >= 0);
-                    if (act >= 0) { cajaTxt.textContent = paradas[act].nota; contador.textContent = `${String(act + 6).padStart(2, '0')} / 10`; }
+                el.dataset.parada = act;
+                /* El marco nunca desaparece: en el viaje pasa de un elemento al siguiente; la nota cambia a mitad de camino */
+                const ult = paradas.length - 1, m = i >= 1 && i <= ult && t < VIAJE ? curva(t / VIAJE) : 1;
+                const n = act >= 0 ? act : i > ult ? ult : (m > 0.5 ? i : i - 1);
+                const A = act >= 0 ? paradas[act] : i > ult ? paradas[ult] : paradas[i - 1], B = act >= 0 || i > ult ? A : paradas[i];
+                const d = ['x', 'y', 'w', 'h', 'rad'].reduce((o, k) => (o[k] = A[k] + (B[k] - A[k]) * (act >= 0 || i > ult ? 1 : m), o), {});
+                if (n !== actual) {
+                    actual = n;
+                    items.forEach((li, k) => { li.classList.toggle('actual', k === n); li.classList.toggle('ya', k < n); });
+                    pins.forEach((pn, k) => pn.classList.toggle('ya', k < n));
+                    segs.forEach((sg, k) => { sg.classList.toggle('ya', k < n); sg.classList.toggle('on', k === n); });
+                    cajaTxt.textContent = String(n + 6).padStart(2, '0'); contador.textContent = `${String(n + 6).padStart(2, '0')} / 10`;
                 }
-                if (act >= 0) {
-                    const d = paradas[act];
-                    caja.style.setProperty('--x', (d.x * e).toFixed(1) + 'px'); caja.style.setProperty('--y', ((d.y - y) * e).toFixed(1) + 'px');
-                    caja.style.setProperty('--w', (d.w * e).toFixed(1) + 'px'); caja.style.setProperty('--h', (d.h * e).toFixed(1) + 'px');
-                    caja.classList.toggle('abajo', (d.y - y) * e < 30);
-                }
+                caja.classList.add('on');
+                caja.style.setProperty('--x', (d.x * e).toFixed(1) + 'px'); caja.style.setProperty('--y', ((d.y - y) * e).toFixed(1) + 'px');
+                caja.style.setProperty('--w', (d.w * e).toFixed(1) + 'px'); caja.style.setProperty('--h', (d.h * e).toFixed(1) + 'px');
+                caja.style.setProperty('--r', (d.rad * e).toFixed(1) + 'px');
+                caja.classList.toggle('abajo', (d.y - y) * e < 18);
             };
         }
     };
