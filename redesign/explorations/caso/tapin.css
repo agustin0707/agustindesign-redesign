@@ -318,17 +318,36 @@
 .tp-velocidad i:nth-child(4) { top: 82%; width: 46%; animation-delay: -420ms; }
 @keyframes tpRafaga { from { transform: translateX(-12%) scaleX(0.6); opacity: 0.35; } to { transform: translateX(0) scaleX(1); opacity: 1; } }
 
-/* --- CAPÍTULO 03: LA DIRECCIÓN SE ESCRIBE --- */
-.tp-cap-3 { background: radial-gradient(80% 60% at 50% 0%, rgba(107, 92, 231, 0.32), transparent 70%), var(--tp-noche); }
-.tp-url { position: absolute; left: 50%; top: 34svh; z-index: 2; display: flex; align-items: center; gap: 14px; min-width: min(560px, 80vw); padding: 18px 30px; border-radius: 999px; border: 1px solid var(--linea); background: rgba(238, 237, 254, 0.05); font: 500 clamp(28px, 3.6vw, 60px) / 1 var(--tp-f); letter-spacing: -0.03em; transform: translateX(-50%); overflow: hidden; transition: border-color 400ms; }
+/* --- CAPÍTULO 03: LA VENTANA DEL NAVEGADOR --- */
+/* La portada se monta sobre el final del manual (margen negativo y fondo transparente): mientras los paneles del manual
+   suben y se desenfocan (--sale, que fija el JS en .tp-man), entra una ventana de navegador a la derecha. La dirección
+   se escribe con el scroll, la pestaña toma el nombre del sitio y la página se dibuja adentro */
+.tp-cap-3 { position: relative; z-index: 2; height: 420svh; margin-top: -200svh; background: transparent; }
+.tp-c3-tapa { position: absolute; inset: 0; background: radial-gradient(80% 60% at 50% 0%, rgba(107, 92, 231, 0.32), transparent 70%), var(--tp-noche); opacity: var(--e, 0); }
+.tp-cap-3 .tp-cap-num { right: auto; left: calc(var(--margen) - 0.04em); top: 7svh; font-size: clamp(140px, 22vw, 380px); opacity: var(--e, 0); transform: none; }
+.tp-cap-3 .tp-cap-txt { right: auto; width: calc((100vw - 2 * var(--margen) - 11 * var(--medianil)) / 12 * 5 + 4 * var(--medianil)); display: flex; flex-direction: column; gap: 14px; opacity: var(--a, 0); translate: 0 calc((1 - var(--a, 0)) * 40px); }
+.tp-cap-3 .tp-cap-txt > * { opacity: 1; translate: 0 0; transition: none; }
+.tp-cap-3 .tp-cap-txt h2 { font-size: clamp(56px, 9.4vw, 160px); }
+.tp-cap-3 .tp-cap-n { padding: 0; }
+.tp-c3-ventana { position: absolute; z-index: 2; right: var(--margen); top: 11svh; width: calc((100vw - 2 * var(--margen) - 11 * var(--medianil)) / 12 * 7 + 6 * var(--medianil)); height: 54svh; display: flex; flex-direction: column; border-radius: 20px; background: #17142B; box-shadow: inset 0 0 0 1px var(--linea), 0 70px 140px -50px rgba(0, 0, 0, 0.9); overflow: hidden; opacity: var(--e, 0); translate: 0 calc((1 - var(--e, 0)) * 30%); }
+.tp-c3-chrome { flex: none; display: flex; align-items: center; gap: 14px; height: 44px; padding: 0 16px; background: #120F22; border-bottom: 1px solid var(--linea); }
+.tp-c3-luces { display: flex; gap: 7px; } .tp-c3-luces i { width: 11px; height: 11px; border-radius: 50%; background: #FF5F57; } .tp-c3-luces i:nth-child(2) { background: #FEBC2E; } .tp-c3-luces i:nth-child(3) { background: #28C840; }
+.tp-c3-tab { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 14px; border-radius: 9px; background: rgba(238, 237, 254, 0.06); color: var(--texto-2); font: 400 12px var(--sans); white-space: nowrap; }
+.tp-c3-fav { flex: none; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; background: var(--tp-connect); opacity: var(--f, 0); scale: calc(0.6 + var(--f, 0) * 0.4); }
+.tp-c3-fav .tp-marca { width: 11px; aspect-ratio: 622.7 / 597.42; }
+.tp-url { position: relative; flex: none; display: flex; align-items: center; gap: 12px; margin: 16px 16px 0; padding: 0 24px; height: clamp(52px, 5vw, 72px); border-radius: 999px; background: rgba(238, 237, 254, 0.06); box-shadow: inset 0 0 0 1px var(--linea); font: 500 clamp(24px, 2.6vw, 42px) / 1 var(--tp-f); letter-spacing: -0.03em; overflow: hidden; transition: box-shadow 400ms; }
 .tp-url-candado { width: 0.42em; height: 0.36em; margin-top: 0.2em; border-radius: 3px; background: var(--texto-3); position: relative; flex: none; }
 .tp-url-candado::before { content: ''; position: absolute; left: 50%; bottom: 80%; width: 60%; height: 70%; border: 2px solid var(--texto-3); border-bottom: 0; border-radius: 99px 99px 0 0; transform: translateX(-50%); }
 .tp-url-txt span { display: none; }
 .tp-url-txt span.on { display: inline; }
 .tp-url-cursor { width: 2px; height: 1em; background: var(--acento); animation: tpCursor 1s steps(1) infinite; }
 @keyframes tpCursor { 50% { opacity: 0; } }
-.tp-url-carga { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--acento); transform-origin: 0 50%; transform: scaleX(clamp(0, (var(--p, 0) - 0.62) / 0.3, 1)); }
-.tp-cap-3.escrito .tp-url { border-color: var(--acento); }
+.tp-url-carga { position: absolute; left: 0; bottom: 0; height: 2px; width: calc(var(--c, 0) * 100%); background: var(--acento); box-shadow: 0 0 12px var(--acento); opacity: calc(1 - clamp(0, (var(--c, 0) - 0.96) * 25, 1)); }
+.tp-cap-3.escrito .tp-url { box-shadow: inset 0 0 0 1px var(--acento); }
+.tp-c3-contenido { position: relative; flex: 1; margin: 16px; border-radius: 12px; background: repeating-linear-gradient(90deg, rgba(238, 237, 254, 0.04) 0 1px, transparent 1px 8.33%); overflow: hidden; }
+.tp-c3-contenido img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; clip-path: inset(0 0 calc((1 - var(--pi, 0)) * 100%) 0); }
+/* El manual se va: sube, se apaga y se desenfoca mientras entra la portada */
+.tp-man .tp-fijo > * { translate: 0 calc(var(--sale, 0) * -18svh); opacity: calc(1 - var(--sale, 0)); filter: blur(calc(var(--sale, 0) * 6px)); }
 
 /* =======================================================
    DECISIÓN 01 · FORKY, PASO A PASO
@@ -793,7 +812,7 @@
    ======================================================= */
 /* Lo que el manual suma, en cuatro pasos: el archivo marca.css se escribe con el scroll y la vista previa lo vuelve
    gráfica. Los dos paneles conversan con etiquetas de variable, un pulso al compilar y el foco cruzado */
-.tp-man { --ed: #1B1733; --ed-2: #100D1E; --cod: #CFCBEA; --error: #FF5B4D; --ok: #2FB37A; height: 580svh; }
+.tp-man { --ed: #1B1733; --ed-2: #100D1E; --cod: #CFCBEA; --error: #FF5B4D; --ok: #2FB37A; height: 730svh; }
 .tp-man .tp-fijo { align-content: center; align-items: start; }
 .tp-man .tp-fijo::before { content: ''; position: absolute; inset: 0; background: radial-gradient(50% 60% at 76% 52%, rgba(107, 92, 231, 0.24), transparent 70%); pointer-events: none; }
 
@@ -1167,7 +1186,8 @@
     .tp-man-espec { width: 76px; font-size: 40px; } .tp-man-pesos > span:not(.tp-man-tag) { font-size: 22px; }
     .tp-man-runner li { font-size: 12px; padding: 3px 4px; } .tp-man-runner li small { display: none; }
     .tp-man-dial { gap: 10px; } .tp-man-fila { grid-template-columns: 1fr; gap: 6px; min-height: 0; padding: 8px 12px; } .tp-man-fila > small { display: none; } .tp-man-fila:last-child { display: none; } .tp-man-fila:nth-child(3) { border-radius: 0 0 16px 16px; } .tp-man-c-boton.sec, .tp-man-c-tabs { display: none; }
-    .tp-url { top: 28svh; padding: 14px 22px; }
+    .tp-c3-ventana { left: var(--margen); right: var(--margen); width: auto; top: 9svh; height: 46svh; border-radius: 16px; } .tp-c3-chrome { height: 38px; } .tp-url { margin: 12px 12px 0; padding: 0 18px; height: 48px; font-size: 24px; } .tp-c3-contenido { margin: 12px; }
+    .tp-cap-3 .tp-cap-txt { width: auto; right: var(--margen); bottom: 7svh; } .tp-cap-3 .tp-cap-txt h2 { font-size: 22vw; } .tp-cap-3 .tp-cap-num { display: none; }
     .tp-sitio .tp-fijo { display: flex; flex-direction: column; justify-content: center; gap: 18px; padding-top: 64px; }
     .tp-sitio-nav { height: 56svh; width: 100%; flex: none; }
     .tp-sitio-indice li { display: none; border: 0 !important; padding: 0; }

@@ -175,15 +175,22 @@
                 espera = setTimeout(() => { el.classList.remove('corriendo'); el.style.setProperty('--lean', 0); }, 180);
             };
         },
-        /* Capítulo 03: la dirección se escribe con el scroll y la página empieza a cargar */
+        /* Capítulo 03: la portada entra sobre el final del manual (que sube y se apaga), la dirección se escribe con el
+           scroll, la pestaña toma el nombre del sitio y la página se dibuja adentro de la ventana */
         url: el => {
-            const caja = el.querySelector('[data-url]'), txt = caja.dataset.url;
+            const caja = el.querySelector('[data-url]'), txt = caja.dataset.url, man = document.querySelector('.tp-man'), tab = el.querySelector('[data-c3-tab]');
             caja.innerHTML = [...txt].map(c => `<span>${c}</span>`).join('');
             const letras = [...caja.children];
             return p => {
-                const n = Math.round(fijar((p - 0.2) / 0.4) * letras.length);
+                const e = curva(fijar(p / 0.3)), f = fijar((p - 0.68) / 0.06);
+                el.style.setProperty('--e', e.toFixed(3)); if (man) man.style.setProperty('--sale', e.toFixed(3));
+                el.style.setProperty('--a', fijar((p - 0.22) / 0.12).toFixed(3));
+                const n = Math.round(fijar((p - 0.34) / 0.22) * letras.length);
                 letras.forEach((l, i) => l.classList.toggle('on', i < n));
                 el.classList.toggle('escrito', n === letras.length);
+                el.style.setProperty('--c', n === letras.length ? fijar((p - 0.6) / 0.14).toFixed(3) : 0);
+                el.style.setProperty('--f', f.toFixed(3)); tab.textContent = f > 0.5 ? 'Tap In · Gestión escolar' : 'Nueva pestaña';
+                el.style.setProperty('--pi', curva(fijar((p - 0.72) / 0.2)).toFixed(3));
             };
         },
         /* El manual en código: el bloque del paso se escribe con el scroll y la vista previa lo vuelve gráfica. Cada
@@ -252,10 +259,12 @@
                 x.addEventListener('pointerleave', () => pieza.querySelectorAll('.foco').forEach(y => y.classList.remove('foco')));
             });
             el.querySelectorAll('[data-man-ir]').forEach(b => b.addEventListener('click', () => {
-                const top = el.getBoundingClientRect().top + window.scrollY, alto = el.offsetHeight - vh;
+                const top = el.getBoundingClientRect().top + window.scrollY, alto = el.offsetHeight - 2.5 * vh;
                 window.scrollTo({ top: top + ((+b.dataset.manIr + 0.8) / N) * alto, behavior: quieto ? 'auto' : 'smooth' });
             }));
-            return p => {
+            /* El manual termina 1,5 pantallas antes del final de su pista: ese tramo lo cubre la portada del capítulo 03 */
+            return pista => {
+                const p = fijar(pista * (el.offsetHeight - vh) / (el.offsetHeight - 2.5 * vh));
                 const i = Math.min(Math.floor(p * N), N - 1), t = fijar(p * N - i);
                 el.querySelectorAll('[data-man-paso], [data-man-ir]').forEach(x => x.classList.toggle('on', +(x.dataset.manPaso ?? x.dataset.manIr) === i));
                 el.querySelector('[data-man-nombre]').textContent = nombres[i]; el.querySelector('[data-man-ruta]').textContent = rutas[i];
