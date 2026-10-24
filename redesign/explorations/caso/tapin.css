@@ -1036,6 +1036,9 @@
 .tp-sitio-nav .tp-sitio-pantalla { margin: calc((1 - var(--lz)) * 16px); border-radius: calc((1 - var(--lz)) * 12px); }
 .tp-sitio-pantalla { position: relative; flex: 1; overflow: hidden; }
 .tp-sitio-lienzo { position: absolute; top: 0; left: 0; width: 100%; will-change: transform; }
+.tp-sitio-lienzo picture img { display: block; width: 100%; }
+/* Textos que cambian entre el sitio de escritorio y el móvil */
+.tp .tp-solo-pc { display: contents; } .tp .tp-solo-movil { display: none; }
 .tp-sitio-dd { position: absolute; left: calc(106px * var(--e, 1)); top: calc(80px * var(--e, 1)); width: calc(149px * var(--e, 1)); border-radius: calc(12px * var(--e, 1)); box-shadow: 0 12px 30px -8px rgba(17, 12, 60, 0.45); opacity: 0; transform: translateY(-8px); transition: opacity 400ms var(--ease), transform 500ms var(--tp-curva); }
 .tp-sitio[data-parada="0"] .tp-sitio-dd { opacity: 1; transform: none; transition-delay: 250ms; }
 /* Marco: enmarca exacto lo que nombra la decisión, con el radio del elemento; viaja de una parada a la siguiente y lleva
@@ -1045,7 +1048,7 @@
 .tp-sitio-caja span { position: absolute; left: -14px; top: -14px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--tp-connect); color: #FFFFFF; font-size: 11px; box-shadow: 0 0 0 3px #FFFFFF, 0 6px 14px -4px rgba(45, 37, 96, 0.5); }
 .tp-sitio-caja.abajo span { top: 50%; translate: 0 -50%; }
 /* Los marcadores de las paradas ya vistas quedan sobre el sitio, como en una revisión de diseño */
-.tp-sitio-pin { position: absolute; z-index: 1; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--tp-campus); color: #FFFFFF; font-size: 10px; box-shadow: 0 0 0 2.5px #FFFFFF, 0 4px 10px -3px rgba(45, 37, 96, 0.5); translate: -50% -50%; scale: 0; transition: scale 450ms var(--tp-curva); }
+.tp-sitio-pin { position: absolute; left: var(--px); top: var(--py); z-index: 1; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--tp-campus); color: #FFFFFF; font-size: 10px; box-shadow: 0 0 0 2.5px #FFFFFF, 0 4px 10px -3px rgba(45, 37, 96, 0.5); translate: -50% -50%; scale: 0; transition: scale 450ms var(--tp-curva); }
 .tp-sitio-pin.ya { scale: 1; cursor: pointer; }
 @media (hover: hover) { .tp-sitio-pin.ya:hover { scale: 1.15; background: var(--tp-connect); } }
 /* Notas al margen: la actual en una tarjeta abierta, las demás en filas con su número (lleno si ya se vio) */
@@ -1266,6 +1269,29 @@
 /* También para tablets en vertical: el diseño de PC está compuesto para pantallas horizontales y en un iPad
    vertical quedaba diminuto y con media pantalla vacía. El formato PC (horizontal) no cambia */
 @media (max-width: 768px), (orientation: portrait) and (max-width: 1100px) {
+    /* --- ÁREAS DE TOQUE: NINGUNA BAJO 44 PX. Se agrandan sin mover el diseño (pseudoelementos o padding compensado) --- */
+    .tp-hito::after { content: ''; position: absolute; inset: -15px; }
+    .tp-etapa::before { content: ''; position: absolute; inset: -18px 0 -12px; }
+    .tp-cer-paso, .tp-ar-serie button, .tp-prueba-estado a { position: relative; }
+    .tp-cer-paso::after { content: ''; position: absolute; inset: -10px -7px; }
+    .tp-ar-serie button::after { content: ''; position: absolute; inset: -10px -2px; }
+    .tp-man-paradas button::after { content: ''; position: absolute; inset: -14px -4px; }
+    .tp-man-rango .tp-man-perilla::after { content: ''; position: absolute; inset: -9px; border-radius: 50%; }
+    .tp-mas summary { padding: 11px 0; margin: -11px 0; }
+    .tp-prueba-estado a::after { content: ''; position: absolute; inset: -13px -4px; }
+    /* --- CAPÍTULO 01: EL TÍTULO YA ESTÁ CUANDO LA ONDA SE DESVANECE --- */
+    .tp-cap-1 .tp-cap-txt > * { opacity: 1; translate: none; transition: none; }
+    /* --- PALETA: SOLO NOMBRE Y HEX; AL TOCAR UNA TIRA, SE ENSANCHA Y MUESTRA SU DETALLE --- */
+    .tp-tira:not(.abierta) :is(.tp-tira-uso, .tp-tira-ctr) { display: none; }
+    .tp-tira:not(.abierta) .tp-tira-spec { max-height: 1.5em; overflow: hidden; }
+    .tp-tira-spec { margin-top: 4px; font-size: 10px; }
+    .tp-tiras:has(.tp-tira.abierta) .tp-tira.abierta { flex-grow: 3; }
+    .tp-tiras:has(.tp-tira.abierta) .tp-tira:not(.abierta) :is(.tp-tira-pie b, .tp-tira-spec) { opacity: 0; }
+    /* --- SITIO EN VERSIÓN MÓVIL --- */
+    /* La ventana muestra tapin.cl como se ve en el teléfono, legible, con sus propios marcos y marcadores */
+    .tp .tp-solo-pc { display: none; } .tp .tp-solo-movil { display: contents; }
+    .tp-sitio-pin { left: var(--pxm); top: var(--pym); }
+    .tp-sitio-dd { display: none; }
     .tp { --hy: 30svh; --hrx: 32deg; --hs: 0.88; }
     .tp-grilla { grid-template-columns: 1fr; row-gap: 28px; }
     .tp-grilla > * { grid-column: 1 / -1 !important; }
@@ -1338,7 +1364,7 @@
     .tp-ar-pieza { grid-column: 1 / -1; }
     .tp-ar-placa { height: 26svh; border-radius: 18px; }
     .tp-ar-cab span:first-child { max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .tp-ar-cota { font-size: 10px; }
+    .tp-ar-cota { font-size: 11px; }
     .tp-tiras { --base: 56svh; left: calc(var(--margen) * (1 - var(--alto))); width: calc(100% - 2 * var(--margen) * (1 - var(--alto))); bottom: 0; height: calc((var(--base) + var(--alto) * (100svh - var(--base))) * (1 - var(--b, 0)) + 50svh * var(--b, 0)); }
     .tp-principal { flex-grow: 1; }
     .tp-tira { padding: 10px 8px; }
@@ -1364,8 +1390,8 @@
     .tp-man-espec { width: 76px; font-size: 40px; } .tp-man-pesos > span:not(.tp-man-tag) { font-size: 22px; }
     .tp-man-runner li { font-size: 12px; padding: 3px 4px; } .tp-man-runner li small { display: none; }
     .tp-man-dial { gap: 10px; } .tp-man-fila { grid-template-columns: 1fr; gap: 6px; min-height: 0; padding: 8px 12px; } .tp-man-fila > small { display: none; } .tp-man-fila:last-child { display: none; } .tp-man-fila:nth-child(3) { border-radius: 0 0 16px 16px; } .tp-man-c-boton.sec, .tp-man-c-tabs { display: none; }
-    .tp-c3-ventana { left: var(--margen); right: var(--margen); width: auto; top: 9svh; height: 46svh; border-radius: 16px; } .tp-c3-chrome { height: 38px; } .tp-url { margin: 12px 12px 0; padding: 0 16px; height: 44px; font-size: 18px; } .tp-c3-contenido { margin: 12px; }
-    .tp-cap-3 .tp-cap-txt { width: auto; right: var(--margen); bottom: 7svh; } .tp-cap-3 .tp-cap-txt h2 { font-size: 22vw; } .tp-cap-3 .tp-cap-num { display: none; } .tp-c3-rot { top: calc(55svh + 22px); }
+    .tp-c3-ventana { left: var(--margen); right: var(--margen); width: auto; top: 9svh; height: 34svh; border-radius: 16px; } .tp-c3-chrome { height: 38px; } .tp-url { margin: 12px 12px 0; padding: 0 16px; height: 44px; font-size: 18px; } .tp-c3-contenido { margin: 12px; }
+    .tp-cap-3 .tp-cap-txt { width: auto; right: var(--margen); bottom: 7svh; } .tp-cap-3 .tp-cap-txt h2 { font-size: 22vw; } .tp-cap-3 .tp-cap-num { display: none; } .tp-c3-rot { top: calc(43svh + 22px); }
     .tp-sitio .tp-fijo { display: flex; flex-direction: column; justify-content: center; gap: 18px; padding-top: 64px; }
     .tp-sitio-nav { height: 56svh; width: 100%; flex: none; }
     .tp-sitio.volando .tp-sitio-indice { width: 100%; margin-top: calc(var(--bh, 56svh) + 18px); }
@@ -1433,6 +1459,8 @@
     .tp-rs-cita p { font-size: 68px; }
     .tp-rs-cifras b { font-size: 44px; }
     .tp-rs-cifras span { font-size: 16px; }
+    /* El sitio móvil dentro de una ventana de ancho de teléfono grande, centrada, en vez de ampliado al doble */
+    .tp-sitio-nav, .tp-sitio .tp-sitio-indice, .tp-sitio.volando .tp-sitio-indice { width: min(100%, 560px); align-self: center; }
 }
 
 /* =======================================================

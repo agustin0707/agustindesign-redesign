@@ -60,7 +60,9 @@
                 /* El recorrido del tiempo ocupa el 70 % de la pista; el resto es la onda de tap */
                 const mes = fijar(p / 0.7) * 21.68;
                 tiempo.style.setProperty('--mes', mes.toFixed(3));
-                const t = fijar((p - 0.7) / 0.24);
+                /* En móvil la onda llena la pantalla más tarde, justo antes de que el resumen se desvanezca: así no queda
+                   una pantalla entera de morado vacío antes del capítulo 01 */
+                const t = vistaMovil.matches ? fijar((p - 0.76) / 0.19) : fijar((p - 0.7) / 0.24);
                 el.style.setProperty('--t', t.toFixed(4));
                 if (t > 0) {
                     const f = fijo.getBoundingClientRect(), c = cred.getBoundingClientRect();
@@ -313,20 +315,25 @@
         /* El sitio: baja por tapin.cl y se detiene en cada decisión; el foco se dibuja sobre la parte que
            explica. Las cajas están en píxeles del sitio a 1440 de ancho */
         sitio: el => {
-            const ANCHO = 1440, ALTO = 5140, VIAJE = 0.4, FINAL = 1.2;
+            const VIAJE = 0.4, FINAL = 1.2;
+            /* En la vista móvil el sitio es su versión de teléfono (390 × 7446) con marcos propios (data-caja-m) */
+            let ANCHO = 1440, ALTO = 5140;
             const pant = el.querySelector('.tp-sitio-pantalla'), lienzo = el.querySelector('.tp-sitio-lienzo');
             const caja = el.querySelector('.tp-sitio-caja'), cajaTxt = caja.querySelector('span');
             const items = [...el.querySelectorAll('[data-parada]')];
-            const paradas = items.map(li => { const [x, y, w, h, rad] = li.dataset.caja.split(',').map(Number); return { li, x, y, w, h, rad, nota: li.dataset.nota }; });
+            const paradas = items.map(li => ({ li }));
+            const leerCajas = () => { const m = vistaMovil.matches; ANCHO = m ? 390 : 1440; ALTO = m ? 7446 : 5140; paradas.forEach(d => { const [x, y, w, h, rad] = (m ? d.li.dataset.cajaM : d.li.dataset.caja).split(',').map(Number); Object.assign(d, { x, y, w, h, rad }); }); };
             const pins = [...el.querySelectorAll('[data-pin]')], segs = [...el.querySelectorAll('.tp-sn-avance i')];
             const contador = el.querySelector('[data-sitio-n]');
             const U = paradas.length + FINAL;
             let e = 1, vis = 0, actual = -2;
             const medir = () => {
+                leerCajas();
                 e = pant.clientWidth / ANCHO; vis = pant.clientHeight / e;
                 pant.style.setProperty('--e', e.toFixed(4));
-                /* Cada parada deja su marco centrado en la pantalla del navegador */
-                paradas.forEach(d => { d.top = fijar(d.y + d.h / 2 - vis / 2, 0, ALTO - vis); });
+                /* Cada parada deja su marco centrado en la pantalla del navegador; si no cabe (los marcos altos del sitio
+                   móvil), se alinea arriba con 30 px de aire (sin tapar su número), para leerlo desde el principio */
+                paradas.forEach(d => { d.top = fijar(d.h > vis * 0.9 ? d.y - 30 / e : d.y + d.h / 2 - vis / 2, 0, ALTO - vis); });
             };
             medir();
             window.addEventListener('resize', medir);
