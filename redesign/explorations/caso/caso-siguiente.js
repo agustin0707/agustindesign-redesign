@@ -43,9 +43,9 @@
         let pendiente = false, abriendo = false, ultimo = -1;
         const pintar = () => {
             pendiente = false;
-            const r = pista.getBoundingClientRect(), recorrido = r.height - window.innerHeight;
+            const alto = panel.offsetHeight || window.innerHeight, r = pista.getBoundingClientRect(), recorrido = r.height - alto;
             const p = Math.min(Math.max(-r.top / recorrido, 0), 1);
-            const entrada = Math.min(Math.max(1 - r.top / window.innerHeight, 0), 1);
+            const entrada = Math.min(Math.max(1 - r.top / alto, 0), 1);
             if (Math.abs(p - ultimo) > 0.002 || p === 1) { panel.style.setProperty('--p', p.toFixed(3)); ultimo = p; }
             panel.style.setProperty('--e', entrada.toFixed(3));
             /* El logo se arma con el scroll: empieza a media entrada y queda completo al 40% de la pista */

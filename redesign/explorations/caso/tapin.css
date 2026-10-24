@@ -58,7 +58,16 @@
 /* Grilla de 12, módulo con aire y panel fijo de las escenas */
 .tp-grilla { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); }
 .tp-mod { padding: clamp(96px, 11vw, 176px) var(--margen); }
-.tp-fijo { position: sticky; top: 0; height: 100svh; overflow: clip; }
+.tp-fijo { position: sticky; top: 0; height: 100svh; height: 100lvh; overflow: clip; }
+/* Alto grande (lvh): en iPhone la barra de Safari se esconde al hacer scroll y la pantalla crece; con 100svh los paneles
+   fijos dejaban una franja abajo. El JS usa el mismo alto (sonda de 100lvh), que no cambia con la barra */
+.tp-sonda { position: fixed; top: 0; left: 0; width: 0; height: 100svh; height: 100lvh; visibility: hidden; pointer-events: none; }
+/* Sin scroll lateral en ninguna pantalla (los carruseles tienen su propio scroll). clip no crea un contenedor de scroll,
+   así no hay doble barra en Chrome ni se rompe el sticky */
+html:has(> body.tp), body.tp { overflow-x: clip; }
+/* Fondo del lienzo para el estirón del scroll: el borde del hero arriba, el de Mend abajo (el JS cambia a mitad de página) */
+html:has(> body.tp) { background: linear-gradient(90deg, #584AC3, #7666EA 50%, #6A5DD1); }
+html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A979D 50%, #91BABE); }
 .tp-fijo.tp-grilla { align-items: center; padding: 0 var(--margen); }
 .tp-etq { grid-column: 1 / span 3; color: var(--texto-2); padding-top: 0.9em; }
 .tp-pie { color: inherit; }
@@ -614,6 +623,7 @@
    4. Decisión 04, la familia se reúne en un lockup: el claro sube desde abajo, las cuatro tiras viajan a la placa
       de la anatomía (el JS mueve cada una) y, al bajar, la placa cambia de producto con el wordmark quieto */
 .tp-rebirth { position: relative; z-index: 2; height: 820svh; margin-top: -100svh; }
+.tp-rebirth:not(.activa) { pointer-events: none; }
 .tp-rebirth.tp-oscuro { background: linear-gradient(transparent 100svh, var(--tp-papel) 100svh); }
 .tp-rb-noche { position: absolute; inset: 0; background: var(--tp-noche); opacity: clamp(0, (var(--pr, 0) - 0.24) * 60, 1); }
 .tp-rb-cap { --ent: calc(clamp(0, (var(--pr, 0) - 0.38) / 0.1, 1) * (1 - clamp(0, (var(--pr, 0) - 0.56) / 0.06, 1))); position: absolute; inset: 0 0 auto; height: 38svh; padding: 0 var(--margen) 3svh; align-content: end; row-gap: 14px; opacity: var(--ent); translate: 0 calc((1 - var(--ent)) * 30px); pointer-events: none; }
@@ -1082,7 +1092,7 @@
 /* Quieta con sticky (sin compensar el scroll por código, que temblaba): se fija apenas la sección llega arriba y el
    espacio extra de abajo la sostiene una pantalla, lo que dura la hoja */
 .tp-v11-marco > .tp-grilla { position: sticky; top: clamp(96px, 11vw, 176px); transform-origin: 50% 0; }
-.tp-v11-marco::after { content: ''; display: block; height: 100svh; }
+.tp-v11-marco::after { content: ''; display: block; height: 100svh; height: 100lvh; }
 /* Segundo tramo quieto, para el barrido: el marco se fija con la 11 alineada abajo (o arriba, si cabe). El JS calcula
    --t11 con el alto real de la grilla; mientras, el muro la cubre en diagonal */
 .tp-vivo > .tp-v11-marco { position: sticky; top: var(--t11, -100svh); }
@@ -1279,6 +1289,8 @@
     .tp-man-rango .tp-man-perilla::after { content: ''; position: absolute; inset: -9px; border-radius: 50%; }
     .tp-mas summary { padding: 11px 0; margin: -11px 0; }
     .tp-prueba-estado a::after { content: ''; position: absolute; inset: -13px -4px; }
+    /* --- ACTIVACIONES: UN DEGRADADO MÁS ALTO BAJO EL TEXTO, QUE EN EL TELÉFONO OCUPA MÁS DE LA FOTO --- */
+    .tp-pliego-sangre::after { background: linear-gradient(180deg, rgba(16, 13, 32, 0.4), transparent 24%, transparent 36%, rgba(16, 13, 32, 0.55) 58%, rgba(16, 13, 32, 0.9)); }
     /* --- CAPÍTULO 01: EL TÍTULO YA ESTÁ CUANDO LA ONDA SE DESVANECE --- */
     .tp-cap-1 .tp-cap-txt > * { opacity: 1; translate: none; transition: none; }
     /* --- PALETA: SOLO NOMBRE Y HEX; AL TOCAR UNA TIRA, SE ENSANCHA Y MUESTRA SU DETALLE --- */
@@ -1298,7 +1310,12 @@
     .tp .tp-cap .tp-cap-txt, .tp-forky .tp-dec, .tp-qr .tp-dec, .tp-rebirth .tp-dec, .tp-cer .tp-dec { display: flex; flex-direction: column; gap: 10px; }
     .tp-cap .tp-cap-n { align-self: flex-start; padding-bottom: 0; }
     .tp-segmentos { display: none; }
-    .tp-hero-txt { left: var(--margen); right: var(--margen); top: 84px; gap: 14px; align-items: flex-start; text-align: left; translate: none; }
+    .tp-hero-txt { left: var(--margen); right: var(--margen); top: 84px; gap: 14px; align-items: center; text-align: center; translate: none; }
+    .tp-hero-txt .mono { justify-content: center; }
+    /* En el teléfono el navegador del hero lleva una captura (no el sitio en vivo) y una sombra fija: recalcular una sombra
+       de 140 px y un sitio dentro de un plano en 3D en cada cuadro hacía tiritar el scroll */
+    .tp-hero-nav { box-shadow: 0 40px 70px -36px rgba(14, 9, 50, 0.6); }
+    .tp-hero-pantalla img { position: absolute; left: 0; top: 0; width: 100%; }
     .tp-hero-txt .mono { flex-wrap: wrap; font-size: 11px; }
     .tp-hero-txt h1 { width: 46vw; }
     .tp-hero-txt p { font-size: 18px; }
@@ -1306,11 +1323,11 @@
     .tp-etq { padding-top: 0; }
     .tp-creditos { grid-template-columns: 1fr; }
     .tp-res { height: 330svh; }
-    .tp-res-fijo { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; row-gap: 14px; padding: 72px var(--margen) 28px; }
+    .tp-res-fijo { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; row-gap: 26px; padding: 84px var(--margen) 40px; }
     .tp-res-fijo > * { grid-column: 1 !important; }
     /* La onda no es un elemento de la grilla: con columna asignada perdería el padding y dejaría un borde blanco */
     .tp-res-fijo > .tp-tap { grid-column: auto !important; }
-    .tp-res-txt { align-self: start; display: flex; flex-direction: column; gap: 14px; }
+    .tp-res-txt { align-self: start; display: flex; flex-direction: column; gap: 18px; }
     .tp-res .tp-enunciado { font-size: 25px; }
     .tp-encargo { display: none; }
     .tp-res-colgante { grid-row: 2; width: 100%; margin-top: 0; align-self: stretch; }
@@ -1381,9 +1398,13 @@
     .tp-cer-flota { display: none; }
     .tp-man .tp-fijo { align-content: start; padding-top: 9svh; row-gap: 12px; }
     .tp-man-rot, .tp-man-txt > div:first-child { display: none; }
-    .tp-man-txt { grid-row: auto; order: 1; height: auto; } .tp-man-pasos { grid-row: auto; order: 2; height: auto; justify-content: flex-start; } .tp-man-pieza { grid-row: auto; order: 3; height: 62svh; }
+    .tp-man-txt { grid-row: auto; order: 1; height: auto; } .tp-man-pasos { grid-row: auto; order: 2; height: auto; justify-content: flex-start; } .tp-man-pieza { grid-row: auto; order: 3; height: 66svh; }
     .tp-man-regla b { font-size: 28px; }
-    .tp-man-editor { left: 0; right: 0; height: 48%; } .tp-man-vista { left: 6%; height: 58%; }
+    /* Código arriba y vista previa abajo, sin encimarse: antes la vista tapaba las últimas líneas (justo la que marca el
+       error del color). La muestra de color deja aire a la derecha para el sello inclinado */
+    .tp-man-editor { left: 0; right: 0; height: 43%; } .tp-man-vista { left: 0; right: 0; height: 54%; }
+    .tp-man-prev { padding: 12px; }
+    .tp-man-muestras { width: 92%; margin-right: auto; }
     .tp-man-mapa, .tp-man-ruta, .tp-man-otra, .tp-man-split { display: none; }
     .tp-man-codigo { font-size: 10.5px; } .tp-man-codigo > div { padding-left: 34px; } .tp-man-codigo > div::before { width: 22px; }
     .tp-man-muestras { gap: 6px; } .tp-man-info { padding: 6px; } .tp-man-info span, .tp-man-leyenda { display: none; }
@@ -1393,8 +1414,12 @@
     .tp-c3-ventana { left: var(--margen); right: var(--margen); width: auto; top: 9svh; height: 34svh; border-radius: 16px; } .tp-c3-chrome { height: 38px; } .tp-url { margin: 12px 12px 0; padding: 0 16px; height: 44px; font-size: 18px; } .tp-c3-contenido { margin: 12px; }
     .tp-cap-3 .tp-cap-txt { width: auto; right: var(--margen); bottom: 7svh; } .tp-cap-3 .tp-cap-txt h2 { font-size: 22vw; } .tp-cap-3 .tp-cap-num { display: none; } .tp-c3-rot { top: calc(43svh + 22px); }
     .tp-sitio .tp-fijo { display: flex; flex-direction: column; justify-content: center; gap: 18px; padding-top: 64px; }
-    .tp-sitio-nav { height: 56svh; width: 100%; flex: none; }
-    .tp-sitio.volando .tp-sitio-indice { width: 100%; margin-top: calc(var(--bh, 56svh) + 18px); }
+    /* Ventana más alta (muestra más del sitio) sin que la nota quede fuera en teléfonos bajos */
+    .tp-sitio-nav { height: min(63svh, calc(100svh - 300px)); width: 100%; flex: none; }
+    /* Tramo final más corto que en PC: menos espera entre la decisión 10, la hoja y la 11 */
+    .tp-sitio { height: 780svh; }
+    .tp-vivo::after { height: 170svh; }
+    .tp-sitio.volando .tp-sitio-indice { width: 100%; margin-top: calc(var(--bh, 63svh) + 18px); }
     .tp-sn-dir { height: 44px; font-size: 18px; padding: 0 16px; } .tp-sn-pill { height: calc((1 - var(--lz)) * 56px); padding: 12px 12px 0; } .tp-sitio-nav .tp-sitio-pantalla { margin: calc((1 - var(--lz)) * 12px); }
     .tp-sitio-indice > li { display: none; }
     .tp-sitio-indice > li.actual { display: block; padding: 12px 14px; }
@@ -1434,7 +1459,9 @@
 @media (max-width: 768px) and (max-height: 720px) {
     .tp-man .tp-fijo { padding-top: 6svh; row-gap: 8px; }
     .tp-man-pieza { height: 68svh; }
-    .tp-man-editor { height: 40%; } .tp-man-vista { height: 66%; }
+    .tp-man-pieza { height: 70svh; }
+    .tp-man-editor { height: 39%; } .tp-man-vista { height: 58%; }
+    .tp-man-prev > * { zoom: 0.88; }
 }
 
 /* =======================================================

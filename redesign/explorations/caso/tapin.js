@@ -9,7 +9,16 @@
     const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
     const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-    let vh = window.innerHeight;
+    /* Alto de pantalla estable: una sonda de 100lvh, el mismo alto de los paneles fijos. En iPhone no cambia cuando la
+       barra de Safari aparece o se esconde (innerHeight sí), así las escenas no saltan ni tiritan */
+    const sonda = document.createElement('div'); sonda.className = 'tp-sonda'; sonda.setAttribute('aria-hidden', 'true'); document.body.appendChild(sonda);
+    const medirVh = () => sonda.offsetHeight || window.innerHeight;
+    let vh = medirVh(), anchoVh = window.innerWidth;
+    const tactil = window.matchMedia('(pointer: coarse)').matches;
+    /* El imán de las decisiones espera a que la persona mueva el scroll: al recargar, el navegador restaura la posición
+       y el imán no debe moverla por su cuenta */
+    let interactuo = false;
+    ['wheel', 'keydown', 'pointerdown', 'touchstart'].forEach(t => window.addEventListener(t, () => { interactuo = true; }, { passive: true }));
     /* La misma vista móvil que el CSS: teléfonos y tablets en vertical */
     const vistaMovil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
 
@@ -121,6 +130,9 @@
             });
             const relativo = (x, base) => { const a = x.getBoundingClientRect(), b = base.getBoundingClientRect(); return { l: a.left - b.left, t: a.top - b.top, w: a.width, h: a.height }; };
             return p => {
+                /* Mientras entra (montada sobre las activaciones) no recibe clics: las tiras tapaban las flechas del carrusel
+                   de Banco de Chile. Solo cuando queda fija */
+                el.classList.toggle('activa', p > 0);
                 /* Los tres primeros tiempos corren en los primeros 380svh de la pista; el cuarto, en el resto */
                 const pista = el.offsetHeight - vh, s = p * pista, base = 3.8 * vh;
                 const pr = fijar(s / base), p4 = fijar((s - base) / (pista - base));
@@ -315,7 +327,7 @@
         /* El sitio: baja por tapin.cl y se detiene en cada decisión; el foco se dibuja sobre la parte que
            explica. Las cajas están en píxeles del sitio a 1440 de ancho */
         sitio: el => {
-            const VIAJE = 0.4, FINAL = 1.2;
+            const VIAJE = 0.4, FINAL = vistaMovil.matches ? 0.4 : 1.2;
             /* En la vista móvil el sitio es su versión de teléfono (390 × 7446) con marcos propios (data-caja-m) */
             let ANCHO = 1440, ALTO = 5140;
             const pant = el.querySelector('.tp-sitio-pantalla'), lienzo = el.querySelector('.tp-sitio-lienzo');
@@ -337,6 +349,10 @@
             };
             medir();
             window.addEventListener('resize', medir);
+            /* Al recargar, las medidas se toman antes de las fuentes y la imagen del sitio: se repiten al cargar */
+            const remedir = () => { medir(); destino = null; antesPista = -1; actual = -2; alScroll(ultimaPista); };
+            window.addEventListener('load', remedir);
+            if (document.fonts) document.fonts.ready.then(remedir);
             /* Clic en el índice: lleva el scroll al momento en que esa decisión está quieta */
             /* El primer tramo de la pista (una pantalla) es el vuelo desde la portada; el recorrido usa el resto */
             const vuelo = () => vh / (el.offsetHeight - vh);
@@ -412,8 +428,9 @@
                 if (m < 1) { vivoIn.style.transform = quieto ? '' : `scale(${(0.94 + 0.06 * curva(m)).toFixed(4)})`; vivo.style.setProperty('--velo', ((1 - m) * 0.32).toFixed(3)); }
                 else { vivoIn.style.transform = ''; vivo.style.setProperty('--velo', 0); }
             };
-            return pista => {
-                hoja();
+            let ultimaPista = 0;
+            const alScroll = pista => {
+                ultimaPista = pista; hoja();
                 /* Mientras entra por abajo no se ve; al fijarse, la portada le cede su ventana */
                 el.classList.toggle('antes', pista <= 0);
                 if (cap3) cap3.classList.toggle('cedida', pista > 0);
@@ -426,7 +443,8 @@
                 const recien = volaba;
                 if (volaba) { aterrizar(); medir(); volaba = false; }
                 dir = pista >= antesPista ? 1 : -1; antesPista = pista;
-                clearTimeout(espera); if (!quieto) espera = setTimeout(() => imantar(pista), 220);
+                /* El imán solo con mouse: en pantallas táctiles peleaba con la inercia del dedo y devolvía el scroll */
+                clearTimeout(espera); if (!quieto && !tactil && interactuo) espera = setTimeout(() => imantar(pista), 220);
                 const p = fijar((pista - M) / (1 - M));
                 const u = p * U, i = Math.floor(u), t = u - i;
                 let y, act = -1;
@@ -450,6 +468,7 @@
                 caja.classList.add('on');
                 llevar({ y, x: d.x, cy: d.y, w: d.w, h: d.h, rad: d.rad }, recien);
             };
+            return alScroll;
         }
     };
 
@@ -490,7 +509,11 @@
     let pendiente = false;
     const pedir = () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); luces(); barra(); }); } };
     window.addEventListener('scroll', pedir, { passive: true });
-    window.addEventListener('resize', () => { vh = window.innerHeight; escenas.forEach(s => (s.p = -1)); pedir(); });
+    window.addEventListener('resize', () => { const nuevo = medirVh(); if (nuevo === vh && window.innerWidth === anchoVh) return; vh = nuevo; anchoVh = window.innerWidth; escenas.forEach(s => (s.p = -1)); pedir(); });
+    /* El estirón del scroll (overscroll) muestra el color del borde más cercano: el morado del hero arriba y el verde de
+       Mend abajo, en vez de un bloque oscuro */
+    const bordes = () => document.documentElement.classList.toggle('tp-abajo', window.scrollY > document.documentElement.scrollHeight / 2);
+    window.addEventListener('scroll', bordes, { passive: true }); bordes();
 
     /* --- 3. BARRA QUE SE ESCONDE AL BAJAR Y TOMA EL COLOR DEL MÓDULO DE ABAJO --- */
     /* Sin mezcla por diferencia (sobre morado se volvía verde): tinta sobre lo claro, blanco sobre lo demás.
@@ -635,7 +658,11 @@
     requestAnimationFrame(() => heroEl.classList.add('entra'));
     /* El navegador del hero carga tapin.cl de verdad, sin scroll; deja de pintarse cuando el hero sale */
     const pantalla = heroEl.querySelector('[data-sitio]');
-    if (pantalla) {
+    if (pantalla && vistaMovil.matches) {
+        const foto = document.createElement('img');
+        foto.src = 'media/tp-movil-sitio.jpg'; foto.alt = ''; foto.decoding = 'async';
+        pantalla.prepend(foto); pantalla.classList.add('listo');
+    } else if (pantalla) {
         const sitio = document.createElement('iframe');
         sitio.title = 'tapin.cl'; sitio.setAttribute('tabindex', '-1'); sitio.setAttribute('aria-hidden', 'true'); sitio.setAttribute('scrolling', 'no');
         sitio.onload = () => {
@@ -763,7 +790,7 @@
            y 64 px del borde, en vez de alinearla abajo y cortar el texto a media línea */
         const pieza11 = marco11.querySelector('.tp-v11-pieza');
         const fijarMarco = () => {
-            const arriba = parseFloat(getComputedStyle(g).top) || 0, h = window.innerHeight;
+            const arriba = parseFloat(getComputedStyle(g).top) || 0, h = vh;
             let meta = Math.min(arriba, h * 0.94 - g.offsetHeight);
             if (vistaMovil.matches) { const pz = pieza11.getBoundingClientRect().top - g.getBoundingClientRect().top, bloque = g.offsetHeight - pz; meta = fijar((h - bloque) / 2, 16, 64) - pz; }
             marco11.style.setProperty('--t11', `${Math.round(meta - h)}px`);

@@ -7,7 +7,7 @@
    El panel habla con la identidad del próximo proyecto; la tipografía del nombre es la de Agustín Design */
 .sig { position: relative; background: var(--c-fondo); }
 .sig-pista { height: 210svh; }
-.sig-panel { --e: 0; --p: 0; position: sticky; top: 0; height: 100svh; display: block; overflow: hidden; color: #FFFFFF; font-family: var(--sans); }
+.sig-panel { --e: 0; --p: 0; position: sticky; top: 0; height: 100svh; height: 100lvh; display: block; overflow: hidden; color: #FFFFFF; font-family: var(--sans); }
 .sig-escena { position: absolute; inset: 0; overflow: hidden; background: var(--sig-tinte); clip-path: inset(calc((1 - var(--e)) * 16%) calc((1 - var(--e)) * 10%) calc((1 - var(--e)) * 16%) round calc(28px * (1 - var(--p) * 0.6))); }
 .sig-escena > * { transform: scale(calc(1.08 - var(--p) * 0.08)); }
 .sig-txt { position: absolute; left: var(--margen); right: var(--margen); bottom: clamp(88px, 12svh, 140px); z-index: 3; display: flex; flex-direction: column; gap: 14px; pointer-events: none; }
