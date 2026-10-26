@@ -1,0 +1,325 @@
+<title>Fondos de las portadas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@600;700&display=swap">
+<style>
+    /* Cinco fondos por proyecto para las portadas de los destacados, hechos con el material real de cada marca
+       (fotos del manual, activaciones, isotipos, retículas) y no con degradados genéricos. Cada portada es una maqueta a
+       escala de la del home (marco, capítulos, cifra y regla) en unidades de contenedor */
+    :root {
+        --negro: #0B0B0B; --papel: #E9E9E6; --gris-claro: #D9D9D6; --blanco: #F5F5F3;
+        --tinta: #1A1A19; --tinta-2: #55554F; --tinta-3: #8A8A84; --linea-c: rgba(11, 11, 11, 0.1); --rec: #8C6A12; --vivo: #3FCF8E;
+        --sans: 'Geist', system-ui, sans-serif; --mono: 'Geist Mono', ui-monospace, monospace; --poppins: 'Poppins', 'Geist', sans-serif;
+        --margen: clamp(16px, 2.2vw, 32px); --medianil: 16px;
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html, body { overflow-x: clip; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px / 1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+    button { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--negro); outline-offset: 3px; }
+    img { display: block; max-width: 100%; }
+    .mono { font: 400 12px / 1.4 var(--mono); }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+
+    /* =======================================================
+       PRESENTACIÓN Y AUDITORÍA
+       ======================================================= */
+    .intro { padding-block: 56px 44px; row-gap: 22px; background: var(--gris-claro); }
+    .rot { grid-column: 1 / span 3; color: #6A6A66; padding-top: 0.5em; }
+    .intro h1 { grid-column: 4 / -1; margin: 0; font: 500 clamp(30px, 3.4vw, 52px) / 1.02 var(--sans); letter-spacing: -0.045em; text-wrap: balance; }
+    .intro ul { grid-column: 4 / span 8; display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .intro li { display: grid; grid-template-columns: 26px 1fr; font-size: 15px; line-height: 1.45; color: var(--tinta-2); }
+    .intro b { color: var(--tinta); font-weight: 500; }
+    .proy { padding-block: 48px 40px; row-gap: 16px; border-top: 1px solid var(--linea-c); }
+    .proy-txt { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 8px; align-self: start; position: sticky; top: 24px; }
+    .proy-txt .mono { color: var(--rec); }
+    .proy-txt strong { font: 500 22px / 1.1 var(--sans); letter-spacing: -0.035em; }
+    .proy-txt p { margin: 0; color: var(--tinta-2); font-size: 14px; line-height: 1.45; }
+    .proy-vista { grid-column: 4 / -1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .panel-f { display: none; } .panel-f.on { display: block; }
+    .botones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .op { display: flex; flex-direction: column; gap: 3px; padding: 14px 16px 16px; border: 0; border-radius: 12px; background: #F5F5F3; color: var(--tinta-2); font-size: 13px; line-height: 1.4; text-align: left; cursor: pointer; box-shadow: inset 0 0 0 1px var(--linea-c); transition: box-shadow 160ms linear; }
+    .op .mono { color: var(--tinta-3); font-size: 11px; }
+    .op b { color: var(--tinta); font-weight: 500; font-size: 15px; letter-spacing: -0.02em; }
+    .op .rec { align-self: flex-start; margin-top: 6px; padding: 3px 9px; border-radius: 99px; background: var(--negro); color: var(--blanco); font: 400 11px var(--mono); }
+    .op[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--negro); }
+    @media (hover: hover) { .op[aria-pressed="false"]:hover { box-shadow: inset 0 0 0 1px var(--tinta-3); } }
+
+    /* =======================================================
+       PORTADA A ESCALA
+       ======================================================= */
+    .cv { --ink: #FFFFFF; --ink-2: rgba(255, 255, 255, 0.78); --ink-3: rgba(255, 255, 255, 0.52); --hilo: rgba(255, 255, 255, 0.24); --boton: #FFFFFF; --boton-t: #0B0B0B;
+        position: relative; container-type: inline-size; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 10px; color: var(--ink); background: #222; box-shadow: 0 30px 60px -36px rgba(0, 0, 0, 0.6); }
+    .cv.claro { --ink: #0E2E32; --ink-2: rgba(14, 46, 50, 0.78); --ink-3: rgba(14, 46, 50, 0.52); --hilo: rgba(14, 46, 50, 0.2); --boton: #0E2E32; --boton-t: #FFFFFF; }
+    .cv > * { position: absolute; }
+    .fondo { inset: 0; z-index: 0; overflow: hidden; }
+    .fondo > * { position: absolute; }
+    .tope { z-index: 2; left: 2.2cqw; right: 2.2cqw; top: 5cqw; display: flex; justify-content: space-between; padding-bottom: 0.8cqw; border-bottom: 1px solid var(--hilo); color: var(--ink-2); font: 400 0.85cqw var(--mono); }
+    .tope .on::before { content: ''; display: inline-block; width: 0.45cqw; height: 0.45cqw; margin-right: 0.6cqw; border-radius: 50%; background: var(--vivo); vertical-align: 0.1cqw; }
+    .caps { z-index: 2; right: 2.2cqw; top: 8.4cqw; display: flex; gap: 0.15cqw; padding: 0.2cqw; border-radius: 99px; background: rgba(0, 0, 0, 0.3); font: 400 0.85cqw var(--mono); }
+    .claro .caps { background: rgba(14, 46, 50, 0.1); }
+    .caps span { padding: 0.45cqw 1cqw; border-radius: 99px; color: var(--ink-2); }
+    .caps .on { background: var(--boton); color: var(--boton-t); }
+    .izq { z-index: 2; left: 2.2cqw; bottom: 7cqw; width: 34cqw; display: flex; flex-direction: column; align-items: flex-start; gap: 1.3cqw; }
+    .izq h3 { margin: 0; font: 500 6.4cqw / 0.86 var(--sans); letter-spacing: -0.06em; }
+    .izq p { margin: 0; max-width: 28cqw; color: var(--ink-2); font-size: 1.25cqw; line-height: 1.38; }
+    .cifra { display: flex; align-items: flex-end; gap: 1cqw; width: 100%; max-width: 30cqw; padding-top: 1cqw; border-top: 1px solid var(--hilo); }
+    .cifra b { font: 500 2.9cqw / 1 var(--sans); letter-spacing: -0.05em; white-space: nowrap; }
+    .cifra span { max-width: 14cqw; padding-bottom: 0.1em; color: var(--ink-2); font: 400 0.85cqw / 1.35 var(--mono); }
+    .ver { display: inline-flex; gap: 0.7cqw; padding: 0.85cqw 1.4cqw; border-radius: 99px; background: var(--boton); color: var(--boton-t); font: 500 1cqw var(--sans); white-space: nowrap; }
+    .pieza { z-index: 2; left: 42cqw; right: 2.2cqw; top: 12cqw; bottom: 7cqw; display: grid; place-items: center; }
+    .regla { z-index: 2; left: 2.2cqw; right: 2.2cqw; bottom: 1.6cqw; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1cqw; }
+    .regla span { position: relative; padding-top: 0.9cqw; color: var(--ink-3); font: 500 1cqw var(--sans); }
+    .regla span::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: linear-gradient(90deg, var(--ink) var(--a, 0%), var(--hilo) 0); }
+    .regla .on { color: var(--ink); }
+    .nav-v { display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden; border-radius: 0.8cqw; background: #FFFFFF; box-shadow: 0 3cqw 6cqw -3cqw rgba(0, 0, 0, 0.7); }
+    .nav-v .b { flex: none; height: 2cqw; display: flex; align-items: center; gap: 0.35cqw; padding: 0 0.8cqw; background: #EDEDEA; }
+    .nav-v .b i { width: 0.6cqw; height: 0.6cqw; border-radius: 50%; background: #CFCFCB; }
+    .pant { position: relative; flex: 1; overflow: hidden; }
+    .pant img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
+    .recorre { animation: recorre var(--dura, 18s) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
+    @keyframes recorre { 0%, 8% { object-position: 50% 0%; } 92%, 100% { object-position: 50% 100%; } }
+    .tel { position: relative; height: 100%; aspect-ratio: 9 / 19.5; padding: 1.4%; border-radius: 15% / 7%; background: linear-gradient(150deg, #5B6A6C, #1F2A2C 22%, #3A4749 52%, #131B1C 78%, #48585A); box-shadow: 0 3cqw 6cqw -3cqw rgba(0, 0, 0, 0.7); }
+    .tel .pant { position: absolute; inset: 1.4%; border: 2px solid #050708; border-radius: 13.5% / 6.3%; }
+    .masc { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .foto { inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .grano::after { content: ''; position: absolute; inset: 0; z-index: 5; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); background-size: 200px; mix-blend-mode: soft-light; opacity: 0.55; }
+    /* Velo: oscurece solo el lado del texto, para leer sobre fotos */
+    .velo { inset: 0; z-index: 1; background: linear-gradient(90deg, var(--v1, rgba(0, 0, 0, 0.7)) 0%, var(--v2, rgba(0, 0, 0, 0.35)) 34%, transparent 62%), linear-gradient(transparent 70%, rgba(0, 0, 0, 0.3)); }
+
+    /* =======================================================
+       HOY (REFERENCIA)
+       ======================================================= */
+    .hoy-lf .fondo { background: #0F2A2D; } .hoy-lf .foto { opacity: 0.5; }
+    .hoy-lf .fondo::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(8, 22, 24, 0.94), rgba(8, 22, 24, 0.5) 50%, rgba(8, 22, 24, 0.2)); }
+    .hoy-tp .fondo { background: radial-gradient(60% 55% at 78% 22%, #8E81F5, transparent 70%), radial-gradient(120% 100% at 50% 0%, #6B5CE7, #4A3CAE 52%, #2D2560); }
+    .hoy-md .fondo { background: radial-gradient(52% 72% at 90% 0%, rgba(201, 233, 232, 0.95), rgba(190, 220, 219, 0) 76%), radial-gradient(60% 65% at 0% 100%, rgba(30, 77, 87, 0.95), rgba(30, 77, 87, 0) 72%), linear-gradient(90deg, #2A5960, #5E8C91 46%, #8EB8BB); }
+
+    /* =======================================================
+       LLEGÓ FARMA
+       ======================================================= */
+    /* L1 · Seguimiento en vivo: la foto aérea con brillo pleno y una ruta que se dibuja con nodos del isotipo */
+    .l1 .fondo { background: #0D3134; }
+    .l1 .foto { filter: saturate(0.75) contrast(1.05); animation: acerca 30s ease-in-out infinite alternate; }
+    .l1 .tinte { inset: 0; background: #1E6A6F; mix-blend-mode: soft-light; opacity: 0.8; }
+    .l1 svg { inset: 0; width: 100%; height: 100%; z-index: 4; }
+    .l1 .ruta { fill: none; stroke: #9FF0E6; stroke-width: 0.35; stroke-dasharray: 1.2 1.2; opacity: 0.9; animation: avanza 4s linear infinite; }
+    .l1 .ruta-luz { fill: none; stroke: #FFFFFF; stroke-width: 0.5; stroke-linecap: round; stroke-dasharray: 8 200; animation: luz 6s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+    .l1 .nodo { fill: #9FF0E6; } .l1 .pulso { fill: none; stroke: #9FF0E6; stroke-width: 0.25; transform-box: fill-box; transform-origin: center; animation: pulso 2.4s ease-out infinite; }
+    @keyframes acerca { from { transform: scale(1.02); } to { transform: scale(1.1) translate(-1.5%, 1%); } }
+    @keyframes avanza { to { stroke-dashoffset: -12; } }
+    @keyframes luz { from { stroke-dashoffset: 8; } to { stroke-dashoffset: -150; } }
+    @keyframes pulso { 0% { scale: 0.6; opacity: 1; } 100% { scale: 3; opacity: 0; } }
+    /* L2 · Bruma del manual: el degradado claro-verde de la marca, retículas de puntos y los tres isotipos que se arman */
+    .l2 .fondo { background: radial-gradient(80% 100% at 85% 10%, #B9DAD6 0%, #6FA3A0 38%, #2E6468 70%, #17393C); }
+    .l2 .puntos { width: 26cqw; height: 18cqw; background-image: radial-gradient(rgba(255, 255, 255, 0.5) 0.12cqw, transparent 0.14cqw); background-size: 1.4cqw 1.4cqw; }
+    .l2 .p1 { right: 3cqw; top: 13cqw; } .l2 .p2 { left: 2.2cqw; top: 12cqw; width: 18cqw; height: 10cqw; opacity: 0.6; }
+    .l2 .tres { left: 4cqw; top: 25cqw; display: flex; gap: 4cqw; color: rgba(255, 255, 255, 0.9); }
+    .l2 .tres span { width: 3.2cqw; aspect-ratio: 1; animation: arma 6s cubic-bezier(0.16, 1, 0.3, 1) infinite; animation-delay: calc(var(--i) * 0.25s); }
+    @keyframes arma { 0%, 8% { opacity: 0; scale: 0.6; rotate: -45deg; } 22%, 85% { opacity: 1; scale: 1; rotate: 0deg; } 100% { opacity: 0; } }
+    /* L3 · Matriz de puntos: la retícula del manual a pantalla completa y una luz que la recorre en diagonal */
+    .l3 .fondo { background: linear-gradient(120deg, #07191B, #0F3134 60%, #17484C); }
+    .l3 .matriz { inset: 0; background-image: radial-gradient(#7FCFC6 0.11cqw, transparent 0.13cqw); background-size: 1.3cqw 1.3cqw; opacity: 0.22; }
+    .l3 .barrido { inset: -20%; background: linear-gradient(115deg, transparent 40%, rgba(127, 207, 198, 0.55) 50%, transparent 60%); -webkit-mask-image: radial-gradient(#000 0.11cqw, transparent 0.13cqw); -webkit-mask-size: 1.3cqw 1.3cqw; mask-image: radial-gradient(#000 0.11cqw, transparent 0.13cqw); mask-size: 1.3cqw 1.3cqw; animation: barre 7s ease-in-out infinite; }
+    .l3 .iso { right: 4cqw; bottom: 6cqw; width: 12cqw; aspect-ratio: 1; color: rgba(159, 240, 230, 0.12); }
+    @keyframes barre { from { transform: translateX(-40%); } to { transform: translateX(40%); } }
+    /* L4 · Última milla: el repartidor del manual en duotono verde, cruzando lento detrás del texto */
+    .l4 .fondo { background: #0F3336; }
+    .l4 .foto { filter: grayscale(1) contrast(1.1) brightness(1.1); mix-blend-mode: luminosity; transform: translate(-10%, 0) scale(1.35); animation: camina 20s linear infinite alternate; }
+    .l4 .tinte { inset: 0; background: linear-gradient(90deg, #0B2B2E, #2B6D70 70%); mix-blend-mode: multiply; }
+    @keyframes camina { to { transform: translate(-15%, 0) scale(1.35); } }
+    /* L5 · Empaque en estudio: la caja de la marca como bodegón claro, con tinta oscura (rompe la serie a propósito) */
+    .l5 .fondo { background: #EDEFEE; }
+    .l5 .foto { object-position: 50% 50%; transform: scale(1.55) translate(17%, 4%); transform-origin: 50% 50%; }
+    .l5 .fondo::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(237, 239, 238, 0.95) 22%, rgba(237, 239, 238, 0) 52%); }
+
+    /* =======================================================
+       TAP IN
+       ======================================================= */
+    /* T1 · La activación: la foto real del campus a todo color, encuadrada para que la cara quede libre arriba */
+    .t1 .fondo { background: #2D2560; }
+    .t1 .foto { transform: translate(-25%, 2.5%) scale(1.5); }
+    .t1 .velo { background: linear-gradient(0deg, rgba(45, 37, 96, 0.95) 0%, rgba(45, 37, 96, 0.6) 38%, transparent 62%), linear-gradient(90deg, rgba(45, 37, 96, 0.35), transparent 50%); }
+    /* T2 · Muro de stickers: la plancha de stickers de la marca girada y avanzando */
+    .t2 .fondo { background: #4A3CAE; }
+    .t2 .muro { left: -30%; top: -60%; width: 160%; height: 220%; background: url('tp-stickers.jpg') 0 0 / 26cqw repeat; transform: rotate(-12deg); opacity: 0.55; animation: desliza 40s linear infinite; }
+    .t2 .velo { --v1: rgba(36, 28, 102, 0.94); --v2: rgba(36, 28, 102, 0.6); }
+    @keyframes desliza { to { background-position: 26cqw 26cqw; } }
+    /* T3 · El claim gigante: "Sáltate la fila" en Poppins, la voz del pendón como textura */
+    .t3 .fondo { background: radial-gradient(70% 90% at 75% 30%, #7666EA, #4A3CAE 55%, #2D2560); }
+    .t3 .claim { left: -1cqw; top: 3cqw; color: rgba(255, 255, 255, 0.1); font: 700 15cqw / 0.82 var(--poppins); letter-spacing: -0.05em; white-space: nowrap; animation: claim 30s linear infinite alternate; }
+    @keyframes claim { to { translate: -20cqw 0; } }
+    /* T4 · QR de noche: la entrada del producto era un QR. Un QR enorme en tono sobre la noche y la línea que escanea */
+    .t4 .fondo { background: radial-gradient(70% 90% at 70% 50%, #2D2560, #15102E 70%, #0C0A1C); }
+    .t4 .qr { right: -4cqw; top: -10cqw; width: 66cqw; aspect-ratio: 1; color: #7666EA; opacity: 0.3; -webkit-mask-image: radial-gradient(circle at 45% 50%, #000 35%, transparent 72%); mask-image: radial-gradient(circle at 45% 50%, #000 35%, transparent 72%); }
+    .t4 .qr svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+    .t4 .scan { left: 40cqw; right: 0; height: 0.3cqw; top: 10%; background: linear-gradient(90deg, transparent, #B4A9FF, transparent); box-shadow: 0 0 3cqw 1cqw rgba(155, 142, 240, 0.5); animation: escanea 3.6s ease-in-out infinite alternate; }
+    @keyframes escanea { to { top: 88%; } }
+    /* T5 · Campus en duotono: la segunda foto de activación convertida en un duotono morado de la paleta */
+    .t5 .fondo { background: #2D2560; }
+    .t5 .foto { filter: grayscale(1) contrast(1.25) brightness(1.05); mix-blend-mode: screen; opacity: 0.85; object-position: 70% 30%; }
+    .t5 .tinte { inset: 0; background: linear-gradient(120deg, #241C66, #6B5CE7); mix-blend-mode: multiply; z-index: 1; }
+    .t5 .velo { --v1: rgba(36, 28, 102, 0.85); --v2: rgba(36, 28, 102, 0.4); }
+
+    /* =======================================================
+       MEND
+       ======================================================= */
+    /* M1 · Luz de ventana: la foto del manual (estiramiento de cuello junto a la ventana); el teléfono angosto la deja ver */
+    .m1 .fondo { background: #DCD8CE; }
+    .m1 .foto { object-position: 30% 40%; animation: respira 18s ease-in-out infinite alternate; }
+    .m1 .velo { --v1: rgba(18, 52, 57, 0.86); --v2: rgba(18, 52, 57, 0.45); }
+    @keyframes respira { from { transform: scale(1.02); } to { transform: scale(1.08); } }
+    /* M2 · Tríptico de movimiento: tres fotos del manual en duotono petróleo, como una hoja de contacto */
+    .m2 .fondo { display: flex; background: #1E3C41; }
+    .m2 .tira { position: relative; flex: 1; overflow: hidden; }
+    .m2 .tira img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05) brightness(1.15); mix-blend-mode: luminosity; opacity: 0.9; }
+    .m2 .tira + .tira { border-left: 1px solid rgba(201, 233, 232, 0.25); }
+    .m2 .tinte { inset: 0; z-index: 1; background: linear-gradient(90deg, #1E4D57, #577A80); mix-blend-mode: multiply; }
+    .m2 .velo { --v1: rgba(19, 42, 46, 0.85); --v2: rgba(19, 42, 46, 0.45); }
+    /* M3 · El degradado oficial y el Encaje: la portada del manual, con el isotipo enorme cerrándose */
+    .m3 .fondo { background: #2A5960; }
+    .m3 .foto { opacity: 1; }
+    .m3 .iso { right: -10cqw; top: -14cqw; width: 64cqw; aspect-ratio: 1; color: rgba(214, 238, 236, 0.2); animation: encaje 9s cubic-bezier(0.76, 0, 0.24, 1) infinite; }
+    @keyframes encaje { 0%, 15% { rotate: -25deg; scale: 0.94; } 45%, 100% { rotate: 0deg; scale: 1; } }
+    /* M4 · Sombras de ventana: la luz de las fotos del manual, sin fotos. Un marco de ventana proyectado que se mueve lento */
+    .m4 .fondo { background: linear-gradient(100deg, #9FC4C3, #C9E0DC 45%, #E6EEE9); }
+    .m4 .luz { inset: -20%; background:
+        linear-gradient(90deg, transparent 0 18%, rgba(30, 77, 87, 0.22) 18% 20%, transparent 20% 46%, rgba(30, 77, 87, 0.22) 46% 48%, transparent 48%),
+        linear-gradient(0deg, transparent 0 44%, rgba(30, 77, 87, 0.22) 44% 46%, transparent 46%);
+        transform: skewX(-24deg) rotate(-6deg); filter: blur(0.6cqw); animation: sol 20s ease-in-out infinite alternate; }
+    .m4 .tono { inset: 0; background: linear-gradient(90deg, rgba(20, 60, 66, 0.9) 0%, rgba(20, 60, 66, 0.4) 40%, transparent 70%); z-index: 1; }
+    @keyframes sol { to { transform: skewX(-20deg) rotate(-4deg) translateX(8%); } }
+    /* M5 · Hueso editorial: el blanco hueso de la dirección fotográfica, tinta petróleo y la foto como ventana alta */
+    .m5 .fondo { background: #F1EEE7; }
+    .m5 .marco-f { left: 23cqw; top: 9cqw; width: 15cqw; height: 18cqw; overflow: hidden; border-radius: 7.5cqw 7.5cqw 0 0; }
+    .m5 .marco-f img { width: 100%; height: 100%; object-fit: cover; object-position: 55% 30%; }
+    .m5 .iso { right: 3cqw; bottom: 5cqw; width: 22cqw; aspect-ratio: 1; color: rgba(42, 89, 96, 0.08); }
+
+    /* =======================================================
+       VISTA MÓVIL
+       ======================================================= */
+    @media (max-width: 768px) {
+        .rot, .intro h1, .intro ul, .proy-txt, .proy-vista { grid-column: 1 / -1; }
+        .proy-txt { position: static; }
+        .botones { grid-template-columns: 1fr 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation: none !important; }
+    }
+</style>
+
+<header class="grilla intro">
+    <span class="rot mono">Works · fondos</span>
+    <h1>Cinco fondos por portada, hechos con el material real de cada marca.</h1>
+    <ul>
+        <li><span class="mono">a</span><span><b>Hoy los fondos son atmósfera, no historia.</b> Un degradado o una foto apagada que no dicen nada del proyecto.</span></li>
+        <li><span class="mono">b</span><span><b>Ninguno usa el material que ya existe:</b> la fotografía del manual de Mend, las activaciones de Tap In, el furgón y el repartidor de Llegó.</span></li>
+        <li><span class="mono">c</span><span><b>Los tres se parecen</b> (oscuro, liso, con grano): al pasar de una portada a otra no hay cambio de mundo.</span></li>
+        <li><span class="mono">d</span><span><b>Cada propuesta</b> sale de la identidad del proyecto (foto, retícula, isotipo, voz) y deja leer el marco con un velo solo del lado del texto.</span></li>
+    </ul>
+</header>
+
+<!-- =================== LLEGÓ FARMA =================== -->
+<section class="grilla proy" aria-label="Fondos de Llegó Farma">
+    <div class="proy-txt"><span class="mono">01 · Llegó Farma</span><strong>Logística de salud: precisión, rutas y confianza</strong><p>Material: la foto aérea del sitio, el repartidor y el empaque del manual, los tres isotipos y la retícula de puntos.</p></div>
+    <div class="proy-vista">
+        <div class="paneles">
+            <div class="panel-f" data-panel="0"><div class="cv hoy-lf"><div class="fondo"><img class="foto" src="lf-aerea.jpg" alt=""></div><div class="tope"><span>01 / 03 · Llegó Farma</span><span>Marca · Sitio one page</span><span>2026 · Pronto en línea</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="llego-larga.jpg" alt="" style="--dura:22s"></div></div></div><div class="izq"><h3>Llegó Farma</h3><p>Submarca de logística farmacéutica: identidad, manual y sitio, diseñados y construidos por mí.</p><div class="cifra"><b>Pitch ganado</b><span>al diseñador que ya tenía la marca madre</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span class="on" style="--a:40%">01 Llegó Farma</span><span>02 Tap In</span><span>03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="1"><div class="cv l1"><div class="fondo grano"><img class="foto" src="lf-aerea.jpg" alt=""><span class="tinte"></span><svg viewBox="0 0 160 90" preserveAspectRatio="none" aria-hidden="true"><path class="ruta" d="M150 14 C 130 20, 122 34, 104 40 S 70 50, 58 66 S 40 84, 20 88"/><path class="ruta-luz" d="M150 14 C 130 20, 122 34, 104 40 S 70 50, 58 66 S 40 84, 20 88"/><circle class="nodo" cx="150" cy="14" r="0.9"/><circle class="pulso" cx="150" cy="14" r="0.9"/><circle class="nodo" cx="104" cy="40" r="0.7"/><circle class="pulso" cx="104" cy="40" r="0.7" style="animation-delay:-1.2s"/><circle class="nodo" cx="58" cy="66" r="0.7"/></svg></div><span class="velo" style="--v1:rgba(6,30,32,.88);--v2:rgba(6,30,32,.45)"></span><div class="tope"><span>01 / 03 · Llegó Farma</span><span>Marca · Sitio one page</span><span>2026 · Pronto en línea</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="llego-larga.jpg" alt="" style="--dura:22s"></div></div></div><div class="izq"><h3>Llegó Farma</h3><p>Submarca de logística farmacéutica: identidad, manual y sitio, diseñados y construidos por mí.</p><div class="cifra"><b>Pitch ganado</b><span>al diseñador que ya tenía la marca madre</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span class="on" style="--a:40%">01 Llegó Farma</span><span>02 Tap In</span><span>03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="2"><div class="cv l2"><div class="fondo grano"><span class="puntos p1"></span><span class="puntos p2"></span><span class="tres"><span class="masc" style="--svg:url('lf-iso-puntos.svg');--i:0"></span><span class="masc" style="--svg:url('lf-iso-lineas.svg');--i:1"></span><span class="masc" style="--svg:url('lf-iso-nodos.svg');--i:2"></span></span></div><div class="tope"><span>01 / 03 · Llegó Farma</span><span>Marca · Sitio one page</span><span>2026 · Pronto en línea</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="llego-larga.jpg" alt="" style="--dura:22s"></div></div></div><div class="izq"><h3>Llegó Farma</h3><p>Submarca de logística farmacéutica: identidad, manual y sitio, diseñados y construidos por mí.</p><div class="cifra"><b>Pitch ganado</b><span>al diseñador que ya tenía la marca madre</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span class="on" style="--a:40%">01 Llegó Farma</span><span>02 Tap In</span><span>03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="3"><div class="cv l3"><div class="fondo"><span class="matriz"></span><span class="barrido"></span><span class="masc iso" style="--svg:url('lf-iso-nodos.svg')"></span></div><div class="tope"><span>01 / 03 · Llegó Farma</span><span>Marca · Sitio one page</span><span>2026 · Pronto en línea</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="llego-larga.jpg" alt="" style="--dura:22s"></div></div></div><div class="izq"><h3>Llegó Farma</h3><p>Submarca de logística farmacéutica: identidad, manual y sitio, diseñados y construidos por mí.</p><div class="cifra"><b>Pitch ganado</b><span>al diseñador que ya tenía la marca madre</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span class="on" style="--a:40%">01 Llegó Farma</span><span>02 Tap In</span><span>03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="4"><div class="cv l4"><div class="fondo grano"><img class="foto" src="lf-reparto.jpg" alt=""><span class="tinte"></span></div><span class="velo" style="--v1:rgba(8,32,35,.82);--v2:rgba(8,32,35,.35)"></span><div class="tope"><span>01 / 03 · Llegó Farma</span><span>Marca · Sitio one page</span><span>2026 · Pronto en línea</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="llego-larga.jpg" alt="" style="--dura:22s"></div></div></div><div class="izq"><h3>Llegó Farma</h3><p>Submarca de logística farmacéutica: identidad, manual y sitio, diseñados y construidos por mí.</p><div class="cifra"><b>Pitch ganado</b><span>al diseñador que ya tenía la marca madre</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span class="on" style="--a:40%">01 Llegó Farma</span><span>02 Tap In</span><span>03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="5"><div class="cv l5 claro"><div class="fondo"><img class="foto" src="lf-empaque.jpg" alt=""></div><div class="tope"><span>01 / 03 · Llegó Farma</span><span>Marca · Sitio one page</span><span>2026 · Pronto en línea</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="llego-larga.jpg" alt="" style="--dura:22s"></div></div></div><div class="izq"><h3>Llegó Farma</h3><p>Submarca de logística farmacéutica: identidad, manual y sitio, diseñados y construidos por mí.</p><div class="cifra"><b>Pitch ganado</b><span>al diseñador que ya tenía la marca madre</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span class="on" style="--a:40%">01 Llegó Farma</span><span>02 Tap In</span><span>03 Mend</span></div></div></div>
+        </div>
+        <div class="botones">
+            <button type="button" class="op" data-fondo="0" aria-pressed="false"><span class="mono">Hoy</span><b>Aérea oscurecida</b>Como está ahora, para comparar.</button>
+            <button type="button" class="op" data-fondo="1" aria-pressed="false"><span class="mono">L1</span><b>Seguimiento en vivo</b>La aérea con brillo pleno y una ruta que se dibuja con nodos que laten: la trazabilidad del sitio, hecha fondo.<span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-fondo="2" aria-pressed="false"><span class="mono">L2</span><b>Bruma del manual</b>El degradado de la marca, las retículas de puntos y los tres isotipos que se arman en cascada.</button>
+            <button type="button" class="op" data-fondo="3" aria-pressed="false"><span class="mono">L3</span><b>Matriz de puntos</b>La retícula del manual a pantalla completa, con una luz que la cruza en diagonal.</button>
+            <button type="button" class="op" data-fondo="4" aria-pressed="false"><span class="mono">L4</span><b>Última milla</b>El repartidor del manual en duotono verde, cruzando lento detrás del texto.</button>
+            <button type="button" class="op" data-fondo="5" aria-pressed="false"><span class="mono">L5</span><b>Empaque en estudio</b>La caja de la marca como bodegón claro, con tinta oscura. La única portada clara.</button>
+        </div>
+    </div>
+</section>
+
+<!-- =================== TAP IN =================== -->
+<section class="grilla proy" aria-label="Fondos de Tap In">
+    <div class="proy-txt"><span class="mono">02 · Tap In</span><strong>Del campus al colegio, en morado</strong><p>Material: las fotos de las activaciones (Red Bull y Banco de Chile), la plancha de stickers, el claim del pendón y el QR de la entrada.</p></div>
+    <div class="proy-vista">
+        <div class="paneles">
+            <div class="panel-f" data-panel="0"><div class="cv hoy-tp"><div class="fondo grano"></div><div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div><div class="izq"><h3>Tap In</h3><p>De la cafetería del campus a la plataforma del colegio. La marca desde el día uno y su web, programada por mí.</p><div class="cifra"><b>+15.000</b><span>familias en Connect, en Chile y Perú</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span class="on" style="--a:40%">02 Tap In</span><span>03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="1"><div class="cv t1"><div class="fondo grano"><img class="foto" src="tp-activacion.jpg" alt=""></div><span class="velo"></span><div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div><div class="izq"><h3>Tap In</h3><p>De la cafetería del campus a la plataforma del colegio. La marca desde el día uno y su web, programada por mí.</p><div class="cifra"><b>+15.000</b><span>familias en Connect, en Chile y Perú</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span class="on" style="--a:40%">02 Tap In</span><span>03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="2"><div class="cv t2"><div class="fondo grano"><span class="muro"></span></div><span class="velo"></span><div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div><div class="izq"><h3>Tap In</h3><p>De la cafetería del campus a la plataforma del colegio. La marca desde el día uno y su web, programada por mí.</p><div class="cifra"><b>+15.000</b><span>familias en Connect, en Chile y Perú</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span class="on" style="--a:40%">02 Tap In</span><span>03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="3"><div class="cv t3"><div class="fondo grano"><span class="claim">Sáltate la fila. Sáltate la fila.</span></div><div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div><div class="izq"><h3>Tap In</h3><p>De la cafetería del campus a la plataforma del colegio. La marca desde el día uno y su web, programada por mí.</p><div class="cifra"><b>+15.000</b><span>familias en Connect, en Chile y Perú</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span class="on" style="--a:40%">02 Tap In</span><span>03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="4"><div class="cv t4"><div class="fondo grano"><span class="qr" data-qr></span><span class="scan"></span></div><div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div><div class="izq"><h3>Tap In</h3><p>De la cafetería del campus a la plataforma del colegio. La marca desde el día uno y su web, programada por mí.</p><div class="cifra"><b>+15.000</b><span>familias en Connect, en Chile y Perú</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span class="on" style="--a:40%">02 Tap In</span><span>03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="5"><div class="cv t5"><div class="fondo grano"><span class="tinte"></span><img class="foto" src="tp-activacion2.jpg" alt=""></div><span class="velo"></span><div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div><div class="izq"><h3>Tap In</h3><p>De la cafetería del campus a la plataforma del colegio. La marca desde el día uno y su web, programada por mí.</p><div class="cifra"><b>+15.000</b><span>familias en Connect, en Chile y Perú</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span class="on" style="--a:40%">02 Tap In</span><span>03 Mend</span></div></div></div>
+        </div>
+        <div class="botones">
+            <button type="button" class="op" data-fondo="0" aria-pressed="false"><span class="mono">Hoy</span><b>Degradado morado</b>Como está ahora, para comparar.</button>
+            <button type="button" class="op" data-fondo="1" aria-pressed="false"><span class="mono">T1</span><b>La activación</b>La foto real del campus a todo color: la app, la lata y una persona usándola. Lo que ningún SaaS puede mostrar.<span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-fondo="2" aria-pressed="false"><span class="mono">T2</span><b>Muro de stickers</b>La plancha de stickers de la marca girada y avanzando lento: energía de campus.</button>
+            <button type="button" class="op" data-fondo="3" aria-pressed="false"><span class="mono">T3</span><b>El claim gigante</b>"Sáltate la fila" en Poppins, enorme y desplazándose: la voz del pendón como textura.</button>
+            <button type="button" class="op" data-fondo="4" aria-pressed="false"><span class="mono">T4</span><b>QR de noche</b>La entrada del producto era un QR: uno enorme en tono sobre la noche y la línea que escanea.</button>
+            <button type="button" class="op" data-fondo="5" aria-pressed="false"><span class="mono">T5</span><b>Campus en duotono</b>Otra foto de activación convertida en un duotono de la paleta: foto real, pero gráfica.</button>
+        </div>
+    </div>
+</section>
+
+<!-- =================== MEND =================== -->
+<section class="grilla proy" aria-label="Fondos de Mend">
+    <div class="proy-txt"><span class="mono">03 · Mend</span><strong>Salud articular en casa: calma, luz y cuerpo</strong><p>Material: la dirección fotográfica del manual (luz de ventana, paleta fría y blanco hueso), el degradado oficial y el isotipo del Encaje.</p></div>
+    <div class="proy-vista">
+        <div class="paneles">
+            <div class="panel-f" data-panel="0"><div class="cv hoy-md"><div class="fondo grano"></div><div class="tope"><span>03 / 03 · Mend</span><span>Investigación · Marca · Web app</span><span>2026 · Prototipo con acceso</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="tel"><div class="pant"><img class="recorre" src="mend-app-larga.jpg" alt="" style="--dura:14s"></div></div></div><div class="izq"><h3>Mend</h3><p>Salud articular para Atención Primaria, de la investigación al producto. Marca y web app construidas por mí.</p><div class="cifra"><b>En testeo</b><span>con pacientes de Atención Primaria</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span style="--a:100%">02 Tap In</span><span class="on" style="--a:40%">03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="1"><div class="cv m1"><div class="fondo grano"><img class="foto" src="md-cuello.jpg" alt=""></div><span class="velo"></span><div class="tope"><span>03 / 03 · Mend</span><span>Investigación · Marca · Web app</span><span>2026 · Prototipo con acceso</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="tel"><div class="pant"><img class="recorre" src="mend-app-larga.jpg" alt="" style="--dura:14s"></div></div></div><div class="izq"><h3>Mend</h3><p>Salud articular para Atención Primaria, de la investigación al producto. Marca y web app construidas por mí.</p><div class="cifra"><b>En testeo</b><span>con pacientes de Atención Primaria</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span style="--a:100%">02 Tap In</span><span class="on" style="--a:40%">03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="2"><div class="cv m2"><div class="fondo grano"><span class="tira" style="position:relative"><img src="md-mov-1.jpg" alt=""></span><span class="tira" style="position:relative"><img src="md-mov-3.jpg" alt=""></span><span class="tira" style="position:relative"><img src="md-ventana.jpg" alt=""></span><span class="tinte"></span></div><span class="velo"></span><div class="tope"><span>03 / 03 · Mend</span><span>Investigación · Marca · Web app</span><span>2026 · Prototipo con acceso</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="tel"><div class="pant"><img class="recorre" src="mend-app-larga.jpg" alt="" style="--dura:14s"></div></div></div><div class="izq"><h3>Mend</h3><p>Salud articular para Atención Primaria, de la investigación al producto. Marca y web app construidas por mí.</p><div class="cifra"><b>En testeo</b><span>con pacientes de Atención Primaria</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span style="--a:100%">02 Tap In</span><span class="on" style="--a:40%">03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="3"><div class="cv m3"><div class="fondo grano"><img class="foto" src="md-degradado.jpg" alt=""><span class="masc iso" style="--svg:url('mend-iso.svg')"></span></div><div class="tope"><span>03 / 03 · Mend</span><span>Investigación · Marca · Web app</span><span>2026 · Prototipo con acceso</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="tel"><div class="pant"><img class="recorre" src="mend-app-larga.jpg" alt="" style="--dura:14s"></div></div></div><div class="izq"><h3>Mend</h3><p>Salud articular para Atención Primaria, de la investigación al producto. Marca y web app construidas por mí.</p><div class="cifra"><b>En testeo</b><span>con pacientes de Atención Primaria</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span style="--a:100%">02 Tap In</span><span class="on" style="--a:40%">03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="4"><div class="cv m4"><div class="fondo grano"><span class="luz"></span><span class="tono"></span></div><div class="tope"><span>03 / 03 · Mend</span><span>Investigación · Marca · Web app</span><span>2026 · Prototipo con acceso</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="tel"><div class="pant"><img class="recorre" src="mend-app-larga.jpg" alt="" style="--dura:14s"></div></div></div><div class="izq"><h3>Mend</h3><p>Salud articular para Atención Primaria, de la investigación al producto. Marca y web app construidas por mí.</p><div class="cifra"><b>En testeo</b><span>con pacientes de Atención Primaria</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span style="--a:100%">02 Tap In</span><span class="on" style="--a:40%">03 Mend</span></div></div></div>
+            <div class="panel-f" data-panel="5"><div class="cv m5 claro"><div class="fondo grano"><span class="marco-f"><img src="md-ventana.jpg" alt=""></span><span class="masc iso" style="--svg:url('mend-iso.svg')"></span></div><div class="tope"><span>03 / 03 · Mend</span><span>Investigación · Marca · Web app</span><span>2026 · Prototipo con acceso</span></div><div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div><div class="pieza"><div class="tel"><div class="pant"><img class="recorre" src="mend-app-larga.jpg" alt="" style="--dura:14s"></div></div></div><div class="izq"><h3>Mend</h3><p>Salud articular para Atención Primaria, de la investigación al producto. Marca y web app construidas por mí.</p><div class="cifra"><b>En testeo</b><span>con pacientes de Atención Primaria</span></div><span class="ver">Ver caso →</span></div><div class="regla"><span style="--a:100%">01 Llegó Farma</span><span style="--a:100%">02 Tap In</span><span class="on" style="--a:40%">03 Mend</span></div></div></div>
+        </div>
+        <div class="botones">
+            <button type="button" class="op" data-fondo="0" aria-pressed="false"><span class="mono">Hoy</span><b>Degradado con grano</b>Como está ahora, para comparar.</button>
+            <button type="button" class="op" data-fondo="1" aria-pressed="false"><span class="mono">M1</span><b>Luz de ventana</b>La foto del manual: una mujer estirando el cuello junto a la ventana. El teléfono angosto la deja ver entera.<span class="rec">Recomendada</span></button>
+            <button type="button" class="op" data-fondo="2" aria-pressed="false"><span class="mono">M2</span><b>Tríptico de movimiento</b>Tres fotos del manual en duotono petróleo, como una hoja de contacto de ejercicios.</button>
+            <button type="button" class="op" data-fondo="3" aria-pressed="false"><span class="mono">M3</span><b>Degradado oficial y Encaje</b>La portada del manual: el degradado de referencia y el isotipo enorme cerrándose.</button>
+            <button type="button" class="op" data-fondo="4" aria-pressed="false"><span class="mono">M4</span><b>Sombras de ventana</b>La luz de las fotos del manual sin fotos: un marco de ventana proyectado que se mueve lento.</button>
+            <button type="button" class="op" data-fondo="5" aria-pressed="false"><span class="mono">M5</span><b>Hueso editorial</b>El blanco hueso de la dirección fotográfica, tinta petróleo y la foto como una ventana alta. Portada clara.</button>
+        </div>
+    </div>
+</section>
+<div style="height:64px"></div>
+
+<script>
+/* =======================================================
+   INICIO JS · CAMBIO DE FONDO POR PROYECTO
+   ======================================================= */
+(() => {
+    document.querySelectorAll('.proy-vista').forEach(v => {
+        const botones = [...v.querySelectorAll('[data-fondo]')], paneles = [...v.querySelectorAll('[data-panel]')];
+        const abrir = b => {
+            botones.forEach(x => x.setAttribute('aria-pressed', x === b));
+            paneles.forEach(x => x.classList.toggle('on', x.dataset.panel === b.dataset.fondo));
+        };
+        botones.forEach(b => b.addEventListener('click', () => abrir(b)));
+        /* Abre con la recomendada */
+        abrir(botones.find(b => b.querySelector('.rec')) || botones[0]);
+    });
+    /* QR decorativo: 29 módulos con los tres cuadros de posición y el resto al azar, siempre igual (semilla fija) */
+    const qr = document.querySelector('[data-qr]');
+    if (qr) {
+        const N = 29; let s = 7, rects = '';
+        const azar = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+        const marco = (x, y) => x < 8 && y < 8 || x > N - 9 && y < 8 || x < 8 && y > N - 9;
+        const cuadro = (x, y) => { rects += `<path d="M${x} ${y}h7v7h-7z M${x + 1} ${y + 1}v5h5v-5z" fill-rule="evenodd"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3"/>`; };
+        for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (!marco(x, y) && azar() > 0.52) rects += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+        cuadro(0, 0); cuadro(N - 7, 0); cuadro(0, N - 7);
+        qr.innerHTML = `<svg viewBox="-1 -1 ${N + 2} ${N + 2}" aria-hidden="true">${rects}</svg>`;
+    }
+})();
+/* =======================================================
+   FIN JS · CAMBIO DE FONDO POR PROYECTO
+   ======================================================= */
+</script>

@@ -196,9 +196,10 @@
         .pt-txt { grid-column: 1 / span 5; grid-row: 3; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; translate: 0 calc((1 - var(--r)) * 60px); }
         .pt-txt h3 { font-size: clamp(56px, 6.4vw, 120px); font-weight: 500; letter-spacing: -0.06em; line-height: 0.86; }
         .pt-txt > p { max-width: 32ch; font-size: clamp(16px, 1.25vw, 20px); line-height: 1.38; letter-spacing: -0.01em; color: rgba(255, 255, 255, 0.84); }
-        .pt-cifra { display: flex; align-items: baseline; gap: 14px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        /* El dato se apoya en la base de la cifra: su última línea calza con la línea base del número, sin colgar hacia abajo */
+        .pt-cifra { display: flex; align-items: flex-end; gap: 14px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.2); }
         .pt-cifra b { font-size: clamp(30px, 2.8vw, 46px); font-weight: 500; letter-spacing: -0.05em; line-height: 1; }
-        .pt-cifra span { max-width: 22ch; color: rgba(255, 255, 255, 0.72); font: 400 12px / 1.35 var(--mono); }
+        .pt-cifra span { max-width: 22ch; padding-bottom: 0.1em; color: rgba(255, 255, 255, 0.72); font: 400 12px / 1.35 var(--mono); }
         .pt-ver { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-size: 14px; font-weight: 500; transition: gap 200ms var(--ease); }
         .pt-ver i { font-style: normal; transition: transform 200ms var(--ease); }
         @media (hover: hover) { .pt-ver:hover { gap: 14px; } .pt-ver:hover i { transform: translateX(2px); } }
@@ -248,16 +249,20 @@
         @keyframes ej-full { 0%, 79.9% { opacity: 0; transform: none; } 80% { opacity: 1; transform: none; animation-timing-function: cubic-bezier(0.3, 0, 0.3, 1); } 87% { transform: scale(0.982); animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1); } 100% { opacity: 1; transform: none; } }
 
         /* --- 4. REGLA DE AVANCE --- */
-        /* Una sola, en el marco, en vez de la mini navegación repetida en cada panel: un vidrio con tres pestañas
-           (número, nombre y una pista que se llena con el avance de su portada, --a). Las teclas 1, 2 y 3 saltan */
-        .pt-regla { position: absolute; z-index: 5; left: 50%; bottom: 26px; display: flex; gap: 4px; padding: 5px; border-radius: 16px; background: rgba(12, 12, 12, 0.3); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 18px 40px -20px rgba(0, 0, 0, 0.6); translate: -50% 0; }
-        .pt-regla button { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 10px; row-gap: 8px; width: 152px; padding: 9px 12px 10px; border-radius: 11px; color: rgba(255, 255, 255, 0.6); text-align: left; transition: background-color 180ms linear, color 180ms linear; }
-        .pt-regla .n { font: 400 10px var(--mono); letter-spacing: 0.02em; opacity: 0.7; }
-        .pt-regla .t { overflow: hidden; font-size: 13px; font-weight: 500; letter-spacing: -0.015em; white-space: nowrap; text-overflow: ellipsis; }
-        .pt-regla i { grid-column: 1 / -1; position: relative; height: 2px; overflow: hidden; border-radius: 2px; background: rgba(255, 255, 255, 0.18); }
-        .pt-regla i::after { content: ''; position: absolute; inset: 0; background: currentColor; transform-origin: 0 50%; transform: scaleX(var(--a, 0)); }
-        .pt-regla button.on { background: rgba(255, 255, 255, 0.1); color: #FFFFFF; }
-        @media (hover: hover) { .pt-regla button:not(.on):hover { color: #FFFFFF; } }
+        /* Cierra la portada abajo como los rótulos la abren arriba: una regla de margen a margen en tres tramos,
+           cada uno con su línea que se llena con el avance de su portada (--a), número, nombre y disciplinas. Sin caja:
+           un velo suave al pie asegura el contraste sobre cualquier fondo. Las teclas 1, 2 y 3 saltan */
+        .pt-fijo::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; height: 140px; background: linear-gradient(transparent, rgba(0, 0, 0, 0.32)); pointer-events: none; }
+        .pt-regla { position: absolute; z-index: 5; left: var(--margen); right: var(--margen); bottom: 22px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--medianil); }
+        .pt-regla button { position: relative; display: flex; align-items: baseline; gap: 10px; min-width: 0; padding: 14px 0 2px; color: rgba(255, 255, 255, 0.52); text-align: left; transition: color 180ms linear; }
+        .pt-regla .n { flex: none; font: 400 11px var(--mono); }
+        .pt-regla .t { flex: none; font-size: 15px; font-weight: 500; letter-spacing: -0.02em; }
+        .pt-regla .e { min-width: 0; margin-left: auto; overflow: hidden; font: 400 11px var(--mono); white-space: nowrap; text-overflow: ellipsis; opacity: 0; transition: opacity 180ms linear; }
+        .pt-regla i { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: rgba(255, 255, 255, 0.24); }
+        .pt-regla i::after { content: ''; position: absolute; left: 0; right: 0; top: -0.5px; height: 2px; background: #FFFFFF; transform-origin: 0 50%; transform: scaleX(var(--a, 0)); }
+        .pt-regla button.on { color: #FFFFFF; }
+        .pt-regla button.on .e { opacity: 0.7; }
+        @media (hover: hover) { .pt-regla button:not(.on):hover { color: #FFFFFF; } .pt-regla button:hover .e { opacity: 0.7; } }
 
         /* --- 5. RENDER EN USO (MEND) --- */
         .pt-render { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 40px 50px rgba(5, 20, 22, 0.55)); }
@@ -341,10 +346,11 @@
             .pt-cifra b { font-size: 28px; }
             .pt-vista .pt-nav { width: auto; height: 100%; aspect-ratio: 4 / 5; }
             .pt-regla { bottom: 18px; gap: 2px; border-radius: 14px; }
-            /* En el teléfono el número sobra: queda el nombre completo y su pista */
-            .pt-regla button { width: auto; grid-template-columns: auto; padding: 8px 11px 9px; }
-            .pt-regla .n { display: none; }
-            .pt-regla .t { overflow: visible; font-size: 12px; }
+            /* En el teléfono quedan el número y el nombre; las disciplinas ya están en los rótulos de arriba */
+            .pt-regla { bottom: 16px; column-gap: 10px; }
+            .pt-regla button { gap: 6px; padding-top: 11px; }
+            .pt-regla .t { font-size: 13px; }
+            .pt-regla .e { display: none; }
 
             .hoja, .hoja-cab, .ficha a { grid-template-columns: repeat(4, 1fr); }
             .hoja { padding-top: 64px; border-radius: 18px 18px 0 0; }
@@ -488,9 +494,9 @@
                 </div>
             </article>
             <nav class="pt-regla" aria-label="Proyectos destacados">
-                <button type="button" data-ir-cov="0" class="on" aria-keyshortcuts="1"><span class="n">01</span><span class="t">Llegó Farma</span><i aria-hidden="true"></i></button>
-                <button type="button" data-ir-cov="1" aria-keyshortcuts="2"><span class="n">02</span><span class="t">Tap In</span><i aria-hidden="true"></i></button>
-                <button type="button" data-ir-cov="2" aria-keyshortcuts="3"><span class="n">03</span><span class="t">Mend</span><i aria-hidden="true"></i></button>
+                <button type="button" data-ir-cov="0" class="on" aria-keyshortcuts="1"><span class="n">01</span><span class="t">Llegó Farma</span><span class="e">Marca · Sitio</span><i aria-hidden="true"></i></button>
+                <button type="button" data-ir-cov="1" aria-keyshortcuts="2"><span class="n">02</span><span class="t">Tap In</span><span class="e">Marca · Producto · Web</span><i aria-hidden="true"></i></button>
+                <button type="button" data-ir-cov="2" aria-keyshortcuts="3"><span class="n">03</span><span class="t">Mend</span><span class="e">Investigación · Marca · Web app</span><i aria-hidden="true"></i></button>
             </nav>
         </div>
     </section>
