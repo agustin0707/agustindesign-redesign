@@ -125,116 +125,119 @@
         }
     
         /* =======================================================
-           HOME · WORKS (W3 PILA DE CORTINAS)
+           HOME · WORKS (APERTURA, PORTADAS Y ARCHIVO)
            ======================================================= */
 
         /* =======================================================
-           1. APERTURA DE LA SECCIÓN (AFICHE "WORKS")
+           1. APERTURA CON ÍNDICE
            ======================================================= */
-        /* Mismo lenguaje del hero: una palabra gigante en Geist cerrada que entra letra a letra */
-        .apertura { position: relative; z-index: 1; min-height: 100svh; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: auto 1fr auto; column-gap: var(--medianil); padding: 72px var(--margen) var(--margen); }
+        /* Sube sobre el hero como una cortina negra. La frase de valor es el titular y los tres destacados son una
+           tabla que navega: proyecto, disciplinas, año y estado (referencia: el índice de Locomotive) */
+        .apertura { position: relative; z-index: 1; min-height: 100svh; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: auto 1fr auto; column-gap: var(--medianil); row-gap: 40px; padding: 72px var(--margen) clamp(32px, 6svh, 64px); }
         .apertura .fila-top { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding-bottom: 14px; border-bottom: 1px solid #262625; }
         .apertura .fila-top span:nth-child(1) { grid-column: 1 / span 3; }
         .apertura .fila-top span:nth-child(2) { grid-column: 4 / span 5; }
         .apertura .fila-top span:nth-child(3) { grid-column: 10 / -1; justify-self: end; }
+        .ap-titulo { grid-column: 4 / -1; align-self: center; font-size: clamp(38px, 5.2vw, 92px); font-weight: 500; letter-spacing: -0.05em; line-height: 0.98; text-wrap: balance; }
+        .ap-titulo .gris { color: var(--gris-oscuro); }
+        .ap-titulo sup { margin-left: 0.25em; font: 400 12px var(--mono); letter-spacing: 0; color: var(--gris-medio); vertical-align: top; }
+        .ap-indice { grid-column: 4 / -1; align-self: end; list-style: none; border-top: 1px solid #262625; }
+        .ap-indice a { display: grid; grid-template-columns: 48px minmax(0, 1.3fr) minmax(0, 1.6fr) 90px minmax(0, 1fr) 20px; align-items: baseline; gap: 12px; padding: 18px 0 16px; border-bottom: 1px solid #262625; transition: padding 200ms var(--ease), color 200ms linear; }
+        .ap-indice b { font-size: clamp(22px, 2vw, 32px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
+        .ap-indice .gris { transition: color 200ms linear; }
+        .ap-indice i { font-style: normal; color: var(--gris-medio); transition: transform 200ms var(--ease), color 200ms linear; }
+        .ap-indice .en-linea { color: var(--blanco); }
+        .ap-indice .en-linea::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: #3FCF8E; box-shadow: 0 0 0 3px rgba(63, 207, 142, 0.18); vertical-align: 1px; }
+        .ap-indice .ap-arch b { color: var(--gris-medio); }
+        @media (hover: hover) {
+            .ap-indice:has(a:hover) a:not(:hover) { color: var(--gris-oscuro); }
+            .ap-indice:has(a:hover) a:not(:hover) .gris, .ap-indice:has(a:hover) a:not(:hover) b { color: var(--gris-oscuro); }
+            .ap-indice a:hover { padding-left: 10px; }
+            .ap-indice a:hover i { color: var(--blanco); transform: translate(2px, 2px); }
+        }
 
-        /* --- 1. PALABRA GIGANTE --- */
-        .gigante { grid-column: 1 / -1; align-self: center; position: relative; font-size: clamp(120px, min(29vw, 52svh), 560px); font-weight: 500; letter-spacing: -0.07em; line-height: 0.78; margin-left: -0.05em; }
-        .gigante sup { position: absolute; top: 0.08em; font-family: var(--mono); font-size: max(12px, 0.06em); letter-spacing: 0; font-weight: 400; margin-left: 0.15em; color: var(--gris-medio); }
-
-        /* --- 2. PIE DE LA APERTURA --- */
-        .apertura .manifiesto { grid-column: 4 / span 5; align-self: end; font-size: clamp(20px, 1.9vw, 30px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.18; }
-        .apertura .manifiesto span { color: var(--gris-medio); }
-        .apertura .indice-proyectos { grid-column: 10 / -1; align-self: end; list-style: none; border-top: 1px solid #262625; }
-        .apertura .indice-proyectos a { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; padding: 10px 0; border-bottom: 1px solid #262625; transition: padding 700ms var(--hover-lento), color 500ms var(--hover-lento); }
-        .apertura .indice-proyectos a .mono { color: var(--gris-medio); }
-        @media (hover: hover) { .apertura .indice-proyectos a:hover { padding-left: 10px; } }
-        .apertura .num-seccion { grid-column: 1 / span 3; align-self: end; }
-
-        /* --- 3. LETRAS QUE SUBEN (HERO) --- */
-        /* Las letras quedan abajo de su línea hasta que el título entra en pantalla.
-           La máscara es un clip-path que se extiende más allá de la caja: con tracking negativo y line-height
-           cerrado, los costados de la última letra, los acentos y los descendentes salen de la caja y overflow los cortaba */
-        .works [data-letras] .palabra { display: inline-block; overflow: visible; padding: 0; margin: 0; vertical-align: top; clip-path: inset(-0.6em -0.35em -0.36em -0.35em); }
-        .works [data-letras] .l { display: inline-block; transform: translateY(1.9em); animation: none; }
+        /* --- 1. LETRAS QUE SUBEN --- */
+        /* Las letras quedan abajo de su línea hasta que el título entra en pantalla. La máscara es un clip-path que
+           se extiende más allá de la caja: con tracking negativo los costados y acentos salían de ella */
+        .works [data-letras] .palabra { display: inline-block; overflow: visible; vertical-align: top; clip-path: inset(-0.6em -0.35em -0.36em -0.35em); }
+        .works [data-letras] .l { display: inline-block; transform: translateY(1.9em); }
         .works [data-letras].entra .l { animation: subeLetra 1000ms var(--ease) forwards; }
         @keyframes subeLetra { to { transform: translateY(0); } }
 
         /* =======================================================
-           2. PANEL
+           2. PORTADAS DE LOS DESTACADOS
            ======================================================= */
-        /* --q: cuánto lo cubrió el siguiente (0 a 1), lo escribe el JS */
-        .panel { --q: 0; --tinte: var(--negro); position: sticky; top: 0; height: 100svh; display: grid; grid-template-rows: auto 1fr auto; padding: 64px var(--margen) var(--margen); background: var(--tinte); overflow: hidden; }
-        .panel, .pila + .hoja { border-radius: 18px 18px 0 0; box-shadow: 0 -24px 48px -12px rgba(0, 0, 0, 0.6); }
-        /* Hueco bajo el borde de la pantalla: en reposo, la sombra del panel que espera abajo no oscurece el título del actual */
-        .pila { --hueco: 72px; }
-        .panel + .panel { margin-top: var(--hueco); }
-        .pila::after { content: ''; display: block; height: var(--hueco); }
-        .panel > :not(.velo) { transform: scale(calc(1 - var(--q) * 0.05)); transform-origin: 50% 0; will-change: transform; }
-        .panel .velo { position: absolute; inset: 0; z-index: 8; background: #000; opacity: calc(var(--q) * 0.7); pointer-events: none; }
-
-        /* --- 1. FILA SUPERIOR CON MINI ÍNDICE --- */
-        .tope { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-items: end; padding-bottom: 14px; }
-        .mi { grid-column: 1 / span 5; display: flex; gap: 22px; }
-        .mi a { display: inline-flex; gap: 8px; color: rgba(245, 245, 243, 0.38); transition: color 600ms var(--hover-lento); }
-        .mi a.actual { color: var(--blanco); }
-        .mi a.actual .mi-n::before { content: '●'; margin-right: 6px; font-size: 8px; vertical-align: 2px; }
-        @media (hover: hover) { .mi a:hover { color: var(--blanco); } }
-        .tope .disc { grid-column: 6 / span 4; white-space: nowrap; }
-        .tope .vivo { white-space: nowrap; }
-        .tope .vivo { grid-column: 10 / -1; justify-self: end; }
-        .tope .vivo a { border-bottom: 1px solid rgba(245, 245, 243, 0.4); }
-
-        /* =======================================================
-           3. LÁMINA: LA ESCENA DEL PROYECTO
-           ======================================================= */
-        .lamina { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; isolation: isolate; }
-        .lamina:focus-visible { outline: 1px solid var(--blanco); outline-offset: 6px; }
-        /* Sin pastilla que siga al cursor: la etiqueta fija de la esquina cambia a "Ver caso" al pasar el mouse.
-           Los dos textos comparten la misma celda y se relevan subiendo */
-        .lamina .ver { display: none; }
-        .lamina .recorre { position: absolute; left: 18px; top: 18px; z-index: 4; display: grid; overflow: hidden; padding: 8px 13px; border-radius: 999px; background: rgba(11, 11, 11, 0.62); transition: background-color 500ms var(--hover-lento), color 500ms var(--hover-lento); }
-        .lamina .recorre > span { grid-area: 1 / 1; justify-self: center; transition: transform 600ms var(--hover-lento), opacity 400ms var(--hover-lento); }
-        .lamina .recorre > span + span { transform: translateY(110%); opacity: 0; }
-        @media (hover: hover) {
-            .lamina:hover .recorre { background: var(--blanco); color: var(--negro); }
-            .lamina:hover .recorre > span:first-child { transform: translateY(-110%); opacity: 0; }
-            .lamina:hover .recorre > span + span { transform: none; opacity: 1; }
-        }
-        .lamina:focus-visible .recorre { background: var(--blanco); color: var(--negro); }
-        .lamina:focus-visible .recorre > span:first-child { transform: translateY(-110%); opacity: 0; }
-        .lamina:focus-visible .recorre > span + span { transform: none; opacity: 1; }
-
-        /* --- 1. ESCENA --- */
-        .escena { position: absolute; inset: 0; overflow: hidden; container-type: size; --barra: clamp(14px, 2.3cqw, 34px); }
-        .escena .fondo { position: absolute; inset: 0; }
-        .escena .fondo > * { width: 100%; height: 100%; object-fit: cover; scale: 1.05; transition: scale 1600ms var(--hover-lento); }
-        @media (hover: hover) { .lamina:hover .escena .fondo > * { scale: 1; } }
-        .escena-llego .fondo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 20, 21, 0.1), rgba(10, 20, 21, 0.5)); }
-        .escena-tapin .fondo { background: radial-gradient(120% 95% at 50% 0%, #9A8CFA 0%, #4A3CAE 46%, #16113A 100%); }
-
-        /* --- 1.1 MEND: CAMPO DE COLOR CONSTRUIDO EN CSS --- */
-        /* El degradado de marca (bruma a petróleo) armado con capas de gradientes: nítido a cualquier tamaño.
-           Encima, el grano oficial de Mend en soft-light, que además evita el bandeo */
-        .escena-mend .campo { position: relative; background:
+        /* Cada proyecto es una portada a pantalla completa con su propio mundo; la siguiente se destapa desde abajo y
+           la anterior se aleja. Encima va el marco de Agustín Design: nombre entero, una cifra (referencia: Ragged
+           Edge), los capítulos Marca, Web y En uso (referencia: Order) y una sola regla de avance con teclas 1 a 3.
+           --r (destape) y --sale (cuánto la cubrió la siguiente) los escribe inicio-works.js */
+        .pt-pista { position: relative; height: 440svh; }
+        .pt-fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--negro); }
+        .pt-cov { --r: 1; --sale: 0; position: absolute; inset: 0; clip-path: inset(calc((1 - var(--r)) * 100%) 0 0 0); }
+        .pt-mundo { position: absolute; inset: 0; transform: scale(calc(1 - var(--sale) * 0.06)); transform-origin: 50% 0%; filter: brightness(calc(1 - var(--sale) * 0.55)); }
+        .pt-cov[data-i="0"] .pt-mundo { background: #0F2A2D; }
+        .pt-cov[data-i="0"] .pt-mundo > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
+        .pt-cov[data-i="0"] .pt-mundo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8, 22, 24, 0.94), rgba(8, 22, 24, 0.5) 50%, rgba(8, 22, 24, 0.2)); }
+        .pt-cov[data-i="1"] .pt-mundo { background: radial-gradient(60% 55% at 78% 22%, #8E81F5, transparent 70%), radial-gradient(120% 100% at 50% 0%, #6B5CE7, #4A3CAE 52%, #2D2560); }
+        /* Mend: el degradado de marca (bruma a petróleo) con capas de gradientes y su grano en soft-light */
+        .pt-cov[data-i="2"] .pt-mundo { background:
             radial-gradient(52% 72% at 90% 0%, rgba(201, 233, 232, 0.95) 0%, rgba(190, 220, 219, 0.6) 38%, rgba(190, 220, 219, 0) 76%),
             radial-gradient(40% 60% at 60% 0%, rgba(168, 186, 182, 0.6) 0%, rgba(168, 186, 182, 0) 72%),
             radial-gradient(60% 65% at 0% 100%, rgba(30, 77, 87, 0.95) 0%, rgba(30, 77, 87, 0) 72%),
             linear-gradient(90deg, #2A5960 0%, #3A6970 22%, #5E8C91 46%, #84AEB2 70%, #8EB8BB 100%); }
-        .escena-mend .campo::after { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); background-size: 200px; mix-blend-mode: soft-light; opacity: 0.7; }
+        .pt-cov[data-i="2"] .pt-mundo::after { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); background-size: 200px; mix-blend-mode: soft-light; opacity: 0.7; }
 
-        /* --- 1.2 MEND: LOGO HORIZONTAL ANIMADO --- */
-        /* Piezas del SVG oficial y animaciones del manual V08: el wordmark se dibuja con un trazo y se rellena,
-           y a los 1,9 s el isotipo hace el Encaje. Se dispara cuando la lámina entra en pantalla (JS agrega .logo) */
-        .mend-logo { position: absolute; left: 9cqw; top: 50%; z-index: 1; width: 27cqw; translate: 0 -50%; overflow: visible; fill: #fff; transition: translate 1200ms var(--hover-lento); }
-        .escena-mend:not(.logo) .mend-logo { opacity: 0; }
-        .mend-logo .ej-pair { opacity: 0; }
-        .mend-logo .trazo { stroke: #fff; stroke-width: 0.7; stroke-dasharray: 1; stroke-opacity: 0; }
-        .escena-mend.logo .trazo { animation: trazo 2s cubic-bezier(0.6, 0.1, 0.3, 1) 0.2s both, relleno 0.7s ease 1.5s both; }
-        .escena-mend.logo .ej-full { transform-box: fill-box; transform-origin: 50% 50%; animation: ej-full 2.4s linear 1.9s both; }
-        .escena-mend.logo .ej-pair { animation: ej-pair 2.4s linear 1.9s both; }
-        .escena-mend.logo .ej-a { animation: ej-glide-a 2.4s linear 1.9s both, ej-close-a 2.4s linear 1.9s both; }
-        .escena-mend.logo .ej-b { animation: ej-glide-b 2.4s linear 1.9s both, ej-close-b 2.4s linear 1.9s both; }
+        /* --- 1. MARCO --- */
+        .pt-marco { position: relative; z-index: 2; height: 100%; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; column-gap: var(--medianil); row-gap: 24px; padding: 72px var(--margen) 100px; }
+        .pt-tope { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); color: rgba(255, 255, 255, 0.74); }
+        .pt-tope > :nth-child(1) { grid-column: 1 / span 3; } .pt-tope > :nth-child(2) { grid-column: 4 / span 5; } .pt-tope > :nth-child(3) { grid-column: 9 / -1; justify-self: end; }
+        .pt-tope a { border-bottom: 1px solid rgba(255, 255, 255, 0.4); }
+        .pt-tope .en-linea::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: #3FCF8E; vertical-align: 1px; }
+        .pt-txt { grid-column: 1 / span 5; grid-row: 3; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; translate: 0 calc((1 - var(--r)) * 60px); }
+        .pt-txt h3 { font-size: clamp(56px, 6.4vw, 120px); font-weight: 500; letter-spacing: -0.06em; line-height: 0.86; }
+        .pt-txt > p { max-width: 32ch; font-size: clamp(16px, 1.25vw, 20px); line-height: 1.38; letter-spacing: -0.01em; color: rgba(255, 255, 255, 0.84); }
+        .pt-cifra { display: flex; align-items: baseline; gap: 14px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        .pt-cifra b { font-size: clamp(30px, 2.8vw, 46px); font-weight: 500; letter-spacing: -0.05em; line-height: 1; }
+        .pt-cifra span { max-width: 22ch; color: rgba(255, 255, 255, 0.72); font: 400 12px / 1.35 var(--mono); }
+        .pt-ver { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-size: 14px; font-weight: 500; transition: gap 200ms var(--ease); }
+        .pt-ver i { font-style: normal; transition: transform 200ms var(--ease); }
+        @media (hover: hover) { .pt-ver:hover { gap: 14px; } .pt-ver:hover i { transform: translateX(2px); } }
+
+        /* --- 2. CAPÍTULOS: MARCA, WEB Y EN USO SOBRE LA MISMA PIEZA --- */
+        .pt-lado { grid-column: 6 / -1; grid-row: 2 / span 2; display: grid; grid-template-rows: auto minmax(0, 1fr); row-gap: 14px; min-height: 0; translate: 0 calc((1 - var(--r)) * 12svh); }
+        .pt-caps { justify-self: end; display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(0, 0, 0, 0.32); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .pt-caps button { min-height: 32px; padding: 0 14px; border-radius: 999px; color: rgba(255, 255, 255, 0.74); font: 400 12px var(--mono); transition: background-color 160ms linear, color 160ms linear; }
+        .pt-caps button[aria-selected="true"] { background: #FFFFFF; color: var(--negro); }
+        @media (hover: hover) { .pt-caps button[aria-selected="false"]:hover { color: #FFFFFF; } }
+        .pt-vistas { position: relative; min-height: 0; }
+        .pt-vista { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; scale: 0.98; transition: opacity 200ms var(--ease), scale 200ms var(--ease); pointer-events: none; }
+        .pt-vista.on { opacity: 1; scale: 1; pointer-events: auto; }
+        .pt-marca { display: block; width: min(70%, 520px); aspect-ratio: 3.4 / 1; background: #FFFFFF; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+        .pt-foto { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; box-shadow: 0 50px 90px -40px rgba(0, 0, 0, 0.8); }
+        .pt-foto.contiene { object-fit: contain; background: #EEEDFE; }
+        .pt-nav { display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden; border-radius: 12px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 50px 90px -40px rgba(0, 0, 0, 0.8); }
+        .pt-nav .pt-barra { flex: none; display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; background: #EDEDEA; }
+        .pt-nav .pt-barra i { width: 9px; height: 9px; border-radius: 50%; background: #CFCFCB; }
+        .pt-nav .pt-barra span { margin: 0 auto; padding: 3px 28px; border-radius: 6px; background: #FFFFFF; color: #6A6A66; font: 400 11px var(--mono); }
+        .pt-pant { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+        .pt-pant img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
+        /* El sitio largo baja solo moviendo object-position: la imagen queda del ancho de la ventana */
+        .pt-recorre { animation: ptRecorre var(--dura, 18s) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
+        @keyframes ptRecorre { 0%, 8% { object-position: 50% 0%; } 92%, 100% { object-position: 50% 100%; } }
+        .pt-tel { position: relative; height: 100%; aspect-ratio: 9 / 19.5; padding: 1.4%; border-radius: 15% / 7%; background: linear-gradient(150deg, #5B6A6C, #1F2A2C 22%, #3A4749 52%, #131B1C 78%, #48585A); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 50px 90px -40px rgba(0, 0, 0, 0.8); }
+        .pt-tel .pt-pant { position: absolute; inset: 1.4%; border: 3px solid #050708; border-radius: 13.5% / 6.3%; background: #577A80; }
+
+        /* --- 3. MEND: LOGO HORIZONTAL ANIMADO --- */
+        /* Piezas del SVG oficial y animaciones del manual V08: el wordmark se dibuja con un trazo y se rellena, y a
+           los 1,9 s el isotipo hace el Encaje. Se dispara al abrir el capítulo Marca (el JS agrega .dibuja) */
+        .pt-mend-logo { width: min(74%, 520px); overflow: visible; fill: #fff; }
+        .pt-mend-logo .ej-pair { opacity: 0; }
+        .pt-mend-logo .trazo { stroke: #fff; stroke-width: 0.7; stroke-dasharray: 1; stroke-opacity: 0; }
+        .dibuja .pt-mend-logo .trazo { animation: trazo 2s cubic-bezier(0.6, 0.1, 0.3, 1) 0.2s both, relleno 0.7s ease 1.5s both; }
+        .dibuja .pt-mend-logo .ej-full { transform-box: fill-box; transform-origin: 50% 50%; animation: ej-full 2.4s linear 1.9s both; }
+        .dibuja .pt-mend-logo .ej-pair { animation: ej-pair 2.4s linear 1.9s both; }
+        .dibuja .pt-mend-logo .ej-a { animation: ej-glide-a 2.4s linear 1.9s both, ej-close-a 2.4s linear 1.9s both; }
+        .dibuja .pt-mend-logo .ej-b { animation: ej-glide-b 2.4s linear 1.9s both, ej-close-b 2.4s linear 1.9s both; }
         @keyframes trazo { 0% { stroke-dashoffset: 1; stroke-opacity: 1; } 88% { stroke-dashoffset: 0; stroke-opacity: 1; } 100% { stroke-dashoffset: 0; stroke-opacity: 0; } }
         @keyframes relleno { from { fill-opacity: 0; } to { fill-opacity: 1; } }
         @keyframes ej-glide-a { 0% { translate: 13.57px -3.46px; animation-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1); } 80%, 100% { translate: 0 0; } }
@@ -244,65 +247,33 @@
         @keyframes ej-pair { 0% { opacity: 0; } 18% { opacity: 0.45; } 62% { opacity: 1; } 79.9% { opacity: 1; } 80%, 100% { opacity: 0; } }
         @keyframes ej-full { 0%, 79.9% { opacity: 0; transform: none; } 80% { opacity: 1; transform: none; animation-timing-function: cubic-bezier(0.3, 0, 0.3, 1); } 87% { transform: scale(0.982); animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1); } 100% { opacity: 1; transform: none; } }
 
-        /* --- 2. NAVEGADOR --- */
-        .navegador { position: absolute; left: 15%; right: 15%; top: 12%; bottom: -3%; border-radius: max(6px, 0.7cqw) max(6px, 0.7cqw) 0 0; background: #fff; overflow: hidden; box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6); transition: translate 1200ms var(--hover-lento); }
-        .barra-nav { position: relative; height: var(--barra); display: flex; align-items: center; gap: max(4px, 0.45cqw); padding: 0 max(8px, 1cqw); background: #F1F1EF; border-bottom: 1px solid #E2E2DF; }
-        .barra-nav i { width: max(6px, 0.7cqw); height: max(6px, 0.7cqw); border-radius: 50%; background: #CFCFCB; }
-        .barra-nav .url { position: absolute; left: 50%; translate: -50% 0; font-size: max(9px, 0.85cqw); color: #77736B; background: #fff; padding: 0.2em 1.4em; border-radius: 999px; }
-
-        /* --- 3. BARRA DE CARGA --- */
-        /* Línea fina bajo la barra del navegador mientras el sitio real carga, como en un navegador de verdad */
-        .barra-nav .carga { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: #4A3CAE; transform: scaleX(0); transform-origin: 0 50%; opacity: 0; }
-        .escena-llego .barra-nav .carga { background: #178181; }
-        .lamina.cargando .barra-nav .carga { opacity: 1; animation: carga 1400ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        .lamina.listo .barra-nav .carga { opacity: 0; transform: scaleX(1); transition: opacity 400ms 200ms; }
-        @keyframes carga { to { transform: scaleX(0.85); } }
-
-        /* --- 4. PANTALLA: PORTADA, SITIO EN VIVO Y CAPTURA LARGA --- */
-        /* En reposo se ve una portada nítida. Con mouse, el sitio real carga con sus animaciones y baja solo.
-           En móvil se usa la captura larga que hace scroll, sin cargar sitios completos */
-        .pantalla { position: absolute; top: var(--barra); left: 0; right: 0; bottom: 0; overflow: hidden; container-type: size; background: #fff; }
-        .pantalla .poster, .pantalla .larga { width: 100%; height: auto; }
-        .pantalla .poster { position: absolute; inset: 0 0 auto 0; z-index: 2; transition: opacity 260ms ease; }
-        .pantalla .larga { display: none; }
-        .pantalla iframe { position: absolute; top: 0; left: 0; width: 1440px; border: 0; transform-origin: 0 0; transform: scale(var(--escala, 0.5)); pointer-events: none; z-index: 1; opacity: 0; transition: opacity 300ms ease; }
-        .lamina.vivo .pantalla iframe { opacity: 1; }
-        /* La portada se mantiene hasta que el sitio terminó de cargar: sin destello en blanco entre una y otro */
-        .lamina.listo .pantalla .poster { opacity: 0; }
-        @media (hover: hover) { .lamina:hover .navegador, .lamina:hover .telefono { translate: 0 -1.5%; } }
-
-        /* --- 5. TELÉFONO (MEND): ARRANQUE DE LA APP --- */
-        /* La pantalla de carga de Mend se desvanece y la app baja, como al abrirla */
-        .telefono { position: absolute; right: 15%; top: 8%; height: 106%; aspect-ratio: 390 / 844; border-radius: max(18px, 3cqw); border: max(4px, 0.5cqw) solid #0B0B0B; background: #0B0B0B; overflow: hidden; box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.65); transition: translate 1200ms var(--hover-lento); }
-        .telefono .pantalla { top: 0; background: #244A53; }
-        .telefono .larga { display: block; translate: 0 0; transition: translate 1800ms var(--hover-lento); }
-        .telefono .splash { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
-        /* En reposo se ve la app; al pasar el mouse la pantalla de carga aparece y se desvanece, como al abrirla */
-        .lamina.arranca .telefono .splash { animation: arranque 1500ms ease forwards; }
-        @keyframes arranque { 0%, 65% { opacity: 1; } 100% { opacity: 0; } }
-        .lamina.arranca .telefono .larga { translate: 0 calc(-100% + 100cqh); transition: translate 11s cubic-bezier(0.45, 0, 0.25, 1) 1500ms; }
-        .escena.quieta * { transition: none !important; animation: none !important; }
+        /* --- 4. REGLA DE AVANCE --- */
+        /* Una sola, en el marco, en vez de la mini navegación repetida en cada panel. Cada tramo se llena con el
+           avance de su portada (--a); las teclas 1, 2 y 3 saltan */
+        .pt-regla { position: absolute; z-index: 5; left: 50%; bottom: 28px; display: flex; gap: 6px; padding: 6px; border-radius: 999px; background: rgba(0, 0, 0, 0.36); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); translate: -50% 0; }
+        .pt-regla button { position: relative; display: flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 14px 0 12px; overflow: hidden; border-radius: 999px; color: rgba(255, 255, 255, 0.7); font: 400 12px var(--mono); white-space: nowrap; transition: color 160ms linear; }
+        .pt-regla button::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: rgba(255, 255, 255, 0.16); transform-origin: 0 50%; transform: scaleX(var(--a, 0)); }
+        .pt-regla button > * { position: relative; }
+        .pt-regla button.on { color: #FFFFFF; }
+        .pt-regla kbd { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3); font: 400 10px var(--mono); }
+        @media (hover: hover) { .pt-regla button:not(.on):hover { color: #FFFFFF; } }
 
         /* =======================================================
-           4. PIE DEL PANEL: TÍTULO CON EL EFECTO DEL HERO
+           3. ARCHIVO: HOJA DE CONTACTOS O LISTA
            ======================================================= */
-        /* Grande, en Geist cerrada, cruzando la lámina e invertido sobre ella como el nombre del hero. Sin la ola del cursor */
-        .pie { position: relative; z-index: 5; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-items: end; pointer-events: none; }
-        .pie .nombre { grid-column: 1 / -1; font-size: clamp(64px, min(12.4vw, 26svh), 260px); font-weight: 500; letter-spacing: -0.065em; line-height: 0.8; word-spacing: -0.06em; white-space: nowrap; color: #fff; mix-blend-mode: difference; translate: 0 -0.5em; margin-bottom: -0.5em; margin-left: -0.04em; }
-        .pie .bajada { grid-column: 10 / -1; grid-row: 1; align-self: end; justify-self: end; text-align: right; max-width: 30ch; color: var(--gris-medio); font-size: 14px; padding-bottom: 6px; }
-
-        /* =======================================================
-           5. ARCHIVO: HOJA DE CONTACTOS
-           ======================================================= */
-        /* El índice tipográfico se mantiene y cada fila suma una tira con piezas reales del proyecto, siempre visibles.
-           Al pasar el mouse la tira se desliza para mostrar el resto y las demás filas se atenúan */
-        .hoja { position: relative; z-index: 5; min-height: 100svh; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-content: start; padding: 88px var(--margen) 140px; background: var(--negro); }
+        /* Sube como una hoja sobre la última portada, que queda fija debajo. Dos vistas (referencia: Instrument y
+           Collins): la hoja de contactos, con una tira de piezas por proyecto, o una lista solo tipográfica */
+        .hoja { position: relative; z-index: 5; min-height: 100svh; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-content: start; margin-top: -100svh; padding: 88px var(--margen) 140px; border-radius: 22px 22px 0 0; background: var(--negro); box-shadow: 0 -40px 80px rgba(0, 0, 0, 0.5); }
 
         /* --- 1. CABECERA --- */
         .hoja-cab { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-items: end; padding-bottom: 32px; }
-        .hoja-cab h2 { grid-column: 1 / span 8; position: relative; font-size: clamp(64px, 9vw, 150px); font-weight: 500; letter-spacing: -0.065em; line-height: 0.8; margin-left: -0.04em; }
+        .hoja-cab h2 { grid-column: 1 / span 6; position: relative; font-size: clamp(64px, 9vw, 150px); font-weight: 500; letter-spacing: -0.065em; line-height: 0.8; margin-left: -0.04em; }
         .hoja-cab h2 sup { position: absolute; top: 0.04em; margin-left: 0.2em; font-size: 12px; color: var(--gris-medio); }
-        .hoja-cab p { grid-column: 9 / -1; justify-self: end; max-width: 30ch; text-align: right; color: var(--gris-medio); font-size: 14px; }
+        .hoja-cab p { grid-column: 7 / span 4; max-width: 34ch; color: var(--gris-medio); font-size: 14px; }
+        .hoja-vistas { grid-column: 11 / -1; justify-self: end; display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--grafito); }
+        .hoja-vistas button { min-height: 32px; padding: 0 14px; border-radius: 999px; color: var(--gris-medio); font: 400 12px var(--mono); transition: background-color 160ms linear, color 160ms linear; }
+        .hoja-vistas button[aria-pressed="true"] { background: var(--blanco); color: var(--negro); }
+        @media (hover: hover) { .hoja-vistas button[aria-pressed="false"]:hover { color: var(--blanco); } }
 
         /* --- 2. FILAS --- */
         .fichas { grid-column: 1 / -1; list-style: none; border-top: 1px solid #262625; }
@@ -313,11 +284,11 @@
         .f-flecha { font-size: 0.55em; letter-spacing: 0; opacity: 0; transform: translate(-6px, 4px); transition: opacity 400ms var(--hover-lento), transform 600ms var(--hover-lento); }
         .f-contexto { max-width: 32ch; color: var(--gris-medio); font-size: 14px; line-height: 1.4; transition: color 500ms var(--hover-lento); }
         .f-disc { margin-top: auto; }
-        .f-anio { grid-column: 12; justify-self: end; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+        .f-disc-l { display: none; }
+        .f-anio { grid-column: 12; justify-self: end; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; white-space: nowrap; }
 
         /* --- 3. TIRA DE PIEZAS --- */
-        /* La tira (wrapper) se revela al entrar en pantalla; su interior es lo que se recorre (lo mueve el JS):
-           cada animación en su propio elemento */
+        /* La tira (wrapper) se revela al entrar en pantalla; su interior es lo que se recorre (lo mueve el JS) */
         .f-tira { grid-column: 5 / span 7; height: clamp(120px, 11.5vw, 190px); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 72px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 72px), transparent); clip-path: inset(0 100% 0 0); }
         .ficha.entra .f-tira { clip-path: inset(0 0 0 0); transition: clip-path 1100ms var(--ease) var(--retraso, 0ms); }
         .f-tira-in { display: flex; gap: 8px; height: 100%; width: max-content; will-change: transform; }
@@ -333,53 +304,64 @@
             .ficha a:hover .f-flecha { opacity: 1; transform: none; }
         }
 
+        /* --- 4. VISTA LISTA --- */
+        /* Solo tipografía, una fila por proyecto (referencia: el archivo de Locomotive) */
+        .fichas.lista .ficha a { align-items: baseline; padding: 16px 0; }
+        .fichas.lista .f-texto { grid-column: 2 / span 4; }
+        .fichas.lista .f-contexto, .fichas.lista .f-disc, .fichas.lista .f-tira { display: none; }
+        .fichas.lista .f-disc-l { display: block; grid-column: 6 / span 4; }
+        .fichas.lista .f-anio { grid-column: 10 / -1; flex-direction: row; justify-content: flex-end; gap: 18px; }
+
         /* =======================================================
            VISTA MÓVIL
            ======================================================= */
         @media (max-width: 768px) {
-            .apertura { grid-template-columns: repeat(4, 1fr); min-height: auto; padding-top: 72px; row-gap: 28px; }
+            .apertura { grid-template-columns: repeat(4, 1fr); padding-top: 72px; row-gap: 32px; }
             .apertura .fila-top { grid-template-columns: repeat(4, 1fr); }
             .apertura .fila-top span:nth-child(2) { display: none; }
             .apertura .fila-top span:nth-child(3) { grid-column: 3 / -1; }
-            .gigante { font-size: 31vw; margin-top: 12vh; }
-            .apertura .manifiesto, .apertura .indice-proyectos, .apertura .num-seccion { grid-column: 1 / -1; }
-            .apertura .num-seccion { display: none; }
-            .panel { padding-top: 60px; grid-template-rows: auto 1fr auto; }
-            .tope, .pie { grid-template-columns: repeat(4, 1fr); }
-            .mi { grid-column: 1 / -1; gap: 14px; }
-            .mi a:not(.actual) .mi-t { display: none; }
-            .tope .disc { display: none; }
-            .tope .vivo { grid-column: 1 / -1; justify-self: start; margin-top: 8px; }
-            .lamina { min-height: 0; }
-            .navegador { left: 8%; right: 8%; top: 14%; }
-            .telefono { right: 50%; translate: 50% 0; top: 24%; }
-            .mend-logo { left: 50%; top: 11%; width: 46cqw; translate: -50% -50%; }
-            .pantalla .poster { display: none; }
-            .pantalla .larga { display: block; translate: 0 0; transition: translate 1800ms var(--hover-lento); }
-            .lamina.viendo .navegador .larga { translate: 0 calc(-100% + 100cqh); transition: translate var(--dura, 11s) cubic-bezier(0.45, 0, 0.25, 1); }
-            .lamina .ver { display: block; position: absolute; top: 14px; right: 14px; z-index: 4; padding: 9px 15px; border-radius: 999px; background: var(--blanco); color: var(--negro); }
-            .lamina .recorre { display: none; }
-            .pie .nombre { font-size: 17vw; white-space: normal; }
-            .pie .bajada { grid-column: 1 / -1; grid-row: auto; justify-self: start; text-align: left; margin-top: 12px; }
+            .ap-titulo, .ap-indice { grid-column: 1 / -1; }
+            .ap-titulo { font-size: clamp(34px, 10vw, 52px); }
+            .ap-indice a { grid-template-columns: 30px minmax(0, 1fr) auto 18px; row-gap: 4px; }
+            .ap-indice .ap-d { grid-column: 2 / span 2; grid-row: 2; }
+            .ap-indice .ap-a { display: none; }
+
+            .pt-marco { grid-template-columns: repeat(4, 1fr); padding: 64px var(--margen) 88px; row-gap: 16px; }
+            .pt-tope > :nth-child(2) { display: none; } .pt-tope > :nth-child(1) { grid-column: 1 / span 2; } .pt-tope > :nth-child(3) { grid-column: 3 / -1; }
+            .pt-lado { grid-column: 1 / -1; grid-row: 2; }
+            .pt-caps { justify-self: start; }
+            .pt-txt { grid-column: 1 / -1; gap: 12px; }
+            /* En el teléfono la bajada queda para el caso: nombre, cifra y botón dejan el alto para la pieza */
+            .pt-txt h3 { font-size: clamp(44px, 13vw, 64px); }
+            .pt-txt > p { display: none; }
+            .pt-cifra b { font-size: 28px; }
+            .pt-vista .pt-nav { width: auto; height: 100%; aspect-ratio: 4 / 5; }
+            .pt-regla { bottom: 18px; gap: 2px; }
+            .pt-regla kbd { display: none; }
+            .pt-regla button { padding: 0 11px; font-size: 11px; }
+
             .hoja, .hoja-cab, .ficha a { grid-template-columns: repeat(4, 1fr); }
-            .hoja { padding-top: 64px; }
-            .hoja-cab h2, .hoja-cab p { grid-column: 1 / -1; }
+            .hoja { padding-top: 64px; border-radius: 18px 18px 0 0; }
+            .hoja-cab { row-gap: 18px; }
+            .hoja-cab h2, .hoja-cab p, .hoja-vistas { grid-column: 1 / -1; }
             .hoja-cab h2 { font-size: 20vw; }
-            .hoja-cab p { justify-self: start; text-align: left; margin-top: 20px; }
+            .hoja-vistas { justify-self: start; }
             .f-num { display: none; }
             .f-texto { grid-column: 1 / span 3; grid-row: 1; }
             .f-anio { grid-column: 4; grid-row: 1; }
-            /* En móvil la tira se recorre con el dedo */
+            /* En el teléfono la tira se recorre con el dedo */
             .f-tira { grid-column: 1 / -1; height: 128px; margin-top: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); }
             .f-tira::-webkit-scrollbar { display: none; }
             .f-tira img { scroll-snap-align: start; }
+            .fichas.lista .f-texto { grid-column: 1 / span 3; }
+            .fichas.lista .f-disc-l { display: none; }
+            .fichas.lista .f-anio { grid-column: 4; }
+            .fichas.lista .f-anio .gris { display: none; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .panel > :not(.velo) { transform: none; }
-            .panel .velo { display: none; }
-            .pantalla img { transition: none !important; translate: 0 0 !important; }
+            .pt-recorre { animation: none; }
+            .pt-vista { transition: none; }
             .works [data-letras] .l { transform: none; }
-            .escena-mend:not(.logo) .mend-logo { opacity: 1; }
             .f-tira { clip-path: none; }
         }
     
@@ -389,10 +371,14 @@
         /* La apertura de works sube sobre el hero fijo como una cortina negra. La barra compacta solo aparece
            cuando el hero ya quedó atrás, para no duplicar la navegación del hero */
         .escena-hero .apertura { z-index: 20; background: var(--negro); color: var(--blanco); }
-        .barra { opacity: 0; pointer-events: none; transition: opacity 300ms linear; }
+        .barra { opacity: 0; pointer-events: none; transition: opacity 300ms linear, translate 260ms var(--ease); }
         .barra.visible { opacity: 1; pointer-events: auto; }
         .barra .logo { grid-column: 1; }
         .barra .der { grid-column: 3; }
+        /* Barra legible: con la mezcla por diferencia, su texto se montaba sobre las piezas del archivo. Sobre works
+           toma un velo con blur, se esconde al bajar y vuelve con una subida clara (lo maneja inicio.js) */
+        .barra.visible { mix-blend-mode: normal; color: var(--blanco); background: rgba(11, 11, 11, 0.62); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); box-shadow: 0 1px 0 rgba(245, 245, 243, 0.08); }
+        .barra.oculta { translate: 0 -100%; }
     </style>
 </head>
 <body>
@@ -422,80 +408,92 @@
 
     <section class="apertura works" id="works">
         <div class="fila-top mono"><span class="gris">02 · Works</span><span class="gris">Trabajo seleccionado</span><span class="gris">2025–2026</span></div>
-        <h2 class="gigante"><span data-letras>works</span><sup>(03)</sup></h2>
-        <span class="num-seccion mono gris">Desliza para ver cada proyecto ↓</span>
-        <p class="manifiesto">Marcas y sitios web, diseñados y construidos por mí. <span>Cada proyecto, contado desde sus decisiones.</span></p>
-        <ul class="indice-proyectos">
-            <li><a href="#p-llego" data-salto><span class="mono">01</span><span>Llegó Farma</span><span class="mono">2026</span></a></li>
-            <li><a href="#p-tapin" data-salto><span class="mono">02</span><span>Tap In</span><span class="mono">2025–26</span></a></li>
-            <li><a href="#p-mend" data-salto><span class="mono">03</span><span>Mend</span><span class="mono">2026</span></a></li>
-            <li><a href="#archivo"><span class="mono">→</span><span>Archivo</span><span class="mono">2022–25</span></a></li>
+        <h2 class="ap-titulo">Marcas y sitios web, diseñados y construidos por mí. <span class="gris">Cada proyecto, contado desde sus decisiones.</span></h2>
+        <ul class="ap-indice">
+            <li><a href="#p-llego" data-ir-cov="0"><span class="mono gris">01</span><b>Llegó Farma</b><span class="mono gris ap-d">Marca · Sitio one page</span><span class="mono gris ap-a">2026</span><span class="mono gris">Pronto en línea</span><i aria-hidden="true">↘</i></a></li>
+            <li><a href="#p-tapin" data-ir-cov="1"><span class="mono gris">02</span><b>Tap In</b><span class="mono gris ap-d">Marca · Producto · Web</span><span class="mono gris ap-a">2025–26</span><span class="mono en-linea">tapin.cl</span><i aria-hidden="true">↘</i></a></li>
+            <li><a href="#p-mend" data-ir-cov="2"><span class="mono gris">03</span><b>Mend</b><span class="mono gris ap-d">Investigación · Marca · Web app</span><span class="mono gris ap-a">2026</span><span class="mono gris">Prototipo</span><i aria-hidden="true">↘</i></a></li>
+            <li class="ap-arch"><a href="#archivo"><span class="mono gris">→</span><b>Archivo</b><span class="mono gris ap-d">Editorial, identidad y producto</span><span class="mono gris ap-a">2022–25</span><span class="mono gris">5 proyectos</span><i aria-hidden="true">↘</i></a></li>
         </ul>
     </section>
     </div>
 
     <main class="works">
-    <div class="pila" id="pila">
-        <section class="panel" id="p-llego" data-id="llego" style="--tinte:#0A1415">
-            <div class="tope mono">
-                <nav class="mi" aria-label="Proyectos"><a href="#p-llego" class="actual" data-salto><span class="mi-n">01</span><span class="mi-t">Llegó Farma</span></a><a href="#p-tapin" data-salto><span class="mi-n">02</span><span class="mi-t">Tap In</span></a><a href="#p-mend" data-salto><span class="mi-n">03</span><span class="mi-t">Mend</span></a></nav>
-                <span class="disc">Marca · One page</span>
-                <span class="vivo gris">2026 · Pronto en línea</span>
-            </div>
-            <div class="lamina" tabindex="0" role="link" aria-label="Ver caso Llegó Farma" data-sitio="sitios/llego/index.html" data-velocidad="300" style="--dura:22s">
-                <div class="escena escena-llego">
-                    <div class="fondo"><img src="media/llego-foto.jpg" alt="" decoding="async"></div>
-                    <div class="navegador"><div class="barra-nav"><i></i><i></i><i></i><span class="url mono">llegofarma.cl</span><span class="carga"></span></div><div class="pantalla"><img class="poster" src="media/llego-poster.jpg" alt="Sitio de Llegó Farma" decoding="async"><img class="larga" src="media/llego-larga.jpg" alt="" loading="lazy" decoding="async"></div></div>
+    <section class="pt-pista" data-portadas aria-label="Proyectos destacados">
+        <div class="pt-fijo">
+            <article class="pt-cov" data-i="0" data-id="llego" id="p-llego">
+                <div class="pt-mundo"><img src="media/llego-foto.jpg" alt="" decoding="async"></div>
+                <div class="pt-marco">
+                    <div class="pt-tope mono"><span>01 / 03 · Llegó Farma</span><span>Marca · Sitio one page</span><span>2026 · Pronto en línea</span></div>
+                    <div class="pt-lado">
+                        <div class="pt-caps" role="tablist" aria-label="Capítulos de Llegó Farma"><button type="button" role="tab" aria-selected="false" data-cap="0">Marca</button><button type="button" role="tab" aria-selected="true" data-cap="1">Web</button><button type="button" role="tab" aria-selected="false" data-cap="2">En uso</button></div>
+                        <div class="pt-vistas">
+                            <div class="pt-vista"><span class="pt-marca" style="--svg:url('sitios/llego/img/logos/LlegoFarma_Horizontal_Blanco.svg')" role="img" aria-label="Logo de Llegó Farma"></span></div>
+                            <div class="pt-vista on"><div class="pt-nav"><div class="pt-barra"><i></i><i></i><i></i><span>llegofarma.cl</span></div><div class="pt-pant"><img class="pt-recorre" src="media/llego-larga.jpg" alt="Sitio de Llegó Farma" loading="lazy" decoding="async" style="--dura:22s"></div></div></div>
+                            <div class="pt-vista"><img class="pt-foto" src="media/llego-foto2.jpg" alt="La marca en el uniforme y en la entrega" loading="lazy" decoding="async"></div>
+                        </div>
+                    </div>
+                    <div class="pt-txt">
+                        <h3>Llegó Farma</h3>
+                        <p>Submarca de logística farmacéutica: identidad, manual y sitio, diseñados y construidos por mí.</p>
+                        <div class="pt-cifra"><b>Pitch ganado</b><span>al diseñador que ya tenía la marca madre</span></div>
+                        <button type="button" class="pt-ver" data-ver>Ver caso <i aria-hidden="true">→</i></button>
+                    </div>
                 </div>
-                <span class="recorre mono"><span>Sitio · diseño y código</span><span aria-hidden="true">Ver caso ↗</span></span>
-                <span class="ver mono">Ver caso ↗</span>
-            </div>
-            <div class="pie"><h3 class="nombre" data-letras>Llegó Farma</h3><p class="bajada">Submarca de logística farmacéutica. Pitch ganado al diseñador de la marca madre.</p></div>
-            <div class="velo" aria-hidden="true"></div>
-        </section>
-
-        <section class="panel" id="p-tapin" data-id="tapin" data-url="../caso/tapin.html" style="--tinte:#110E22">
-            <div class="tope mono">
-                <nav class="mi" aria-label="Proyectos"><a href="#p-llego" data-salto><span class="mi-n">01</span><span class="mi-t">Llegó Farma</span></a><a href="#p-tapin" class="actual" data-salto><span class="mi-n">02</span><span class="mi-t">Tap In</span></a><a href="#p-mend" data-salto><span class="mi-n">03</span><span class="mi-t">Mend</span></a></nav>
-                <span class="disc">Marca · Producto · Web</span>
-                <span class="vivo"><span class="gris">2025–26 · </span><a href="https://tapin.cl" target="_blank" rel="noopener">tapin.cl ↗</a></span>
-            </div>
-            <div class="lamina" tabindex="0" role="link" aria-label="Ver caso Tap In" data-sitio="sitios/tapin/index.html" data-velocidad="380" style="--dura:14s">
-                <div class="escena escena-tapin">
-                    <div class="fondo"></div>
-                    <div class="navegador"><div class="barra-nav"><i></i><i></i><i></i><span class="url mono">tapin.cl</span><span class="carga"></span></div><div class="pantalla"><img class="poster" src="media/tapin-poster.jpg" alt="Sitio de Tap In" loading="lazy" decoding="async"><img class="larga" src="media/tapin-larga.jpg" alt="" loading="lazy" decoding="async"></div></div>
+            </article>
+            <article class="pt-cov" data-i="1" data-id="tapin" id="p-tapin">
+                <div class="pt-mundo"></div>
+                <div class="pt-marco">
+                    <div class="pt-tope mono"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="en-linea">2025–26 · <a href="https://tapin.cl" target="_blank" rel="noopener">tapin.cl ↗</a></span></div>
+                    <div class="pt-lado">
+                        <div class="pt-caps" role="tablist" aria-label="Capítulos de Tap In"><button type="button" role="tab" aria-selected="false" data-cap="0">Marca</button><button type="button" role="tab" aria-selected="true" data-cap="1">Web</button><button type="button" role="tab" aria-selected="false" data-cap="2">En uso</button></div>
+                        <div class="pt-vistas">
+                            <div class="pt-vista"><span class="pt-marca" style="--svg:url('../caso/media/tp-wordmark.svg')" role="img" aria-label="Logo de Tap In"></span></div>
+                            <div class="pt-vista on"><div class="pt-nav"><div class="pt-barra"><i></i><i></i><i></i><span>tapin.cl</span></div><div class="pt-pant"><img class="pt-recorre" src="media/tapin-larga.jpg" alt="Sitio de Tap In" loading="lazy" decoding="async" style="--dura:16s"></div></div></div>
+                            <div class="pt-vista"><img class="pt-foto contiene" src="media/tapin-app.jpg" alt="La app de Campus" loading="lazy" decoding="async"></div>
+                        </div>
+                    </div>
+                    <div class="pt-txt">
+                        <h3>Tap In</h3>
+                        <p>De la cafetería del campus a la plataforma del colegio. La marca desde el día uno y su web, programada por mí.</p>
+                        <div class="pt-cifra"><b>+15.000</b><span>familias en Connect, en Chile y Perú</span></div>
+                        <a class="pt-ver" href="../caso/tapin.html">Ver caso <i aria-hidden="true">→</i></a>
+                    </div>
                 </div>
-                <span class="recorre mono"><span>Sitio en vivo · diseño y código</span><span aria-hidden="true">Ver caso ↗</span></span>
-                <span class="ver mono">Ver caso ↗</span>
-            </div>
-            <div class="pie"><h3 class="nombre" data-letras>Tap In</h3><p class="bajada">De la cafetería del campus a la plataforma del colegio.</p></div>
-            <div class="velo" aria-hidden="true"></div>
-        </section>
-
-        <section class="panel" id="p-mend" data-id="mend" style="--tinte:#0D2024">
-            <div class="tope mono">
-                <nav class="mi" aria-label="Proyectos"><a href="#p-llego" data-salto><span class="mi-n">01</span><span class="mi-t">Llegó Farma</span></a><a href="#p-tapin" data-salto><span class="mi-n">02</span><span class="mi-t">Tap In</span></a><a href="#p-mend" class="actual" data-salto><span class="mi-n">03</span><span class="mi-t">Mend</span></a></nav>
-                <span class="disc">Investigación · Marca · Web app</span>
-                <span class="vivo gris">2026 · Prototipo con acceso</span>
-            </div>
-            <div class="lamina" tabindex="0" role="link" aria-label="Ver caso Mend" data-app>
-                <div class="escena escena-mend">
-                    <div class="fondo"><div class="campo"></div></div>
-                    <svg class="mend-logo" viewBox="-16 -6 370 100" role="img" aria-label="Mend salud"><g class="encaje" transform="translate(0 5.17)"><g class="ej-full"><polygon points="67.14 25.03 64.65 15.16 35.07 22.71 40.41 2.64 30.63 0 25.71 18.49 12.84 5.53 5.68 12.74 27.86 35.05 0 42.16 2.49 52.04 31.96 44.51 26.64 64.5 36.41 67.14 41.35 48.62 54.3 61.66 61.46 54.46 39.28 32.14 67.14 25.03"/></g><g class="ej-pair"><g class="ej-a"><polygon points="67.140,25.030 64.650,15.160 35.070,22.710 40.410,2.640 30.630,0.000 25.710,18.490 12.840,5.530 5.680,12.740 27.860,35.050 39.280,32.140"/></g><g class="ej-b"><polygon points="27.860,35.050 0.000,42.160 2.490,52.040 31.960,44.510 26.640,64.500 36.410,67.140 41.350,48.620 54.300,61.660 61.460,54.460 39.280,32.140"/></g></g></g><path class="trazo" pathLength="1" d="M335.64,0h-11.93l.03,16.81c-1.82-1.23-3.81-2.24-5.97-3.03-15.25-5.01-31.43,1.58-36.32,16.88v.33c-2.14-8.35-7.68-13.79-14.72-16.28-.14-.05-.28-.1-.42-.15-.16-.05-.31-.1-.47-.15-3.1-.88-6.29-1.31-9.42-1.26-.12,0-.24,0-.36.01-.55.01-1.1.05-1.64.1-.39.03-.79.08-1.19.12-.47.06-.93.12-1.4.2-.05,0-.1.01-.16.02-.25.04-.48.1-.73.15-.52.11-1.04.22-1.55.35-.21.06-.42.12-.63.19-.43.12-.85.26-1.26.4-.42.15-.83.3-1.25.48-.17.07-.33.14-.5.21-.42.18-.84.38-1.27.59-.27.14-.53.29-.79.44-4.34,2.4-7.9,6.11-9.96,11.28-1.29,3.25-1.8,6.46-1.91,10.01v3.26c-.36,4.96-3.72,9.46-7.58,11.89-5.04,3.16-11.04,3.18-16.28.56l21.14-21.26c1.39-4.57,3.1-9.12,6.46-12.67-8.21-7.8-20.77-9.52-30.88-5.26-.58.24-1.14.51-1.69.79-2.64,1.32-4.98,3.02-7,5.04-.17.17-.34.35-.5.53-.08.08-.15.16-.23.25-2.79,3.1-4.89,6.98-6.03,11.56-.04-.19-.08-.37-.12-.55,0,.02,0,.03,0,.04-1.92-8.97-7.64-14.76-14.98-17.35-.14-.05-.28-.1-.43-.15-.16-.05-.31-.1-.47-.15-3.1-.88-6.29-1.3-9.41-1.26-.12,0-.24,0-.36.01-.55.01-1.1.05-1.64.1-.39.03-.79.08-1.18.12-.47.06-.94.12-1.4.2-.05,0-.1.01-.16.02-.25.04-.48.1-.73.15-.52.11-1.04.22-1.55.35-.21.06-.42.12-.63.19-.42.12-.85.26-1.26.4-.41.15-.83.3-1.25.48-.17.07-.33.14-.5.21-.42.18-.84.38-1.27.58-2.51,1.27-4.77,2.97-6.68,5.12-2.6-2.94-5.89-5.07-9.61-6.38-.14-.05-.28-.1-.43-.15-.16-.05-.31-.1-.47-.15-3.1-.88-6.29-1.3-9.41-1.26-.12,0-.24,0-.36.01-.55.01-1.1.05-1.64.1-.39.03-.79.08-1.19.12-.47.06-.93.12-1.4.2-.05,0-.1.01-.16.02-.25.04-.48.1-.73.15-.52.11-1.04.22-1.55.35-.21.06-.42.12-.63.19-.42.12-.85.26-1.26.4-.42.15-.83.3-1.25.48-.17.07-.33.14-.5.21-.42.18-.84.38-1.27.58-4.7,2.37-8.57,6.24-10.75,11.72-1.29,3.25-1.8,6.46-1.91,10v27.71h11.99v-8.14s.01-19.56.01-19.56c0-.25.02-.49.04-.74h0c0-3.33,1.23-6.41,3.24-8.86.83-1.01,1.8-1.81,2.85-2.44.03-.02.07-.04.1-.06.27-.16.54-.31.82-.44.18-.09.37-.18.56-.26.17-.07.34-.14.51-.21.33-.13.68-.24,1.03-.34.06-.02.12-.04.17-.05.42-.12.85-.21,1.3-.28.02,0,.05,0,.07-.01.36-.06.74-.1,1.12-.13.16-.02.33-.03.49-.04.06,0,.13-.01.19-.02h.3c.26,0,.53-.03.79-.02,2.71.04,5.04.77,6.96,2.02.06.04.11.07.16.11.26.18.52.36.77.56.16.12.3.25.45.38.13.12.27.24.4.37.23.22.44.45.65.68.04.05.09.1.13.15,2.09,2.42,3.28,5.74,3.4,9.64v27.72h11.99v-27.69c0-.25.03-.49.05-.74h0c0-3.33,1.23-6.41,3.24-8.86.83-1.01,1.8-1.81,2.85-2.44.03-.02.07-.04.1-.06.27-.16.54-.31.82-.44.18-.09.37-.18.56-.26l.51-.21c.33-.13.68-.24,1.03-.34.06-.02.12-.04.17-.05.42-.12.85-.21,1.3-.28.02,0,.05,0,.07-.01.36-.06.74-.1,1.12-.13.16-.02.33-.03.49-.04.06,0,.13-.01.19-.02h.3c.26,0,.53-.03.79-.02,2.71.04,5.04.77,6.96,2.02.06.04.11.07.16.11.26.18.52.36.77.56.16.12.3.25.45.38.13.12.27.24.4.37.23.22.44.45.65.68.04.05.09.1.13.15,2.09,2.42,3.28,5.74,3.4,9.64v27.72h11.93l.06-17.31h0c3.13,7.87,9.31,13.74,17.42,16.13,6.5,1.92,13.45,1.46,19.53-1.11,2.18-2.33,5.72-3.68,10.17-3.77.25,0,.54-.02.83-.02,2.35,0,4.41.37,6.14.86v-22.29c0-.25.02-.49.04-.74v-.02c0-2.31.61-4.51,1.66-6.46,1.04-1.77,2.41-3.32,4.03-4.56.13-.09.27-.18.41-.27.03-.02.07-.04.1-.06.27-.16.54-.31.82-.44.18-.09.37-.18.56-.26l.51-.21c.33-.13.67-.24,1.03-.34.06-.02.12-.04.17-.05.42-.12.85-.21,1.3-.29.02,0,.05,0,.07-.01.36-.06.74-.1,1.12-.13.16-.02.32-.03.49-.04.07,0,.13-.01.19-.02h.3c.27,0,.53-.03.79-.02,2.71.04,5.04.77,6.96,2.02.06.04.11.07.16.11.26.18.52.36.77.56.16.12.3.25.45.38.14.12.27.24.4.37.23.22.44.45.65.68.04.05.09.1.13.15,2.09,2.42,3.29,5.74,3.4,9.64v21.83c.61.12,1.17.46,1.54.98.47.65.6,1.48.35,2.24l-.87,2.68h.7l2.94-9.12c.72-2.27.82-4.35.71-5.13-.02-.11-.02-.23-.02-.34,0-1.24.91-2.35,2.15-2.52l5.38-.77c.12-.02.24-.03.35-.03.73,0,1.43.32,1.91.89.56.66.73,1.56.47,2.38l-1.02,3.15c1.5,2.16,3.26,4.03,5.24,5.59.55.44,1.12.85,1.7,1.24,2.49,1.67,5.26,2.9,8.21,3.66l1.07-3.24c.34-1.02,1.3-1.72,2.37-1.72h3.99c.8,0,1.56.39,2.03,1.04s.6,1.49.35,2.25l-.85,2.57c1-.05,2-.16,3.01-.3,3.92-4.21,8.56-5.85,12.08-5.85h.13c1.54,0,2.93.32,4.11.93l1.24-3.81c.68-2.13.89-3.89.81-4.75-.22-.67-.14-1.4.21-2.02.38-.67,1.05-1.12,1.81-1.23l3.24-.47V13.15l-.03-13.15h.06ZM201.67,45.51l-.66.66c-3-5.91-2.22-13.12,1.99-18.27.12-.15.24-.31.37-.46,5.02-5.7,13.24-7.17,20.08-3.66l-21.79,21.72h0ZM307.72,54.67c-8.83,0-15.99-7.14-15.99-15.95s7.16-15.95,15.99-15.95,15.99,7.14,15.99,15.95-7.16,15.95-15.99,15.95Z"/><path class="trazo" pathLength="1" d="M235.99,72.15c-2.78-1.58-6.42-3.46-5.15-6.19.87-1.92,3.18-2.74,5.61-2.83,3.76-.14,6.59,1.78,7.58,4.61l.23-.05,1.73-4.22c-2.31-1.06-5.49-1.92-9.08-1.78-4.68.1-8.33,1.78-9.6,4.85-1.68,3.98,2.72,6.53,5.78,8.21,3.64,1.97,6.59,4.13,5.26,7.01-1.1,2.3-3.82,3.02-6.19,2.93-3.93-.1-6.82-2.74-7.87-5.42l-.17.05-1.85,4.37c2.54,1.63,6.25,2.59,9.89,2.54,4.8-.05,8.44-1.82,9.77-5.33,1.39-3.5-1.21-6.05-5.96-8.74h.02Z"/><path class="trazo" pathLength="1" d="M327.82,81.99l10.29-31.97-5.32.77.06.14c.23,1.3-.06,3.6-.87,6.14l-2.54,7.83c-.64-1.87-2.31-3.22-5.21-3.22-4.28-.05-10.87,3.02-14.63,11.76-.53,1.25-.89,2.39-1.14,3.46-3.81,5.34-8.4,7.72-7.65,5.28l6.71-20.21h-3.99l-2.31,7.01c-2.49,6.72-8.21,14.54-13.65,14.54-2.54,0-4.45-1.68-2.95-6.19l5.09-15.36h-5.26v.14c.23,1.25,0,3.79-.81,6.38l-2.68,8.09c-3.76,5.36-8.83,9-7.33,4.2l9.95-30.77-5.38.77v.05c.17,1.25,0,3.7-.81,6.24l-6.38,19.82-.04-.04c-3.82,5.38-8.5,7.97-7.63,5.14l6.54-20.02h-.93c-.98,1.1-2.26,2.06-3.76,2.98-.52-1.97-2.37-3.26-5.38-3.26-4.4,0-10.93,3.02-14.69,11.76-3.47,8.11-.4,12.53,4.28,12.53,3.59,0,7.87-2.78,11.22-7.54l-1.04,3.17c-1.1,3.46.58,4.37,2.2,4.37,2.85,0,6.1-3.05,8.58-7.06l-.77,2.4c-1.04,3.31.58,4.37,2.37,4.37,2.66,0,5.89-2.94,8.32-6.88-1.26,5.25,1.96,7.12,5.55,7.12,5.26,0,9.66-4.13,12.72-8.79l-1.45,4.46c-1.1,3.41.58,4.37,2.31,4.37,2.87,0,6.27-3.33,8.78-7.59-.58,4.94,2.06,7.59,5.68,7.59s7.86-2.78,11.22-7.58l-1.04,3.22c-1.1,3.41.58,4.37,2.2,4.37,3.24,0,7-3.94,9.54-8.74l-.35-.38c-3.82,5.38-8.5,7.97-7.63,5.14h.01ZM251.43,83.52c-3.64,0-4.68-4.22-2.02-10.42,2.72-6.34,7.4-9.89,11.16-9.79,2.95.05,3.76,2.35,3.53,4.27l-1.5,4.71c-2.54,6.43-7.34,11.23-11.16,11.23h0ZM315.91,83.52c-3.64,0-4.68-4.22-2.02-10.42,2.72-6.34,7.4-9.79,11.1-9.7,2.95.1,3.7,2.45,3.47,4.56l-1.39,4.32c-2.54,6.43-7.34,11.23-11.16,11.23h0Z"/></svg>
-                    <div class="telefono"><div class="pantalla"><img class="splash" src="media/mend-splash.jpg" alt="" loading="lazy" decoding="async"><img class="larga" src="media/mend-app-larga.jpg" alt="App de Mend" loading="lazy" decoding="async"></div></div>
+            </article>
+            <article class="pt-cov" data-i="2" data-id="mend" id="p-mend">
+                <div class="pt-mundo"></div>
+                <div class="pt-marco">
+                    <div class="pt-tope mono"><span>03 / 03 · Mend</span><span>Investigación · Marca · Web app</span><span>2026 · Prototipo con acceso</span></div>
+                    <div class="pt-lado">
+                        <div class="pt-caps" role="tablist" aria-label="Capítulos de Mend"><button type="button" role="tab" aria-selected="false" data-cap="0">Marca</button><button type="button" role="tab" aria-selected="true" data-cap="1">App</button><button type="button" role="tab" aria-selected="false" data-cap="2">Inicio</button></div>
+                        <div class="pt-vistas">
+                            <div class="pt-vista"><svg class="pt-mend-logo" viewBox="-16 -6 370 100" role="img" aria-label="Mend salud"><g class="encaje" transform="translate(0 5.17)"><g class="ej-full"><polygon points="67.14 25.03 64.65 15.16 35.07 22.71 40.41 2.64 30.63 0 25.71 18.49 12.84 5.53 5.68 12.74 27.86 35.05 0 42.16 2.49 52.04 31.96 44.51 26.64 64.5 36.41 67.14 41.35 48.62 54.3 61.66 61.46 54.46 39.28 32.14 67.14 25.03"/></g><g class="ej-pair"><g class="ej-a"><polygon points="67.140,25.030 64.650,15.160 35.070,22.710 40.410,2.640 30.630,0.000 25.710,18.490 12.840,5.530 5.680,12.740 27.860,35.050 39.280,32.140"/></g><g class="ej-b"><polygon points="27.860,35.050 0.000,42.160 2.490,52.040 31.960,44.510 26.640,64.500 36.410,67.140 41.350,48.620 54.300,61.660 61.460,54.460 39.280,32.140"/></g></g></g><path class="trazo" pathLength="1" d="M335.64,0h-11.93l.03,16.81c-1.82-1.23-3.81-2.24-5.97-3.03-15.25-5.01-31.43,1.58-36.32,16.88v.33c-2.14-8.35-7.68-13.79-14.72-16.28-.14-.05-.28-.1-.42-.15-.16-.05-.31-.1-.47-.15-3.1-.88-6.29-1.31-9.42-1.26-.12,0-.24,0-.36.01-.55.01-1.1.05-1.64.1-.39.03-.79.08-1.19.12-.47.06-.93.12-1.4.2-.05,0-.1.01-.16.02-.25.04-.48.1-.73.15-.52.11-1.04.22-1.55.35-.21.06-.42.12-.63.19-.43.12-.85.26-1.26.4-.42.15-.83.3-1.25.48-.17.07-.33.14-.5.21-.42.18-.84.38-1.27.59-.27.14-.53.29-.79.44-4.34,2.4-7.9,6.11-9.96,11.28-1.29,3.25-1.8,6.46-1.91,10.01v3.26c-.36,4.96-3.72,9.46-7.58,11.89-5.04,3.16-11.04,3.18-16.28.56l21.14-21.26c1.39-4.57,3.1-9.12,6.46-12.67-8.21-7.8-20.77-9.52-30.88-5.26-.58.24-1.14.51-1.69.79-2.64,1.32-4.98,3.02-7,5.04-.17.17-.34.35-.5.53-.08.08-.15.16-.23.25-2.79,3.1-4.89,6.98-6.03,11.56-.04-.19-.08-.37-.12-.55,0,.02,0,.03,0,.04-1.92-8.97-7.64-14.76-14.98-17.35-.14-.05-.28-.1-.43-.15-.16-.05-.31-.1-.47-.15-3.1-.88-6.29-1.3-9.41-1.26-.12,0-.24,0-.36.01-.55.01-1.1.05-1.64.1-.39.03-.79.08-1.18.12-.47.06-.94.12-1.4.2-.05,0-.1.01-.16.02-.25.04-.48.1-.73.15-.52.11-1.04.22-1.55.35-.21.06-.42.12-.63.19-.42.12-.85.26-1.26.4-.41.15-.83.3-1.25.48-.17.07-.33.14-.5.21-.42.18-.84.38-1.27.58-2.51,1.27-4.77,2.97-6.68,5.12-2.6-2.94-5.89-5.07-9.61-6.38-.14-.05-.28-.1-.43-.15-.16-.05-.31-.1-.47-.15-3.1-.88-6.29-1.3-9.41-1.26-.12,0-.24,0-.36.01-.55.01-1.1.05-1.64.1-.39.03-.79.08-1.19.12-.47.06-.93.12-1.4.2-.05,0-.1.01-.16.02-.25.04-.48.1-.73.15-.52.11-1.04.22-1.55.35-.21.06-.42.12-.63.19-.42.12-.85.26-1.26.4-.42.15-.83.3-1.25.48-.17.07-.33.14-.5.21-.42.18-.84.38-1.27.58-4.7,2.37-8.57,6.24-10.75,11.72-1.29,3.25-1.8,6.46-1.91,10v27.71h11.99v-8.14s.01-19.56.01-19.56c0-.25.02-.49.04-.74h0c0-3.33,1.23-6.41,3.24-8.86.83-1.01,1.8-1.81,2.85-2.44.03-.02.07-.04.1-.06.27-.16.54-.31.82-.44.18-.09.37-.18.56-.26.17-.07.34-.14.51-.21.33-.13.68-.24,1.03-.34.06-.02.12-.04.17-.05.42-.12.85-.21,1.3-.28.02,0,.05,0,.07-.01.36-.06.74-.1,1.12-.13.16-.02.33-.03.49-.04.06,0,.13-.01.19-.02h.3c.26,0,.53-.03.79-.02,2.71.04,5.04.77,6.96,2.02.06.04.11.07.16.11.26.18.52.36.77.56.16.12.3.25.45.38.13.12.27.24.4.37.23.22.44.45.65.68.04.05.09.1.13.15,2.09,2.42,3.28,5.74,3.4,9.64v27.72h11.99v-27.69c0-.25.03-.49.05-.74h0c0-3.33,1.23-6.41,3.24-8.86.83-1.01,1.8-1.81,2.85-2.44.03-.02.07-.04.1-.06.27-.16.54-.31.82-.44.18-.09.37-.18.56-.26l.51-.21c.33-.13.68-.24,1.03-.34.06-.02.12-.04.17-.05.42-.12.85-.21,1.3-.28.02,0,.05,0,.07-.01.36-.06.74-.1,1.12-.13.16-.02.33-.03.49-.04.06,0,.13-.01.19-.02h.3c.26,0,.53-.03.79-.02,2.71.04,5.04.77,6.96,2.02.06.04.11.07.16.11.26.18.52.36.77.56.16.12.3.25.45.38.13.12.27.24.4.37.23.22.44.45.65.68.04.05.09.1.13.15,2.09,2.42,3.28,5.74,3.4,9.64v27.72h11.93l.06-17.31h0c3.13,7.87,9.31,13.74,17.42,16.13,6.5,1.92,13.45,1.46,19.53-1.11,2.18-2.33,5.72-3.68,10.17-3.77.25,0,.54-.02.83-.02,2.35,0,4.41.37,6.14.86v-22.29c0-.25.02-.49.04-.74v-.02c0-2.31.61-4.51,1.66-6.46,1.04-1.77,2.41-3.32,4.03-4.56.13-.09.27-.18.41-.27.03-.02.07-.04.1-.06.27-.16.54-.31.82-.44.18-.09.37-.18.56-.26l.51-.21c.33-.13.67-.24,1.03-.34.06-.02.12-.04.17-.05.42-.12.85-.21,1.3-.29.02,0,.05,0,.07-.01.36-.06.74-.1,1.12-.13.16-.02.32-.03.49-.04.07,0,.13-.01.19-.02h.3c.27,0,.53-.03.79-.02,2.71.04,5.04.77,6.96,2.02.06.04.11.07.16.11.26.18.52.36.77.56.16.12.3.25.45.38.14.12.27.24.4.37.23.22.44.45.65.68.04.05.09.1.13.15,2.09,2.42,3.29,5.74,3.4,9.64v21.83c.61.12,1.17.46,1.54.98.47.65.6,1.48.35,2.24l-.87,2.68h.7l2.94-9.12c.72-2.27.82-4.35.71-5.13-.02-.11-.02-.23-.02-.34,0-1.24.91-2.35,2.15-2.52l5.38-.77c.12-.02.24-.03.35-.03.73,0,1.43.32,1.91.89.56.66.73,1.56.47,2.38l-1.02,3.15c1.5,2.16,3.26,4.03,5.24,5.59.55.44,1.12.85,1.7,1.24,2.49,1.67,5.26,2.9,8.21,3.66l1.07-3.24c.34-1.02,1.3-1.72,2.37-1.72h3.99c.8,0,1.56.39,2.03,1.04s.6,1.49.35,2.25l-.85,2.57c1-.05,2-.16,3.01-.3,3.92-4.21,8.56-5.85,12.08-5.85h.13c1.54,0,2.93.32,4.11.93l1.24-3.81c.68-2.13.89-3.89.81-4.75-.22-.67-.14-1.4.21-2.02.38-.67,1.05-1.12,1.81-1.23l3.24-.47V13.15l-.03-13.15h.06ZM201.67,45.51l-.66.66c-3-5.91-2.22-13.12,1.99-18.27.12-.15.24-.31.37-.46,5.02-5.7,13.24-7.17,20.08-3.66l-21.79,21.72h0ZM307.72,54.67c-8.83,0-15.99-7.14-15.99-15.95s7.16-15.95,15.99-15.95,15.99,7.14,15.99,15.95-7.16,15.95-15.99,15.95Z"/><path class="trazo" pathLength="1" d="M235.99,72.15c-2.78-1.58-6.42-3.46-5.15-6.19.87-1.92,3.18-2.74,5.61-2.83,3.76-.14,6.59,1.78,7.58,4.61l.23-.05,1.73-4.22c-2.31-1.06-5.49-1.92-9.08-1.78-4.68.1-8.33,1.78-9.6,4.85-1.68,3.98,2.72,6.53,5.78,8.21,3.64,1.97,6.59,4.13,5.26,7.01-1.1,2.3-3.82,3.02-6.19,2.93-3.93-.1-6.82-2.74-7.87-5.42l-.17.05-1.85,4.37c2.54,1.63,6.25,2.59,9.89,2.54,4.8-.05,8.44-1.82,9.77-5.33,1.39-3.5-1.21-6.05-5.96-8.74h.02Z"/><path class="trazo" pathLength="1" d="M327.82,81.99l10.29-31.97-5.32.77.06.14c.23,1.3-.06,3.6-.87,6.14l-2.54,7.83c-.64-1.87-2.31-3.22-5.21-3.22-4.28-.05-10.87,3.02-14.63,11.76-.53,1.25-.89,2.39-1.14,3.46-3.81,5.34-8.4,7.72-7.65,5.28l6.71-20.21h-3.99l-2.31,7.01c-2.49,6.72-8.21,14.54-13.65,14.54-2.54,0-4.45-1.68-2.95-6.19l5.09-15.36h-5.26v.14c.23,1.25,0,3.79-.81,6.38l-2.68,8.09c-3.76,5.36-8.83,9-7.33,4.2l9.95-30.77-5.38.77v.05c.17,1.25,0,3.7-.81,6.24l-6.38,19.82-.04-.04c-3.82,5.38-8.5,7.97-7.63,5.14l6.54-20.02h-.93c-.98,1.1-2.26,2.06-3.76,2.98-.52-1.97-2.37-3.26-5.38-3.26-4.4,0-10.93,3.02-14.69,11.76-3.47,8.11-.4,12.53,4.28,12.53,3.59,0,7.87-2.78,11.22-7.54l-1.04,3.17c-1.1,3.46.58,4.37,2.2,4.37,2.85,0,6.1-3.05,8.58-7.06l-.77,2.4c-1.04,3.31.58,4.37,2.37,4.37,2.66,0,5.89-2.94,8.32-6.88-1.26,5.25,1.96,7.12,5.55,7.12,5.26,0,9.66-4.13,12.72-8.79l-1.45,4.46c-1.1,3.41.58,4.37,2.31,4.37,2.87,0,6.27-3.33,8.78-7.59-.58,4.94,2.06,7.59,5.68,7.59s7.86-2.78,11.22-7.58l-1.04,3.22c-1.1,3.41.58,4.37,2.2,4.37,3.24,0,7-3.94,9.54-8.74l-.35-.38c-3.82,5.38-8.5,7.97-7.63,5.14h.01ZM251.43,83.52c-3.64,0-4.68-4.22-2.02-10.42,2.72-6.34,7.4-9.89,11.16-9.79,2.95.05,3.76,2.35,3.53,4.27l-1.5,4.71c-2.54,6.43-7.34,11.23-11.16,11.23h0ZM315.91,83.52c-3.64,0-4.68-4.22-2.02-10.42,2.72-6.34,7.4-9.79,11.1-9.7,2.95.1,3.7,2.45,3.47,4.56l-1.39,4.32c-2.54,6.43-7.34,11.23-11.16,11.23h0Z"/></svg></div>
+                            <div class="pt-vista on"><div class="pt-tel"><div class="pt-pant"><img class="pt-recorre" src="media/mend-app-larga.jpg" alt="App de Mend" loading="lazy" decoding="async" style="--dura:14s"></div></div></div>
+                            <div class="pt-vista"><div class="pt-tel"><div class="pt-pant"><img src="media/mend-splash.jpg" alt="Pantalla de inicio de Mend" loading="lazy" decoding="async"></div></div></div>
+                        </div>
+                    </div>
+                    <div class="pt-txt">
+                        <h3>Mend</h3>
+                        <p>Salud articular para Atención Primaria, de la investigación al producto. Marca y web app construidas por mí.</p>
+                        <div class="pt-cifra"><b>En testeo</b><span>con pacientes de Atención Primaria</span></div>
+                        <button type="button" class="pt-ver" data-ver>Ver caso <i aria-hidden="true">→</i></button>
+                    </div>
                 </div>
-                <span class="recorre mono"><span>Web app · diseño y código</span><span aria-hidden="true">Ver caso ↗</span></span>
-                <span class="ver mono">Ver caso ↗</span>
-            </div>
-            <div class="pie"><h3 class="nombre" data-letras>Mend</h3><p class="bajada">Salud articular para Atención Primaria, de la investigación al producto.</p></div>
-            <div class="velo" aria-hidden="true"></div>
-        </section>
-    </div>
+            </article>
+            <nav class="pt-regla" aria-label="Proyectos destacados">
+                <button type="button" data-ir-cov="0" class="on"><kbd>1</kbd><span>Llegó Farma</span></button>
+                <button type="button" data-ir-cov="1"><kbd>2</kbd><span>Tap In</span></button>
+                <button type="button" data-ir-cov="2"><kbd>3</kbd><span>Mend</span></button>
+            </nav>
+        </div>
+    </section>
 
     <section class="hoja" id="archivo">
         <div class="hoja-cab">
             <h2><span data-letras>Archivo</span><sup class="mono">(05)</sup></h2>
             <p>Proyectos anteriores. Editorial, identidad y producto, de 2022 a 2025.</p>
+            <div class="hoja-vistas" role="group" aria-label="Vista del archivo"><button type="button" data-vista="hoja" aria-pressed="true">Hoja</button><button type="button" data-vista="lista" aria-pressed="false">Lista</button></div>
         </div>
         <ul class="fichas" data-hoja></ul>
     </section>
@@ -504,7 +502,7 @@
     <script src="../hero/hero-base.js"></script>
     <script src="../hero/h1-capas.js"></script>
     <script src="works-base.js"></script>
-    <script src="w3-pila.js"></script>
+    <script src="inicio-works.js"></script>
     <script src="inicio.js"></script>
 </body>
 </html>
