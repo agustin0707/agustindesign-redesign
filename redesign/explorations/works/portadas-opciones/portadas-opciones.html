@@ -1,0 +1,407 @@
+<title>Portadas, bloque y fondos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap">
+<style>
+    /* Dos preguntas sobre las portadas de los destacados: cómo diagramar el bloque de la izquierda (cinco formas, más
+       la de hoy como referencia) y qué fondo darle a cada proyecto (tres por proyecto). Cada portada es una maqueta a
+       escala con unidades de contenedor (cqw), así se lee igual a cualquier ancho. Marco C · Índice */
+    :root {
+        --negro: #0B0B0B; --grafito: #1A1A19; --gris-claro: #D9D9D6; --papel: #E9E9E6; --blanco: #F5F5F3;
+        --tinta: #1A1A19; --tinta-2: #55554F; --tinta-3: #8A8A84; --linea-c: rgba(11, 11, 11, 0.1);
+        --vivo: #3FCF8E; --rec: #8C6A12;
+        --sans: 'Geist', system-ui, sans-serif; --mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: clamp(16px, 2.2vw, 32px); --medianil: 16px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html, body { overflow-x: clip; }
+    body { margin: 0; background: var(--papel); color: var(--tinta); font: 15px / 1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+    a, button { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--negro); outline-offset: 3px; }
+    img { display: block; max-width: 100%; }
+    .mono { font: 400 12px / 1.4 var(--mono); letter-spacing: 0.01em; }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-left: max(var(--margen), env(safe-area-inset-left, 0px)); padding-right: max(var(--margen), env(safe-area-inset-right, 0px)); }
+
+    /* =======================================================
+       PRESENTACIÓN
+       ======================================================= */
+    .intro { padding-block: 56px 40px; row-gap: 22px; background: var(--gris-claro); }
+    .rot { grid-column: 1 / span 3; color: #6A6A66; padding-top: 0.5em; }
+    .intro h1 { grid-column: 4 / -1; margin: 0; font: 500 clamp(30px, 3.4vw, 52px) / 1.02 var(--sans); letter-spacing: -0.045em; text-wrap: balance; }
+    .intro p { grid-column: 4 / span 7; margin: 0; color: var(--tinta-2); font-size: 16px; line-height: 1.5; }
+    .intro p b { color: var(--tinta); font-weight: 500; }
+    .bloque { padding-block: 64px 24px; row-gap: 18px; }
+    .bloque h2 { grid-column: 4 / -1; margin: 0; font: 500 clamp(26px, 2.6vw, 40px) / 1.05 var(--sans); letter-spacing: -0.04em; }
+    .bloque > p { grid-column: 4 / span 7; margin: 0; color: var(--tinta-2); }
+
+    /* --- 1. FICHA DE CADA OPCIÓN --- */
+    .op { padding-block: 26px; row-gap: 14px; border-top: 1px solid var(--linea-c); }
+    .op-txt { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 8px; align-self: start; position: sticky; top: 24px; }
+    .op-txt .mono { color: var(--rec); }
+    .op-txt strong { font: 500 20px / 1.15 var(--sans); letter-spacing: -0.03em; }
+    .op-txt p { margin: 0; color: var(--tinta-2); font-size: 14px; line-height: 1.45; }
+    .op-txt .ref { color: var(--tinta-3); font-size: 13px; }
+    .op-txt .ref a { color: var(--tinta); }
+    .rec { align-self: flex-start; padding: 3px 9px; border-radius: 99px; background: var(--negro); color: var(--blanco); font: 400 11px var(--mono); }
+    .op-vista { grid-column: 4 / -1; min-width: 0; }
+    /* Una portada grande por proyecto y tres botones que cambian su fondo */
+    .tres { grid-column: 4 / -1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .panel-f { display: none; } .panel-f.on { display: block; }
+    .botones-f { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .op-f { position: relative; display: flex; flex-direction: column; gap: 3px; padding: 14px 16px 16px; border: 0; border-radius: 12px; background: #F5F5F3; color: var(--tinta-2); font-size: 13px; line-height: 1.4; text-align: left; cursor: pointer; box-shadow: inset 0 0 0 1px var(--linea-c); transition: box-shadow 160ms linear; }
+    .op-f b { color: var(--tinta); font-weight: 500; font-size: 15px; letter-spacing: -0.02em; }
+    .op-f .rec { margin-top: 6px; }
+    .op-f[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--negro); }
+    @media (hover: hover) { .op-f[aria-pressed="false"]:hover { box-shadow: inset 0 0 0 1px var(--tinta-3); } }
+
+    /* =======================================================
+       PORTADA A ESCALA (PIEZAS COMPARTIDAS)
+       ======================================================= */
+    /* Todo en cqw: la maqueta es una portada de 16:10 que se escala como imagen */
+    .cv { --ink: #FFFFFF; --ink-2: rgba(255, 255, 255, 0.78); --ink-3: rgba(255, 255, 255, 0.55); --hilo: rgba(255, 255, 255, 0.22);
+        position: relative; container-type: inline-size; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 10px; color: var(--ink); background: #222; box-shadow: 0 30px 60px -36px rgba(0, 0, 0, 0.6); }
+    .cv.grande { aspect-ratio: 16 / 9; }
+    .cv > * { position: absolute; }
+    /* El fondo es su propio contexto de capas: su grano y sus velos nunca quedan sobre el texto */
+    .cv .fondo { inset: 0; z-index: 0; overflow: hidden; }
+    .cv .tope { left: 3.2cqw; right: 3.2cqw; top: 3.4cqw; display: flex; justify-content: space-between; padding-bottom: 1cqw; border-bottom: 1px solid var(--hilo); color: var(--ink-2); font: 400 1.05cqw var(--mono); }
+    .cv .tope .on::before { content: ''; display: inline-block; width: 0.6cqw; height: 0.6cqw; margin-right: 0.7cqw; border-radius: 50%; background: var(--vivo); vertical-align: 0.1cqw; }
+    .cv .izq { left: 3.2cqw; bottom: 9cqw; width: 36cqw; display: flex; flex-direction: column; align-items: flex-start; gap: 1.6cqw; }
+    .cv h3 { margin: 0; font: 500 6cqw / 0.86 var(--sans); letter-spacing: -0.06em; }
+    .cv .baj { margin: 0; max-width: 30cqw; color: var(--ink-2); font-size: 1.35cqw; line-height: 1.4; }
+    .cv .cifra { display: flex; align-items: baseline; gap: 1.2cqw; padding-top: 1.2cqw; border-top: 1px solid var(--hilo); }
+    .cv .cifra b { font: 500 2.7cqw / 1 var(--sans); letter-spacing: -0.05em; }
+    .cv .cifra span { max-width: 16cqw; color: var(--ink-2); font: 400 0.95cqw / 1.35 var(--mono); }
+    .cv .ver { white-space: nowrap; display: inline-flex; align-items: center; gap: 0.8cqw; padding: 1cqw 1.8cqw; border-radius: 99px; background: var(--ink); color: var(--negro); font: 500 1.15cqw var(--sans); }
+    .cv.claro .ver { color: #FFFFFF; }
+    .cv .pieza { left: 44cqw; right: 3.2cqw; top: 11cqw; bottom: 9cqw; display: grid; place-items: center; }
+    .cv .regla { left: 50%; bottom: 2.2cqw; translate: -50% 0; display: flex; gap: 0.4cqw; padding: 0.4cqw; border-radius: 1.2cqw; background: rgba(12, 12, 12, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14); }
+    .cv .regla span { width: 10cqw; padding: 0.7cqw 0.9cqw 0.8cqw; border-radius: 0.9cqw; color: rgba(255, 255, 255, 0.6); font: 500 0.95cqw var(--sans); }
+    .cv .regla span::after { content: ''; display: block; height: 2px; margin-top: 0.6cqw; border-radius: 2px; background: linear-gradient(90deg, currentColor var(--a, 0%), rgba(255, 255, 255, 0.2) 0); }
+    .cv .regla .on { background: rgba(255, 255, 255, 0.1); color: #FFFFFF; }
+    .cv .caps { right: 3.2cqw; top: 7.2cqw; display: flex; gap: 0.2cqw; padding: 0.25cqw; border-radius: 99px; background: rgba(0, 0, 0, 0.3); font: 400 0.95cqw var(--mono); }
+    .cv .caps span { padding: 0.5cqw 1.1cqw; border-radius: 99px; color: rgba(255, 255, 255, 0.75); }
+    .cv .caps .on { background: #FFFFFF; color: var(--negro); }
+    .nav-v { display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden; border-radius: 0.9cqw; background: #FFFFFF; box-shadow: 0 3cqw 6cqw -3cqw rgba(0, 0, 0, 0.7); }
+    .nav-v .b { flex: none; height: 2.2cqw; display: flex; align-items: center; gap: 0.4cqw; padding: 0 0.9cqw; background: #EDEDEA; }
+    .nav-v .b i { width: 0.65cqw; height: 0.65cqw; border-radius: 50%; background: #CFCFCB; }
+    .nav-v .pant { position: relative; flex: 1; overflow: hidden; }
+    .pant img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
+    .recorre { animation: recorre var(--dura, 18s) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
+    @keyframes recorre { 0%, 8% { object-position: 50% 0%; } 92%, 100% { object-position: 50% 100%; } }
+    .tel { position: relative; height: 100%; aspect-ratio: 9 / 19.5; padding: 1.4%; border-radius: 15% / 7%; background: linear-gradient(150deg, #5B6A6C, #1F2A2C 22%, #3A4749 52%, #131B1C 78%, #48585A); box-shadow: 0 3cqw 6cqw -3cqw rgba(0, 0, 0, 0.7); }
+    .tel .pant { position: absolute; inset: 1.4%; border: 2px solid #050708; border-radius: 13.5% / 6.3%; }
+    .masc { display: block; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+    .grano::after { content: ''; position: absolute; inset: 0; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); background-size: 200px; mix-blend-mode: soft-light; opacity: 0.6; }
+
+    /* =======================================================
+       BLOQUE IZQUIERDO: CINCO DIAGRAMACIONES
+       ======================================================= */
+    /* Todas sobre la portada de Tap In de hoy, para comparar solo el bloque */
+    .tp-hoy .fondo { background: radial-gradient(60% 55% at 78% 22%, #8E81F5, transparent 70%), radial-gradient(120% 100% at 50% 0%, #6B5CE7, #4A3CAE 52%, #2D2560); }
+    /* 1 · Ficha técnica: cuatro datos en dos columnas */
+    .b1 .ficha { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqw 2cqw; width: 34cqw; padding-top: 1.3cqw; border-top: 1px solid var(--hilo); }
+    .b1 .ficha div { display: flex; flex-direction: column; gap: 0.3cqw; }
+    .b1 .ficha dt { color: var(--ink-3); font: 400 0.9cqw var(--mono); }
+    .b1 .ficha dd { margin: 0; font: 500 1.35cqw / 1.25 var(--sans); letter-spacing: -0.02em; }
+    .b1 .ficha .on::before { content: ''; display: inline-block; width: 0.6cqw; height: 0.6cqw; margin-right: 0.6cqw; border-radius: 50%; background: var(--vivo); vertical-align: 0.15cqw; }
+    /* 2 · La cifra manda */
+    .b2 .izq { gap: 1.2cqw; }
+    .b2 .eti { color: var(--ink-2); font: 400 1.05cqw var(--mono); }
+    .b2 .gigante { font: 500 11cqw / 0.8 var(--sans); letter-spacing: -0.07em; }
+    .b2 .gigante-eti { margin-top: -0.2cqw; color: var(--ink-2); font: 400 1.1cqw var(--mono); }
+    .b2 .baj { margin-top: 0.8cqw; }
+    /* 3 · Riel editorial: rótulos en mono a la izquierda y contenido desde la columna siguiente, como en los casos */
+    .b3 .izq { width: 38cqw; gap: 0; }
+    .b3 .fila { display: grid; grid-template-columns: 9cqw 1fr; column-gap: 1.6cqw; align-items: baseline; width: 100%; padding: 1.1cqw 0; border-top: 1px solid var(--hilo); }
+    .b3 .fila:first-child { border-top: 0; padding-top: 0; }
+    .b3 .fila > span:first-child { color: var(--ink-3); font: 400 0.95cqw var(--mono); }
+    .b3 .fila p { margin: 0; color: var(--ink-2); font-size: 1.3cqw; line-height: 1.4; }
+    .b3 .fila .res { font: 500 2.3cqw / 1 var(--sans); letter-spacing: -0.05em; }
+    .b3 .fila .res small { margin-left: 0.8cqw; color: var(--ink-2); font: 400 0.95cqw var(--mono); letter-spacing: 0; }
+    .b3 .fila .ver { justify-self: start; margin-top: 0.4cqw; }
+    /* 4 · Logo como firma */
+    .b4 .logo { width: 22cqw; aspect-ratio: 436.684 / 82.9249; color: #FFFFFF; }
+    .b4 .eti { color: var(--ink-2); font: 400 1.05cqw var(--mono); }
+    /* 5 · Tarjeta de cristal */
+    .b5 .izq { width: 34cqw; padding: 2cqw; gap: 1.2cqw; border-radius: 1.6cqw; background: rgba(16, 12, 40, 0.34); backdrop-filter: blur(16px) saturate(1.3); -webkit-backdrop-filter: blur(16px) saturate(1.3); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 3cqw 6cqw -3cqw rgba(0, 0, 0, 0.6); }
+    .b5 h3 { font-size: 4.2cqw; }
+    .b5 .eti { width: 100%; display: flex; justify-content: space-between; color: var(--ink-2); font: 400 0.95cqw var(--mono); }
+    .b5 .pie { width: 100%; display: flex; justify-content: space-between; align-items: center; padding-top: 1.2cqw; border-top: 1px solid var(--hilo); }
+    .b5 .pie .cifra { padding: 0; border: 0; }
+
+    /* =======================================================
+       FONDOS: TRES POR PROYECTO
+       ======================================================= */
+    /* --- LLEGÓ FARMA --- */
+    /* L1 · La foto aérea a sangre en duotono de marca, con un zoom lento */
+    .l1 .fondo { background: #17585C; }
+    .l1 .fondo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.2) brightness(1.05); mix-blend-mode: luminosity; animation: zoom 24s ease-in-out infinite alternate; }
+    .l1 .fondo::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(5, 26, 28, 0.88) 0%, rgba(5, 26, 28, 0.45) 38%, rgba(5, 26, 28, 0) 70%); }
+    .l1 .fondo::after { z-index: 2; }
+    @keyframes zoom { from { transform: scale(1.04); } to { transform: scale(1.14) translate(-2%, 1%); } }
+    /* L2 · Red de nodos: el isotipo del manual como retícula y rutas que se encienden */
+    .l2 .fondo { background: radial-gradient(70% 90% at 80% 30%, #17484C, #0B2528 60%, #07191B); }
+    .l2 .red { position: absolute; inset: -10%; color: rgba(160, 225, 220, 0.09); background: currentColor; -webkit-mask: url('lf-iso-nodos.svg') 0 0 / 7cqw 7cqw repeat; mask: url('lf-iso-nodos.svg') 0 0 / 7cqw 7cqw repeat; transform: rotate(-8deg); }
+    .l2 .grande { position: absolute; right: -14cqw; bottom: -20cqw; width: 70cqw; aspect-ratio: 1; color: rgba(150, 220, 214, 0.12); }
+    .l2 svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .l2 .ruta { fill: none; stroke: #7FD6CE; stroke-width: 1.2; stroke-dasharray: 3 9; opacity: 0.5; animation: ruta 6s linear infinite; }
+    @keyframes ruta { to { stroke-dashoffset: -120; } }
+    /* L3 · El fondo del manual: degradado claro de marca con tinta oscura y la retícula de puntos */
+    .l3 { --ink: #0E3236; --ink-2: rgba(14, 50, 54, 0.78); --ink-3: rgba(14, 50, 54, 0.55); --hilo: rgba(14, 50, 54, 0.2); }
+    .l3 .fondo { background: linear-gradient(120deg, #EAF2F1 0%, #CFE3E1 38%, #9CC7C3 70%, #5E9C98 100%); }
+    .l3 .fondo::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(14, 50, 54, 0.22) 1px, transparent 1.2px); background-size: 2.2cqw 2.2cqw; -webkit-mask-image: linear-gradient(90deg, transparent 30%, #000); mask-image: linear-gradient(90deg, transparent 30%, #000); }
+    .l3 .iso { position: absolute; right: 5cqw; top: 13cqw; width: 6cqw; aspect-ratio: 1; color: #0E3236; opacity: 0.85; }
+    .l3 .regla { background: rgba(255, 255, 255, 0.4); box-shadow: inset 0 0 0 1px rgba(14, 50, 54, 0.14); }
+    .l3 .regla span { color: rgba(14, 50, 54, 0.6); } .l3 .regla .on { color: #0E3236; background: rgba(255, 255, 255, 0.6); }
+    .l3 .caps { background: rgba(14, 50, 54, 0.12); } .l3 .caps span { color: rgba(14, 50, 54, 0.7); } .l3 .caps .on { background: #0E3236; color: #FFFFFF; }
+
+    /* --- TAP IN --- */
+    /* T1 · Las cuatro tiras de la paleta, de la más oscura (Empresa) a la más clara (Health) */
+    .t1 .fondo { display: flex; }
+    .t1 .fondo i { flex: 1; background: var(--c); }
+    .t1 .fondo i:nth-child(1) { flex: 1.5; }
+    .t1 .fondo::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20, 16, 50, 0.65) 0%, rgba(20, 16, 50, 0.1) 45%, transparent); z-index: 1; }
+    .t1 .fondo::after { z-index: 2; }
+    /* T2 · Isotipos gigantes recortados: Forky (Campus) y el cerebro (Connect), en tono sobre tono */
+    .t2 .fondo { background: radial-gradient(90% 90% at 70% 20%, #5B4CD6, #3A2E96 60%, #241C66); }
+    .t2 .forky { position: absolute; left: 26cqw; top: -14cqw; width: 52cqw; aspect-ratio: 1; color: rgba(170, 158, 248, 0.32); transform: rotate(-14deg); }
+    .t2 .cerebro { position: absolute; right: -16cqw; bottom: -22cqw; width: 56cqw; aspect-ratio: 1; color: rgba(170, 158, 248, 0.24); transform: rotate(10deg); }
+    /* T3 · La onda de tap: anillos que salen de la pieza, como el tap del hero del caso */
+    .t3 .fondo { background: radial-gradient(70% 90% at 68% 50%, #4A3CAE, #241C66 55%, #110E22); }
+    .t3 .anillos { position: absolute; left: 68%; top: 50%; width: 0; height: 0; }
+    .t3 .anillos i { position: absolute; left: 0; top: 0; width: 90cqw; aspect-ratio: 1; border: 1px solid rgba(200, 192, 248, 0.5); border-radius: 50%; translate: -50% -50%; scale: 0.15; opacity: 0; animation: onda 6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite; animation-delay: calc(var(--i) * 1.5s); }
+    @keyframes onda { 0% { scale: 0.15; opacity: 0; } 15% { opacity: 0.9; } 100% { scale: 1.3; opacity: 0; } }
+
+    /* --- MEND --- */
+    /* M1 · Bruma en movimiento: tres manchas de la paleta que se desplazan lento, con el grano de la marca */
+    .m1 .fondo { background: #2A5960; }
+    .m1 .fondo i { position: absolute; width: 70cqw; aspect-ratio: 1; border-radius: 50%; filter: blur(6cqw); opacity: 0.85; animation: deriva 18s ease-in-out infinite alternate; }
+    .m1 .fondo i:nth-child(1) { left: 40%; top: -30%; background: #C9E9E8; }
+    .m1 .fondo i:nth-child(2) { left: -20%; top: 40%; background: #1E4D57; animation-duration: 22s; }
+    .m1 .fondo i:nth-child(3) { left: 60%; top: 50%; background: #84AEB2; animation-duration: 26s; }
+    @keyframes deriva { from { transform: translate(0, 0) scale(1); } to { transform: translate(-12%, 10%) scale(1.15); } }
+    /* M2 · El isotipo gigante recortado, girando muy lento: la marca como paisaje */
+    .m2 .fondo { background: linear-gradient(120deg, #1E3C41, #577A80 55%, #91BABE); }
+    .m2 .iso { position: absolute; right: -18cqw; top: -16cqw; width: 78cqw; aspect-ratio: 1; color: rgba(214, 238, 236, 0.16); animation: gira 80s linear infinite; }
+    @keyframes gira { to { transform: rotate(360deg); } }
+    /* M3 · Arcos de movimiento: la medición del rango articular (un goniómetro) en líneas finas */
+    .m3 .fondo { background: radial-gradient(80% 100% at 70% 60%, #3E6D73, #1E3C41 70%, #132A2E); }
+    .m3 svg { position: absolute; left: 34cqw; top: 6cqw; width: 70cqw; height: 70cqw; }
+    .m3 .arco { fill: none; stroke: rgba(201, 233, 232, 0.28); stroke-width: 0.6; }
+    .m3 .marca-m { stroke: rgba(201, 233, 232, 0.45); stroke-width: 0.6; }
+    .m3 .barre { fill: none; stroke: #C9E9E8; stroke-width: 1.2; stroke-linecap: round; stroke-dasharray: 60 400; animation: barre 7s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
+    @keyframes barre { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -140; } }
+
+    /* =======================================================
+       VISTA MÓVIL
+       ======================================================= */
+    @media (max-width: 768px) {
+        .rot, .intro h1, .intro p, .bloque h2, .bloque > p, .op-txt, .op-vista, .tres { grid-column: 1 / -1; }
+        .op-txt { position: static; }
+        .botones-f { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .recorre, .l1 .fondo img, .l2 .ruta, .t3 .anillos i, .m1 .fondo i, .m2 .iso, .m3 .barre { animation: none; }
+        .t3 .anillos i { opacity: 0.4; scale: calc(0.3 + var(--i) * 0.25); }
+    }
+</style>
+
+<header class="grilla intro">
+    <span class="rot mono">Works · portadas</span>
+    <h1>El bloque de la izquierda y el fondo de cada portada.</h1>
+    <p><b>¿Logo en vez del nombre?</b> Mi recomendación es no. El nombre en Geist es parte del marco, igual en los tres; los logos tienen pesos y proporciones distintas (la línea fina de Llegó, el wordmark pesado de Tap In) y la portada pierde ritmo. Además el logo ya tiene su lugar en el capítulo Marca. Igual te dejo la opción 4 armada para que lo veas.</p>
+</header>
+
+<section class="grilla bloque" aria-label="Bloque izquierdo">
+    <span class="rot mono">Pregunta 1</span>
+    <h2>Cinco formas de diagramar el bloque izquierdo</h2>
+    <p>Todas sobre la portada de Tap In de hoy, para comparar solo el bloque. Arriba, la de hoy como referencia.</p>
+</section>
+
+<div class="grilla op">
+    <div class="op-txt"><span class="mono">Hoy</span><strong>Nombre, bajada, cifra y botón</strong><p>Se lee bien, pero los cuatro elementos pesan parecido y el resultado queda chico.</p></div>
+    <div class="op-vista"><div class="cv grande tp-hoy">
+        <div class="fondo grano"></div>
+        <div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div>
+        <div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div>
+        <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div>
+        <div class="izq"><h3>Tap In</h3><p class="baj">De la cafetería del campus a la plataforma del colegio. La marca desde el día uno y su web, programada por mí.</p><div class="cifra"><b>+15.000</b><span>familias en Connect, en Chile y Perú</span></div><span class="ver">Ver caso →</span></div>
+        <div class="regla"><span style="--a:100%">Llegó Farma</span><span class="on" style="--a:40%">Tap In</span><span>Mend</span></div>
+    </div></div>
+</div>
+
+<div class="grilla op">
+    <div class="op-txt"><span class="mono">1 · Ficha técnica</span><strong>Cuatro datos en dos columnas</strong><p>Rol, año, resultado y estado, como la ficha de un caso. Más información sin sumar ruido; el cliente ve qué hiciste antes de entrar.</p><span class="ref">Referencia: <a href="https://wearecollins.com/case-studies/" target="_blank" rel="noopener">Collins</a></span></div>
+    <div class="op-vista"><div class="cv grande tp-hoy b1">
+        <div class="fondo grano"></div>
+        <div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div>
+        <div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div>
+        <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div>
+        <div class="izq"><h3>Tap In</h3>
+            <dl class="ficha"><div><dt>Rol</dt><dd>Marca, UX/UI y web</dd></div><div><dt>Año</dt><dd>2025–26</dd></div><div><dt>Resultado</dt><dd>+15.000 familias</dd></div><div><dt>Estado</dt><dd class="on">tapin.cl en línea</dd></div></dl>
+            <span class="ver">Ver caso →</span></div>
+        <div class="regla"><span style="--a:100%">Llegó Farma</span><span class="on" style="--a:40%">Tap In</span><span>Mend</span></div>
+    </div></div>
+</div>
+
+<div class="grilla op">
+    <div class="op-txt"><span class="mono">2 · La cifra manda</span><strong>El resultado como titular</strong><p>La cifra va enorme y el nombre pasa a rótulo. Muy fuerte en Tap In; en Llegó y Mend la "cifra" es una frase (pitch ganado, en testeo) y pierde fuerza.</p><span class="ref">Referencia: <a href="https://www.raggededge.com/work" target="_blank" rel="noopener">Ragged Edge</a></span></div>
+    <div class="op-vista"><div class="cv grande tp-hoy b2">
+        <div class="fondo grano"></div>
+        <div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div>
+        <div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div>
+        <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div>
+        <div class="izq"><span class="eti">Tap In · Resultado</span><span class="gigante">+15.000</span><span class="gigante-eti">familias en Connect, en Chile y Perú</span><p class="baj">De la cafetería del campus a la plataforma del colegio.</p><span class="ver">Ver caso →</span></div>
+        <div class="regla"><span style="--a:100%">Llegó Farma</span><span class="on" style="--a:40%">Tap In</span><span>Mend</span></div>
+    </div></div>
+</div>
+
+<div class="grilla op">
+    <div class="op-txt"><span class="mono">3 · Riel editorial</span><strong>Rótulos a la izquierda, contenido al lado</strong><span class="rec">Recomendada</span><p>Proyecto, qué hice y resultado, cada uno con su rótulo en mono, como la grilla de los casos (riel de rótulos y texto al lado). Ordena sin cajas y el home ya habla el idioma del caso.</p><span class="ref">Referencia: la grilla de tus casos y <a href="https://order.design" target="_blank" rel="noopener">Order</a></span></div>
+    <div class="op-vista"><div class="cv grande tp-hoy b3">
+        <div class="fondo grano"></div>
+        <div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div>
+        <div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div>
+        <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div>
+        <div class="izq">
+            <div class="fila"><span>Proyecto</span><h3>Tap In</h3></div>
+            <div class="fila"><span>Qué hice</span><p>La marca desde el día uno y su web, programada por mí, de la cafetería del campus a la plataforma del colegio.</p></div>
+            <div class="fila"><span>Resultado</span><span class="res">+15.000<small>familias en Connect</small></span></div>
+            <div class="fila"><span></span><span class="ver">Ver caso →</span></div>
+        </div>
+        <div class="regla"><span style="--a:100%">Llegó Farma</span><span class="on" style="--a:40%">Tap In</span><span>Mend</span></div>
+    </div></div>
+</div>
+
+<div class="grilla op">
+    <div class="op-txt"><span class="mono">4 · Logo como firma</span><strong>El logo en vez del nombre</strong><p>Lo que preguntaste. Gana identidad, pero cada portada pesa distinto y el marco deja de ser constante. Prefiero el nombre en Geist y el logo en el capítulo Marca.</p></div>
+    <div class="op-vista"><div class="cv grande tp-hoy b4">
+        <div class="fondo grano"></div>
+        <div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div>
+        <div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div>
+        <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div>
+        <div class="izq"><span class="masc logo" style="--svg:url('tp-wordmark.svg')" role="img" aria-label="Tap In"></span><span class="eti">Marca · Producto · Web</span><p class="baj">De la cafetería del campus a la plataforma del colegio. La marca desde el día uno y su web, programada por mí.</p><div class="cifra"><b>+15.000</b><span>familias en Connect, en Chile y Perú</span></div><span class="ver">Ver caso →</span></div>
+        <div class="regla"><span style="--a:100%">Llegó Farma</span><span class="on" style="--a:40%">Tap In</span><span>Mend</span></div>
+    </div></div>
+</div>
+
+<div class="grilla op">
+    <div class="op-txt"><span class="mono">5 · Tarjeta de cristal</span><strong>Todo en una tarjeta</strong><p>El bloque se vuelve un objeto: vidrio con el rótulo, el nombre, la frase y abajo cifra y botón en una fila. Se lee sobre cualquier fondo, aunque suma una caja más.</p><span class="ref">Referencia: <a href="https://koto.com/work" target="_blank" rel="noopener">Koto</a></span></div>
+    <div class="op-vista"><div class="cv grande tp-hoy b5">
+        <div class="fondo grano"></div>
+        <div class="tope"><span>02 / 03 · Tap In</span><span>Marca · Producto · Web</span><span class="on">2025–26 · tapin.cl</span></div>
+        <div class="caps"><span>Marca</span><span class="on">Web</span><span>En uso</span></div>
+        <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div>
+        <div class="izq"><div class="eti"><span>02 · Tap In</span><span>2025–26</span></div><h3>Tap In</h3><p class="baj">De la cafetería del campus a la plataforma del colegio.</p><div class="pie"><div class="cifra"><b>+15.000</b><span>familias en Connect</span></div><span class="ver">Ver caso →</span></div></div>
+        <div class="regla"><span style="--a:100%">Llegó Farma</span><span class="on" style="--a:40%">Tap In</span><span>Mend</span></div>
+    </div></div>
+</div>
+
+<section class="grilla bloque" aria-label="Fondos">
+    <span class="rot mono">Pregunta 2</span>
+    <h2>Tres fondos para cada portada</h2>
+    <p>Cada fondo sale de la identidad de su proyecto, no de un degradado genérico. Una recomendada por proyecto.</p>
+</section>
+
+<div class="grilla op">
+    <div class="op-txt"><span class="mono">01 · Llegó Farma</span><strong>Logística de salud: precisión, rutas y confianza</strong><p>Hoy es la foto aérea oscurecida al 50 %: se ve apagada.</p></div>
+    <div class="tres">
+        <div class="paneles"><div class="panel-f on" data-panel="0"><div class="cv grande l1">
+            <div class="fondo grano"><img src="llego-foto.jpg" alt=""></div>
+            <div class="tope"><span>01 / 03 · Llegó Farma</span><span>2026</span></div>
+            <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="llego-larga.jpg" alt="" style="--dura:22s"></div></div></div>
+            <div class="izq"><h3>Llegó Farma</h3><div class="cifra"><b>Pitch ganado</b></div><span class="ver">Ver caso →</span></div>
+        </div></div><div class="panel-f" data-panel="1"><div class="cv grande l2">
+            <div class="fondo"><span class="red"></span><span class="masc grande" style="--svg:url('lf-iso-nodos.svg')"></span>
+                <svg viewBox="0 0 160 100" preserveAspectRatio="none" aria-hidden="true"><path class="ruta" d="M-5 80 C 30 70, 50 40, 80 46 S 130 20, 170 30"/><path class="ruta" d="M-5 30 C 40 36, 60 70, 100 64 S 140 90, 170 84" style="animation-delay:-3s"/></svg></div>
+            <div class="tope"><span>01 / 03 · Llegó Farma</span><span>2026</span></div>
+            <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="llego-larga.jpg" alt="" style="--dura:22s"></div></div></div>
+            <div class="izq"><h3>Llegó Farma</h3><div class="cifra"><b>Pitch ganado</b></div><span class="ver">Ver caso →</span></div>
+        </div></div><div class="panel-f" data-panel="2"><div class="cv grande l3 claro">
+            <div class="fondo"><span class="masc iso" style="--svg:url('lf-iso-nodos.svg')"></span></div>
+            <div class="tope"><span>01 / 03 · Llegó Farma</span><span>2026</span></div>
+            <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="llego-larga.jpg" alt="" style="--dura:22s"></div></div></div>
+            <div class="izq"><h3>Llegó Farma</h3><div class="cifra"><b>Pitch ganado</b></div><span class="ver">Ver caso →</span></div>
+        </div></div></div>
+        <div class="botones-f"><button type="button" class="op-f" aria-pressed="true" data-fondo="0"><b>Aérea en duotono</b>La foto del furgón a sangre en el verde de la marca, con un zoom muy lento. Más presencia que hoy y con el color propio.<span class="rec">Recomendada</span></button><button type="button" class="op-f" aria-pressed="false" data-fondo="1"><b>Red de nodos</b>El isotipo de nodos del manual como retícula, con rutas punteadas que avanzan: la última milla dibujada.</button><button type="button" class="op-f" aria-pressed="false" data-fondo="2"><b>El fondo del manual</b>El degradado claro de la marca con la retícula de puntos. La única portada clara de las tres: rompe la serie a propósito.</button></div>
+    </div>
+</div>
+
+<div class="grilla op">
+    <div class="op-txt"><span class="mono">02 · Tap In</span><strong>Una familia de productos en morado</strong><p>Hoy es un degradado morado limpio pero genérico: podría ser de cualquier SaaS.</p></div>
+    <div class="tres">
+        <div class="paneles"><div class="panel-f on" data-panel="0"><div class="cv grande t1">
+            <div class="fondo grano"><i style="--c:#2D2560"></i><i style="--c:#4A3CAE"></i><i style="--c:#6B5CE7"></i><i style="--c:#9B8EF0"></i></div>
+            <div class="tope"><span>02 / 03 · Tap In</span><span class="on">tapin.cl</span></div>
+            <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div>
+            <div class="izq"><h3>Tap In</h3><div class="cifra"><b>+15.000</b></div><span class="ver">Ver caso →</span></div>
+        </div></div><div class="panel-f" data-panel="1"><div class="cv grande t2">
+            <div class="fondo grano"><span class="masc forky" style="--svg:url('tp-forky.svg')"></span><span class="masc cerebro" style="--svg:url('tp-cerebro.svg')"></span></div>
+            <div class="tope"><span>02 / 03 · Tap In</span><span class="on">tapin.cl</span></div>
+            <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div>
+            <div class="izq"><h3>Tap In</h3><div class="cifra"><b>+15.000</b></div><span class="ver">Ver caso →</span></div>
+        </div></div><div class="panel-f" data-panel="2"><div class="cv grande t3">
+            <div class="fondo grano"><span class="anillos"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i></span></div>
+            <div class="tope"><span>02 / 03 · Tap In</span><span class="on">tapin.cl</span></div>
+            <div class="pieza"><div class="nav-v"><div class="b"><i></i><i></i><i></i></div><div class="pant"><img class="recorre" src="tapin-larga.jpg" alt="" style="--dura:16s"></div></div></div>
+            <div class="izq"><h3>Tap In</h3><div class="cifra"><b>+15.000</b></div><span class="ver">Ver caso →</span></div>
+        </div></div></div>
+        <div class="botones-f"><button type="button" class="op-f" aria-pressed="true" data-fondo="0"><b>Las tiras de la paleta</b>Los cuatro tonos (Empresa, Campus, Connect, Health) a pantalla completa: la decisión 03 del caso convertida en portada.<span class="rec">Recomendada</span></button><button type="button" class="op-f" aria-pressed="false" data-fondo="1"><b>Isotipos gigantes</b>Forky y el cerebro enormes y recortados, tono sobre tono. Se reconoce la marca sin leer nada.</button><button type="button" class="op-f" aria-pressed="false" data-fondo="2"><b>La onda de tap</b>Anillos que salen de la pieza sobre un morado noche, como el tap del hero del caso: el nombre hecho movimiento.</button></div>
+    </div>
+</div>
+
+<div class="grilla op">
+    <div class="op-txt"><span class="mono">03 · Mend</span><strong>Salud articular: calma, cuerpo y movimiento</strong><p>Hoy es el degradado de marca con grano: correcto, pero estático.</p></div>
+    <div class="tres">
+        <div class="paneles"><div class="panel-f on" data-panel="0"><div class="cv grande m1">
+            <div class="fondo grano"><i></i><i></i><i></i></div>
+            <div class="tope"><span>03 / 03 · Mend</span><span>2026</span></div>
+            <div class="pieza"><div class="tel"><div class="pant"><img class="recorre" src="mend-app-larga.jpg" alt="" style="--dura:14s"></div></div></div>
+            <div class="izq"><h3>Mend</h3><div class="cifra"><b>En testeo</b></div><span class="ver">Ver caso →</span></div>
+        </div></div><div class="panel-f" data-panel="1"><div class="cv grande m2">
+            <div class="fondo grano"><span class="masc iso" style="--svg:url('mend-iso.svg')"></span></div>
+            <div class="tope"><span>03 / 03 · Mend</span><span>2026</span></div>
+            <div class="pieza"><div class="tel"><div class="pant"><img class="recorre" src="mend-app-larga.jpg" alt="" style="--dura:14s"></div></div></div>
+            <div class="izq"><h3>Mend</h3><div class="cifra"><b>En testeo</b></div><span class="ver">Ver caso →</span></div>
+        </div></div><div class="panel-f" data-panel="2"><div class="cv grande m3">
+            <div class="fondo grano">
+                <svg viewBox="0 0 200 200" aria-hidden="true">
+                    <path class="arco" d="M20 140 A80 80 0 0 1 180 140"/><path class="arco" d="M40 140 A60 60 0 0 1 160 140"/><path class="arco" d="M60 140 A40 40 0 0 1 140 140"/>
+                    <g class="marca-m"><line x1="20" y1="140" x2="28" y2="140"/><line x1="30.7" y1="100" x2="38" y2="104"/><line x1="60" y1="70.7" x2="64" y2="78"/><line x1="100" y1="60" x2="100" y2="68"/><line x1="140" y1="70.7" x2="136" y2="78"/><line x1="169.3" y1="100" x2="162" y2="104"/><line x1="180" y1="140" x2="172" y2="140"/></g>
+                    <path class="barre" d="M30 140 A70 70 0 0 1 170 140"/>
+                </svg>
+            </div>
+            <div class="tope"><span>03 / 03 · Mend</span><span>2026</span></div>
+            <div class="pieza"><div class="tel"><div class="pant"><img class="recorre" src="mend-app-larga.jpg" alt="" style="--dura:14s"></div></div></div>
+            <div class="izq"><h3>Mend</h3><div class="cifra"><b>En testeo</b></div><span class="ver">Ver caso →</span></div>
+        </div></div></div>
+        <div class="botones-f"><button type="button" class="op-f" aria-pressed="true" data-fondo="0"><b>Bruma en movimiento</b>Tres manchas de la paleta que se desplazan muy lento bajo el grano: el degradado de hoy, pero respirando.</button><button type="button" class="op-f" aria-pressed="false" data-fondo="1"><b>Isotipo gigante</b>El asterisco del Encaje enorme y recortado, girando a una vuelta cada 80 segundos.</button><button type="button" class="op-f" aria-pressed="false" data-fondo="2"><b>Arcos de movimiento</b>El rango articular medido como en un goniómetro: arcos finos con sus marcas y un trazo que recorre el ángulo. Solo Mend podría tener este fondo.<span class="rec">Recomendada</span></button></div>
+    </div>
+</div>
+<div style="height:64px"></div>
+
+<script>
+/* =======================================================
+   INICIO JS · CAMBIO DE FONDO POR PROYECTO
+   ======================================================= */
+(() => {
+    document.querySelectorAll('.tres').forEach(t => {
+        const botones = [...t.querySelectorAll('[data-fondo]')], paneles = [...t.querySelectorAll('[data-panel]')];
+        botones.forEach(b => b.addEventListener('click', () => {
+            botones.forEach(x => x.setAttribute('aria-pressed', x === b));
+            paneles.forEach(x => x.classList.toggle('on', x.dataset.panel === b.dataset.fondo));
+        }));
+        /* Abre con la recomendada de cada proyecto */
+        const rec = botones.find(b => b.querySelector('.rec'));
+        if (rec) rec.click();
+    });
+})();
+/* =======================================================
+   FIN JS · CAMBIO DE FONDO POR PROYECTO
+   ======================================================= */
+</script>
