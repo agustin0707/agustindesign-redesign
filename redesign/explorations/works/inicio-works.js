@@ -49,6 +49,60 @@
     window.addEventListener('resize', pedir);
     pintar();
 
+    /* --- 2.1 RETÍCULA DE PRECISIÓN (LLEGÓ FARMA) --- */
+    /* La dosis esencial de la retícula del sitio, construida desde los elementos de la portada: la línea de los rótulos
+       y la celda de la ventana del sitio, a 16 px de ella. Líneas de 1 px que se cortan 8 px antes de cada cruce y que
+       esquivan los capítulos. En escritorio, un bloque de puntos del manual en la celda libre sobre el nombre */
+    const reticula = covs[0] && covs[0].querySelector('[data-reticula]');
+    const armarReticula = () => {
+        if (!reticula) return;
+        const cov = covs[0], C = cov.getBoundingClientRect(), W = C.width, H = C.height;
+        const rel = el => { const b = el.getBoundingClientRect(); return { l: b.left - C.left, t: b.top - C.top, r: b.right - C.left, b: b.bottom - C.top }; };
+        const T = rel(cov.querySelector('.pt-tope')), N = rel(cov.querySelector('.pt-vista .pt-nav')), K = rel(cov.querySelector('.pt-caps')), X = rel(cov.querySelector('.pt-txt'));
+        const celda = 16, corte = 8, px = v => Math.round(v) + 0.5;
+        const y0 = T.b, x1 = N.l - celda, x2 = Math.min(N.r + celda, W - corte), y1 = N.t - celda, y2 = N.b + celda;
+        const H_ = [[y0, 0, W, 'fuerte'], [y1, Math.max(x1 - celda * 2, 0), W], [y2, Math.max(x1 - celda * 2, 0), W]];
+        const V_ = [[x1, y0, y2], [x2, y0, y2]];
+        /* Corta un segmento [a, b] en los puntos dados (gap de 8 px a cada lado) y alrededor de los capítulos */
+        const partir = (a, b, puntos, huecos) => {
+            const tramos = []; let ini = a;
+            [...puntos.map(p => [p - corte, p + corte]), ...huecos].sort((p, q) => p[0] - q[0]).forEach(([c, d]) => { if (c > ini) tramos.push([ini, c]); ini = Math.max(ini, d); });
+            if (b > ini) tramos.push([ini, b]);
+            return tramos.filter(([c, d]) => d - c > 4);
+        };
+        let lineas = '', k = 0;
+        H_.forEach(([y, a, b, cls]) => {
+            const cruces = V_.filter(([x, ya, yb]) => x > a && x < b && y >= ya - 1 && y <= yb + 1).map(v => v[0]);
+            const huecos = K.t - 4 <= y && K.b + 4 >= y ? [[K.l - corte, K.r + corte]] : [];
+            partir(a, b, cruces, huecos).forEach(([c, d]) => { lineas += `<line class="ln ${cls || ''}" pathLength="1" style="--k:${k}" x1="${c}" y1="${px(y)}" x2="${d}" y2="${px(y)}"/>`; if (d - c > 160) lineas += `<line class="luz" pathLength="1" style="--k:${k}" x1="${c}" y1="${px(y)}" x2="${d}" y2="${px(y)}"/>`; k++; });
+        });
+        V_.forEach(([x, a, b]) => {
+            const cruces = H_.filter(([y, xa, xb]) => y > a - 1 && y < b + 1 && x >= xa && x <= xb).map(h => h[0]);
+            const huecos = K.l - 4 <= x && K.r + 4 >= x ? [[K.t - corte, K.b + corte]] : [];
+            partir(a, b, cruces, huecos).forEach(([c, d]) => { lineas += `<line class="ln" pathLength="1" style="--k:${k}" x1="${px(x)}" y1="${c}" x2="${px(x)}" y2="${d}"/>`; if (d - c > 160) lineas += `<line class="luz" pathLength="1" style="--k:${k}" x1="${px(x)}" y1="${c}" x2="${px(x)}" y2="${d}"/>`; k++; });
+        });
+        /* Bloque de puntos: 12 × 6 cada 12 px, solo si cabe entre la celda de la pieza y el nombre */
+        let puntos = '';
+        if (W > 768) {
+            const izq = T.l, arr = N.t, filas = Math.min(6, Math.floor((X.t - celda * 2 - arr) / 12));
+            for (let f = 0; f < filas; f++) for (let c = 0; c < 12; c++) puntos += `<circle class="pto" style="--k:${f + c}" cx="${izq + c * 12 + 1.5}" cy="${arr + f * 12 + 1.5}" r="1.25"/>`;
+        }
+        reticula.innerHTML = `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">${lineas}${puntos}</svg>`;
+    };
+    /* Con movimiento reducido, la cinta de Tap In queda quieta (sus animaciones son SMIL) */
+    if (quieto) document.querySelectorAll('.pt-cinta').forEach(s => s.pauseAnimations && s.pauseAnimations());
+    if (reticula) {
+        armarReticula();
+        let espera;
+        window.addEventListener('resize', () => { clearTimeout(espera); espera = setTimeout(armarReticula, 120); });
+        window.addEventListener('load', armarReticula);
+        if (document.fonts) document.fonts.ready.then(armarReticula);
+        /* Se dibuja la primera vez que la portada queda a la vista */
+        const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { requestAnimationFrame(() => reticula.classList.add('dibujada')); io.disconnect(); } }), { threshold: 0.35 });
+        io.observe(covs[0].querySelector('.pt-lado'));
+        if (quieto) reticula.classList.add('dibujada');
+    }
+
     /* --- 3. SALTOS: ÍNDICE, REGLA Y TECLAS 1, 2 Y 3 --- */
     /* Cada portada queda quieta un poco después de terminar su destape */
     const irCov = i => { const r = pista.getBoundingClientRect(); irA(window.scrollY + r.top + ((i ? TRAMOS[i][0] + 0.25 : 0) / LARGO) * (r.height - window.innerHeight)); };
