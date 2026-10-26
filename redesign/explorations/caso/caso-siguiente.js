@@ -40,7 +40,7 @@
     (window.CASO_INICIOS = window.CASO_INICIOS || []).push((C, { quieto }) => {
         const sec = document.querySelector('[data-sig]'); if (!sec) return;
         const panel = sec.querySelector('[data-sig-panel]'), pista = sec.querySelector('.sig-pista'), estado = sec.querySelector('[data-sig-estado]');
-        let pendiente = false, abriendo = false, ultimo = -1;
+        let pendiente = false, abriendo = false, ultimo = -1, tamano = 0;
         const pintar = () => {
             pendiente = false;
             const alto = panel.offsetHeight || window.innerHeight, r = pista.getBoundingClientRect(), recorrido = r.height - alto;
@@ -48,16 +48,18 @@
             const entrada = Math.min(Math.max(1 - r.top / alto, 0), 1);
             if (Math.abs(p - ultimo) > 0.002 || p === 1) { panel.style.setProperty('--p', p.toFixed(3)); ultimo = p; }
             panel.style.setProperty('--e', entrada.toFixed(3));
-            /* El logo se arma con el scroll: empieza a media entrada y queda completo al 40% de la pista */
-            panel.style.setProperty('--l', quieto ? 1 : (Math.min(Math.max((entrada - 0.45) / 0.55, 0), 1) * 0.6 + Math.min(p / 0.4, 1) * 0.4).toFixed(4));
+            /* El logo se arma con el scroll: parte apenas asoma (30 % de la entrada) y queda completo justo antes de que el
+               panel llene la pantalla, donde uno se detiene a mirarlo */
+            panel.style.setProperty('--l', quieto ? 1 : Math.min(Math.max((entrada - 0.3) / 0.65, 0), 1).toFixed(4));
             panel.classList.toggle('dentro', entrada > 0.6);
-            if (p >= 0.995 && !abriendo && !quieto && C.siguiente.url) {
+            /* Solo navega por el scroll del lector: al redimensionar la ventana el navegador puede dejar la página al final */
+            if (p >= 0.995 && !abriendo && !quieto && C.siguiente.url && performance.now() - tamano > 600) {
                 abriendo = true; panel.classList.add('abriendo'); estado.textContent = `Abriendo ${C.siguiente.nombre}`;
                 setTimeout(() => { if (abriendo) window.location.href = C.siguiente.url; }, 1300);
             } else if (p < 0.9 && abriendo) { abriendo = false; panel.classList.remove('abriendo'); estado.textContent = 'Sigue bajando'; }
         };
         window.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(pintar); } }, { passive: true });
-        window.addEventListener('resize', pintar);
+        window.addEventListener('resize', () => { tamano = performance.now(); pintar(); });
         pintar();
     });
 })();

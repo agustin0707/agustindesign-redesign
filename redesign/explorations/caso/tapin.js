@@ -65,6 +65,8 @@
                 el.addEventListener('pointerleave', () => ['--rx', '--ry', '--lx', '--ly'].forEach(v => cred.style.removeProperty(v)));
             }
             const fijo = el.querySelector('.tp-fijo'), tap = el.querySelector('.tp-tap');
+            let origen = false;
+            window.addEventListener('resize', () => { origen = false; });
             return p => {
                 /* El recorrido del tiempo ocupa el 70 % de la pista; el resto es la onda de tap */
                 const mes = fijar(p / 0.7) * 21.68;
@@ -73,11 +75,13 @@
                    una pantalla entera de morado vacío antes del capítulo 01 */
                 const t = vistaMovil.matches ? fijar((p - 0.76) / 0.19) : fijar((p - 0.7) / 0.24);
                 el.style.setProperty('--t', t.toFixed(4));
-                if (t > 0) {
+                /* El origen de la onda se mide una vez, cuando parte (la credencial ya está quieta) */
+                if (t > 0 && !origen) {
                     const f = fijo.getBoundingClientRect(), c = cred.getBoundingClientRect();
+                    origen = true;
                     tap.style.setProperty('--ox', ((c.left + c.width / 2 - f.left) / f.width * 100).toFixed(2) + '%');
                     tap.style.setProperty('--oy', ((c.top + c.height / 2 - f.top) / f.height * 100).toFixed(2) + '%');
-                }
+                } else if (t <= 0) origen = false;
                 let u = -1;
                 hitos.forEach((h, i) => { const on = parseFloat(h.style.getPropertyValue('--m')) <= mes; h.classList.toggle('on', on); if (on) u = i; });
                 hitos.forEach((h, i) => h.classList.toggle('ultimo', i === u));
@@ -100,7 +104,7 @@
             return p => {
                 n.textContent = `${String(Math.min(Math.floor(fijar(p / 0.7) * 7), 6) + 1).padStart(2, '0')} / 07`;
                 /* El paso a la 02 se mide desde la escena del QR, que se fija encima en las últimas 100svh */
-                el.style.setProperty('--tr', fijar(-qr.getBoundingClientRect().top / (qr.offsetHeight - vh) * 4).toFixed(3));
+                el.style.setProperty('--tr', fijar(-(qr.top - window.scrollY) / (qr.alto - vh) * 4).toFixed(3));
             };
         },
         /* El Rebirth: las tiras viajan de la portada a las columnas 8 a 12 */
@@ -129,12 +133,12 @@
                 btn.addEventListener('blur', () => { elegido = null; mostrar(porScroll()); });
             });
             const relativo = (x, base) => { const a = x.getBoundingClientRect(), b = base.getBoundingClientRect(); return { l: a.left - b.left, t: a.top - b.top, w: a.width, h: a.height }; };
+            /* El contenedor y la placa no se mueven durante el viaje: se miden al partir y no en cada cuadro */
+            let caja4 = null;
+            window.addEventListener('resize', () => { caja4 = null; });
             return p => {
-                /* Mientras entra (montada sobre las activaciones) no recibe clics: las tiras tapaban las flechas del carrusel
-                   de Banco de Chile. Solo cuando queda fija */
-                el.classList.toggle('activa', p > 0);
                 /* Los tres primeros tiempos corren en los primeros 380svh de la pista; el cuarto, en el resto */
-                const pista = el.offsetHeight - vh, s = p * pista, base = 3.8 * vh;
+                const pista = el.alto - vh, s = p * pista, base = 3.8 * vh;
                 const pr = fijar(s / base), p4 = fijar((s - base) / (pista - base));
                 el.style.setProperty('--pr', pr.toFixed(4)); el.style.setProperty('--p4', p4.toFixed(4));
                 el.style.setProperty('--b', curva(fijar((pr - 0.56) / 0.16)).toFixed(4));
@@ -146,8 +150,9 @@
                 if (elegido === null) mostrar(porScroll());
                 const viaja = p4 > 0.12;
                 el.classList.toggle('tp-rb-morph', viaja);
-                if (!viaja) { tiras.forEach(t => { t.style.left = t.style.top = t.style.width = t.style.height = ''; }); return; }
-                const ancho = cont.clientWidth, alto = cont.clientHeight, pesos = [1, 1, 1.5, 1], util = ancho - 24, k = curva(fijar((p4 - 0.14) / 0.26)), d = relativo(placa, cont);
+                if (!viaja) { caja4 = null; tiras.forEach(t => { t.style.left = t.style.top = t.style.width = t.style.height = ''; }); return; }
+                if (!caja4) caja4 = { ancho: cont.clientWidth, alto: cont.clientHeight, d: relativo(placa, cont) };
+                const { ancho, alto, d } = caja4, pesos = [1, 1, 1.5, 1], util = ancho - 24, k = curva(fijar((p4 - 0.14) / 0.26));
                 let x = 0;
                 tiras.forEach((t, i) => {
                     const w = util * pesos[i] / 4.5, a = { l: x, t: 0, w, h: alto }; x += w + 8;
@@ -167,7 +172,7 @@
             return p => {
                 const t = curva(fijar((p - 0.66) / 0.14)), L = lienzo.getBoundingClientRect(), F = fav.getBoundingClientRect(), w = svg.offsetWidth || 1;
                 const dx = F.left + F.width / 2 - (L.left + L.width / 2), dy = F.top + F.height / 2 - (L.top + L.height / 2);
-                svg.style.transform = t > 0 ? `translate(${(dx * t).toFixed(1)}px, ${(dy * t).toFixed(1)}px) scale(${(1 + (F.width * 0.7 / w - 1) * t).toFixed(4)})` : '';
+                svg.style.transform = t > 0 ? `translate(${(dx * t).toFixed(1)}px, ${(dy * t).toFixed(1)}px) scale(${(1 + (F.width * 0.78 / w - 1) * t).toFixed(4)})` : '';
                 el.style.setProperty('--fv', fijar((p - 0.79) / 0.03).toFixed(3));
             };
         },
@@ -194,14 +199,14 @@
         /* Capítulo 03: la portada entra sobre el final del manual (que sube y se apaga), la dirección se escribe con el
            scroll, la pestaña toma el nombre del sitio y la página se dibuja adentro de la ventana */
         /* Muro: el barrido destapa el panel en la primera pantalla de su pista; el resto lo lleva el bloque 13 */
-        muro: el => p => { el.style.setProperty('--barre', fijar(p * (el.offsetHeight - vh) / vh).toFixed(4)); if (el.muro) el.muro(p); },
+        muro: el => p => { el.style.setProperty('--barre', fijar(p * (el.alto - vh) / vh).toFixed(4)); if (el.muro) el.muro(p); },
         url: el => {
             const caja = el.querySelector('[data-url]'), txt = caja.dataset.url, man = document.querySelector('.tp-man'), tab = el.querySelector('[data-c3-tab]');
             caja.innerHTML = [...txt].map(c => `<span>${c}</span>`).join('');
             const letras = [...caja.children];
             /* Termina una pantalla antes del final de su pista: ese tramo lo cubre el sitio, que toma su ventana */
             return pista => {
-                const p = fijar(pista * (el.offsetHeight - vh) / (el.offsetHeight - 2 * vh));
+                const p = fijar(pista * (el.alto - vh) / (el.alto - 2 * vh));
                 const e = curva(fijar(p / 0.3)), f = fijar((p - 0.68) / 0.06);
                 el.style.setProperty('--e', e.toFixed(3)); if (man) man.style.setProperty('--sale', e.toFixed(3));
                 el.style.setProperty('--a', fijar((p - 0.22) / 0.12).toFixed(3));
@@ -288,7 +293,7 @@
             }));
             /* El manual termina 1,5 pantallas antes del final de su pista: ese tramo lo cubre la portada del capítulo 03 */
             return pista => {
-                const p = fijar(pista * (el.offsetHeight - vh) / (el.offsetHeight - 2.5 * vh));
+                const p = fijar(pista * (el.alto - vh) / (el.alto - 2.5 * vh));
                 const i = Math.min(Math.floor(p * N), N - 1), t = fijar(p * N - i);
                 el.querySelectorAll('[data-man-paso], [data-man-ir]').forEach(x => x.classList.toggle('on', +(x.dataset.manPaso ?? x.dataset.manIr) === i));
                 el.querySelector('[data-man-nombre]').textContent = nombres[i]; el.querySelector('[data-man-ruta]').textContent = rutas[i];
@@ -327,17 +332,18 @@
         /* El sitio: baja por tapin.cl y se detiene en cada decisión; el foco se dibuja sobre la parte que
            explica. Las cajas están en píxeles del sitio a 1440 de ancho */
         sitio: el => {
-            const VIAJE = 0.4, FINAL = vistaMovil.matches ? 0.4 : 1.2;
+            /* FINAL: el tramo quieto después de la última decisión (más corto en la vista móvil); se relee al cambiar de vista */
+            const VIAJE = 0.4;
+            let FINAL = 1.2, U = 0;
             /* En la vista móvil el sitio es su versión de teléfono (390 × 7446) con marcos propios (data-caja-m) */
             let ANCHO = 1440, ALTO = 5140;
             const pant = el.querySelector('.tp-sitio-pantalla'), lienzo = el.querySelector('.tp-sitio-lienzo');
             const caja = el.querySelector('.tp-sitio-caja'), cajaTxt = caja.querySelector('span');
             const items = [...el.querySelectorAll('[data-parada]')];
             const paradas = items.map(li => ({ li }));
-            const leerCajas = () => { const m = vistaMovil.matches; ANCHO = m ? 390 : 1440; ALTO = m ? 7446 : 5140; paradas.forEach(d => { const [x, y, w, h, rad] = (m ? d.li.dataset.cajaM : d.li.dataset.caja).split(',').map(Number); Object.assign(d, { x, y, w, h, rad }); }); };
+            const leerCajas = () => { const m = vistaMovil.matches; ANCHO = m ? 390 : 1440; ALTO = m ? 7446 : 5140; FINAL = m ? 0.4 : 1.2; U = paradas.length + FINAL; paradas.forEach(d => { const [x, y, w, h, rad] = (m ? d.li.dataset.cajaM : d.li.dataset.caja).split(',').map(Number); Object.assign(d, { x, y, w, h, rad }); }); };
             const pins = [...el.querySelectorAll('[data-pin]')], segs = [...el.querySelectorAll('.tp-sn-avance i')];
             const contador = el.querySelector('[data-sitio-n]');
-            const U = paradas.length + FINAL;
             let e = 1, vis = 0, actual = -2;
             const medir = () => {
                 leerCajas();
@@ -350,12 +356,18 @@
             medir();
             window.addEventListener('resize', medir);
             /* Al recargar, las medidas se toman antes de las fuentes y la imagen del sitio: se repiten al cargar */
-            const remedir = () => { medir(); destino = null; antesPista = -1; actual = -2; alScroll(ultimaPista); };
+            const remedir = () => {
+                medir(); destino = null;
+                /* Solo se repinta si la sección está en pantalla; lejos, el vuelo dejaba la luz centrada fuera de vista */
+                const r = el.getBoundingClientRect();
+                if (r.bottom < 0 || r.top > vh) return;
+                antesPista = -1; actual = -2; alScroll(fijar(-r.top / (r.height - vh)));
+            };
             window.addEventListener('load', remedir);
             if (document.fonts) document.fonts.ready.then(remedir);
             /* Clic en el índice: lleva el scroll al momento en que esa decisión está quieta */
             /* El primer tramo de la pista (una pantalla) es el vuelo desde la portada; el recorrido usa el resto */
-            const vuelo = () => vh / (el.offsetHeight - vh);
+            const vuelo = () => vh / ((el.alto || el.offsetHeight) - vh);
             const irA = u => { const r = el.getBoundingClientRect(), M = vuelo(); window.scrollTo({ top: window.scrollY + r.top + (M + (u / U) * (1 - M)) * (r.height - vh), behavior: quieto ? 'auto' : 'smooth' }); };
             const quieta = k => (k === 0 ? 0.5 : k + VIAJE + 0.3);
             items.forEach((li, i) => li.querySelector('button').addEventListener('click', () => irA(quieta(i))));
@@ -391,15 +403,16 @@
             let destino = null, volaba = false;
             const medirDestino = () => {
                 nav.classList.remove('volando'); el.classList.remove('volando');
-                const F = fijo.getBoundingClientRect(), N = nav.getBoundingClientRect();
-                destino = { x: N.left - F.left, y: N.top - F.top, w: N.width, h: N.height };
+                const F = fijo.getBoundingClientRect(), N = nav.getBoundingClientRect(), A = ventana3.getBoundingClientRect();
+                /* La ventana de la portada queda quieta durante el vuelo y el panel del sitio, fijo arriba: su lugar se mide aquí, una vez */
+                destino = { x: N.left - F.left, y: N.top - F.top, w: N.width, h: N.height, F: { width: F.width, height: F.height }, A: { left: A.left - F.left, top: A.top, width: A.width, height: A.height } };
                 el.style.setProperty('--bh', N.height + 'px');
             };
             window.addEventListener('resize', () => { destino = null; });
             const volar = q => {
                 if (!destino) medirDestino();
-                const A = ventana3.getBoundingClientRect(), F = fijo.getBoundingClientRect(), m = curva(q);
-                const x = A.left - F.left + (destino.x - (A.left - F.left)) * m, y = A.top - F.top + (destino.y - (A.top - F.top)) * m;
+                const { A, F } = destino, m = curva(q);
+                const x = A.left + (destino.x - A.left) * m, y = A.top + (destino.y - A.top) * m;
                 const w = A.width + (destino.w - A.width) * m, h = A.height + (destino.h - A.height) * m;
                 nav.classList.add('volando'); el.classList.add('volando');
                 nav.style.setProperty('--nx', x.toFixed(1) + 'px'); nav.style.setProperty('--ny', y.toFixed(1) + 'px');
@@ -414,7 +427,7 @@
             const aterrizar = () => {
                 nav.classList.remove('volando'); el.classList.remove('volando');
                 ['--nx', '--ny', '--nw', '--nh', '--lz'].forEach(k => nav.style.removeProperty(k));
-                ['--lr', '--iv'].forEach(k => el.style.removeProperty(k));
+                ['--lr', '--iv', '--lx', '--ly'].forEach(k => el.style.removeProperty(k));
                 cap3.style.setProperty('--cede', 1);
             };
             /* --- Hoja: en la última pantalla la sección sube y deja ver la decisión 11, que espera quieta debajo --- */
@@ -422,7 +435,7 @@
             const vivoIn = vivo && vivo.querySelector('.tp-v11-marco > .tp-grilla');
             const hoja = () => {
                 if (!vivo) return;
-                const T = vivo.getBoundingClientRect().top, m = fijar(-T / vh);
+                const T = vivo.top - window.scrollY, m = fijar(-T / vh);
                 el.style.setProperty('--hoja', m.toFixed(4));
                 /* La 11 ya está quieta por sticky; aquí solo se acerca y se aclara */
                 if (m < 1) { vivoIn.style.transform = quieto ? '' : `scale(${(0.94 + 0.06 * curva(m)).toFixed(4)})`; vivo.style.setProperty('--velo', ((1 - m) * 0.32).toFixed(3)); }
@@ -484,9 +497,17 @@
         propia: propias[el.dataset.escena] ? propias[el.dataset.escena](el) : null
     }));
     const pars = [...document.querySelectorAll('[data-par]')];
-    const pintar = () => {
+    /* Posiciones en la página medidas una vez (y de nuevo si cambia el tamaño): en cada cuadro de scroll ya no se mide el
+       diseño entre escrituras, que en iPhone obligaba a recalcularlo varias veces por cuadro y hacía tiritar */
+    const medirTops = () => {
+        const y = window.scrollY;
+        escenas.forEach(s => { const r = s.el.getBoundingClientRect(); s.top = s.el.top = r.top + y; s.alto = s.el.alto = r.height; });
+        pars.forEach(el => { const r = el.getBoundingClientRect(); el.top = r.top + y; el.alto = r.height; });
+        modulos.forEach(el => { const r = el.getBoundingClientRect(); el.top = r.top + y; el.alto = r.height; });
+    };
+    const pintar = y => {
         escenas.forEach(s => {
-            const r = s.el.getBoundingClientRect();
+            const r = { top: s.top - y, bottom: s.top - y + s.alto, height: s.alto };
             if (r.bottom < -vh * 0.25 || r.top > vh * 1.25) return;
             const p = fijar(-r.top / (r.height - vh));
             if (Math.abs(p - s.p) < 0.0004) return;
@@ -501,15 +522,31 @@
         });
         /* Parallax: --v va de -1 (entra por abajo) a 1 (sale por arriba) */
         pars.forEach(el => {
-            const r = el.getBoundingClientRect();
+            const r = { top: el.top - y, bottom: el.top - y + el.alto, height: el.alto };
             if (r.bottom < 0 || r.top > vh) return;
             el.style.setProperty('--v', fijar(((vh - r.top) / (vh + r.height)) * 2 - 1, -1, 1).toFixed(3));
         });
     };
     let pendiente = false;
-    const pedir = () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); luces(); barra(); }); } };
+    /* Cada cuadro: primero se lee todo (scroll y los textos que se encienden, que viven en paneles fijos) y después se escribe */
+    const pedir = () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; const y = window.scrollY, rt = textos.map(t => t.el.getBoundingClientRect()); anclar(y); pintar(y); luces(rt); barra(y); }); } };
+    /* Las pistas miden en alto de pantalla: al cambiar el tamaño de la ventana cambian de largo y el mismo scroll cae en
+       otra sección (o al final, donde el panel de Mend se completaba y navegaba solo). Se guarda en qué módulo y a qué
+       altura de su pista va el lector, y al redimensionar se vuelve exactamente ahí */
+    let ancla = null;
+    const anclar = y => { const m = modulos.find(el => el.top <= y && el.top + el.alto > y); if (m) ancla = { m, f: (y - m.top) / m.alto }; };
     window.addEventListener('scroll', pedir, { passive: true });
-    window.addEventListener('resize', () => { const nuevo = medirVh(); if (nuevo === vh && window.innerWidth === anchoVh) return; vh = nuevo; anchoVh = window.innerWidth; escenas.forEach(s => (s.p = -1)); pedir(); });
+    window.addEventListener('resize', () => {
+        const nuevo = medirVh(); if (nuevo === vh && window.innerWidth === anchoVh) return;
+        vh = nuevo; anchoVh = window.innerWidth; medirTops();
+        if (ancla) window.scrollTo({ top: Math.round(ancla.m.top + ancla.f * ancla.m.alto), behavior: 'instant' });
+        escenas.forEach(s => (s.p = -1)); pedir();
+    });
+    /* Si cambia el alto de la página (fuentes, imágenes, el ancho), se vuelven a medir las posiciones */
+    let remedirTops = false;
+    const alCambiarAlto = () => { if (remedirTops) return; remedirTops = true; requestAnimationFrame(() => { remedirTops = false; medirTops(); escenas.forEach(s => (s.p = -1)); pedir(); }); };
+    if ('ResizeObserver' in window) new ResizeObserver(alCambiarAlto).observe(document.body);
+    window.addEventListener('load', alCambiarAlto);
     /* El estirón del scroll (overscroll) muestra el color del borde más cercano: el morado del hero arriba y el verde de
        Mend abajo, en vez de un bloque oscuro */
     const bordes = () => document.documentElement.classList.toggle('tp-abajo', window.scrollY > document.documentElement.scrollHeight / 2);
@@ -523,13 +560,13 @@
     let ultimoY = window.scrollY, subida = 0;
     /* Letras de los links separadas, para que rueden con el hover */
     nav.querySelectorAll('ul a').forEach(a => { const t = a.textContent.trim(); a.setAttribute('aria-label', t); a.innerHTML = [...t].map((c, i) => `<span class="c" aria-hidden="true" style="--i:${i}">${c}</span>`).join(''); });
-    const barra = () => {
-        const y = window.scrollY, dy = y - ultimoY;
+    const barra = (y = window.scrollY) => {
+        const dy = y - ultimoY;
         ultimoY = y;
-        let m = modulos.find(el => { const r = el.getBoundingClientRect(); return r.top <= 32 && r.bottom > 32; });
+        let m = modulos.find(el => el.top - y <= 32 && el.top - y + el.alto > 32);
         /* El muro tapa a la 11 recién cuando el barrido terminó */
         const muroB = modulos.find(el => el.matches('.tp-movil'));
-        if (muroB && parseFloat(muroB.style.getPropertyValue('--barre')) > 0.96 && muroB.getBoundingClientRect().top <= 32) m = muroB;
+        if (muroB && parseFloat(muroB.style.getPropertyValue('--barre')) > 0.96 && muroB.top - y <= 32) m = muroB;
         const hero = escenas[0];
         const resumen = escenas.find(x => x.el.dataset.escena === 'resumen');
         nav.classList.toggle('sobre-claro', !!m && ((m.classList.contains('tp-claro') && !(m === resumen.el && resumen.p > 0.86)) || (m === hero.el && hero.p > 0.62) || (m.id === 'cap-2' && parseFloat(m.style.getPropertyValue('--p4')) > 0.3)));
@@ -559,8 +596,8 @@
         partir(el);
         return { el, pals: [...el.querySelectorAll('.tp-pal')], n: -1 };
     });
-    const luces = () => textos.forEach(t => {
-        const r = t.el.getBoundingClientRect();
+    const luces = (rt = textos.map(t => t.el.getBoundingClientRect())) => textos.forEach((t, k) => {
+        const r = rt[k];
         if (r.bottom < 0 || r.top > vh) return;
         const l = quieto ? 1 : fijar((vh * 0.9 - r.top) / (r.height + vh * 0.25));
         const n = Math.round(l * t.pals.length);
@@ -657,30 +694,38 @@
     const heroEl = document.querySelector('.tp-hero');
     requestAnimationFrame(() => heroEl.classList.add('entra'));
     /* El navegador del hero carga tapin.cl de verdad, sin scroll; deja de pintarse cuando el hero sale */
+    /* En la vista móvil va la captura del sitio de teléfono en vez del sitio vivo; si la ventana cruza de una vista a la
+       otra, se cambia una por la otra */
     const pantalla = heroEl.querySelector('[data-sitio]');
-    if (pantalla && vistaMovil.matches) {
-        const foto = document.createElement('img');
-        foto.src = 'media/tp-movil-sitio.jpg'; foto.alt = ''; foto.decoding = 'async';
-        pantalla.prepend(foto); pantalla.classList.add('listo');
-    } else if (pantalla) {
-        const sitio = document.createElement('iframe');
-        sitio.title = 'tapin.cl'; sitio.setAttribute('tabindex', '-1'); sitio.setAttribute('aria-hidden', 'true'); sitio.setAttribute('scrolling', 'no');
-        sitio.onload = () => {
-            try {
-                const d = sitio.contentDocument, st = d.createElement('style');
-                st.textContent = 'html,body{overflow:hidden!important;scrollbar-width:none}html::-webkit-scrollbar{display:none}';
-                d.head.appendChild(st);
-                /* El sitio pausa las animaciones de las secciones que cree fuera de pantalla; dentro del navegador
-                   inclinado su detector se equivoca con el hero, así que el hero queda siempre activo */
-                const hero = d.querySelector('section'), soltar = () => { if (hero.classList.contains('is-offscreen')) hero.classList.remove('is-offscreen'); };
-                if (hero) { soltar(); new sitio.contentWindow.MutationObserver(soltar).observe(hero, { attributes: true, attributeFilter: ['class'] }); }
-            } catch (err) { /* sin acceso */ }
-            pantalla.classList.add('listo');
-        };
-        sitio.src = pantalla.dataset.sitio;
-        pantalla.appendChild(sitio);
-        new IntersectionObserver(es => es.forEach(e => { sitio.style.visibility = e.isIntersecting ? '' : 'hidden'; })).observe(heroEl);
-    }
+    const montarPantalla = () => {
+        if (!pantalla) return;
+        pantalla.querySelectorAll(':scope > img, :scope > iframe').forEach(x => x.remove()); pantalla.classList.remove('listo');
+        if (vistaMovil.matches) {
+            const foto = document.createElement('img');
+            foto.src = 'media/tp-movil-sitio.jpg'; foto.alt = ''; foto.decoding = 'async';
+            pantalla.prepend(foto); pantalla.classList.add('listo');
+        } else {
+            const sitio = document.createElement('iframe');
+            sitio.title = 'tapin.cl'; sitio.setAttribute('tabindex', '-1'); sitio.setAttribute('aria-hidden', 'true'); sitio.setAttribute('scrolling', 'no');
+            sitio.onload = () => {
+                try {
+                    const d = sitio.contentDocument, st = d.createElement('style');
+                    st.textContent = 'html,body{overflow:hidden!important;scrollbar-width:none}html::-webkit-scrollbar{display:none}';
+                    d.head.appendChild(st);
+                    /* El sitio pausa las animaciones de las secciones que cree fuera de pantalla; dentro del navegador
+                       inclinado su detector se equivoca con el hero, así que el hero queda siempre activo */
+                    const hero = d.querySelector('section'), soltar = () => { if (hero.classList.contains('is-offscreen')) hero.classList.remove('is-offscreen'); };
+                    if (hero) { soltar(); new sitio.contentWindow.MutationObserver(soltar).observe(hero, { attributes: true, attributeFilter: ['class'] }); }
+                } catch (err) { /* sin acceso */ }
+                pantalla.classList.add('listo');
+            };
+            sitio.src = pantalla.dataset.sitio;
+            pantalla.appendChild(sitio);
+            new IntersectionObserver(es => es.forEach(e => { sitio.style.visibility = e.isIntersecting ? '' : 'hidden'; })).observe(heroEl);
+        }
+    };
+    montarPantalla();
+    vistaMovil.addEventListener('change', montarPantalla);
     const wm = heroEl.querySelector('.tp-wm-vivo');
     wm.querySelectorAll('[data-letra]').forEach((l, i) => l.style.setProperty('--l', i));
     if (!quieto && window.matchMedia('(hover: hover)').matches) {
@@ -789,13 +834,18 @@
         /* En móvil la grilla no cabe: se fija mostrando entera la pieza (escenario, flujo y módulos), centrada entre 16
            y 64 px del borde, en vez de alinearla abajo y cortar el texto a media línea */
         const pieza11 = marco11.querySelector('.tp-v11-pieza');
+        const enPagina = el => { let y = 0; for (; el; el = el.offsetParent) y += el.offsetTop; return y; };
         const fijarMarco = () => {
             const arriba = parseFloat(getComputedStyle(g).top) || 0, h = vh;
             let meta = Math.min(arriba, h * 0.94 - g.offsetHeight);
-            if (vistaMovil.matches) { const pz = pieza11.getBoundingClientRect().top - g.getBoundingClientRect().top, bloque = g.offsetHeight - pz; meta = fijar((h - bloque) / 2, 16, 64) - pz; }
+            /* Con offsetTop y no con el rectángulo: la pieza puede estar a mitad de su entrada (desplazada) al medir */
+            if (vistaMovil.matches) { const pz = enPagina(pieza11) - enPagina(g), bloque = g.offsetHeight - pz; meta = fijar((h - bloque) / 2, 16, 64) - pz; }
             marco11.style.setProperty('--t11', `${Math.round(meta - h)}px`);
         };
         fijarMarco(); window.addEventListener('resize', fijarMarco);
+        /* El texto sobre la pieza cambia de alto cuando llegan las fuentes, sin cambiar el alto total: se vuelve a medir */
+        window.addEventListener('load', fijarMarco);
+        if (document.fonts) document.fonts.ready.then(fijarMarco);
         if ('ResizeObserver' in window) new ResizeObserver(fijarMarco).observe(g);
     }
     /* Los pasos del flujo siguen el reloj real del mockup del comedor (18,3 s por vuelta): pago hasta los 4 s,
@@ -920,7 +970,7 @@
         new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) { desactivar(); ponerMano(null); } }), { threshold: 0.4 }).observe(fijo);
 
         sec.muro = p => {
-            const T = p * (sec.offsetHeight - vh) / vh, W = fijo.clientWidth, H = fijo.clientHeight, movil = vistaMovil.matches;
+            const T = p * (sec.alto - vh) / vh, W = fijo.clientWidth, H = fijo.clientHeight, movil = vistaMovil.matches;
             muro.style.setProperty('--q', (0.55 * (1 - Math.pow(1 - fijar(T / 1.7), 2))).toFixed(4));
             if (T > 1.2) montar();
             const z = quieto ? (T >= 1.75 ? 1 : 0) : curva(fijar((T - 1.75) / 0.7));
@@ -940,7 +990,7 @@
         window.addEventListener('resize', () => { tels.forEach(t => ponerY(t, t.y)); if (meta) sec.muro(fijar(-sec.getBoundingClientRect().top / (sec.offsetHeight - vh))); });
     }
 
-    pintar(); luces(); barra();
+    medirTops(); pintar(window.scrollY); luces(); barra();
 })();
 /* =======================================================
    FIN JS · CASO TAP IN EDITORIAL (.tp-)

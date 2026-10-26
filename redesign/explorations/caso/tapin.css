@@ -168,7 +168,9 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
 
 /* --- MOCKUP EN VIVO (PÓSTER HASTA QUE CARGA) --- */
 .tp-mk { position: relative; aspect-ratio: 3 / 2; }
-.tp-mk img { width: 100%; height: 100%; object-fit: contain; transition: opacity 400ms 300ms; }
+.tp-mk img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity 400ms 300ms; }
+/* La imagen va absoluta: el alto del contenedor sale solo de su proporción. En Safari, con la imagen en el flujo, el alto
+   entraba en un ciclo y crecía a millones de píxeles (desde la decisión 11 la página quedaba en blanco) */
 .tp-mk iframe { position: absolute; top: 0; left: 0; width: 900px; height: 600px; border: 0; background: transparent; color-scheme: light; transform-origin: 0 0; transform: scale(var(--escala, 0.5)); opacity: 0; pointer-events: none; transition: opacity 500ms; }
 .tp-mk.listo iframe { opacity: 1; }
 .tp-mk.listo img { opacity: 0; }
@@ -344,8 +346,10 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
 .tp-c3-chrome { flex: none; display: flex; align-items: center; gap: 14px; height: 44px; padding: 0 16px; background: #120F22; border-bottom: 1px solid var(--linea); }
 .tp-c3-luces { display: flex; gap: 7px; } .tp-c3-luces i { width: 11px; height: 11px; border-radius: 50%; background: #FF5F57; } .tp-c3-luces i:nth-child(2) { background: #FEBC2E; } .tp-c3-luces i:nth-child(3) { background: #28C840; }
 .tp-c3-tab { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 14px; border-radius: 9px; background: rgba(238, 237, 254, 0.06); color: var(--texto-2); font: 400 12px var(--sans); white-space: nowrap; }
-.tp-c3-fav { flex: none; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; background: var(--tp-connect); opacity: var(--f, 0); scale: calc(0.6 + var(--f, 0) * 0.4); }
-.tp-c3-fav .tp-marca { width: 11px; aspect-ratio: 622.7 / 597.42; }
+/* El favicon real de tapin.cl (img/favicon.svg): el isotipo de Connect en blanco al 78 % del ancho, sobre el morado
+   de marca con la esquina del ícono de app (22 %) */
+.tp-c3-fav { flex: none; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 3.5px; background: var(--tp-campus); opacity: var(--f, 0); scale: calc(0.6 + var(--f, 0) * 0.4); }
+.tp-c3-fav .tp-marca { width: 12.5px; aspect-ratio: 622.7 / 597.42; translate: 0 0.3px; }
 .tp-url { position: relative; flex: none; display: flex; align-items: center; gap: 10px; margin: 16px 16px 0; padding: 0 20px; height: clamp(44px, 3.6vw, 56px); border-radius: 999px; background: rgba(238, 237, 254, 0.06); box-shadow: inset 0 0 0 1px var(--linea); font: 500 clamp(17px, 1.5vw, 24px) / 1 var(--tp-f); letter-spacing: -0.03em; overflow: hidden; transition: box-shadow 400ms; }
 .tp-url-candado { width: 0.42em; height: 0.36em; margin-top: 0.2em; border-radius: 3px; background: var(--texto-3); position: relative; flex: none; }
 .tp-url-candado::before { content: ''; position: absolute; left: 50%; bottom: 80%; width: 60%; height: 70%; border: 2px solid var(--texto-3); border-bottom: 0; border-radius: 99px 99px 0 0; transform: translateX(-50%); }
@@ -623,7 +627,11 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
    4. Decisión 04, la familia se reúne en un lockup: el claro sube desde abajo, las cuatro tiras viajan a la placa
       de la anatomía (el JS mueve cada una) y, al bajar, la placa cambia de producto con el wordmark quieto */
 .tp-rebirth { position: relative; z-index: 2; height: 820svh; margin-top: -100svh; }
-.tp-rebirth:not(.activa) { pointer-events: none; }
+.tp-rebirth { pointer-events: none; }
+/* La capa del Rebirth se monta sobre las activaciones con textos aún invisibles y el contenedor de las tiras cubre la
+   pantalla: la capa deja pasar los toques y solo las tiras y los controles los reciben */
+.tp-rebirth .tp-fijo, .tp-tiras { pointer-events: none; }
+.tp-tira, .tp-rebirth :is(button, summary, a) { pointer-events: auto; }
 .tp-rebirth.tp-oscuro { background: linear-gradient(transparent 100svh, var(--tp-papel) 100svh); }
 .tp-rb-noche { position: absolute; inset: 0; background: var(--tp-noche); opacity: clamp(0, (var(--pr, 0) - 0.24) * 60, 1); }
 .tp-rb-cap { --ent: calc(clamp(0, (var(--pr, 0) - 0.38) / 0.1, 1) * (1 - clamp(0, (var(--pr, 0) - 0.56) / 0.06, 1))); position: absolute; inset: 0 0 auto; height: 38svh; padding: 0 var(--margen) 3svh; align-content: end; row-gap: 14px; opacity: var(--ent); translate: 0 calc((1 - var(--ent)) * 30px); pointer-events: none; }
@@ -791,8 +799,8 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
 .tp-cer-pestana small { margin-left: 10px; color: #8A889E; font-size: 13px; }
 .tp-cer-otra { background: transparent; color: #6E6B84; }
 .tp-cer-fav.tp-cer-fav-otro { background: #C9C6D8; }
-.tp-cer-fav { flex: none; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; background: var(--tp-connect); color: #FFFFFF; }
-.tp-cer-fav .tp-marca { width: 11px; aspect-ratio: 622.7 / 597.42; opacity: var(--fv, 0); }
+.tp-cer-fav { flex: none; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 3.5px; background: var(--tp-campus); color: #FFFFFF; }
+.tp-cer-fav .tp-marca { width: 12.5px; aspect-ratio: 622.7 / 597.42; translate: 0 0.3px; opacity: var(--fv, 0); }
 .tp-cer-url { display: flex; align-items: center; gap: 14px; height: 38px; padding: 0 12px; border-bottom: 1px solid #ECEAF3; }
 .tp-cer-flechas { display: flex; gap: 10px; } .tp-cer-flechas i { width: 7px; height: 7px; border-left: 1.5px solid #9C99B0; border-bottom: 1.5px solid #9C99B0; rotate: 45deg; } .tp-cer-flechas i + i { rotate: -135deg; opacity: 0.5; }
 .tp-cer-dir { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; height: 26px; border-radius: 8px; background: #F3F2F8; color: #3A3850; font: 400 12px var(--sans); }
@@ -1106,7 +1114,7 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
 
 /* --- 2. EL COMEDOR EN ESCENA --- */
 /* El mockup grande sobre un fondo de luz; se inclina apenas hacia el cursor y un brillo lo sigue */
-.tp-v11-pieza { grid-column: 7 / -1; grid-row: 1; display: flex; flex-direction: column; gap: 12px; opacity: 0; translate: 0 40px; transition: opacity 800ms var(--ease), translate 800ms var(--ease); perspective: 1400px; }
+.tp-v11-pieza { min-width: 0; grid-column: 7 / -1; grid-row: 1; display: flex; flex-direction: column; gap: 12px; opacity: 0; translate: 0 40px; transition: opacity 800ms var(--ease), translate 800ms var(--ease); perspective: 1400px; }
 .tp-v11-pieza.visto { opacity: 1; translate: 0 0; }
 .tp-v11-escenario { --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 30%; position: relative; border-radius: 26px; overflow: hidden; background: radial-gradient(80% 80% at 50% 25%, #FFFFFF, var(--tp-tint)); box-shadow: 0 0 0 1px var(--linea), 0 40px 80px -46px rgba(45, 37, 96, 0.45); transform: rotateX(var(--rx)) rotateY(var(--ry)); will-change: transform; }
 .tp-v11-escenario::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(40% 50% at var(--mx) var(--my), rgba(255, 255, 255, 0.55), transparent 70%); mix-blend-mode: soft-light; opacity: 0; transition: opacity 400ms var(--ease); }
@@ -1134,11 +1142,11 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
 
 /* --- 4. LOS OTROS MÓDULOS --- */
 /* Tres mockups chicos, también en vivo; al pasar el cursor la tarjeta sube y el mockup se acerca */
-.tp-v11-otros { grid-column: 7 / -1; grid-row: 2; display: flex; flex-direction: column; gap: 12px; opacity: 0; translate: 0 30px; transition: opacity 800ms 150ms var(--ease), translate 800ms 150ms var(--ease); }
+.tp-v11-otros { min-width: 0; grid-column: 7 / -1; grid-row: 2; display: flex; flex-direction: column; gap: 12px; opacity: 0; translate: 0 30px; transition: opacity 800ms 150ms var(--ease), translate 800ms 150ms var(--ease); }
 .tp-v11-otros.visto { opacity: 1; translate: 0 0; }
 .tp-v11-otros header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; color: var(--texto-3); font-size: 12px; }
 .tp-v11-otros header b { color: var(--texto); font: 600 16px var(--tp-f); letter-spacing: -0.02em; }
-.tp-v11-fila { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.tp-v11-fila { min-width: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .tp-v11-mini { display: flex; flex-direction: column; gap: 10px; padding: 8px 8px 14px; border-radius: 16px; background: #FFFFFF; box-shadow: 0 0 0 1px var(--linea); transition: translate 350ms var(--tp-curva), box-shadow 350ms var(--ease); }
 .tp-v11-mini .tp-mk { border-radius: 10px; overflow: hidden; background: radial-gradient(80% 80% at 50% 30%, #FFFFFF, var(--tp-tint)); }
 .tp-v11-mini .tp-mk > * { transition-property: opacity, scale; }
@@ -1243,7 +1251,9 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
 .tp-rs-l > span { display: block; transform: translateY(110%); transition: transform 1000ms var(--ease); transition-delay: calc(var(--i) * 90ms); }
 .tp-rs-clave { background: linear-gradient(var(--tp-health), var(--tp-health)) 0 94% / 0 0.07em no-repeat; transition: background-size 450ms var(--ease); transition-delay: calc(900ms + var(--k) * 110ms); }
 .tp-rs-firma { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; color: var(--texto-2); opacity: 0; translate: 0 10px; transition: opacity 600ms 700ms var(--ease), translate 600ms 700ms var(--ease); }
-.tp-rs-firma cite { font-style: normal; }
+/* Firma: el wordmark de Tap In y, tras un filete, el nombre de quien lo dice con su cargo debajo */
+.tp-rs-firma cite { display: grid; gap: 3px; padding-left: 14px; border-left: 1px solid rgba(255, 255, 255, 0.16); font-style: normal; }
+.tp-rs-firma b { color: var(--texto); font: 500 15px / 1.2 var(--tp-f); letter-spacing: -0.01em; }
 .tp-rs-marca { width: 54px; height: 21px; background: var(--texto); -webkit-mask: url('media/tp-wordmark.svg') left center / contain no-repeat; mask: url('media/tp-wordmark.svg') left center / contain no-repeat; }
 .tp-rs-cita.visto .tp-rs-comilla { opacity: 1; translate: 0 0; }
 .tp-rs-cita.visto .tp-rs-l > span { transform: none; }
@@ -1305,7 +1315,8 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
     .tp-sitio-pin { left: var(--pxm); top: var(--pym); }
     .tp-sitio-dd { display: none; }
     .tp { --hy: 30svh; --hrx: 32deg; --hs: 0.88; }
-    .tp-grilla { grid-template-columns: 1fr; row-gap: 28px; }
+    /* minmax(0, 1fr): con 1fr, Safari ensanchaba la columna al mínimo del contenido (el carrusel de mockups) a 1.778 px */
+    .tp-grilla { grid-template-columns: minmax(0, 1fr); row-gap: 28px; }
     .tp-grilla > * { grid-column: 1 / -1 !important; }
     .tp .tp-cap .tp-cap-txt, .tp-forky .tp-dec, .tp-qr .tp-dec, .tp-rebirth .tp-dec, .tp-cer .tp-dec { display: flex; flex-direction: column; gap: 10px; }
     .tp-cap .tp-cap-n { align-self: flex-start; padding-bottom: 0; }
