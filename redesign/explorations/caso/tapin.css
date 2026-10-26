@@ -66,8 +66,10 @@
    así no hay doble barra en Chrome ni se rompe el sticky */
 html:has(> body.tp), body.tp { overflow-x: clip; }
 /* Fondo del lienzo para el estirón del scroll: el borde del hero arriba, el de Mend abajo (el JS cambia a mitad de página) */
-html:has(> body.tp) { background: linear-gradient(90deg, #584AC3, #7666EA 50%, #6A5DD1); }
-html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A979D 50%, #91BABE); }
+/* Chrome en PC pinta el estirón solo con el color de fondo (no con el degradado): el color va aparte y es el tono medio
+   del borde de arriba del hero; el degradado copia ese borde de izquierda a derecha para Safari */
+html:has(> body.tp) { background: #6B5CDC linear-gradient(90deg, #5546BB, #6253D1 25%, #7769EB 48%, #786AE5 62%, #6C5ED4); }
+html.tp-abajo:has(> body.tp) { background: #6A979D linear-gradient(90deg, #27565E, #6A979D 50%, #91BABE); }
 .tp-fijo.tp-grilla { align-items: center; padding: 0 var(--margen); }
 .tp-etq { grid-column: 1 / span 3; color: var(--texto-2); padding-top: 0.9em; }
 .tp-pie { color: inherit; }
