@@ -5,7 +5,6 @@
     const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const conMouse = window.matchMedia('(hover: hover)').matches;
     const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
-    const curva = t => t * t * (3 - 2 * t);
     const irA = y => window.scrollTo({ top: y, behavior: quieto ? 'auto' : 'smooth' });
 
     /* --- 1. TÍTULOS QUE ENTRAN LETRA A LETRA --- */
@@ -21,18 +20,18 @@
     titulos.forEach(el => ioLetras.observe(el));
 
     /* --- 2. PORTADAS: DESTAPE Y REGLA DE AVANCE --- */
-    /* La pista se reparte en tramos: cada portada se destapa en el paso entre una y otra (--r) y la anterior se aleja
-       (--sale). El último tramo deja la tercera quieta mientras el archivo sube encima como una hoja */
+    /* La pista se reparte en tramos de 100svh: cada portada sube como hoja en el paso entre una y otra (--r), lineal con
+       el scroll para que se sienta física, y la anterior se oscurece (--sale). El último tramo deja la tercera quieta mientras el archivo sube encima como una hoja */
     const pista = document.querySelector('[data-portadas]');
     const covs = [...pista.querySelectorAll('.pt-cov')], regla = [...pista.querySelectorAll('.pt-regla button')];
-    const TRAMOS = [[0, 0.9], [0.9, 1.9], [1.9, 2.6]], LARGO = 3.1;
+    const TRAMOS = [[0, 1.1], [1.1, 2.7], [2.7, 3.3]], LARGO = 3.8, FIN = [0, 1.7, 3.3];
     let activa = 0;
     covs.forEach((c, i) => { c.inert = i !== 0; });
     const pintar = () => {
         const r = pista.getBoundingClientRect();
         if (r.bottom < 0 || r.top > window.innerHeight) return;
         const s = fijar(-r.top / (r.height - window.innerHeight)) * LARGO;
-        const rev = [1, curva(fijar((s - 0.6) / 0.6)), curva(fijar((s - 1.6) / 0.6))];
+        const rev = [1, fijar(s - 0.6), fijar(s - 2.2)];
         covs.forEach((c, i) => { c.style.setProperty('--r', rev[i].toFixed(4)); c.style.setProperty('--sale', (rev[i + 1] || 0).toFixed(4)); });
         const act = rev[2] > 0.5 ? 2 : rev[1] > 0.5 ? 1 : 0;
         regla.forEach((b, i) => b.style.setProperty('--a', fijar((s - TRAMOS[i][0]) / (TRAMOS[i][1] - TRAMOS[i][0])).toFixed(3)));
@@ -105,7 +104,7 @@
 
     /* --- 3. SALTOS: ÍNDICE, REGLA Y TECLAS 1, 2 Y 3 --- */
     /* Cada portada queda quieta un poco después de terminar su destape */
-    const irCov = i => { const r = pista.getBoundingClientRect(); irA(window.scrollY + r.top + ((i ? TRAMOS[i][0] + 0.25 : 0) / LARGO) * (r.height - window.innerHeight)); };
+    const irCov = i => { const r = pista.getBoundingClientRect(); irA(window.scrollY + r.top + (FIN[i] / LARGO) * (r.height - window.innerHeight)); };
     document.querySelectorAll('[data-ir-cov]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); irCov(+b.dataset.irCov); }));
     window.addEventListener('keydown', e => {
         if (e.metaKey || e.ctrlKey || e.altKey || !['1', '2', '3'].includes(e.key) || /input|textarea|select/i.test(e.target.tagName)) return;

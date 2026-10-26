@@ -167,14 +167,14 @@
         /* =======================================================
            2. PORTADAS DE LOS DESTACADOS
            ======================================================= */
-        /* Cada proyecto es una portada a pantalla completa con su propio mundo; la siguiente se destapa desde abajo y
-           la anterior se aleja. Encima va el marco de Agustín Design: nombre entero, una cifra (referencia: Ragged
+        /* Cada proyecto es una portada a pantalla completa con su propio mundo; la siguiente sube como una hoja, igual que
+           el archivo sobre Mend (bordes redondeados que se enderezan al llegar) y la anterior se oscurece un poco debajo. Encima va el marco de Agustín Design: nombre entero, una cifra (referencia: Ragged
            Edge), los capítulos Marca, Web y En uso (referencia: Order) y una sola regla de avance con teclas 1 a 3.
            --r (destape) y --sale (cuánto la cubrió la siguiente) los escribe inicio-works.js */
-        .pt-pista { position: relative; height: 440svh; }
+        .pt-pista { position: relative; height: 480svh; }
         .pt-fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--negro); }
-        .pt-cov { --r: 1; --sale: 0; position: absolute; inset: 0; clip-path: inset(calc((1 - var(--r)) * 100%) 0 0 0); }
-        .pt-mundo { position: absolute; inset: 0; transform: scale(calc(1 - var(--sale) * 0.06)); transform-origin: 50% 0%; filter: brightness(calc(1 - var(--sale) * 0.55)); }
+        .pt-cov { --r: 1; --sale: 0; --radio: 22px; position: absolute; inset: 0; overflow: hidden; translate: 0 calc((1 - var(--r)) * 100%); border-radius: calc(min(1, (1 - var(--r)) * 4) * var(--radio)) calc(min(1, (1 - var(--r)) * 4) * var(--radio)) 0 0; box-shadow: 0 -40px 80px rgba(0, 0, 0, 0.5); }
+        .pt-mundo { position: absolute; inset: 0; filter: brightness(calc(1 - var(--sale) * 0.35)); }
         /* --- 0.1 LLEGÓ FARMA: LA BRUMA DEL MANUAL Y SU RETÍCULA DE PRECISIÓN --- */
         /* El degradado de la secuencia oficial del manual. Encima, la retícula del sitio en su dosis esencial (la línea
            de los rótulos y la celda de la pieza): 1 px, 12 % (20 % la de los rótulos), cortes de 8 px en cada cruce y 16 px
@@ -244,7 +244,7 @@
         .pt-tope > :nth-child(1) { grid-column: 1 / span 3; } .pt-tope > :nth-child(2) { grid-column: 4 / span 5; } .pt-tope > :nth-child(3) { grid-column: 9 / -1; justify-self: end; }
         .pt-tope a { border-bottom: 1px solid rgba(255, 255, 255, 0.4); }
         .pt-tope .en-linea::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: #3FCF8E; vertical-align: 1px; }
-        .pt-txt { grid-column: 1 / span 5; grid-row: 3; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; translate: 0 calc((1 - var(--r)) * 60px); }
+        .pt-txt { grid-column: 1 / span 5; grid-row: 3; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
         .pt-txt h3 { font-size: clamp(56px, 6.4vw, 120px); font-weight: 500; letter-spacing: -0.06em; line-height: 0.86; }
         .pt-txt > p { max-width: 32ch; font-size: clamp(16px, 1.25vw, 20px); line-height: 1.38; letter-spacing: -0.01em; color: rgba(255, 255, 255, 0.84); }
         /* El dato se apoya en la base de la cifra: su última línea calza con la línea base del número, sin colgar hacia abajo */
@@ -256,7 +256,7 @@
         @media (hover: hover) { .pt-ver:hover { gap: 14px; } .pt-ver:hover i { transform: translateX(2px); } }
 
         /* --- 2. CAPÍTULOS: MARCA, WEB Y EN USO SOBRE LA MISMA PIEZA --- */
-        .pt-lado { grid-column: 6 / -1; grid-row: 2 / span 2; display: grid; grid-template-rows: auto minmax(0, 1fr); row-gap: 14px; min-height: 0; translate: 0 calc((1 - var(--r)) * 12svh); }
+        .pt-lado { grid-column: 6 / -1; grid-row: 2 / span 2; display: grid; grid-template-rows: auto minmax(0, 1fr); row-gap: 14px; min-height: 0; }
         .pt-caps { justify-self: end; display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(0, 0, 0, 0.32); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
         .pt-caps button { min-height: 32px; padding: 0 14px; border-radius: 999px; color: rgba(255, 255, 255, 0.74); font: 400 12px var(--mono); transition: background-color 160ms linear, color 160ms linear; }
         .pt-caps button[aria-selected="true"] { background: #FFFFFF; color: var(--negro); }
@@ -266,6 +266,26 @@
         .pt-vista.on { opacity: 1; scale: 1; pointer-events: auto; }
         .pt-marca { display: block; width: min(70%, 520px); aspect-ratio: 3.4 / 1; background: #FFFFFF; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
         .pt-foto { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; box-shadow: 0 50px 90px -40px rgba(0, 0, 0, 0.8); }
+        /* --- 0.5 LLEGÓ: EN USO COMO SECUENCIA --- */
+        /* Un marco que recorre cinco aplicaciones con fundido y un leve acercamiento, barras de avance arriba y el
+           rótulo que cambia abajo. Todo en CSS: 12,5 s el ciclo, 2,5 s por foto */
+        .pt-sec { --ciclo: 12.5s; position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 14px; background: #0B3439; box-shadow: 0 50px 90px -40px rgba(0, 0, 0, 0.8); }
+        .pt-sec img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; animation: ptSec var(--ciclo) linear infinite; }
+        .pt-sec img:nth-child(2), .pt-sec-barras i:nth-child(2), .pt-sec-rot > span:nth-child(2) { animation-delay: 2.5s; }
+        .pt-sec img:nth-child(3), .pt-sec-barras i:nth-child(3), .pt-sec-rot > span:nth-child(3) { animation-delay: 5s; }
+        .pt-sec img:nth-child(4), .pt-sec-barras i:nth-child(4), .pt-sec-rot > span:nth-child(4) { animation-delay: 7.5s; }
+        .pt-sec img:nth-child(5), .pt-sec-barras i:nth-child(5), .pt-sec-rot > span:nth-child(5) { animation-delay: 10s; }
+        @keyframes ptSec { 0% { opacity: 0; scale: 1.06; } 5%, 20% { opacity: 1; } 25% { opacity: 0; scale: 1; } 100% { opacity: 0; } }
+        .pt-sec-velo { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), transparent 22%, transparent 60%, rgba(0, 0, 0, 0.55)); }
+        .pt-sec-barras { position: absolute; left: 22px; right: 22px; top: 18px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+        .pt-sec-barras i { height: 2px; border-radius: 2px; background: rgba(255, 255, 255, 0.3); overflow: hidden; }
+        .pt-sec-barras i::after { content: ''; display: block; height: 100%; background: #FFFFFF; transform-origin: left; scale: 0 1; animation: ptBarra var(--ciclo) linear infinite; animation-delay: inherit; }
+        @keyframes ptBarra { 0% { scale: 0 1; } 20%, 99.9% { scale: 1 1; } 100% { scale: 0 1; } }
+        .pt-sec-rot { position: absolute; left: 26px; bottom: 24px; display: grid; }
+        .pt-sec-rot > span { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 6px; opacity: 0; animation: ptRot var(--ciclo) linear infinite; }
+        .pt-sec-rot small { color: rgba(255, 255, 255, 0.78); font: 400 11px var(--mono); }
+        .pt-sec-rot b { font-size: clamp(22px, 2vw, 30px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
+        @keyframes ptRot { 0% { opacity: 0; translate: 0 8px; } 4% { opacity: 1; translate: 0 0; } 20% { opacity: 1; } 23%, 100% { opacity: 0; } }
         .pt-foto.contiene { object-fit: contain; background: #EEEDFE; }
         .pt-nav { display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden; border-radius: 12px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 50px 90px -40px rgba(0, 0, 0, 0.8); }
         .pt-nav .pt-barra { flex: none; display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; background: #EDEDEA; }
@@ -407,6 +427,7 @@
 
             .hoja, .hoja-cab, .ficha a { grid-template-columns: repeat(4, 1fr); }
             .hoja { padding-top: 64px; border-radius: 18px 18px 0 0; }
+            .pt-cov { --radio: 18px; }
             .hoja-cab { row-gap: 18px; }
             .hoja-cab h2, .hoja-cab p, .hoja-vistas { grid-column: 1 / -1; }
             .hoja-cab h2 { font-size: 20vw; }
@@ -425,6 +446,10 @@
         }
         @media (prefers-reduced-motion: reduce) {
             .pt-recorre { animation: none; }
+            /* La secuencia de Llegó queda en su primera foto, sin barras */
+            .pt-sec img, .pt-sec-rot > span { animation: none; }
+            .pt-sec img:first-child, .pt-sec-rot > span:first-child { opacity: 1; }
+            .pt-sec-barras { display: none; }
             .pt-vista { transition: none; }
             .pt-reticula .ln, .pt-reticula.dibujada .ln { transition: none; stroke-dashoffset: 0; }
             .pt-reticula .luz, .pt-reticula .pto, .pt-escalera .pt-tel { animation: none !important; }
@@ -497,7 +522,7 @@
                         <div class="pt-vistas">
                             <div class="pt-vista"><span class="pt-marca" style="--svg:url('sitios/llego/img/logos/LlegoFarma_Horizontal_Blanco.svg')" role="img" aria-label="Logo de Llegó Farma"></span></div>
                             <div class="pt-vista on"><div class="pt-nav"><div class="pt-barra"><i></i><i></i><i></i><span>llegofarma.cl</span></div><div class="pt-pant"><img class="pt-recorre" src="media/llego-larga.jpg" alt="Sitio de Llegó Farma" loading="lazy" decoding="async" style="--dura:22s"></div></div></div>
-                            <div class="pt-vista"><img class="pt-foto" src="media/llego-foto2.jpg" alt="La marca en el uniforme y en la entrega" loading="lazy" decoding="async"></div>
+                            <div class="pt-vista"><div class="pt-sec" role="img" aria-label="Llegó Farma en uso: flota, uniforme, bodega, entrega y pantalla"><img src="media/lf-ruta.webp" alt="" loading="lazy" decoding="async" style="object-position: 62% 50%"><img src="media/lf-tablet.webp" alt="" loading="lazy" decoding="async" style="object-position: 62% 50%"><img src="media/lf-bodega.webp" alt="" loading="lazy" decoding="async" style="object-position: 50% 50%"><img src="media/lf-entrega.webp" alt="" loading="lazy" decoding="async" style="object-position: 50% 40%"><img src="media/lf-celular.webp" alt="" loading="lazy" decoding="async" style="object-position: 50% 50%"><span class="pt-sec-velo"></span><span class="pt-sec-barras"><i></i><i></i><i></i><i></i><i></i></span><span class="pt-sec-rot"><span><small>01 / 05</small><b>Flota</b></span><span><small>02 / 05</small><b>Uniforme</b></span><span><small>03 / 05</small><b>Bodega</b></span><span><small>04 / 05</small><b>Entrega</b></span><span><small>05 / 05</small><b>Pantalla</b></span></span></div></div>
                         </div>
                     </div>
                     <div class="pt-txt">
