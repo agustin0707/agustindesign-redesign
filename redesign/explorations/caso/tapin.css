@@ -171,7 +171,7 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
 .tp-mk img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity 400ms 300ms; }
 /* La imagen va absoluta: el alto del contenedor sale solo de su proporción. En Safari, con la imagen en el flujo, el alto
    entraba en un ciclo y crecía a millones de píxeles (desde la decisión 11 la página quedaba en blanco) */
-.tp-mk iframe { position: absolute; top: 0; left: 0; width: 900px; height: 600px; border: 0; background: transparent; color-scheme: light; transform-origin: 0 0; transform: scale(var(--escala, 0.5)); opacity: 0; pointer-events: none; transition: opacity 500ms; }
+.tp-mk iframe { position: absolute; top: 0; left: var(--dx, 0); width: 900px; height: 600px; border: 0; background: transparent; color-scheme: light; transform-origin: 0 0; transform: scale(var(--escala, 0.5)); opacity: 0; pointer-events: none; transition: opacity 500ms; }
 .tp-mk.listo iframe { opacity: 1; }
 .tp-mk.listo img { opacity: 0; }
 
@@ -1119,6 +1119,14 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
 .tp-v11-escenario { --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 30%; position: relative; border-radius: 26px; overflow: hidden; background: radial-gradient(80% 80% at 50% 25%, #FFFFFF, var(--tp-tint)); box-shadow: 0 0 0 1px var(--linea), 0 40px 80px -46px rgba(45, 37, 96, 0.45); transform: rotateX(var(--rx)) rotateY(var(--ry)); will-change: transform; }
 .tp-v11-escenario::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(40% 50% at var(--mx) var(--my), rgba(255, 255, 255, 0.55), transparent 70%); mix-blend-mode: soft-light; opacity: 0; transition: opacity 400ms var(--ease); }
 .tp-v11-escenario.cerca::after { opacity: 1; }
+/* Pantallas de escritorio bajas (laptops de 720 a 840 px de alto): el escenario se acorta para que la decisión entera
+   quepa en pantalla sin cortar su borde de arriba; el mockup se achica dentro y queda centrado */
+@media (min-width: 769px) {
+    /* El fondo es el del mockup en vivo (#F4F2FC), que a tamaño normal cubre todo el escenario: así no queda una franja
+       cuando el mockup se achica y se centra */
+    .tp-v11-escenario { background: #F4F2FC; }
+    .tp-v11-escenario > .tp-mk { max-height: max(240px, calc(94svh - 400px)); margin-inline: auto; }
+}
 .tp-v11-vivo { position: absolute; left: 18px; top: 18px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 1px var(--linea); color: var(--tp-tinta); font: 500 12px var(--tp-f); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 .tp-v11-vivo i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); animation: tp-late 1.8s ease-out infinite; }
 @keyframes tp-late { 0% { box-shadow: 0 0 0 0 rgba(47, 179, 122, 0.5); } 100% { box-shadow: 0 0 0 9px rgba(47, 179, 122, 0); } }
@@ -1415,6 +1423,10 @@ html.tp-abajo:has(> body.tp) { background: linear-gradient(90deg, #27565E, #6A97
        error del color). La muestra de color deja aire a la derecha para el sello inclinado */
     .tp-man-editor { left: 0; right: 0; height: 43%; } .tp-man-vista { left: 0; right: 0; height: 54%; }
     .tp-man-prev { padding: 12px; }
+    /* Cabecera de la vista previa: sin "Vista previa ·" el nombre del paso y el estado caben en una línea sin tocarse */
+    .tp-man-vpre { display: none; }
+    .tp-man-vcab { grid-template-columns: auto 1fr auto; column-gap: 10px; white-space: nowrap; }
+    .tp-man-vcab > span:nth-child(2) { text-align: center; }
     .tp-man-muestras { width: 92%; margin-right: auto; }
     .tp-man-mapa, .tp-man-ruta, .tp-man-otra, .tp-man-split { display: none; }
     .tp-man-codigo { font-size: 10.5px; } .tp-man-codigo > div { padding-left: 34px; } .tp-man-codigo > div::before { width: 22px; }

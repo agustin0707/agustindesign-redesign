@@ -48,9 +48,10 @@
             const entrada = Math.min(Math.max(1 - r.top / alto, 0), 1);
             if (Math.abs(p - ultimo) > 0.002 || p === 1) { panel.style.setProperty('--p', p.toFixed(3)); ultimo = p; }
             panel.style.setProperty('--e', entrada.toFixed(3));
-            /* El logo se arma con el scroll: parte apenas asoma (30 % de la entrada) y queda completo justo antes de que el
-               panel llene la pantalla, donde uno se detiene a mirarlo */
-            panel.style.setProperty('--l', quieto ? 1 : Math.min(Math.max((entrada - 0.3) / 0.65, 0), 1).toFixed(4));
+            /* El logo se dibuja con el scroll y se ve entero: parte cuando ya está completo en pantalla (90 % de la
+               entrada), avanza un 20 % hasta que el panel la llena y termina al 40 % de la pista, antes de abrir Mend */
+            const l = entrada < 1 ? Math.max((entrada - 0.9) / 0.1, 0) * 0.2 : 0.2 + Math.min(p / 0.4, 1) * 0.8;
+            panel.style.setProperty('--l', quieto ? 1 : l.toFixed(4));
             panel.classList.toggle('dentro', entrada > 0.6);
             /* Solo navega por el scroll del lector: al redimensionar la ventana el navegador puede dejar la página al final */
             if (p >= 0.995 && !abriendo && !quieto && C.siguiente.url && performance.now() - tamano > 600) {
@@ -58,6 +59,12 @@
                 setTimeout(() => { if (abriendo) window.location.href = C.siguiente.url; }, 1300);
             } else if (p < 0.9 && abriendo) { abriendo = false; panel.classList.remove('abriendo'); estado.textContent = 'Sigue bajando'; }
         };
+        /* Hueco libre sobre el rótulo "Siguiente proyecto" (con offsetTop, sin las transformaciones de la entrada): en
+           pantallas verticales el teléfono se ajusta a ese alto */
+        const fila = sec.querySelector('.sig-fila');
+        const medirHueco = () => { let y = 0; for (let el = fila; el && el !== panel; el = el.offsetParent) y += el.offsetTop; if (fila) panel.style.setProperty('--sig-hueco', y + 'px'); };
+        medirHueco(); window.addEventListener('resize', medirHueco); window.addEventListener('load', medirHueco);
+        if (document.fonts) document.fonts.ready.then(medirHueco);
         window.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(pintar); } }, { passive: true });
         window.addEventListener('resize', () => { tamano = performance.now(); pintar(); });
         pintar();

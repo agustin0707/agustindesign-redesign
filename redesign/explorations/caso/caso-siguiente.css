@@ -81,15 +81,15 @@
 .sig-lf-iso { position: absolute; z-index: 2; left: var(--margen); top: 14svh; width: clamp(64px, 6vw, 96px); }
 /* Móvil y tablet vertical, igual que los casos */
 @media (max-width: 768px), (orientation: portrait) and (max-width: 1100px) {
-    .sig-e-mend .sig-tel { --w: 38vw; left: 50%; top: 18svh; translate: -50% calc((1 - var(--p)) * 12svh); opacity: clamp(0, var(--p) * 2.4, 1); }
+    /* El teléfono cabe en el hueco sobre el rótulo (--sig-hueco lo mide el JS) y se centra ahí, sin pisarlo en ningún
+       alto de pantalla. Entra con el panel: cuando el panel llena la pantalla ya está en su lugar */
+    .sig-e-mend .sig-tel { --tope: 38vw; --w: min(var(--tope), calc((var(--sig-hueco, 60svh) - 7svh - 28px) * 9 / 19.5)); left: 50%; top: max(5svh, calc((var(--sig-hueco, 60svh) - 20px - var(--w) * 19.5 / 9) / 2)); translate: -50% calc((1 - var(--e, 1)) * 10svh); opacity: clamp(0, (var(--e, 1) - 0.55) * 2.6, 1); }
     .sig:has(.sig-e-mend) .sig-txt { right: var(--margen); }
     .sig-mend-logo { width: 78vw; }
     .sig-progreso { top: auto; bottom: 24px; }
 }
-/* Teléfonos bajos: el teléfono más chico y más arriba, para que no pise el rótulo */
-@media (max-width: 768px) and (max-height: 720px) { .sig-e-mend .sig-tel { --w: 30vw; top: 13svh; } }
 /* Tablet vertical: el teléfono más chico y más arriba, para que no tope con el logo */
-@media (orientation: portrait) and (min-width: 600px) and (max-width: 1100px) { .sig-e-mend .sig-tel { --w: 30vw; top: 11svh; } }
+@media (orientation: portrait) and (min-width: 600px) and (max-width: 1100px) { .sig-e-mend .sig-tel { --tope: 30vw; } }
 @media (prefers-reduced-motion: reduce) {
     .sig-escena { clip-path: none; }
     .sig-escena > *, .sig-nombre, .sig-tiras i, .sig-e-mend .sig-larga { transform: none; translate: none; }

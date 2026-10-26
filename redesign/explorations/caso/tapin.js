@@ -632,7 +632,8 @@
     /* Se montan cerca de la pantalla y solo animan mientras se ven; el PNG queda de póster hasta que cargan */
     /* Además avisa al contenedor (mockup-start reinicia el loop desde cero), para que la página pueda seguir su reloj */
     const msj = (f, tipo) => { try { f.contentWindow.postMessage({ type: tipo }, '*'); } catch (err) { /* sin acceso */ } f.parentElement.dispatchEvent(new Event(tipo)); };
-    const escalar = m => { const f = m.querySelector('iframe'); if (f) f.style.setProperty('--escala', (m.clientWidth / 900).toFixed(4)); };
+    /* El mockup (900 × 600) cabe entero en su caja y se centra: en pantallas bajas la caja es más baja que su 3:2 */
+    const escalar = m => { const f = m.querySelector('iframe'); if (!f) return; const e = Math.min(m.clientWidth / 900, (m.clientHeight || m.clientWidth / 1.5) / 600); f.style.setProperty('--escala', e.toFixed(4)); f.style.setProperty('--dx', ((m.clientWidth - 900 * e) / 2).toFixed(1) + 'px'); };
     const ro = 'ResizeObserver' in window ? new ResizeObserver(es => es.forEach(e => escalar(e.target))) : null;
     const cerca = new IntersectionObserver(es => es.forEach(e => {
         if (!e.isIntersecting || e.target.querySelector('iframe')) return;
