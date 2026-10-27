@@ -781,50 +781,139 @@
         /* =======================================================
            5. CONTACTO · BRIEF EN UNA FRASE
            ======================================================= */
-        /* El formulario es una frase que se completa: se lee como un mensaje, califica con tres opciones (qué, cuándo,
-           inversión) y al enviar dice cuándo respondo, con la hora real de Santiago. Abajo, los canales directos */
+        /* El formulario es una frase que se completa. A la izquierda, quién responde: foto, estado y hora. La frase entra
+           palabra por palabra al llegar; cada campo marca su foco con una línea que se dibuja, el correo confirma cuando es
+           válido y una barra de seis tramos cuenta lo completado. Al enviar, la frase se vuelve un comprobante con lo que
+           escribiste, cuándo respondo y los pasos que siguen */
         .ct, .pie { --linea: #262625; --grafito: #151514; --hover: #22221F; --verde: #19B36B; --rapido: 160ms; --medio: 200ms; }
-        .ct { position: relative; z-index: 5; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); row-gap: 40px; padding: 140px var(--margen) 72px; background: var(--negro); }
-        .ct .num { grid-column: 1 / span 3; padding-top: 0.9em; }
-        .ct-punto { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 0 3px rgba(25, 179, 107, 0.18); vertical-align: 1px; }
+        .ct { position: relative; z-index: 5; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); row-gap: 44px; padding: 140px var(--margen) 88px; background: var(--negro); }
+        .ct-punto { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 0 3px rgba(25, 179, 107, 0.18); vertical-align: 1px; animation: ctLatido 2.4s ease-in-out infinite; }
+        @keyframes ctLatido { 50% { box-shadow: 0 0 0 5px rgba(25, 179, 107, 0.06); } }
+
+        /* --- 5.1 QUIÉN RESPONDE --- */
+        .ct-lado { grid-column: 1 / span 3; grid-row: 1 / span 3; align-self: start; position: sticky; top: 96px; display: flex; flex-direction: column; gap: 22px; }
+        .ct-persona { display: flex; align-items: center; gap: 12px; }
+        .ct-foto { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 1px var(--linea); }
+        .ct-persona b { display: block; font-size: 15px; font-weight: 500; letter-spacing: -0.02em; }
+        .ct-persona span { color: var(--gris-medio); font-size: 13px; }
+        .ct-estado { display: grid; gap: 6px; color: var(--gris-medio); }
+        .ct-estado b { color: var(--blanco); font-weight: 400; }
+
+        /* --- 5.2 LA FRASE --- */
         .ct-frase { grid-column: 4 / -1; font-size: clamp(30px, 3.6vw, 60px); font-weight: 400; letter-spacing: -0.045em; line-height: 1.22; color: var(--gris-medio); text-wrap: pretty; }
         .ct-frase .nw { white-space: nowrap; }
-        .ct-campo { position: relative; display: inline-block; color: var(--blanco); }
-        .ct-campo input { width: 7ch; min-width: 3ch; max-width: 100%; padding: 0 0.08em; border: 0; border-bottom: 2px solid var(--gris-oscuro); background: none; color: var(--blanco); font: inherit; letter-spacing: inherit; transition: border-color var(--rapido) linear; }
-        .ct-campo input::placeholder { color: var(--gris-oscuro); }
-        .ct-campo input:focus { outline: none; border-color: var(--blanco); }
-        .ct-lista > button { display: inline-flex; align-items: baseline; gap: 0.18em; padding: 0 0.08em; border-bottom: 2px solid var(--gris-oscuro); color: var(--blanco); font: inherit; letter-spacing: inherit; transition: border-color var(--rapido) linear; }
+        .ct-w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0.06em 0 0.16em; margin: -0.06em 0 -0.16em; }
+        .ct-w > span { display: inline-block; translate: 0 110%; transition: translate 820ms var(--ease) calc(var(--k) * 22ms); }
+        .ct.entra .ct-w > span { translate: 0 0; }
+        .ct-campo { position: relative; display: inline-block; color: var(--blanco); opacity: 0; translate: 0 0.25em; transition: opacity 500ms var(--ease) calc(var(--k) * 22ms + 120ms), translate 800ms var(--ease) calc(var(--k) * 22ms + 120ms); }
+        .ct.entra .ct-campo { opacity: 1; translate: 0 0; }
+        .ct-campo::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--blanco); transform: scaleX(0); transform-origin: left; transition: transform 340ms var(--ease); pointer-events: none; }
+        .ct-campo:focus-within::after, .ct-lista[data-abierta]::after { transform: scaleX(1); }
+        .ct-campo input { width: 7ch; min-width: 3ch; max-width: 100%; padding: 0 0.08em; border: 0; border-bottom: 2px solid var(--gris-oscuro); background: none; color: var(--blanco); font: inherit; letter-spacing: inherit; }
+        .ct-campo input::placeholder { color: var(--gris-oscuro); transition: color var(--rapido) linear; }
+        .ct-campo input:focus { outline: none; }
+        .ct-campo input:focus::placeholder { color: #2E2E2C; }
+        .ct-campo.ok::before { content: '✓'; position: absolute; right: -0.05em; top: -0.42em; font-size: 0.32em; color: var(--blanco); animation: ctPop 380ms var(--ease) both; }
+        .ct-campo.error { animation: ctNo 420ms var(--ease); }
+        .ct-campo.error input { border-bottom-color: var(--blanco); }
+        @keyframes ctPop { from { opacity: 0; scale: 0.4; } }
+        @keyframes ctNo { 20%, 60% { translate: -0.08em 0; } 40%, 80% { translate: 0.08em 0; } }
+        .ct-lista > button { display: inline-flex; align-items: baseline; gap: 0.18em; padding: 0 0.08em; border-bottom: 2px solid var(--gris-oscuro); color: var(--blanco); font: inherit; letter-spacing: inherit; }
         .ct-lista > button i { font-style: normal; font-size: 0.5em; color: var(--gris-medio); translate: 0 -0.3em; transition: rotate var(--medio) var(--ease); }
-        .ct-lista[data-abierta] > button { border-color: var(--blanco); }
         .ct-lista[data-abierta] > button i { rotate: 180deg; }
         .ct-lista[data-vacia] > button { color: var(--gris-oscuro); }
-        .ct-menu { position: absolute; left: 0; top: calc(100% + 10px); z-index: 10; display: grid; min-width: 15em; padding: 6px; border-radius: 14px; background: var(--grafito); box-shadow: inset 0 0 0 1px var(--linea), 0 24px 60px -20px rgba(0, 0, 0, 0.8); font-size: 16px; letter-spacing: -0.01em; opacity: 0; translate: 0 -6px; visibility: hidden; transition: opacity var(--rapido) linear, translate var(--medio) var(--ease), visibility 0s linear var(--medio); }
-        .ct-lista[data-abierta] .ct-menu { opacity: 1; translate: 0 0; visibility: visible; transition-delay: 0s; }
-        .ct-menu button { display: flex; justify-content: space-between; gap: 16px; padding: 10px 12px; border-radius: 9px; color: var(--gris-claro); text-align: left; }
+        .ct-lista > button > span { display: inline-block; }
+        .ct-lista.cambia > button > span { animation: ctCambia 420ms var(--ease); }
+        @keyframes ctCambia { from { opacity: 0; translate: 0 0.3em; } }
+        .ct-lista[data-abierta] { z-index: 20; }
+        .ct-menu { position: absolute; left: 0; top: calc(100% + 10px); z-index: 10; display: grid; width: max-content; min-width: 16em; padding: 6px; border-radius: 14px; background: var(--grafito); box-shadow: inset 0 0 0 1px var(--linea), 0 24px 60px -20px rgba(0, 0, 0, 0.8); font-size: 16px; letter-spacing: -0.01em; opacity: 0; translate: 0 -6px; scale: 0.98; transform-origin: 0 0; visibility: hidden; transition: opacity var(--rapido) linear, translate var(--medio) var(--ease), scale var(--medio) var(--ease), visibility 0s linear var(--medio); }
+        .ct-lista[data-abierta] .ct-menu { opacity: 1; translate: 0 0; scale: 1; visibility: visible; transition-delay: 0s; }
+        .ct-menu button { display: grid; grid-template-columns: 1fr auto 14px; align-items: baseline; gap: 12px; white-space: nowrap; padding: 10px 12px; border-radius: 9px; color: var(--gris-claro); text-align: left; opacity: 0; translate: 0 4px; transition: opacity 220ms linear, translate 320ms var(--ease), background-color var(--rapido) linear; }
+        .ct-lista[data-abierta] .ct-menu button { opacity: 1; translate: 0 0; transition-delay: calc(var(--i) * 30ms); }
         .ct-menu button small { color: var(--gris-medio); font: 400 11px var(--mono); }
+        .ct-menu button::after { content: ''; color: var(--blanco); font-size: 12px; }
+        .ct-menu button[aria-selected="true"]::after { content: '✓'; }
         .ct-menu button[aria-selected="true"], .ct-menu button:focus-visible { background: var(--hover); color: var(--blanco); outline: none; }
-        .ct-enviar { grid-column: 4 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
-        .ct-enviar .mono { color: var(--gris-medio); }
-        .ct-boton { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-weight: 500; letter-spacing: -0.01em; transition: gap var(--medio) var(--ease), transform var(--rapido) var(--ease); }
+
+        /* --- 5.3 ENVIAR Y AVANCE --- */
+        .ct-enviar { grid-column: 4 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; opacity: 0; translate: 0 12px; transition: opacity 600ms var(--ease) 700ms, translate 800ms var(--ease) 700ms; }
+        .ct.entra .ct-enviar { opacity: 1; translate: 0 0; }
+        .ct-boton { position: relative; display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-weight: 500; letter-spacing: -0.01em; transition: gap var(--medio) var(--ease), transform var(--rapido) var(--ease), opacity var(--medio) linear; }
         .ct-boton:active { transform: scale(0.97); }
         .ct-boton i { font-style: normal; transition: transform var(--medio) var(--ease); }
-        .ct-boton.claro { background: none; color: var(--blanco); box-shadow: inset 0 0 0 1px var(--gris-oscuro); }
-        .ct-listo { grid-column: 4 / -1; display: none; flex-direction: column; align-items: flex-start; gap: 14px; }
-        .ct-listo h3 { font-size: clamp(30px, 3.6vw, 60px); font-weight: 500; letter-spacing: -0.045em; line-height: 1.05; }
-        .ct-listo p { color: var(--gris-medio); max-width: 52ch; }
+        .ct-boton[data-falta] { opacity: 0.5; }
+        .ct-boton.claro { min-height: 44px; background: none; color: var(--blanco); box-shadow: inset 0 0 0 1px var(--gris-oscuro); }
+        .ct-boton .puntos { display: none; gap: 4px; }
+        .ct-boton .puntos b { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: ctPuntos 900ms ease-in-out infinite; }
+        .ct-boton .puntos b:nth-child(2) { animation-delay: 120ms; } .ct-boton .puntos b:nth-child(3) { animation-delay: 240ms; }
+        .ct-boton.enviando .puntos { display: inline-flex; } .ct-boton.enviando i { display: none; }
+        @keyframes ctPuntos { 50% { opacity: 0.25; translate: 0 -2px; } }
+        .ct-avance { display: inline-flex; align-items: center; gap: 10px; color: var(--gris-medio); }
+        .ct-avance .barras { display: flex; gap: 3px; }
+        .ct-avance .barras i { width: 14px; height: 2px; border-radius: 2px; background: var(--gris-oscuro); transition: background-color 240ms linear; }
+        .ct-avance .barras i.on { background: var(--blanco); }
+        .ct-avance [data-avance-texto] { min-width: 15ch; }
+        .ct-atajo { color: var(--gris-oscuro); }
+        .ct-atajo kbd { font: inherit; padding: 1px 5px; border-radius: 4px; box-shadow: inset 0 0 0 1px var(--linea); }
+
+        /* --- 5.4 EL COMPROBANTE --- */
+        /* Lo que escribiste, como un comprobante con su línea de corte, cuándo respondo y los pasos que siguen */
+        .ct-listo { grid-column: 4 / -1; display: none; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 28px var(--medianil); align-items: start; }
         .ct.enviado .ct-frase, .ct.enviado .ct-enviar { display: none; }
-        .ct.enviado .ct-listo { display: flex; animation: ctEntra 420ms var(--ease) both; }
-        @keyframes ctEntra { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
-        .ct-directo { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--medianil); padding-top: 22px; border-top: 1px solid var(--linea); }
-        .ct-directo > * { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+        .ct.enviado .ct-listo { display: grid; }
+        .ct-ticket { position: relative; border-radius: 20px; background: var(--grafito); box-shadow: inset 0 0 0 1px var(--linea); animation: ctTicket 700ms var(--ease) both; }
+        @keyframes ctTicket { from { opacity: 0; translate: 0 24px; scale: 0.97; } }
+        .ct-ticket-cab { display: flex; justify-content: space-between; gap: 12px; padding: 18px 22px 0; color: var(--gris-medio); }
+        .ct-ticket h3 { padding: 12px 22px 0; font-size: clamp(26px, 2.6vw, 40px); font-weight: 500; letter-spacing: -0.045em; line-height: 1.05; }
+        .ct-ticket > p { padding: 10px 22px 18px; color: var(--gris-medio); font-size: 14px; max-width: 46ch; }
+        .ct-corte { position: relative; height: 1px; margin: 0 22px; background: repeating-linear-gradient(90deg, var(--gris-oscuro) 0 6px, transparent 6px 12px); }
+        .ct-corte::before, .ct-corte::after { content: ''; position: absolute; top: -10px; width: 20px; height: 20px; border-radius: 50%; background: var(--negro); box-shadow: inset 0 0 0 1px var(--linea); }
+        .ct-corte::before { left: -33px; } .ct-corte::after { right: -33px; }
+        .ct-datos { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; padding: 18px 22px; font-size: 15px; }
+        .ct-datos dt { color: var(--gris-medio); font: 400 11px var(--mono); padding-top: 0.3em; }
+        .ct-datos dd { opacity: 0; translate: 0 6px; animation: ctDato 500ms var(--ease) both; animation-delay: calc(300ms + var(--i) * 60ms); }
+        @keyframes ctDato { to { opacity: 1; translate: 0 0; } }
+        .ct-ticket-pie { display: flex; align-items: center; gap: 10px; padding: 14px 22px 18px; border-top: 1px solid var(--linea); font-size: 14px; }
+        .ct-pasos { list-style: none; display: grid; gap: 16px; padding-top: 6px; counter-reset: paso; }
+        .ct-pasos li { display: grid; grid-template-columns: 30px 1fr; color: var(--gris-medio); font-size: 14px; counter-increment: paso; opacity: 0; translate: 0 10px; animation: ctDato 600ms var(--ease) both; animation-delay: calc(500ms + var(--i) * 90ms); }
+        .ct-pasos li::before { content: '0' counter(paso); font: 400 11px var(--mono); padding-top: 0.3em; }
+        .ct-pasos b { display: block; color: var(--blanco); font-weight: 500; }
+        .ct-pasos a { color: var(--blanco); border-bottom: 1px solid var(--gris-oscuro); white-space: nowrap; }
+        .ct-listo .ct-boton.claro { justify-self: start; }
+
+        /* --- 5.5 CANALES DIRECTOS --- */
+        /* Tres salidas para quien prefiere no escribir aquí. Al pasar, la fila se ilumina y la flecha avanza; copiar el correo
+           responde en el mismo lugar */
+        .ct-directo { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--linea); opacity: 0; translate: 0 12px; transition: opacity 600ms var(--ease) 850ms, translate 800ms var(--ease) 850ms; }
+        .ct.entra .ct-directo { opacity: 1; translate: 0 0; }
+        .ct-directo > * { position: relative; display: grid; grid-template-columns: 22px 1fr auto; align-items: start; column-gap: 12px; row-gap: 2px; padding: 20px 16px 20px 0; text-align: left; transition: background-color var(--medio) linear, padding var(--medio) var(--ease); }
+        .ct-directo > * + * { padding-left: 16px; border-left: 1px solid var(--linea); }
+        .ct-directo svg { grid-row: span 2; width: 20px; height: 20px; margin-top: 1px; fill: none; stroke: var(--gris-medio); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke var(--rapido) linear; }
         .ct-directo b { font-weight: 500; letter-spacing: -0.02em; }
-        .ct-directo span { color: var(--gris-medio); font-size: 14px; }
+        .ct-directo span { grid-column: 2; color: var(--gris-medio); font-size: 14px; }
+        .ct-directo em { grid-row: 1; grid-column: 3; font-style: normal; color: var(--gris-medio); transition: transform var(--medio) var(--ease), color var(--rapido) linear; }
+        .ct-directo .copiado span { color: var(--blanco); }
         .ct-aviso { position: fixed; left: 50%; bottom: 24px; z-index: 60; padding: 12px 18px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-size: 14px; translate: -50% 140%; opacity: 0; transition: translate var(--medio) var(--ease), opacity var(--rapido) linear; pointer-events: none; }
         .ct-aviso.on { translate: -50% 0; opacity: 1; }
         @media (hover: hover) {
             .ct-menu button:hover { background: var(--hover); color: var(--blanco); }
             .ct-boton:hover { gap: 14px; } .ct-boton:hover i { transform: translateX(2px); }
+            .ct-directo > *:hover svg { stroke: var(--blanco); }
+            .ct-directo > *:hover em { color: var(--blanco); transform: translate(2px, -2px); }
             .ct-directo > *:hover b { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+        }
+        @media (max-width: 768px) {
+            .ct { grid-template-columns: repeat(4, 1fr); padding: 96px var(--margen) 56px; row-gap: 32px; }
+            .ct-lado { grid-column: 1 / -1; grid-row: auto; position: static; flex-direction: row; flex-wrap: wrap; justify-content: space-between; gap: 16px; }
+            .ct-lado .num { flex-basis: 100%; }
+            .ct-frase, .ct-enviar, .ct-listo, .ct-directo { grid-column: 1 / -1; }
+            .ct-atajo { display: none; }
+            .ct-listo { grid-template-columns: 1fr; }
+            .ct-directo > * + * { padding-left: 0; border-left: 0; border-top: 1px solid var(--linea); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .ct-w > span, .ct-campo, .ct-enviar, .ct-directo { translate: 0 0 !important; opacity: 1 !important; transition: none !important; }
+            .ct-punto, .ct-ticket, .ct-datos dd, .ct-pasos li, .ct-campo.error { animation: none !important; opacity: 1; translate: 0 0; }
         }
 
         /* =======================================================
@@ -877,8 +966,6 @@
             .pie-arriba-btn:hover { color: var(--blanco); }
         }
         @media (max-width: 768px) {
-            .ct { grid-template-columns: repeat(4, 1fr); padding: 96px var(--margen) 48px; row-gap: 28px; }
-            .ct .num, .ct-frase, .ct-enviar, .ct-listo, .ct-directo { grid-column: 1 / -1; }
             .ct-directo { grid-template-columns: 1fr; }
             .pie-fila { grid-template-columns: repeat(4, 1fr); }
             .pie-firma { grid-column: 1 / -1; }
@@ -890,7 +977,6 @@
         }
         @media (prefers-reduced-motion: reduce) {
             .pie-marca .l { translate: 0 0; transition: none; }
-            .ct-menu, .ct-aviso { transition: none; }
         }
     </style>
 </head>
@@ -1022,15 +1108,40 @@
     </section>
 
     <section class="ct" id="contacto" data-brief aria-labelledby="ct-titulo">
-        <span class="num mono gris" id="ct-titulo">03 · Contacto</span>
+        <aside class="ct-lado">
+            <span class="num mono gris" id="ct-titulo">03 · Contacto</span>
+            <div class="ct-persona"><img class="ct-foto" src="media/ct-foto.webp" alt="" width="46" height="46" loading="lazy" decoding="async"><div><b>Te respondo yo</b><span>Agustín · diseño y código</span></div></div>
+            <p class="ct-estado mono"><span><span class="ct-punto" aria-hidden="true"></span> <b>Disponible</b> para proyectos</span><span>Respondo en menos de 24 h hábiles</span><span>Santiago <b data-reloj-ct>00:00</b></span></p>
+        </aside>
         <form class="ct-frase" novalidate aria-label="Escríbeme">
             Hola Agustín, soy <span class="nw"><span class="ct-campo"><input name="nombre" placeholder="tu nombre" autocomplete="name" aria-label="Tu nombre" data-crece></span>,</span> de <span class="nw"><span class="ct-campo"><input name="empresa" placeholder="tu empresa" autocomplete="organization" aria-label="Tu empresa" data-crece></span>.</span>
-            Busco <span class="ct-campo ct-lista" data-vacia data-nombre="que"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>algo</span><i>▾</i></button><span class="ct-menu" role="listbox" aria-label="Qué buscas"><button type="button" role="option" data-valor="una marca">Una marca <small>Identidad y manual</small></button><button type="button" role="option" data-valor="un sitio web">Un sitio web <small>Diseño y código</small></button><button type="button" role="option" data-valor="marca y sitio web">Marca y sitio web <small>Lo completo</small></button><button type="button" role="option" data-valor="un producto digital">Un producto digital <small>App o plataforma</small></button></span></span> para <span class="nw"><span class="ct-campo ct-lista" data-vacia data-nombre="cuando"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>cuándo</span><i>▾</i></button><span class="ct-menu" role="listbox" aria-label="Para cuándo"><button type="button" role="option" data-valor="lo antes posible">Lo antes posible <small>Este mes</small></button><button type="button" role="option" data-valor="los próximos meses">Los próximos meses <small>1 a 3 meses</small></button><button type="button" role="option" data-valor="más adelante">Más adelante <small>Estoy explorando</small></button></span></span>,</span> con una inversión de <span class="nw"><span class="ct-campo ct-lista" data-vacia data-nombre="inversion"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>por definir</span><i>▾</i></button><span class="ct-menu" role="listbox" aria-label="Inversión aproximada"><button type="button" role="option" data-valor="menos de $800 mil">Menos de $800 mil <small>CLP</small></button><button type="button" role="option" data-valor="$800 mil a $1,5 M">$800 mil a $1,5 M <small>CLP</small></button><button type="button" role="option" data-valor="$1,5 a $4 M">$1,5 a $4 M <small>CLP</small></button><button type="button" role="option" data-valor="$4 a $8 M">$4 a $8 M <small>CLP</small></button><button type="button" role="option" data-valor="por definir">Por definir <small>Lo vemos juntos</small></button></span></span>.</span>
+            Busco <span class="ct-campo ct-lista" data-vacia data-nombre="que"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>algo</span><i>▾</i></button><span class="ct-menu" role="listbox" aria-label="Qué buscas"><button type="button" role="option" style="--i:0" data-valor="una marca">Una marca <small>Identidad y manual</small></button><button type="button" role="option" style="--i:1" data-valor="un sitio web">Un sitio web <small>Diseño y código</small></button><button type="button" role="option" style="--i:2" data-valor="marca y sitio web">Marca y sitio web <small>Lo completo</small></button><button type="button" role="option" style="--i:3" data-valor="un producto digital">Un producto digital <small>App o plataforma</small></button></span></span> para <span class="nw"><span class="ct-campo ct-lista" data-vacia data-nombre="cuando"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>cuándo</span><i>▾</i></button><span class="ct-menu" role="listbox" aria-label="Para cuándo"><button type="button" role="option" style="--i:0" data-valor="lo antes posible">Lo antes posible <small>Este mes</small></button><button type="button" role="option" style="--i:1" data-valor="los próximos meses">Los próximos meses <small>1 a 3 meses</small></button><button type="button" role="option" style="--i:2" data-valor="más adelante">Más adelante <small>Estoy explorando</small></button></span></span>,</span> con una inversión de <span class="nw"><span class="ct-campo ct-lista" data-vacia data-nombre="inversion"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>por definir</span><i>▾</i></button><span class="ct-menu" role="listbox" aria-label="Inversión aproximada"><button type="button" role="option" style="--i:0" data-valor="menos de $800 mil">Menos de $800 mil <small>CLP</small></button><button type="button" role="option" style="--i:1" data-valor="$800 mil a $1,5 M">$800 mil a $1,5 M <small>CLP</small></button><button type="button" role="option" style="--i:2" data-valor="$1,5 a $4 M">$1,5 a $4 M <small>CLP</small></button><button type="button" role="option" style="--i:3" data-valor="$4 a $8 M">$4 a $8 M <small>CLP</small></button><button type="button" role="option" style="--i:4" data-valor="por definir">Por definir <small>Lo vemos juntos</small></button></span></span>.</span>
             Respóndeme a <span class="nw"><span class="ct-campo"><input name="correo" type="email" placeholder="tu correo" autocomplete="email" aria-label="Tu correo" data-crece></span>.</span>
         </form>
-        <div class="ct-enviar"><button class="ct-boton" type="button" data-enviar>Enviar mensaje <i>→</i></button><span class="mono"><span class="ct-punto" aria-hidden="true"></span> Disponible · respondo en menos de 24 h hábiles · Santiago <span data-reloj-ct>00:00</span></span></div>
-        <div class="ct-listo" aria-live="polite"><span class="mono gris">Mensaje listo</span><h3 data-listo-titulo>Listo. Te escribo antes de mañana a esta hora.</h3><p data-listo-texto>Leo cada mensaje yo mismo. Si es urgente, escríbeme por WhatsApp.</p><button class="ct-boton claro" type="button" data-otra-vez>Escribir otro mensaje</button></div>
-        <div class="ct-directo"><button type="button" data-copiar><b data-correo-texto>agus.avendano@gmail.com</b><span>Copiar correo</span></button><a href="https://wa.me/56956247539?text=Hola%20Agust%C3%ADn%2C%20vi%20tu%20portafolio%20y%20quiero%20conversar%20un%20proyecto." target="_blank" rel="noopener"><b>WhatsApp</b><span>+56 9 5624 7539 ↗</span></a><a href="https://cal.com/agustindesign/20min" target="_blank" rel="noopener" data-agenda><b>Llamada de 20 min</b><span>Agenda una videollamada ↗</span></a></div>
+        <div class="ct-enviar">
+            <button class="ct-boton" type="button" data-enviar data-falta><span data-enviar-texto>Enviar mensaje</span><i>→</i><span class="puntos" aria-hidden="true"><b></b><b></b><b></b></span></button>
+            <span class="ct-avance mono" aria-live="polite"><span class="barras" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span><span data-avance-texto>Completa la frase</span></span>
+            <span class="ct-atajo mono"><kbd>⌘</kbd> <kbd>Enter</kbd> para enviar</span>
+        </div>
+        <div class="ct-listo" aria-live="polite">
+            <article class="ct-ticket">
+                <div class="ct-ticket-cab mono"><span>Mensaje para Agustín</span><span data-ticket-hora></span></div>
+                <h3 data-listo-titulo>Listo.</h3>
+                <p>Tu mensaje quedó escrito en tu correo: solo falta que lo envíes.</p>
+                <div class="ct-corte" aria-hidden="true"></div>
+                <dl class="ct-datos" data-datos></dl>
+                <div class="ct-ticket-pie"><span class="ct-punto" aria-hidden="true"></span><span data-listo-plazo>Te escribo antes de mañana a esta hora</span></div>
+            </article>
+            <div>
+                <ol class="ct-pasos"><li style="--i:0"><span><b>Te respondo en menos de 24 h hábiles</b>Lo leo yo, con preguntas si hacen falta.</span></li><li style="--i:1"><span><b>Conversamos 20 minutos</b>Por videollamada. Puedes <a href="https://cal.com/agustindesign/20min" target="_blank" rel="noopener" data-agenda>dejarla agendada ahora ↗</a></span></li><li style="--i:2"><span><b>Propuesta en 5 días hábiles</b>Alcance, etapas, plazos y precio.</span></li></ol>
+                <p style="margin-top:24px"><button class="ct-boton claro" type="button" data-otra-vez>Escribir otro mensaje</button></p>
+            </div>
+        </div>
+        <div class="ct-directo">
+            <button type="button" data-copiar><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></svg><b>agus.avendano@gmail.com</b><span data-copiar-texto>Copiar correo</span><em aria-hidden="true">⧉</em></button>
+            <a href="https://wa.me/56956247539?text=Hola%20Agust%C3%ADn%2C%20vi%20tu%20portafolio%20y%20quiero%20conversar%20un%20proyecto." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1L4 20z"/><path d="M9.2 9.3c.4 1.8 1.7 3.4 3.5 4.3l1.3-1.1 2 .9-.4 1.5c-3.2.4-7-3.4-6.6-6.6l1.5-.4.9 2-1.2 1.4"/></svg><b>WhatsApp</b><span>+56 9 5624 7539</span><em aria-hidden="true">↗</em></a>
+            <a href="https://cal.com/agustindesign/20min" target="_blank" rel="noopener" data-agenda><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/><path d="M11 14.5l1.5 1.5 3-3"/></svg><b>Llamada de 20 min</b><span>Agenda una videollamada</span><em aria-hidden="true">↗</em></a>
+        </div>
     </section>
     </main>
 
