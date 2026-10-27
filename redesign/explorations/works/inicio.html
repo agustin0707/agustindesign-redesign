@@ -777,11 +777,126 @@
            toma un velo con blur, se esconde al bajar y vuelve con una subida clara (lo maneja inicio.js) */
         .barra.visible { mix-blend-mode: normal; color: var(--blanco); background: rgba(11, 11, 11, 0.62); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); box-shadow: 0 1px 0 rgba(245, 245, 243, 0.08); }
         .barra.oculta { translate: 0 -100%; }
+
+        /* =======================================================
+           5. CONTACTO · BRIEF EN UNA FRASE
+           ======================================================= */
+        /* El formulario es una frase que se completa: se lee como un mensaje, califica con tres opciones (qué, cuándo,
+           inversión) y al enviar dice cuándo respondo, con la hora real de Santiago. Abajo, los canales directos */
+        .ct, .pie { --linea: #262625; --grafito: #151514; --hover: #22221F; --verde: #19B36B; --rapido: 160ms; --medio: 200ms; }
+        .ct { position: relative; z-index: 5; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); row-gap: 40px; padding: 140px var(--margen) 72px; background: var(--negro); }
+        .ct .num { grid-column: 1 / span 3; padding-top: 0.9em; }
+        .ct-punto { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 0 3px rgba(25, 179, 107, 0.18); vertical-align: 1px; }
+        .ct-frase { grid-column: 4 / -1; font-size: clamp(30px, 3.6vw, 60px); font-weight: 400; letter-spacing: -0.045em; line-height: 1.22; color: var(--gris-medio); text-wrap: pretty; }
+        .ct-frase .nw { white-space: nowrap; }
+        .ct-campo { position: relative; display: inline-block; color: var(--blanco); }
+        .ct-campo input { width: 7ch; min-width: 3ch; max-width: 100%; padding: 0 0.08em; border: 0; border-bottom: 2px solid var(--gris-oscuro); background: none; color: var(--blanco); font: inherit; letter-spacing: inherit; transition: border-color var(--rapido) linear; }
+        .ct-campo input::placeholder { color: var(--gris-oscuro); }
+        .ct-campo input:focus { outline: none; border-color: var(--blanco); }
+        .ct-lista > button { display: inline-flex; align-items: baseline; gap: 0.18em; padding: 0 0.08em; border-bottom: 2px solid var(--gris-oscuro); color: var(--blanco); font: inherit; letter-spacing: inherit; transition: border-color var(--rapido) linear; }
+        .ct-lista > button i { font-style: normal; font-size: 0.5em; color: var(--gris-medio); translate: 0 -0.3em; transition: rotate var(--medio) var(--ease); }
+        .ct-lista[data-abierta] > button { border-color: var(--blanco); }
+        .ct-lista[data-abierta] > button i { rotate: 180deg; }
+        .ct-lista[data-vacia] > button { color: var(--gris-oscuro); }
+        .ct-menu { position: absolute; left: 0; top: calc(100% + 10px); z-index: 10; display: grid; min-width: 15em; padding: 6px; border-radius: 14px; background: var(--grafito); box-shadow: inset 0 0 0 1px var(--linea), 0 24px 60px -20px rgba(0, 0, 0, 0.8); font-size: 16px; letter-spacing: -0.01em; opacity: 0; translate: 0 -6px; visibility: hidden; transition: opacity var(--rapido) linear, translate var(--medio) var(--ease), visibility 0s linear var(--medio); }
+        .ct-lista[data-abierta] .ct-menu { opacity: 1; translate: 0 0; visibility: visible; transition-delay: 0s; }
+        .ct-menu button { display: flex; justify-content: space-between; gap: 16px; padding: 10px 12px; border-radius: 9px; color: var(--gris-claro); text-align: left; }
+        .ct-menu button small { color: var(--gris-medio); font: 400 11px var(--mono); }
+        .ct-menu button[aria-selected="true"], .ct-menu button:focus-visible { background: var(--hover); color: var(--blanco); outline: none; }
+        .ct-enviar { grid-column: 4 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+        .ct-enviar .mono { color: var(--gris-medio); }
+        .ct-boton { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-weight: 500; letter-spacing: -0.01em; transition: gap var(--medio) var(--ease), transform var(--rapido) var(--ease); }
+        .ct-boton:active { transform: scale(0.97); }
+        .ct-boton i { font-style: normal; transition: transform var(--medio) var(--ease); }
+        .ct-boton.claro { background: none; color: var(--blanco); box-shadow: inset 0 0 0 1px var(--gris-oscuro); }
+        .ct-listo { grid-column: 4 / -1; display: none; flex-direction: column; align-items: flex-start; gap: 14px; }
+        .ct-listo h3 { font-size: clamp(30px, 3.6vw, 60px); font-weight: 500; letter-spacing: -0.045em; line-height: 1.05; }
+        .ct-listo p { color: var(--gris-medio); max-width: 52ch; }
+        .ct.enviado .ct-frase, .ct.enviado .ct-enviar { display: none; }
+        .ct.enviado .ct-listo { display: flex; animation: ctEntra 420ms var(--ease) both; }
+        @keyframes ctEntra { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
+        .ct-directo { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--medianil); padding-top: 22px; border-top: 1px solid var(--linea); }
+        .ct-directo > * { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+        .ct-directo b { font-weight: 500; letter-spacing: -0.02em; }
+        .ct-directo span { color: var(--gris-medio); font-size: 14px; }
+        .ct-aviso { position: fixed; left: 50%; bottom: 24px; z-index: 60; padding: 12px 18px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-size: 14px; translate: -50% 140%; opacity: 0; transition: translate var(--medio) var(--ease), opacity var(--rapido) linear; pointer-events: none; }
+        .ct-aviso.on { translate: -50% 0; opacity: 1; }
+        @media (hover: hover) {
+            .ct-menu button:hover { background: var(--hover); color: var(--blanco); }
+            .ct-boton:hover { gap: 14px; } .ct-boton:hover i { transform: translateX(2px); }
+            .ct-directo > *:hover b { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+        }
+
+        /* =======================================================
+           6. FOOTER · EL COLOFÓN
+           ======================================================= */
+        /* Cierra el sitio como lo abre el hero: con el nombre. Arriba, la firma y tres índices (sitio, casos y redes) con sus
+           atajos; al medio, el colofón vivo, que mide cuánto cargó y cuánto pesa la página que estás viendo, y volver arriba
+           con el avance de la lectura; abajo, el nombre de margen a margen, que sube letra por letra al entrar en pantalla */
+        .pie { position: relative; z-index: 5; overflow: hidden; background: var(--negro); border-top: 1px solid var(--linea); }
+        .pie-fila { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding-inline: var(--margen); }
+        .pie-arriba { padding-block: 64px 48px; row-gap: 40px; }
+        .pie-firma { grid-column: 1 / span 5; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+        .pie-firma .logo { font-size: 20px; font-weight: 500; letter-spacing: -0.04em; }
+        .pie-firma .logo span { opacity: 0.45; }
+        .pie-firma p { max-width: 30ch; color: var(--gris-medio); font-size: 15px; line-height: 1.45; }
+        .pie-firma .estado { white-space: nowrap; }
+        .pie-firma .estado b { color: var(--blanco); font-weight: 400; }
+        .pie-col { grid-column: span 2; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+        .pie-col:nth-of-type(1) { grid-column: 7 / span 2; }
+        .pie-col > .mono { margin-bottom: 10px; color: var(--gris-medio); }
+        .pie-col a, .pie-col > span:not(.mono) { position: relative; display: inline-flex; align-items: baseline; gap: 10px; padding: 3px 0; font-size: 15px; letter-spacing: -0.01em; }
+        .pie-col > span:not(.mono) { color: var(--gris-medio); }
+        .pie-col a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 1px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform var(--medio) var(--ease); }
+        .pie-col kbd { padding: 1px 5px; border-radius: 4px; box-shadow: inset 0 0 0 1px var(--linea); color: var(--gris-medio); font: 400 10px var(--mono); opacity: 0; transition: opacity var(--rapido) linear; }
+        .pie-col small { color: var(--gris-medio); font: 400 11px var(--mono); }
+        .pie-colofon { padding-block: 18px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); align-items: center; row-gap: 16px; }
+        .pie-colofon > .mono { grid-column: 1 / span 3; color: var(--gris-medio); }
+        .pie-colofon p { grid-column: 4 / span 6; color: var(--gris-medio); font-size: 13px; line-height: 1.5; }
+        .pie-colofon p b { color: var(--blanco); font: 400 12px var(--mono); }
+        .pie-arriba-btn { grid-column: 10 / -1; justify-self: end; display: inline-flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 6px 0 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--linea); color: var(--gris-claro); font: 400 11px var(--mono); }
+        .pie-arriba-btn svg { width: 24px; height: 24px; rotate: -90deg; }
+        .pie-arriba-btn circle { fill: none; stroke-width: 2; }
+        .pie-arriba-btn .fondo { stroke: var(--linea); }
+        .pie-arriba-btn .avance { stroke: var(--blanco); stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--avance, 0)); }
+        .pie-arriba-btn .flecha { rotate: 90deg; transform-box: fill-box; transform-origin: center; }
+        .pie-marca-caja { overflow: hidden; padding: 0.08em var(--margen) 0.02em; }
+        .pie-marca { display: flex; justify-content: center; white-space: nowrap; font-weight: 500; letter-spacing: -0.07em; line-height: 1.04; color: var(--blanco); user-select: none; }
+        .pie-marca .l { display: inline-block; translate: 0 110%; transition: translate 900ms var(--ease); transition-delay: calc(var(--k) * 28ms); }
+        .pie-marca .gris-l { color: var(--gris-oscuro); }
+        .pie-marca.entra .l { translate: 0 0; }
+        .pie-legal { padding-block: 16px 22px; border-top: 1px solid var(--linea); row-gap: 8px; color: var(--gris-medio); }
+        .pie-legal > :nth-child(1) { grid-column: 1 / span 3; }
+        .pie-legal > :nth-child(2) { grid-column: 4 / span 5; }
+        .pie-legal > :nth-child(3) { grid-column: 9 / span 2; }
+        .pie-legal > :nth-child(4) { grid-column: 11 / -1; justify-self: end; }
+        .pie-legal b { color: var(--blanco); font-weight: 400; }
+        @media (hover: hover) {
+            .pie-col a:hover::after { transform: scaleX(1); transform-origin: left; }
+            .pie-col a:hover kbd { opacity: 1; }
+            .pie-arriba-btn:hover { color: var(--blanco); }
+        }
+        @media (max-width: 768px) {
+            .ct { grid-template-columns: repeat(4, 1fr); padding: 96px var(--margen) 48px; row-gap: 28px; }
+            .ct .num, .ct-frase, .ct-enviar, .ct-listo, .ct-directo { grid-column: 1 / -1; }
+            .ct-directo { grid-template-columns: 1fr; }
+            .pie-fila { grid-template-columns: repeat(4, 1fr); }
+            .pie-firma { grid-column: 1 / -1; }
+            .pie-col, .pie-col:nth-of-type(1) { grid-column: span 2; }
+            .pie-col:nth-of-type(3) { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; gap: 4px 18px; }
+            .pie-col:nth-of-type(3) > .mono { flex-basis: 100%; margin-bottom: 4px; }
+            .pie-col kbd { display: none; }
+            .pie-colofon > .mono, .pie-colofon p, .pie-arriba-btn, .pie-legal > * { grid-column: 1 / -1 !important; justify-self: start !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .pie-marca .l { translate: 0 0; transition: none; }
+            .ct-menu, .ct-aviso { transition: none; }
+        }
     </style>
 </head>
 <body>
 
-    <header class="barra" data-barra-home><a href="#" class="logo" data-arriba>agustín<span>.</span>design</a><ul><li><a href="#" data-arriba>About</a></li><li><a href="#works">Works</a></li><li><a href="mailto:agustin@uc.cl">Contact</a></li></ul><span class="der mono">Santiago</span></header>
+    <header class="barra" data-barra-home><a href="#" class="logo" data-arriba>agustín<span>.</span>design</a><ul><li><a href="#" data-arriba>About</a></li><li><a href="#works">Works</a></li><li><a href="#contacto">Contact</a></li></ul><span class="der mono">Santiago</span></header>
 
     <div class="escena-hero">
     <section class="hero" data-parallax>
@@ -789,7 +904,7 @@
             <a href="#" class="logo" data-arriba>agustín<span class="punto">.</span>design<span class="cursor"></span></a>
             <span class="mono der"><span class="punto-vivo" aria-hidden="true"></span><span class="reloj" data-reloj>Santiago 00:00</span></span>
         </nav>
-        <ul class="links-actual"><li><a href="#">About</a></li><li><a href="#works">Works</a></li><li><a href="mailto:agustin@uc.cl">Contact</a></li></ul>
+        <ul class="links-actual"><li><a href="#">About</a></li><li><a href="#works">Works</a></li><li><a href="#contacto">Contact</a></li></ul>
 
         <div class="retrato" data-capa="0.6"><div class="retrato-in"><img src="../../../img/fotodeperfilgus5.webp" alt="" fetchpriority="high" width="3073" height="1750"></div></div>
 
@@ -905,12 +1020,51 @@
         </div>
         <ul class="fichas" data-hoja></ul>
     </section>
+
+    <section class="ct" id="contacto" data-brief aria-labelledby="ct-titulo">
+        <span class="num mono gris" id="ct-titulo">03 · Contacto</span>
+        <form class="ct-frase" novalidate aria-label="Escríbeme">
+            Hola Agustín, soy <span class="nw"><span class="ct-campo"><input name="nombre" placeholder="tu nombre" autocomplete="name" aria-label="Tu nombre" data-crece></span>,</span> de <span class="nw"><span class="ct-campo"><input name="empresa" placeholder="tu empresa" autocomplete="organization" aria-label="Tu empresa" data-crece></span>.</span>
+            Busco <span class="ct-campo ct-lista" data-vacia data-nombre="que"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>algo</span><i>▾</i></button><span class="ct-menu" role="listbox" aria-label="Qué buscas"><button type="button" role="option" data-valor="una marca">Una marca <small>Identidad y manual</small></button><button type="button" role="option" data-valor="un sitio web">Un sitio web <small>Diseño y código</small></button><button type="button" role="option" data-valor="marca y sitio web">Marca y sitio web <small>Lo completo</small></button><button type="button" role="option" data-valor="un producto digital">Un producto digital <small>App o plataforma</small></button></span></span> para <span class="nw"><span class="ct-campo ct-lista" data-vacia data-nombre="cuando"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>cuándo</span><i>▾</i></button><span class="ct-menu" role="listbox" aria-label="Para cuándo"><button type="button" role="option" data-valor="lo antes posible">Lo antes posible <small>Este mes</small></button><button type="button" role="option" data-valor="los próximos meses">Los próximos meses <small>1 a 3 meses</small></button><button type="button" role="option" data-valor="más adelante">Más adelante <small>Estoy explorando</small></button></span></span>,</span> con una inversión de <span class="nw"><span class="ct-campo ct-lista" data-vacia data-nombre="inversion"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>por definir</span><i>▾</i></button><span class="ct-menu" role="listbox" aria-label="Inversión aproximada"><button type="button" role="option" data-valor="menos de $800 mil">Menos de $800 mil <small>CLP</small></button><button type="button" role="option" data-valor="$800 mil a $1,5 M">$800 mil a $1,5 M <small>CLP</small></button><button type="button" role="option" data-valor="$1,5 a $4 M">$1,5 a $4 M <small>CLP</small></button><button type="button" role="option" data-valor="$4 a $8 M">$4 a $8 M <small>CLP</small></button><button type="button" role="option" data-valor="por definir">Por definir <small>Lo vemos juntos</small></button></span></span>.</span>
+            Respóndeme a <span class="nw"><span class="ct-campo"><input name="correo" type="email" placeholder="tu correo" autocomplete="email" aria-label="Tu correo" data-crece></span>.</span>
+        </form>
+        <div class="ct-enviar"><button class="ct-boton" type="button" data-enviar>Enviar mensaje <i>→</i></button><span class="mono"><span class="ct-punto" aria-hidden="true"></span> Disponible · respondo en menos de 24 h hábiles · Santiago <span data-reloj-ct>00:00</span></span></div>
+        <div class="ct-listo" aria-live="polite"><span class="mono gris">Mensaje listo</span><h3 data-listo-titulo>Listo. Te escribo antes de mañana a esta hora.</h3><p data-listo-texto>Leo cada mensaje yo mismo. Si es urgente, escríbeme por WhatsApp.</p><button class="ct-boton claro" type="button" data-otra-vez>Escribir otro mensaje</button></div>
+        <div class="ct-directo"><button type="button" data-copiar><b data-correo-texto>hola@agustindesign.cl</b><span>Copiar correo</span></button><a href="#" data-pendiente="WhatsApp"><b>WhatsApp</b><span>Escríbeme directo ↗</span></a><a href="#" data-pendiente="la agenda"><b>Llamada de 20 min</b><span>Agenda una videollamada ↗</span></a></div>
+    </section>
     </main>
+
+    <footer class="pie" data-pie>
+        <div class="pie-fila pie-arriba">
+            <div class="pie-firma">
+                <b class="logo">agustín<span>.</span>design</b>
+                <p>Diseño de marca y desarrollo web, de la idea al código. Desde Santiago, para Chile y Latinoamérica.</p>
+                <p class="estado mono gris"><span class="ct-punto" aria-hidden="true"></span> <b>Disponible</b> para proyectos nuevos</p>
+            </div>
+            <nav class="pie-col" aria-label="Índice del sitio"><span class="mono">Índice</span><a href="#" data-arriba>Inicio <kbd>H</kbd></a><a href="#works">Trabajo <kbd>W</kbd></a><a href="#contacto">Contacto <kbd>C</kbd></a><span>Sobre mí <small>pronto</small></span><span>Sobre este sitio <small>pronto</small></span></nav>
+            <nav class="pie-col" aria-label="Casos"><span class="mono">Casos</span><a href="#p-llego" data-ir-cov="0">Llegó Farma <kbd>1</kbd></a><a href="#p-tapin" data-ir-cov="1">Tap In <kbd>2</kbd></a><a href="#p-mend" data-ir-cov="2">Mend <kbd>3</kbd></a><a href="#archivo">Archivo <small>5</small></a></nav>
+            <nav class="pie-col" aria-label="En otros lados"><span class="mono">En otros lados</span><a href="https://www.linkedin.com/in/agust%C3%ADn-avenda%C3%B1o-3047b8311/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://www.instagram.com/_agustin.avg/" target="_blank" rel="noopener">Instagram ↗</a><a href="https://github.com/agustin0707" target="_blank" rel="noopener">GitHub ↗</a><a href="https://www.behance.net/agustnavendao1" target="_blank" rel="noopener">Behance ↗</a></nav>
+        </div>
+        <div class="pie-fila pie-colofon">
+            <span class="mono">Colofón</span>
+            <p>Hecho a mano con HTML, CSS y JavaScript, sin plantillas ni frameworks. Geist y Geist Mono. Esta página cargó en <b data-carga>…</b> y pesa <b data-peso>…</b>.</p>
+            <button class="pie-arriba-btn" type="button" data-arriba>Arriba <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="fondo" cx="12" cy="12" r="10"/><circle class="avance" cx="12" cy="12" r="10" pathLength="1"/><path class="flecha" d="M12 16V8m-3.5 3.5L12 8l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+        <div class="pie-marca-caja"><div class="pie-marca" aria-hidden="true" data-marca><span class="l" style="--k:0">a</span><span class="l" style="--k:1">g</span><span class="l" style="--k:2">u</span><span class="l" style="--k:3">s</span><span class="l" style="--k:4">t</span><span class="l" style="--k:5">í</span><span class="l" style="--k:6">n</span><span class="l gris-l" style="--k:7">.</span><span class="l" style="--k:8">d</span><span class="l" style="--k:9">e</span><span class="l" style="--k:10">s</span><span class="l" style="--k:11">i</span><span class="l" style="--k:12">g</span><span class="l" style="--k:13">n</span></div></div>
+        <div class="pie-fila pie-legal mono">
+            <span>© 2026 Agustín Avendaño</span>
+            <span>Santiago <b data-reloj-ct>00:00</b> · <span data-fecha></span></span>
+            <span>Sin cookies de seguimiento</span>
+            <span>Hecho en Santiago</span>
+        </div>
+    </footer>
+    <div class="ct-aviso" role="status" data-ct-aviso></div>
 
     <script src="../hero/hero-base.js"></script>
     <script src="../hero/h1-capas.js"></script>
     <script src="works-base.js"></script>
     <script src="inicio-works.js"></script>
     <script src="inicio.js"></script>
+    <script src="inicio-contacto.js"></script>
 </body>
 </html>
