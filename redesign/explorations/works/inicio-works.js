@@ -21,18 +21,24 @@
 
     /* --- 2. PORTADAS: DESTAPE Y REGLA DE AVANCE --- */
     /* La pista se reparte en tramos de 100svh: cada portada sube como hoja en el paso entre una y otra (--r), lineal con
-       el scroll para que se sienta física, y la anterior se oscurece (--sale). El último tramo deja la tercera quieta mientras el archivo sube encima como una hoja */
+       el scroll para que se sienta física, y la anterior se oscurece (--sale). Cada portada queda quieta 60svh después de
+       llegar. El último tramo (de 3,8 a 4,8) deja Mend quieta mientras el archivo sube encima como una hoja: el archivo
+       tiene margen de -100svh, así que la pista debe medir LARGO + 1 pantallas (580svh) para que no llegue antes.
+       Una portada está .en-vista cuando la pista ocupa la pantalla, ya subió más de la mitad y no la tapan del todo */
     const pista = document.querySelector('[data-portadas]');
     const covs = [...pista.querySelectorAll('.pt-cov')], regla = [...pista.querySelectorAll('.pt-regla button')];
-    const TRAMOS = [[0, 1.1], [1.1, 2.7], [2.7, 3.3]], LARGO = 3.8, FIN = [0, 1.7, 3.3];
+    const TRAMOS = [[0, 1.1], [1.1, 2.7], [2.7, 3.3]], LARGO = 4.8, FIN = [0, 1.7, 3.3];
+    const alCambiarVista = [];
     let activa = 0;
     covs.forEach((c, i) => { c.inert = i !== 0; });
     const pintar = () => {
-        const r = pista.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > window.innerHeight) return;
-        const s = fijar(-r.top / (r.height - window.innerHeight)) * LARGO;
-        const rev = [1, fijar(s - 0.6), fijar(s - 2.2)];
-        covs.forEach((c, i) => { c.style.setProperty('--r', rev[i].toFixed(4)); c.style.setProperty('--sale', (rev[i + 1] || 0).toFixed(4)); });
+        const r = pista.getBoundingClientRect(), alto = window.innerHeight;
+        const visible = r.top < alto * 0.5 && r.bottom > alto * 0.5;
+        if (r.bottom < 0 || r.top > alto) { marcarVista(() => false); return; }
+        const s = fijar(-r.top / (r.height - alto)) * LARGO;
+        const rev = [1, fijar(s - 0.6), fijar(s - 2.2), fijar(s - 3.8)];
+        covs.forEach((c, i) => { c.style.setProperty('--r', rev[i].toFixed(4)); c.style.setProperty('--sale', (i < 2 ? rev[i + 1] : 0).toFixed(4)); });
+        marcarVista(i => visible && rev[i] > 0.5 && rev[i + 1] < 0.95);
         const act = rev[2] > 0.5 ? 2 : rev[1] > 0.5 ? 1 : 0;
         regla.forEach((b, i) => b.style.setProperty('--a', fijar((s - TRAMOS[i][0]) / (TRAMOS[i][1] - TRAMOS[i][0])).toFixed(3)));
         if (act !== activa) {
@@ -42,6 +48,9 @@
             covs.forEach((c, i) => { c.inert = i !== act; });
         }
     };
+    function marcarVista(ver) {
+        covs.forEach((c, i) => { const v = ver(i); if (v !== c.classList.contains('en-vista')) { c.classList.toggle('en-vista', v); alCambiarVista.forEach(f => f(c, v)); } });
+    }
     let pendiente = false;
     const pedir = () => { if (!pendiente) { pendiente = true; requestAnimationFrame(() => { pendiente = false; pintar(); }); } };
     window.addEventListener('scroll', pedir, { passive: true });
@@ -140,6 +149,8 @@
         };
         relojTj.push(setTimeout(() => { paso(); relojTj.push(setInterval(paso, 3200)); }, 1100));
     };
+    /* Al entrar o salir de pantalla, las tarjetas arrancan o se detienen si su capítulo está abierto */
+    alCambiarVista.push((c, ver) => { const v = c.querySelector('.pt-vista.on'); if (v && v.querySelector('.pt-tjs')) tarjetas(v, ver); });
     covs.forEach(c => {
         const tabs = [...c.querySelectorAll('[data-cap]')], vistas = [...c.querySelectorAll('.pt-vista')];
         const abrir = t => {
@@ -149,7 +160,7 @@
                 v.classList.toggle('on', on);
                 if (v.querySelector('.pt-mend-logo')) { v.classList.remove('dibuja'); if (on && !quieto) { void v.offsetWidth; v.classList.add('dibuja'); } }
                 if (v.querySelector('.pt-lf-logo, .pt-tjs')) { v.classList.remove('dibuja'); if (on) { void v.offsetWidth; v.classList.add('dibuja'); } }
-                if (v.querySelector('.pt-tjs')) tarjetas(v, on);
+                if (v.querySelector('.pt-tjs')) tarjetas(v, on && c.classList.contains('en-vista'));
             });
         };
         tabs.forEach((t, k) => {
