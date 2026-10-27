@@ -18,10 +18,17 @@
     $('[data-fecha]').textContent = new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
 
     /* --- 2. CANALES DIRECTOS --- */
-    /* Copiar el correo con respuesta. La agenda queda marcada como pendiente hasta tener su link */
+    /* Copiar el correo con respuesta. La agenda (Cal.com, conectada al calendario de iCloud) llega con el nombre y el correo
+       ya puestos si se escribieron en la frase */
     const copiar = async () => { try { await navigator.clipboard.writeText(CORREO); } catch (e) {} avisar('✓ Correo copiado: ' + CORREO); };
     $$('[data-copiar]').forEach(b => b.addEventListener('click', copiar));
-    $$('[data-pendiente]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); avisar('Pronto: ' + a.dataset.pendiente); }));
+    $$('[data-agenda]').forEach(a => a.addEventListener('click', () => {
+        const url = new URL('https://cal.com/agustindesign/20min');
+        const nombre = $('[name="nombre"]', brief).value.trim(), correo = $('[name="correo"]', brief).value.trim();
+        if (nombre) url.searchParams.set('name', nombre);
+        if (correo.includes('@')) url.searchParams.set('email', correo);
+        a.href = url.toString();
+    }));
 
     /* --- 3. LA FRASE --- */
     /* Cada campo mide su texto real para quedar del ancho justo; las listas se abren en su lugar y se recorren con teclado */
