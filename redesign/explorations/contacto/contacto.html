@@ -18,8 +18,13 @@
         --sans: 'Geist', system-ui, sans-serif; --mono: 'Geist Mono', ui-monospace, monospace;
         --margen: clamp(16px, 2.2vw, 32px); --medianil: 16px;
         --ease: cubic-bezier(0.16, 1, 0.3, 1); --rapido: 160ms; --medio: 200ms;
+        --hover: #22221F; --velo: rgba(11, 11, 11, 0.86);
         color-scheme: dark;
     }
+    /* Tema claro: los mismos roles con los valores invertidos. "Sistema" sigue la preferencia del dispositivo */
+    :root[data-tema="claro"] { --negro: #F5F5F3; --grafito: #ECECE8; --linea: #DEDEDA; --gris-oscuro: #C6C6C1; --gris-medio: #6E6E69; --gris-claro: #2C2C2A; --blanco: #0B0B0B; --hover: #E2E2DD; --velo: rgba(245, 245, 243, 0.86); color-scheme: light; }
+    @media (prefers-color-scheme: light) { :root:not([data-tema]) { --negro: #F5F5F3; --grafito: #ECECE8; --linea: #DEDEDA; --gris-oscuro: #C6C6C1; --gris-medio: #6E6E69; --gris-claro: #2C2C2A; --blanco: #0B0B0B; --hover: #E2E2DD; --velo: rgba(245, 245, 243, 0.86); color-scheme: light; } }
+    body { transition: background-color var(--medio) linear, color var(--medio) linear; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { -webkit-text-size-adjust: 100%; }
     body { background: var(--negro); color: var(--blanco); font: 15px / 1.5 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
@@ -49,7 +54,7 @@
     .conclusion h2 { grid-column: 1 / -1; font-size: 15px; font-weight: 500; }
     .conclusion ol { display: contents; }
     .conclusion li { list-style: none; display: grid; grid-template-columns: 28px 1fr; color: var(--gris-claro); font-size: 14px; line-height: 1.45; }
-    .selector { position: sticky; top: 0; z-index: 20; padding-block: 12px; background: rgba(11, 11, 11, 0.86); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--linea); }
+    .selector { position: sticky; top: 0; z-index: 20; padding-block: 12px; background: var(--velo); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--linea); }
     .selector .botones { grid-column: 1 / -1; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
     .selector .botones::-webkit-scrollbar { display: none; }
     .op { flex: none; display: flex; align-items: baseline; gap: 8px; min-height: 40px; padding: 10px 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--linea); color: var(--gris-medio); font-size: 14px; transition: box-shadow var(--rapido) linear, color var(--rapido) linear, background-color var(--rapido) linear; }
@@ -81,13 +86,59 @@
     @media (hover: hover) { .boton:hover { gap: 14px; } .boton:hover i { transform: translateX(2px); } }
     .aviso { position: fixed; left: 50%; bottom: 24px; z-index: 40; display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-size: 14px; translate: -50% 140%; opacity: 0; transition: translate var(--medio) var(--ease), opacity var(--rapido) linear; pointer-events: none; }
     .aviso.on { translate: -50% 0; opacity: 1; }
-    .pie { padding-block: 22px 28px; border-top: 1px solid var(--linea); row-gap: 10px; color: var(--gris-medio); }
-    .pie > :nth-child(1) { grid-column: 1 / span 3; color: var(--blanco); font-weight: 500; letter-spacing: -0.035em; }
-    .pie > :nth-child(1) span { opacity: 0.45; }
-    .pie > :nth-child(2) { grid-column: 4 / span 5; }
-    .pie > :nth-child(3) { grid-column: 9 / span 2; }
-    .pie > :nth-child(4) { grid-column: 11 / -1; justify-self: end; }
-    .pie a { border-bottom: 1px solid var(--gris-oscuro); }
+
+    /* =======================================================
+       FOOTER · EL COLOFÓN
+       ======================================================= */
+    /* Cierra el sitio como lo abre el hero: con el nombre. Arriba, la firma y tres índices (sitio, casos y redes) con sus
+       atajos de teclado; al medio, el colofón vivo, que mide cuánto cargó y cuánto pesa la página que estás viendo, más
+       el tema y volver arriba con el avance de la lectura; abajo, el nombre de margen a margen, que sube letra por letra */
+    .pie { position: relative; overflow: hidden; border-top: 1px solid var(--linea); }
+    .pie-arriba { padding-block: 64px 48px; row-gap: 40px; }
+    .pie-firma { grid-column: 1 / span 5; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+    .pie-firma .logo { font-size: 20px; font-weight: 500; letter-spacing: -0.04em; }
+    .pie-firma .logo span { opacity: 0.45; }
+    .pie-firma p { max-width: 30ch; color: var(--gris-medio); font-size: 15px; line-height: 1.45; }
+    .pie-firma .estado { color: var(--gris-medio); white-space: nowrap; }
+    .pie-col { grid-column: span 2; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+    .pie-col:nth-of-type(1) { grid-column: 7 / span 2; }
+    .pie-col > .mono { margin-bottom: 10px; color: var(--gris-medio); }
+    .pie-col a, .pie-col button { position: relative; display: inline-flex; align-items: baseline; gap: 10px; padding: 3px 0; font-size: 15px; letter-spacing: -0.01em; text-align: left; }
+    .pie-col a::after, .pie-col button::after { content: ''; position: absolute; left: 0; right: 0; bottom: 1px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform var(--medio) var(--ease); }
+    .pie-col kbd { padding: 1px 5px; border-radius: 4px; box-shadow: inset 0 0 0 1px var(--linea); color: var(--gris-medio); font: 400 10px var(--mono); opacity: 0; transition: opacity var(--rapido) linear; }
+    .pie-col small { color: var(--gris-medio); font: 400 11px var(--mono); }
+    .pie-colofon { padding-block: 18px; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); align-items: center; row-gap: 16px; }
+    .pie-colofon > .mono { grid-column: 1 / span 3; color: var(--gris-medio); }
+    .pie-colofon p { grid-column: 4 / span 5; color: var(--gris-medio); font-size: 13px; line-height: 1.5; }
+    .pie-colofon p b { color: var(--blanco); font-weight: 400; font-family: var(--mono); font-size: 12px; }
+    .pie-controles { grid-column: 9 / -1; justify-self: end; display: flex; align-items: center; gap: 10px; }
+    .tema { display: flex; padding: 3px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--linea); }
+    .tema button { min-height: 30px; padding: 0 12px; border-radius: 999px; color: var(--gris-medio); font: 400 11px var(--mono); transition: background-color var(--rapido) linear, color var(--rapido) linear; }
+    .tema button[aria-checked="true"] { background: var(--blanco); color: var(--negro); }
+    .arriba { display: inline-flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 6px 0 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--linea); font: 400 11px var(--mono); color: var(--gris-claro); }
+    .arriba svg { width: 24px; height: 24px; rotate: -90deg; }
+    .arriba circle { fill: none; stroke-width: 2; }
+    .arriba .fondo { stroke: var(--linea); }
+    .arriba .avance { stroke: var(--blanco); stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--avance, 0)); }
+    .arriba .flecha { rotate: 90deg; transform-box: fill-box; transform-origin: center; }
+    .pie-marca { display: flex; justify-content: center; white-space: nowrap; font-weight: 500; letter-spacing: -0.07em; line-height: 1.04; color: var(--blanco); user-select: none; }
+    .pie-marca .l { display: inline-block; translate: 0 110%; transition: translate 900ms var(--ease), color var(--medio) linear; transition-delay: calc(var(--k) * 28ms); }
+    .pie-marca .gris-l { color: var(--gris-oscuro); }
+    .pie-marca.entra .l { translate: 0 0; }
+    .pie-marca-caja { overflow: hidden; padding: 0.08em var(--margen) 0.02em; }
+    .pie-legal { padding-block: 16px 22px; border-top: 1px solid var(--linea); row-gap: 8px; color: var(--gris-medio); }
+    .pie-legal > :nth-child(1) { grid-column: 1 / span 3; }
+    .pie-legal > :nth-child(2) { grid-column: 4 / span 5; }
+    .pie-legal > :nth-child(3) { grid-column: 9 / span 2; }
+    .pie-legal > :nth-child(4) { grid-column: 11 / -1; justify-self: end; }
+    .pie-legal b { color: var(--blanco); font-weight: 400; }
+    @media (hover: hover) {
+        .pie-col a:hover::after, .pie-col button:hover::after { transform: scaleX(1); transform-origin: left; }
+        .pie-col a:hover kbd, .pie-col button:hover kbd { opacity: 1; }
+        .tema button[aria-checked="false"]:hover { color: var(--blanco); }
+        .arriba:hover { color: var(--blanco); }
+        .pie-legal a:hover { color: var(--blanco); }
+    }
 
     /* =======================================================
        V1 · ÍNDICE DE CANALES
@@ -129,8 +180,8 @@
     .campo.lista[data-abierta] .menu { opacity: 1; translate: 0 0; visibility: visible; transition-delay: 0s; }
     .menu button { display: flex; justify-content: space-between; gap: 16px; padding: 10px 12px; border-radius: 9px; color: var(--gris-claro); text-align: left; }
     .menu button small { color: var(--gris-medio); font: 400 11px var(--mono); }
-    .menu button[aria-selected="true"], .menu button:focus-visible { background: #22221F; color: var(--blanco); outline: none; }
-    @media (hover: hover) { .menu button:hover { background: #22221F; color: var(--blanco); } }
+    .menu button[aria-selected="true"], .menu button:focus-visible { background: var(--hover); color: var(--blanco); outline: none; }
+    @media (hover: hover) { .menu button:hover { background: var(--hover); color: var(--blanco); } }
     .v2 .enviar { grid-column: 4 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
     .v2 .enviar .mono { color: var(--gris-medio); }
     .v2 .directo { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--medianil); padding-top: 22px; border-top: 1px solid var(--linea); }
@@ -233,7 +284,7 @@
     .v6 li button { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 12px; width: 100%; padding: 12px; border-radius: 12px; text-align: left; color: var(--gris-claro); }
     .v6 li button .ico { color: var(--gris-medio); font: 400 13px var(--mono); }
     .v6 li button small { color: var(--gris-medio); font: 400 11px var(--mono); }
-    .v6 li button[aria-selected="true"] { background: #22221F; color: var(--blanco); }
+    .v6 li button[aria-selected="true"] { background: var(--hover); color: var(--blanco); }
     .v6 .pie-paleta { display: flex; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 1px solid var(--linea); color: var(--gris-medio); }
     .v6 .vacio { padding: 12px; color: var(--gris-medio); }
 
@@ -255,7 +306,13 @@
         .v6 .busca kbd { display: none; }
         .v5 .bajo { grid-template-columns: 1fr; }
         .v5 .bajo .estado, .v5 .bajo a, .v5 .bajo button { grid-column: 1 / -1; }
-        .pie > * { grid-column: 1 / -1 !important; justify-self: start !important; }
+        .pie-firma { grid-column: 1 / -1; }
+        .pie-col, .pie-col:nth-of-type(1) { grid-column: span 2; }
+        .pie-col:nth-of-type(3) { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; gap: 4px 18px; }
+        .pie-col:nth-of-type(3) > .mono { flex-basis: 100%; margin-bottom: 4px; }
+        .pie-col kbd { display: none; }
+        .pie-colofon > .mono, .pie-colofon p, .pie-controles, .pie-legal > * { grid-column: 1 / -1 !important; justify-self: start !important; }
+        .pie-controles { flex-wrap: wrap; }
     }
     @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
@@ -346,7 +403,7 @@
 <nav class="selector grilla" aria-label="Variantes de contacto">
     <div class="botones" role="group">
         <button class="op" type="button" aria-pressed="false" data-v="1"><span class="mono">01</span>Índice de canales</button>
-        <button class="op" type="button" aria-pressed="true" data-v="2"><span class="mono">02</span>Brief en una frase <span class="rec">Recomendada</span></button>
+        <button class="op" type="button" aria-pressed="true" data-v="2"><span class="mono">02</span>Brief en una frase <span class="rec">Elegida</span></button>
         <button class="op" type="button" aria-pressed="false" data-v="3"><span class="mono">03</span>Alcance y proceso</button>
         <button class="op" type="button" aria-pressed="false" data-v="4"><span class="mono">04</span>Agenda primero</button>
         <button class="op" type="button" aria-pressed="false" data-v="5"><span class="mono">05</span>El correo como titular</button>
@@ -377,7 +434,7 @@
      V2 · BRIEF EN UNA FRASE
      ======================================================= -->
 <div class="variante on" data-variante="2">
-    <div class="ficha grilla"><span class="mono gris">02 · Brief en una frase</span><p><b>Mi recomendación.</b> El formulario es una frase que se completa: se lee como un mensaje y no como un trámite, califica con tres opciones (qué, cuándo, inversión) y muestra tu oficio en cada detalle. Al enviar, dice cuándo vas a responder con la hora real. Abajo quedan los canales directos para quien prefiere escribirte por su cuenta. Referencias: Cuberto (calificar con opciones), Studio Dumbar (una persona), las guías de freelancers (decir qué pasa después).</p></div>
+    <div class="ficha grilla"><span class="mono gris">02 · Brief en una frase</span><p><b>La elegida.</b> El formulario es una frase que se completa: se lee como un mensaje y no como un trámite, califica con tres opciones (qué, cuándo, inversión) y muestra tu oficio en cada detalle. Al enviar, dice cuándo vas a responder con la hora real. Abajo quedan los canales directos para quien prefiere escribirte por su cuenta. Referencias: Cuberto (calificar con opciones), Studio Dumbar (una persona), las guías de freelancers (decir qué pasa después).</p></div>
     <section class="contacto grilla v2" data-brief>
         <span class="num mono gris">04 · Contacto</span>
         <form class="titulo" data-frase novalidate>
@@ -385,7 +442,7 @@
             Busco <span class="campo lista" data-vacia data-nombre="que"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>algo</span><i>▾</i></button>
                 <span class="menu" role="listbox" aria-label="Qué buscas"><button type="button" role="option" data-valor="una marca">Una marca <small>Identidad y manual</small></button><button type="button" role="option" data-valor="un sitio web">Un sitio web <small>Diseño y código</small></button><button type="button" role="option" data-valor="marca y sitio web">Marca y sitio web <small>Lo completo</small></button><button type="button" role="option" data-valor="un producto digital">Un producto digital <small>App o plataforma</small></button></span></span> para <span class="nw"><span class="campo lista" data-vacia data-nombre="cuando"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>cuándo</span><i>▾</i></button>
                 <span class="menu" role="listbox" aria-label="Para cuándo"><button type="button" role="option" data-valor="lo antes posible">Lo antes posible <small>Este mes</small></button><button type="button" role="option" data-valor="los próximos meses">Los próximos meses <small>1 a 3 meses</small></button><button type="button" role="option" data-valor="más adelante">Más adelante <small>Estoy explorando</small></button></span></span>,</span> con una inversión de <span class="nw"><span class="campo lista" data-vacia data-nombre="inversion"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>por definir</span><i>▾</i></button>
-                <span class="menu" role="listbox" aria-label="Inversión aproximada"><button type="button" role="option" data-valor="menos de $1,5 M">Menos de $1,5 M <small>CLP</small></button><button type="button" role="option" data-valor="$1,5 a $4 M">$1,5 a $4 M <small>CLP</small></button><button type="button" role="option" data-valor="$4 a $8 M">$4 a $8 M <small>CLP</small></button><button type="button" role="option" data-valor="más de $8 M">Más de $8 M <small>CLP</small></button><button type="button" role="option" data-valor="por definir">Por definir <small>Lo vemos juntos</small></button></span></span>.</span>
+                <span class="menu" role="listbox" aria-label="Inversión aproximada"><button type="button" role="option" data-valor="menos de $800 mil">Menos de $800 mil <small>CLP</small></button><button type="button" role="option" data-valor="$800 mil a $1,5 M">$800 mil a $1,5 M <small>CLP</small></button><button type="button" role="option" data-valor="$1,5 a $4 M">$1,5 a $4 M <small>CLP</small></button><button type="button" role="option" data-valor="$4 a $8 M">$4 a $8 M <small>CLP</small></button><button type="button" role="option" data-valor="por definir">Por definir <small>Lo vemos juntos</small></button></span></span>.</span>
             Respóndeme a <span class="nw"><span class="campo"><input name="correo" type="email" placeholder="tu correo" autocomplete="email" aria-label="Tu correo" data-crece></span>.</span>
         </form>
         <div class="enviar"><button class="boton" type="button" data-enviar>Enviar mensaje <i>→</i></button><span class="mono"><span class="punto" aria-hidden="true"></span> Disponible · respondo en menos de 24 h hábiles · Santiago <span data-reloj>00:00</span></span></div>
@@ -477,11 +534,32 @@
 <!-- =======================================================
      PIE COMÚN
      ======================================================= -->
-<footer class="pie grilla mono">
-    <span>agustín<span>.</span>design</span>
-    <span>Diseño de marca y desarrollo web · Hecho a mano en Santiago con HTML, CSS y JS</span>
-    <a href="#">Sobre este sitio</a>
-    <span>© 2026</span>
+<footer class="pie" data-pie>
+    <div class="pie-arriba grilla">
+        <div class="pie-firma">
+            <b class="logo">agustín<span>.</span>design</b>
+            <p>Diseño de marca y desarrollo web, de la idea al código. Desde Santiago, para Chile y Latinoamérica.</p>
+            <p class="estado mono"><span><span class="punto" aria-hidden="true"></span> <b>Disponible</b> para proyectos nuevos</span></p>
+        </div>
+        <nav class="pie-col" aria-label="Índice del sitio"><span class="mono">Índice</span><a href="#" data-prueba="el inicio">Inicio <kbd>H</kbd></a><a href="#" data-prueba="Trabajo">Trabajo <kbd>W</kbd></a><a href="#" data-prueba="Sobre mí">Sobre mí <kbd>A</kbd></a><a href="#" data-prueba="Contacto">Contacto <kbd>C</kbd></a><a href="#" data-prueba="Sobre este sitio">Sobre este sitio</a></nav>
+        <nav class="pie-col" aria-label="Casos"><span class="mono">Casos</span><a href="#" data-prueba="Llegó Farma">Llegó Farma <kbd>1</kbd></a><a href="#" data-prueba="Tap In">Tap In <kbd>2</kbd></a><a href="#" data-prueba="Mend">Mend <kbd>3</kbd></a><a href="#" data-prueba="el archivo">Archivo <small>5</small></a></nav>
+        <nav class="pie-col" aria-label="En otros lados"><span class="mono">En otros lados</span><a href="#" data-prueba="LinkedIn">LinkedIn ↗</a><a href="#" data-prueba="Instagram">Instagram ↗</a><a href="#" data-prueba="GitHub">GitHub ↗</a><a href="#" data-prueba="Behance">Behance ↗</a></nav>
+    </div>
+    <div class="pie-colofon grilla">
+        <span class="mono">Colofón</span>
+        <p>Hecho a mano con HTML, CSS y JavaScript, sin plantillas ni frameworks. Geist y Geist Mono. Esta página cargó en <b data-carga>…</b> y pesa <b data-peso>…</b>.</p>
+        <div class="pie-controles">
+            <div class="tema" role="radiogroup" aria-label="Tema"><button type="button" role="radio" aria-checked="true" data-tema-op="sistema">Sistema</button><button type="button" role="radio" aria-checked="false" data-tema-op="oscuro">Oscuro</button><button type="button" role="radio" aria-checked="false" data-tema-op="claro">Claro</button></div>
+            <button class="arriba" type="button" data-arriba>Arriba <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="fondo" cx="12" cy="12" r="10"/><circle class="avance" cx="12" cy="12" r="10" pathLength="1"/><path class="flecha" d="M12 16V8m-3.5 3.5L12 8l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+    <div class="pie-marca-caja"><div class="pie-marca" aria-hidden="true" data-marca><span class="l" style="--k:0">a</span><span class="l" style="--k:1">g</span><span class="l" style="--k:2">u</span><span class="l" style="--k:3">s</span><span class="l" style="--k:4">t</span><span class="l" style="--k:5">í</span><span class="l" style="--k:6">n</span><span class="l gris-l" style="--k:7">.</span><span class="l" style="--k:8">d</span><span class="l" style="--k:9">e</span><span class="l" style="--k:10">s</span><span class="l" style="--k:11">i</span><span class="l" style="--k:12">g</span><span class="l" style="--k:13">n</span></div></div>
+    <div class="pie-legal grilla mono">
+        <span>© 2026 Agustín Avendaño</span>
+        <span>Santiago <b data-reloj>00:00</b> · <span data-fecha></span></span>
+        <a href="#" data-prueba="Sobre este sitio">Sobre este sitio</a>
+        <span>Sin cookies de seguimiento</span>
+    </div>
 </footer>
 
 <div class="aviso" role="status" data-aviso></div>
@@ -513,7 +591,7 @@
         try { localStorage.setItem('contacto-variante', v); } catch (e) {}
     };
     $$('.op').forEach(b => b.addEventListener('click', () => elegir(b.dataset.v)));
-    try { const g = localStorage.getItem('contacto-variante'); if (g) elegir(g); } catch (e) {}
+    elegir('2');
     const activa = () => $('.variante.on').dataset.variante;
 
     /* --- 3. V1: C COPIA EL CORREO --- */
@@ -655,6 +733,43 @@
         if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !/input|textarea/i.test(e.target.tagName))) { e.preventDefault(); buscar.focus(); buscar.select(); }
     });
     pintarAcciones();
+
+    /* --- 9. FOOTER: COLOFÓN VIVO --- */
+    /* Lo que cargó y pesó esta página, medido en el navegador de quien la ve */
+    const medir = () => {
+        const nav = performance.getEntriesByType('navigation')[0];
+        if (!nav || !nav.loadEventEnd) return setTimeout(medir, 300);
+        const bytes = [nav, ...performance.getEntriesByType('resource')].reduce((s, r) => s + (r.transferSize || r.encodedBodySize || 0), 0);
+        const num = (v, d) => v.toLocaleString('es-CL', { minimumFractionDigits: d, maximumFractionDigits: d });
+        $('[data-carga]').textContent = num(nav.loadEventEnd / 1000, 2) + ' s';
+        $('[data-peso]').textContent = bytes > 1e6 ? num(bytes / 1e6, 1) + ' MB' : Math.round(bytes / 1e3) + ' kB';
+    };
+    addEventListener('load', medir);
+    $('[data-fecha]').textContent = new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
+    /* Tema: sistema, oscuro o claro, recordado en este navegador */
+    const raiz = document.documentElement, ops = $$('[data-tema-op]');
+    const ponerTema = t => {
+        if (t === 'sistema') raiz.removeAttribute('data-tema'); else raiz.dataset.tema = t;
+        ops.forEach(b => b.setAttribute('aria-checked', b.dataset.temaOp === t));
+        try { localStorage.setItem('tema', t); } catch (e) {}
+    };
+    ops.forEach(b => b.addEventListener('click', () => ponerTema(b.dataset.temaOp)));
+    try { ponerTema(localStorage.getItem('tema') || 'sistema'); } catch (e) {}
+    /* Volver arriba, con el avance de la lectura en el anillo */
+    const arriba = $('[data-arriba]');
+    const avance = () => arriba.style.setProperty('--avance', (scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight)).toFixed(3));
+    addEventListener('scroll', avance, { passive: true }); avance();
+    arriba.addEventListener('click', () => scrollTo({ top: 0, behavior: quieto ? 'auto' : 'smooth' }));
+    /* El nombre de margen a margen: el tamaño se calcula para que calce y las letras suben al entrar en pantalla */
+    const marca = $('[data-marca]'), caja = marca.parentElement;
+    const ajustarMarca = () => {
+        caja.style.fontSize = '100px';
+        const l = marca.children, ancho = l[l.length - 1].getBoundingClientRect().right - l[0].getBoundingClientRect().left, util = caja.clientWidth - 2 * parseFloat(getComputedStyle(caja).paddingLeft);
+        caja.style.fontSize = (100 * util / ancho) + 'px';
+    };
+    ajustarMarca(); addEventListener('resize', ajustarMarca); document.fonts && document.fonts.ready.then(ajustarMarca);
+    new IntersectionObserver(es => es.forEach(e => marca.classList.toggle('entra', e.isIntersecting)), { threshold: 0.3 }).observe(caja);
+    if (quieto) marca.classList.add('entra');
 })();
 /* =======================================================
    FIN COMPARADOR DE CONTACTO
