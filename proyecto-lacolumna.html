@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+      <meta name="theme-color" content="#111111">
+      <title>La Columna - Agustín Avendaño</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="style.css">
+   </head>
+
+   <!-- lc-page activa el tema oscuro y los estilos exclusivos de esta página -->
+   <body class="project-page lc-page">
+
+      <!-- =====================================================
+           MENÚ — idéntico al global
+           ===================================================== -->
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú de navegación">
+         <span></span>
+         <span></span>
+         <span></span>
+      </button>
+      <nav class="side-menu" id="sideMenu">
+         <ul class="main-menu">
+            <li><a href="redesign/explorations/works/inicio.html" class="main-link">Home</a></li>
+            <li class="has-submenu">
+               <span class="main-link submenu-toggle">Works <span class="arrow">+</span></span>
+               <ul class="submenu">
+                  <li><a href="redesign/explorations/caso/tapin.html">Tap In</a></li>
+                  <li><a href="proyecto-lacolumna.html">La Columna</a></li>
+                  <li><a href="proyecto-mido.html">Mido</a></li>
+                  <li><a href="proyecto-entrenapo.html">Entrena Po</a></li>
+                  <li><a href="proyecto-hai.html">HAI Group</a></li>
+                  <li><a href="proyecto-posters.html">Posters y Afiches</a></li>
+               </ul>
+            </li>
+         </ul>
+      </nav>
+      <div class="overlay" id="overlay"></div>
+
+      <!-- =====================================================
+           HERO — PORTADA DE DIARIO CON JUGADORES
+           ===================================================== -->
+      <section class="lc-hero">
+
+         <!-- Línea acento superior -->
+         <div class="lc-hero-accentbar"></div>
+
+         <!-- Masthead: margen izquierdo amplio para no chocar con hamburguesa -->
+         <div class="lc-hero-masthead">
+            <div class="lc-masthead-left">
+               <span class="lc-masthead-name">La Columna</span>
+               <div class="lc-masthead-divider"></div>
+               <span class="lc-masthead-cat">Análisis Futbolístico</span>
+            </div>
+            <!-- Alineado verticalmente al centro del bloque izquierdo -->
+            <span class="lc-masthead-cat lc-masthead-cat--right">Branding & Diseño Editorial</span>
+         </div>
+
+         <!-- Grid de 3 columnas: jugador | centro | jugador -->
+         <div class="lc-hero-body">
+
+            <!-- JUGADOR IZQUIERDA (Haaland) -->
+            <div class="lc-hero-col-player">
+               <img
+                  src="img/halland.png"
+                  alt=""
+                  aria-hidden="true"
+                  class="lc-player-img lc-player-img--left"
+                  fetchpriority="high"
+                  decoding="async"
+                  width="600"
+                  height="900"
+               >
+            </div>
+
+            <div class="lc-hero-vdivider"></div>
+
+            <!-- CENTRO EDITORIAL -->
+            <div class="lc-hero-col-center">
+
+               <!-- Edición: sube al lugar que ocupaba "Branding & Diseño Editorial" -->
+               <div class="lc-hero-cat-row lc-hero-cat-row--edition">
+                  <div class="lc-hero-edition-line"></div>
+                  <span class="lc-hero-edition-num">Edición No. 01 — 2023/24</span>
+                  <div class="lc-hero-edition-line"></div>
+               </div>
+
+               <div class="lc-hero-headline-wrap">
+                  <!-- "01" eliminado -->
+
+                  <div class="lc-hero-headline-inner">
+                     <!-- Separador de edición original — oculto, reemplazado arriba -->
+                     <div class="lc-hero-edition-row" style="display:none"></div>
+
+                     <!-- Isotipo La Columna (mediano, centrado) -->
+                     <div class="lc-hero-isotipo">
+                        <svg class="lc-hero-isotipo-svg" viewBox="0 0 226.4 358.08" xmlns="http://www.w3.org/2000/svg">
+                           <path fill="currentColor" d="M186.05,115.36l-1.85-3.31c-4.16-7.43-7.45-13.3-25.18-27.8-1.6-1.3-16.23-12.91-38.55-18.86-23.03-6.14-31.76-5.43-41.01-4.69l-4.01.32L85.12,0l13.61,32.47L114.71.87l17.11,44.65,33.34-23.94-.97,40.74,45.87-9.28-17.41,30.45,33.76-4.88-40.35,36.76ZM88.9,55.13c7.39,0,16.79,1.06,32.87,5.35,17.73,4.72,32.88,13.64,40.46,19.84,16.68,13.64,21.15,20.05,25.12,26.98l23.38-21.3-27.67,4,17.02-29.77-41.13,8.32.88-36.9-30.4,21.83-15.36-40.08-15.76,31.2-10.96-26.15-5.87,37c2.36-.18,4.76-.31,7.42-.31Z"/>
+                           <path fill="currentColor" d="M40.52,87.63c-6.64,8.27-9.84,17.1-11.23,27.15,6.04-1.44,9.66-1.96,15.43-2.2,4.18-.17,6.75,1.09,7,4.27.23,2.93-1.87,4.62-5.97,5.25-4.68.72-9.4,1.38-13.95,2.65-4.6,1.28-6.5,4.2-6.57,9.38,0,.56.48,1.01,1.03.93,3.32-.45,6.61-.92,9.91-1.33,1.98-.25,3.97-.47,5.97-.55,3.07-.12,5.16,1.3,5.35,4.47.2,3.17-1.76,4.75-4.76,5.15-4.82.65-9.71.97-14.45,2-5.1,1.11-7.42,3.97-7.49,8.93-.01.97.8,1.75,1.77,1.64,2.09-.24,4.17-.48,6.27-.67,3.23-.29,6.47-.64,9.71-.69,2.95-.05,4.78,1.69,4.88,4.58.1,2.72-1.58,4.47-4.29,4.8-4.59.56-9.22.79-13.79,1.45-5.86.84-8.26,3.13-9.13,7.86-.45,2.43.15,3.53,2.86,3.23,4.59-.5,9.2-.84,13.81-1.13,4.01-.25,6.31,1.49,6.38,4.61.07,3.02-1.88,4.64-5.73,4.94-4.85.39-9.76.54-14.52,1.46-2.2.42-4.31,1.16-5.69,2.95-.93,1.21-1.33,3.86-1.34,5.86,0,.97.82,1.78,1.78,1.79,1.51,0,1.74-.25,3.14-.28,4-.07,7.99-.41,11.98-.48,3.97-.07,6.33,1.85,6.27,4.83-.06,2.9-2.23,4.58-6,4.77-4.74.23-9.5.35-14.21.85-4.92.52-6.64,2.36-7.62,6.86-.66,3.02.41,4.2,3.44,4.05,4.61-.22,9.24-.37,13.86-.42,4.05-.04,6.29,1.73,6.33,4.77.05,3.07-2.16,4.83-6.19,4.88-5.37.07-10.75-.08-16.11.25-1.59.1-3.91.36-4.45,2.36C2.46,237.23.35,245.68.02,254.18c-.33,8.34,4.73,14.84,11.25,19.82,10.3,7.85,22.29,12.16,34.51,15.91,2.24.69,4.51,1.29,7.08,2.02-1.47,9.44-3.07,18.64-4.27,27.9-.75,5.77-1.89,11.77-1.11,17.42,1.96,14.17,17.8,23.84,31.61,20,6.99-1.94,11.2-6.73,13.24-13.55,4.09-13.63,8.24-27.24,12.16-40.92.83-2.9,1.94-3.9,5.11-3.75,8.98.44,17.75-.74,25.55-5.72,10.25-6.54,14.54-16.78,16.83-28.08.23-1.87.5-1.92-2.25-3.64-7.11-3.9-14.37-7.51-21.55-11.27-1.29-.68-2.86-1.51-3.52-2.47-1.43-2.11-.62-4.2.18-5.37,1.36-1.98,4-2.06,5.44-1.45,6.67,2.79,13.08,6.18,19.62,9.27,1.61.76,3.98,2.21,5.17.68,1.84-2.34,2.81-7.4-.27-9.13-7.59-4.29-15.29-8.4-22.77-12.86-1.67-.99-3.26-3.07-3.64-4.91-.25-1.19,1.47-3.36,2.85-4.15,1.11-.63,3.23-.27,4.55.37,6.17,2.99,12.18,6.3,18.34,9.32,1.57.77,3.96,1.72,5.1,1.07,1.99-1.14,2.59-6.98.27-8.82-2.83-2.25-5.72-4.47-8.84-6.28-4.63-2.7-9.46-5.06-14.24-7.51-3.39-1.74-4.61-4.06-3.43-6.8,1.22-2.82,4.12-3.65,7.63-1.84,6.1,3.15,12.07,6.54,18.15,9.73,1.56.82,4.16,2.56,4.91,1.12,1.13-2.17,1.43-5.76.39-7.9-1.64-3.35-6.34-5.64-9.05-7.46-4-2.69-8.15-5.18-12.57-7.1-4.56-1.98-6.37-4.46-5-7.57,1.28-2.9,4.11-3.76,7.61-1.87,6.15,3.31,12.14,6.92,18.27,10.28,1,.55,2.35,1.5,3.42,1.84.63.2,1.29-.21,1.45-.85.57-2.27,1.18-4.75.61-6.7-.59-2.04-2.7-3.96-4.6-5.23-6.23-4.13-12.62-8.01-19.05-11.82-2.35-1.4-4.12-2.93-3.48-5.88.71-3.28,4.06-4.71,7.42-2.85,6.33,3.5,12.46,7.35,18.74,10.94,1.19.68,2.22,1.31,3.41,1.98.43.24.97.07,1.18-.38,1.05-2.25,1.59-4.98,1.07-6.84-.57-2.06-2.58-4.05-4.45-5.35-6.23-4.35-12.61-8.48-19.06-12.49-3.52-2.19-4.81-4.37-3.48-7.12,1.39-2.86,4.3-3.55,8.04-1.33,7.58,4.49,15.02,9.23,22.67,13.97,1.8-7.29,2.95-15.13.95-23.22-3.34-13.48-11.16-23.77-22.12-31.99-11.19-8.38-17.43-13.53-36.51-19.61-7.04-2.61-17.65,1.4-21.33,8.58-2.29,4.47-3.53,9.55-4.79,14.47-.82,3.19-2.24,4.96-5.61,4.6-3.17-.34-4.66-2.96-4.44-6.91.4-4.88,1.74-8.53,3.64-12.64,2.12-4.59,4.85-9.04,8.74-12.45-7.24-1.67-18.73,2.55-23.73,11.1-3.26,5.58-4.92,12.14-6.99,18.36-1.18,3.54-3.39,4.43-6.56,3.3-2.41-.86-2.24-3.42-2.01-5,1.57-10.78,5.03-20.66,14.84-26.97.17-.11.7-.52,1.31-1.01-6.95.31-13.42,3.33-17.94,8.28-5.4,5.92-7.96,13.17-9.47,20.88-.17.86-.28,1.73-.5,2.57-.62,2.37-3.02,2.89-4.49,2.63-1.82-.32-3.34-1.43-2.87-4.29.69-4.26,1.93-8.45,3.21-13.56ZM75.03,121.1c-3,0-5.99.03-8.99,0-3.74-.04-5.91-1.8-5.95-4.75-.04-2.92,2.1-4.72,5.83-4.87,19.74-.81,38.84,1.87,56.91,10.34,4.89,2.3,6.63,4.46,5.43,7.48-1.26,3.17-4.2,3.68-9.32,1.32-13.94-6.41-28.54-9.71-43.91-9.51ZM120.13,154.22c-2.01-.64-3.13-.87-4.17-1.36-16.76-7.84-35-12.46-53.43-10.82-4.12.37-6.63-1.63-6.68-4.68-.05-2.85,2.3-5.05,5.88-4.83,9.57.58,19.33.47,28.65,2.41,10.3,2.14,20.21,6.2,30.25,9.53,2.57.85,4.05,2.99,3.13,5.55-.61,1.69-2.48,2.94-3.63,4.2ZM64.63,153.56c17.61.62,34.19,5.45,50.38,11.94,3.76,1.51,5.21,3.95,4.09,6.75-1.13,2.84-3.74,3.56-7.59,2.2-6.47-2.27-12.89-4.71-19.45-6.67-11.19-3.35-22.72-4.53-34.38-4.61-3.85-.03-5.9-1.76-5.94-4.72-.04-3.07,2.22-4.87,6.16-4.89,2.24-.01,4.49,0,6.73,0ZM51.91,196.04c10.95.66,22.47,3.3,33.48,5.92,7.26,1.73,14.28,4.46,21.38,6.82,2.74.91,4.17,2.93,3.36,5.8-.84,2.99-3.09,4.08-6.13,3.34-.96-.24-1.88-.67-2.84-.93-12.39-3.32-24.74-6.87-37.22-9.81-8.49-1.53-10.65-1.08-15.98-1.64-3.08-.33-4.89-2.2-4.62-5.26.25-2.88,2.23-4.33,5.19-4.24,1.12.03,2.25,0,3.37,0ZM58.36,174.74c18.46.9,35.87,6.09,52.97,12.58,2.82,1.07,4.21,3.16,3.26,6.21-.84,2.71-3.62,3.9-6.74,2.7-17.94-6.89-36.3-11.76-55.68-12-2.94-.04-4.65-1.91-4.63-4.82.03-2.99,2-4.46,4.84-4.66,1.99-.14,3.99-.03,5.98-.03ZM42.97,217.04c1.69-.63,3.52-.77,5.32-.56,7.18.82,22.73,4.33,32.92,6.7,10.91,2.76,15.29,4.43,20.59,6.76,3.15,1.38,4.61,3.59,3.7,6.29-.96,2.84-3.25,3.84-6.65,2.88-.96-.27-1.9-.61-2.84-.92-16.61-5.47-33.4-10.08-50.96-11.27-4.05-.27-6.13-2.01-6.01-5.07.09-2.37,1.44-3.88,3.94-4.81ZM55.26,283.14c-.03.1-.06.23-.09.36-.18.78-.86,1.36-1.65,1.37-1.26.01-2.28-.35-3.74-.91-5.46-2.65-11.04-5.23-16.03-8.63-5.06-3.44-8.05-8.85-8.07-14.98-.41-8.25.85-14.38,1.62-21.54.27-2.49,2.16-4.03,4.83-3.6,2.82.45,3.98,2.43,3.61,5.18-.43,3.21-1.08,6.4-1.54,9.61-2.12,14.76,1.89,22.4,15.24,29.1,1,.5,2,1.05,3.01,1.49,1.36.58,2.81.94,2.81,2.56ZM80.86,286.16c-.94,1.53-2.78,1.71-3.56,1.52-1.45-.36-3.8-1.59-5.25-2.15-5.46-2.65-4.85-2.39-13.05-7.17-5.06-3.44-8.05-8.85-8.07-14.98-.41-8.25.85-14.38,1.62-21.54.27-2.49,2.16-4.03,4.83-3.6,2.82.45,3.98,2.43,3.61,5.18-.43,3.21-1.08,6.4-1.54,9.61-2.12,14.76,1.42,20.49,14.77,27.19,1,.5,4.3,1.77,5.19,2.42.83.61,1.87,1.8,1.44,3.53ZM31.56,279.75c-.31.88-1.65.25-2.02.09-4.03-1.85-5.88-2.95-9.26-5.15-7.77-5.05-12.05-12.28-11.88-21.65.09-5.1.85-10.18,1.4-15.26.28-2.67,1.55-4.67,4.57-4.24,3.36.48,3.48,2.99,3.09,5.71-.71,4.94-1.62,9.88-1.97,14.85-.76,10.6,3.22,17.87,12.81,22.92,3.21,1.43,3.51,1.92,3.26,2.74ZM68.25,340.55c-.12-5.34,3.34-9.58,7.8-9.57,4.28,0,7.83,4.09,7.96,9.16.12,5.09-3.57,9.59-7.9,9.63-4.28.04-7.74-4.02-7.86-9.21Z"/>
+                        </svg>
+                     </div>
+
+                     <!-- Logo tipográfico La Columna (reemplaza h1) -->
+                     <div class="lc-hero-logotipo">
+                        <svg class="lc-hero-logotipo-svg" viewBox="0 0 541.66 220.47" xmlns="http://www.w3.org/2000/svg">
+                           <path fill="currentColor" d="M503.4,138.31l-2.19-3.24c-4.92-7.27-8.81-13.02-28.29-26.38-1.75-1.2-17.8-11.86-41.25-16.03-24.2-4.31-33.11-2.83-42.55-1.26l-4.09.68,4.64-63.55,16.8,32.19,13.67-33.87,21.46,44.39,32.18-27.49,2.54,41.94,46.33-13.52-15.25,32.8,34.27-7.95-38.27,41.28ZM398.34,84.86c7.59-.64,17.35-.36,34.24,2.64,18.63,3.32,34.97,11.16,43.3,16.87,18.33,12.56,23.48,18.76,28.16,25.54l22.17-23.92-28.09,6.52,14.91-32.07-41.55,12.13-2.3-38-29.35,25.07-19.26-39.85-13.49,33.43-13.53-25.92-2.81,38.53c2.41-.39,4.86-.74,7.6-.97Z"/>
+                           <g>
+                              <path fill="currentColor" d="M183.25,0h16.69v96.34h-16.69V0ZM189.76,83.58h37.99v12.75h-37.99v-12.75Z"/>
+                              <path fill="currentColor" d="M243.76,0h28.22l16.69,96.34h-16.96l-13.3-86.7h-1.09l-13.3,86.7h-16.96L243.76,0ZM248.1,56.85h19.54l1.36,9.63h-22.25l1.36-9.63Z"/>
+                           </g>
+                           <g>
+                              <path fill="currentColor" d="M10.85,215.99c-4.07-2.98-6.9-7.91-8.48-14.79-1.58-6.87-2.37-16.78-2.37-29.72,0-13.57.75-23.86,2.24-30.87,1.49-7.01,4.27-12.1,8.34-15.27,4.07-3.17,10.13-4.75,18.18-4.75,7.15,0,12.73,1.27,16.76,3.8,4.02,2.53,6.92,6.56,8.68,12.08,1.76,5.52,2.65,13.12,2.65,22.8,0,2.9-.05,5.16-.13,6.78h-18.45c.45-1.63.79-3.6,1.02-5.9.22-2.31.34-4.55.34-6.72,0-7.42-.81-12.91-2.44-16.49-1.63-3.57-4.48-5.36-8.55-5.36-3.26,0-5.63.95-7.12,2.85-1.49,1.9-2.51,5.45-3.05,10.65-.54,5.2-.81,13.59-.81,25.17s.27,20.15.81,25.44c.54,5.29,1.56,8.91,3.05,10.85,1.49,1.95,3.87,2.92,7.12,2.92,3.98,0,6.72-1.72,8.21-5.16,1.49-3.44,2.24-7.69,2.24-12.75,0-3.44-.27-6.83-.81-10.18h18.45c.09,1.18.13,2.58.13,4.21,0,8.23-.93,14.88-2.78,19.95-1.86,5.07-4.79,8.82-8.82,11.26-4.03,2.44-9.52,3.66-16.49,3.66-7.87,0-13.84-1.49-17.91-4.48Z"/>
+                              <path fill="currentColor" d="M74.83,215.79c-4.12-3.12-6.92-8.14-8.41-15.06-1.49-6.92-2.24-16.98-2.24-30.19s.75-23.27,2.24-30.19c1.49-6.92,4.3-11.94,8.41-15.06,4.12-3.12,10.15-4.68,18.11-4.68s13.79,1.56,17.78,4.68c3.98,3.12,6.74,8.16,8.28,15.13,1.54,6.97,2.31,17.01,2.31,30.12s-.77,23.16-2.31,30.12c-1.54,6.97-4.3,12.01-8.28,15.13-3.98,3.12-9.9,4.68-17.78,4.68s-14-1.56-18.11-4.68ZM99.93,206.49c1.49-1.99,2.49-5.65,2.99-10.99.5-5.34.75-14.06.75-26.19,0-11.4-.27-19.63-.81-24.7-.54-5.06-1.56-8.5-3.05-10.31-1.49-1.81-3.87-2.71-7.12-2.71s-5.61.91-7.05,2.71c-1.45,1.81-2.44,5.25-2.99,10.31-.54,5.07-.81,13.3-.81,24.7,0,12.12.25,20.85.75,26.19.5,5.34,1.49,9,2.98,10.99,1.49,1.99,3.87,2.99,7.12,2.99s5.77-.99,7.26-2.99Z"/>
+                              <path fill="currentColor" d="M131.34,122.37h16.69v96.34h-16.69v-96.34ZM137.86,205.95h37.99v12.75h-37.99v-12.75Z"/>
+                              <path fill="currentColor" d="M190.64,216.33c-3.98-2.76-6.6-6.69-7.87-11.8-1.27-5.11-1.9-11.92-1.9-20.42v-61.74h16.69v60.11c0,7.42.27,12.96.81,16.62s1.58,6.27,3.12,7.8c1.54,1.54,3.8,2.31,6.78,2.31s5.22-.77,6.72-2.31c1.49-1.54,2.51-4.14,3.05-7.8s.81-9.2.81-16.62v-60.11h16.83v61.74c0,8.5-.66,15.31-1.97,20.42-1.31,5.11-3.93,9.05-7.87,11.8-3.94,2.76-9.79,4.14-17.57,4.14s-13.66-1.38-17.64-4.14Z"/>
+                              <path fill="currentColor" d="M248.31,122.37h27.54l14.93,75.85h1.09l14.93-75.85h27.54v96.34h-16.69l.41-85.75h-1.09l-17.91,85.75h-15.47l-17.91-85.75h-1.08l.41,85.75h-16.69v-96.34Z"/>
+                              <path fill="currentColor" d="M347.9,122.37h19.54l-2.04,25.1h-1.09l.27,71.24h-16.69v-96.34ZM365.41,147.47h-1.09l-9.09-25.1h12.21l19.13,71.51h1.08l8.14,24.83h-11.13l-19.27-71.24ZM386.57,193.87h1.08l-.14-71.51h16.55v96.34h-19.4l1.9-24.83Z"/>
+                              <path fill="currentColor" d="M427.01,122.37h28.22l16.69,96.34h-16.96l-13.3-86.7h-1.09l-13.3,86.7h-16.96l16.69-96.34ZM431.35,179.22h19.54l1.36,9.63h-22.25l1.36-9.63Z"/>
+                           </g>
+                        </svg>
+                     </div>
+
+                     <span class="lc-hero-kicker">Sistema Gráfico Editorial</span>
+                  </div>
+               </div>
+
+               <!-- Standfirst para PC — oculto en móvil vía CSS -->
+               <div class="lc-hero-standfirst lc-hero-standfirst--center">
+                  <div class="lc-hero-sf-rule"></div>
+                  <p>Sistema gráfico editorial para una columna periodística de análisis futbolístico. Identidad visual, dirección de arte y piezas gráficas con carácter y consistencia.</p>
+                  <div class="lc-hero-byline">
+                     <div class="lc-hero-byline-dash"></div>
+                     <span>Agustín Avendaño — Diseño Gráfico</span>
+                  </div>
+               </div>
+
+            </div><!-- /lc-hero-col-center -->
+
+            <div class="lc-hero-vdivider"></div>
+
+            <!-- JUGADOR DERECHA (Challobah) -->
+            <div class="lc-hero-col-player">
+               <img
+                  src="img/challobah.png"
+                  alt=""
+                  aria-hidden="true"
+                  class="lc-player-img lc-player-img--right"
+                  fetchpriority="high"
+                  decoding="async"
+                  width="600"
+                  height="900"
+               >
+            </div>
+
+            <!-- Standfirst como hijo directo del body.
+                 En PC: oculto aquí, visible dentro del center (ver CSS).
+                 En móvil: aparece con order CSS después de Haaland. -->
+            <div class="lc-hero-standfirst lc-hero-standfirst--body">
+               <div class="lc-hero-sf-rule"></div>
+               <p>Sistema gráfico editorial para una columna periodística de análisis futbolístico. Identidad visual, dirección de arte y piezas gráficas con carácter y consistencia.</p>
+               <div class="lc-hero-byline">
+                  <div class="lc-hero-byline-dash"></div>
+                  <span>Agustín Avendaño — Diseño Gráfico</span>
+               </div>
+            </div>
+
+         </div><!-- /lc-hero-body -->
+
+         <!-- Barra inferior -->
+         <div class="lc-hero-footbar">
+            <span>La Columna — Portafolio</span>
+            <div class="lc-hero-footbar-dots">
+               <span class="lc-footdot lc-footdot--on"></span>
+               <span class="lc-footdot"></span>
+               <span class="lc-footdot"></span>
+            </div>
+            <span>Illustrator · Photoshop · Figma · Procreate</span>
+         </div>
+
+      </section>
+
+      <!-- =====================================================
+           STATS BAR
+           ===================================================== -->
+      <div class="lc-stats-bar">
+         <div class="lc-stat lc-fade">
+            <div class="lc-stat-colnum">Col. 01</div>
+            <div class="lc-stat-label">Proyecto</div>
+            <div class="lc-stat-value">Columna periodística<br>de análisis futbolístico</div>
+         </div>
+         <div class="lc-stat lc-fade lc-fd1">
+            <div class="lc-stat-colnum">Col. 02</div>
+            <div class="lc-stat-label">Año</div>
+            <div class="lc-stat-value">2023–2024</div>
+         </div>
+         <div class="lc-stat lc-fade lc-fd2">
+            <div class="lc-stat-colnum">Col. 03</div>
+            <div class="lc-stat-label">Rol</div>
+            <div class="lc-stat-value">Dirección de arte,<br>Diseño editorial</div>
+         </div>
+         <div class="lc-stat lc-fade lc-fd3">
+            <div class="lc-stat-colnum">Col. 04</div>
+            <div class="lc-stat-label">Herramientas</div>
+            <div class="lc-stat-value">Illustrator, Photoshop,<br>Figma, Procreate</div>
+         </div>
+      </div>
+
+      <!-- =====================================================
+           CONTENIDO PRINCIPAL
+           ===================================================== -->
+      <div class="lc-body">
+
+         <!-- SECCIÓN: ANTECEDENTES -->
+         <div class="lc-section lc-fade">
+            <div class="lc-section-label lc-anim lc-anim-left lc-anim-d0">
+               <span class="lc-section-num">§ 01</span>
+               <span class="lc-section-tag">Antecedentes</span>
+               <div class="lc-section-rule"></div>
+            </div>
+            <h2 class="lc-anim lc-anim-left lc-anim-d1">Un espacio periodístico<br>con identidad propia.</h2>
+            <p class="lc-anim lc-anim-right lc-anim-d2">La Columna es un espacio periodístico digital dedicado al análisis futbolístico y la opinión deportiva. Su estilo se caracteriza por un enfoque crítico, visual y dinámico, lo que abrió la oportunidad de construir un sistema gráfico que acompañara los textos con identidad, claridad y consistencia.</p>
+            <p class="lc-anim lc-anim-right lc-anim-d3">Mi rol fue transformar esa línea editorial en un lenguaje visual propio, capaz de sostener publicaciones periódicas y adaptarse a distintos formatos digitales.</p>
+         </div>
+
+         <!-- CARRUSEL 1: GALERÍA DE PIEZAS -->
+         <div class="lc-carousel-wrap lc-fade">
+            <div class="lc-carousel-header">
+               <span class="lc-carousel-label">Galería de Piezas</span>
+               <div class="lc-carousel-controls">
+                  <button id="btnPrevClean" class="lc-ctrl-btn" aria-label="Anterior">
+                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polyline points="12,4 6,10 12,16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                     </svg>
+                  </button>
+                  <button id="btnNextClean" class="lc-ctrl-btn" aria-label="Siguiente">
+                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polyline points="8,4 14,10 8,16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                     </svg>
+                  </button>
+               </div>
+            </div>
+            <div id="trackClean">
+               <div class="slide-clean"><img src="img/lacolumna_contenido14.webp" alt="Pieza 1" loading="lazy" decoding="async"></div>
+               <div class="slide-clean"><img src="img/lacolumna_contenido13.webp" alt="Pieza 2" loading="lazy" decoding="async"></div>
+               <div class="slide-clean"><img src="img/lacolumna_contenido16.webp" alt="Pieza 3" loading="lazy" decoding="async"></div>
+               <div class="slide-clean"><img src="img/lacolumna_contenido17.webp" alt="Pieza 4" loading="lazy" decoding="async"></div>
+               <div class="slide-clean"><img src="img/lacolumna_contenido18.webp" alt="Pieza 5" loading="lazy" decoding="async"></div>
+               <div class="slide-clean"><img src="img/lacolumna_contenido15.webp" alt="Pieza 6" loading="lazy" decoding="async"></div>
+            </div>
+         </div>
+
+         <!-- SECCIÓN: ROL Y APORTE -->
+         <div class="lc-section lc-fade">
+            <div class="lc-section-label lc-anim lc-anim-left lc-anim-d0">
+               <span class="lc-section-num">§ 02</span>
+               <span class="lc-section-tag">Rol y Aporte</span>
+               <div class="lc-section-rule"></div>
+            </div>
+            <div class="lc-pull-quote lc-anim lc-anim-left lc-anim-d1">
+               <p>Mantener coherencia visual mientras cada publicación abordaba temas y contextos distintos.</p>
+            </div>
+            <p class="lc-anim lc-anim-right lc-anim-d2">Dentro del equipo editorial asumí la responsabilidad del diseño gráfico integral de cada entrega: creación de portadas, composiciones visuales, infografías simplificadas y tratamientos fotográficos que reforzaran el tono narrativo de la columna.</p>
+            <p class="lc-anim lc-anim-right lc-anim-d3">El desafío principal fue mantener una coherencia visual mientras cada publicación abordaba temas, partidos y contextos distintos, exigiendo un sistema flexible, reconocible y editorialmente sólido.</p>
+         </div>
+
+         <!-- CARRUSEL 2: GALERÍA FINAL (lc2 — prefijo aislado) -->
+         <div class="lc-carousel-wrap lc-fade">
+            <div class="lc-carousel-header">
+               <span class="lc-carousel-label">Galería Final</span>
+               <div class="lc-carousel-controls">
+                  <button id="lc2BtnPrev" class="lc-ctrl-btn" aria-label="Anterior">
+                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polyline points="12,4 6,10 12,16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                     </svg>
+                  </button>
+                  <button id="lc2BtnNext" class="lc-ctrl-btn" aria-label="Siguiente">
+                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polyline points="8,4 14,10 8,16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                     </svg>
+                  </button>
+               </div>
+            </div>
+            <div id="trackLC2">
+               <div class="lc2-slide"><img src="img/lacolumna_poster1.webp" alt="Poster 1" loading="lazy"></div>
+               <div class="lc2-slide"><img src="img/lacolumna_poster2.webp" alt="Poster 2" loading="lazy"></div>
+               <div class="lc2-slide"><img src="img/lacolumna_poster3.webp" alt="Poster 3" loading="lazy"></div>
+               <div class="lc2-slide"><img src="img/lacolumna_poster4.webp" alt="Poster 4" loading="lazy"></div>
+               <div class="lc2-slide"><img src="img/lacolumna_poster5.webp" alt="Poster 5" loading="lazy"></div>
+               <div class="lc2-slide"><img src="img/lacolumna_poster6.webp" alt="Poster 6" loading="lazy"></div>
+            </div>
+         </div>
+
+         <!-- SECCIÓN: RESULTADO -->
+         <div class="lc-section lc-fade">
+            <div class="lc-section-label lc-anim lc-anim-left lc-anim-d0">
+               <span class="lc-section-num">§ 03</span>
+               <span class="lc-section-tag">Resultado</span>
+               <div class="lc-section-rule"></div>
+            </div>
+            <h2 class="lc-anim lc-anim-left lc-anim-d1">Periodismo y diseño<br>conviviendo.</h2>
+            <p class="lc-anim lc-anim-right lc-anim-d2">El sistema gráfico permitió que La Columna adquiriera una identidad fuerte, consistente y reconocible. Las piezas generadas lograron conectar con la audiencia, elevar la presentación de los análisis futbolísticos y facilitar la adaptación del contenido a múltiples plataformas digitales.</p>
+            <p class="lc-anim lc-anim-right lc-anim-d3">El proyecto se consolidó como un espacio donde periodismo y diseño conviven, aportando una experiencia de lectura más atractiva, editorial y visualmente cuidada.</p>
+         </div>
+
+      </div><!-- /lc-body -->
+
+      <!-- =====================================================
+           COLOFÓN EDITORIAL
+           Cierre tipográfico de la página, estilo impreso.
+           ===================================================== -->
+      <div class="lc-colofon lc-fade">
+         <div class="lc-colofon-rule">
+            <span></span>
+            <span></span>
+         </div>
+         <div class="lc-colofon-grid">
+            <div class="lc-colofon-col">
+               <span class="lc-colofon-tag">Rol</span>
+               <span class="lc-colofon-val">Dirección de arte,<br>Diseño editorial</span>
+            </div>
+            <div class="lc-colofon-col">
+               <span class="lc-colofon-tag">Herramientas</span>
+               <span class="lc-colofon-val">Illustrator, Photoshop,<br>Figma, Procreate</span>
+            </div>
+            <div class="lc-colofon-col">
+               <span class="lc-colofon-tag">Contexto</span>
+               <span class="lc-colofon-val">Proyecto<br>independiente</span>
+            </div>
+         </div>
+         <div class="lc-colofon-num">01</div>
+      </div>
+
+      <!-- =====================================================
+           SIGUIENTE PROYECTO — patrón Tap In
+           ===================================================== -->
+      <div class="lc-next-wrap">
+         <div class="lc-next lc-fade">
+            <span class="lc-next-label">Siguiente Proyecto</span>
+            <a href="proyecto-mido.html" class="lc-next-btn">
+               <span class="lc-next-btn-inner">Mido</span>
+            </a>
+         </div>
+      </div>
+
+      <!-- =====================================================
+           FOOTER — idéntico al global
+           ===================================================== -->
+      <footer class="project-footer">
+         <p>© 2025 Agustín Avendaño</p>
+         <a href="redesign/explorations/works/inicio.html#archivo" class="back-home">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+               <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Home
+         </a>
+      </footer>
+
+      <!-- Lightbox -->
+      <div id="imageModal" class="lightbox-modal">
+         <span class="close-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M18 6L6 18"/>
+               <path d="M6 6L18 18"/>
+            </svg>
+         </span>
+         <button class="nav-btn prev-btn" id="lbPrev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+               <polyline points="15 18 9 12 15 6"/>
+            </svg>
+         </button>
+         <button class="nav-btn next-btn" id="lbNext">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+               <polyline points="9 18 15 12 9 6"/>
+            </svg>
+         </button>
+         <img class="lightbox-content" id="lightboxImg">
+         <div id="caption"></div>
+      </div>
+
+      <script src="script.js" defer></script>
+
+   </body>
+</html>

@@ -209,8 +209,8 @@
        horizontal del cursor sobre la fila, con inercia. La vista Lista deja solo la tipografía */
     const hoja = document.querySelector('[data-hoja]');
     if (hoja) {
-        hoja.innerHTML = window.WORKS.archivo.map(([nombre, disc, anio, , piezas, contexto], i) => `
-            <li class="ficha" style="--retraso:${i * 90}ms"><a href="#archivo">
+        hoja.innerHTML = window.WORKS.archivo.map(([nombre, disc, anio, , piezas, contexto, pagina], i) => `
+            <li class="ficha" style="--retraso:${i * 90}ms"><a href="${pagina}">
                 <span class="f-num mono gris">${String(i + 1).padStart(2, '0')}</span>
                 <span class="f-texto">
                     <span class="f-nombre">${nombre}<span class="f-flecha" aria-hidden="true">↗</span></span>

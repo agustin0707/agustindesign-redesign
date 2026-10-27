@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <title>Mido — Agustín Avendaño</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Precarga del hero (above-the-fold) -->
+    <link rel="preload" as="image" href="img/mido_hero_phone.png">
+    <link rel="preload" as="image" href="img/mido_mockup_dashboard.png">
+    <link rel="preload" as="image" href="img/mido_logo.svg">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<!-- mi-page activa el sistema visual exclusivo de Mido -->
+<body class="project-page mi-page">
+
+    <!-- =====================================================
+         MENÚ — idéntico al global (NO TOCAR)
+         ===================================================== -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú de navegación">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <nav class="side-menu" id="sideMenu">
+        <ul class="main-menu">
+            <li><a href="redesign/explorations/works/inicio.html" class="main-link">Home</a></li>
+            <li class="has-submenu">
+                <span class="main-link submenu-toggle">Works <span class="arrow">+</span></span>
+                <ul class="submenu">
+                    <li><a href="redesign/explorations/caso/tapin.html">Tap In</a></li>
+                    <li><a href="proyecto-lacolumna.html">La Columna</a></li>
+                    <li><a href="proyecto-mido.html">Mido</a></li>
+                    <li><a href="proyecto-entrenapo.html">Entrena Po</a></li>
+                    <li><a href="proyecto-hai.html">HAI Group</a></li>
+                    <li><a href="proyecto-posters.html">Posters y Afiches</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- =====================================================
+         SPOTLIGHT cursor (decorativo, solo desktop)
+         ===================================================== -->
+    <div class="mi-spotlight" id="mi-spotlight" aria-hidden="true"></div>
+
+
+    <!-- =====================================================
+         BLOQUE OSCURO SUPERIOR: hero + stats comparten bg
+         Un único wrapper con gradiente premium fluido.
+         ===================================================== -->
+    <div class="mi-top">
+    <!-- =====================================================
+         HERO — ocupa el 100% del viewport en primera carga
+         Fundamento oscuro + líneas orgánicas en violeta
+         ===================================================== -->
+    <section class="mi-hero">
+
+        <!-- Líneas orgánicas decorativas (splash de marca) -->
+        <svg class="mi-hero-waves" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+            <path class="mi-wave mi-wave-1" d="M-200,180 C260,80 720,360 1080,200 C1380,70 1640,260 1820,180" />
+            <path class="mi-wave mi-wave-2" d="M-200,360 C260,260 720,520 1080,380 C1380,260 1640,440 1820,360" />
+            <path class="mi-wave mi-wave-3" d="M-200,540 C260,440 720,720 1080,580 C1380,440 1640,640 1820,540" />
+            <path class="mi-wave mi-wave-4" d="M-200,720 C260,620 720,880 1080,760 C1380,620 1640,820 1820,720" />
+            <path class="mi-wave mi-wave-5" d="M-200,90  C260,200 720,30  1080,140 C1380,260 1640,80  1820,90"  />
+        </svg>
+
+        <!-- Glow índigo decorativo -->
+        <span class="mi-hero-glow" aria-hidden="true"></span>
+
+        <!-- Status bar superior estilo dashboard (compacto, en el tope) -->
+        <div class="mi-status-bar">
+            <div class="mi-status-cluster">
+                <span class="mi-pulse-dot" aria-hidden="true"></span>
+                <span class="mi-status-text">Sistema activo · Conectado</span>
+            </div>
+            <div class="mi-status-cluster mi-status-center">
+                <span>MIDO ®</span>
+                <span class="mi-status-divider">·</span>
+                <span>Smart Home System</span>
+            </div>
+            <div class="mi-status-cluster mi-status-right">
+                <span>22°C</span>
+                <span class="mi-status-divider">/</span>
+                <span id="mi-now">—</span>
+            </div>
+        </div>
+
+        <!-- Hero body: dos columnas asimétricas, ocupan el centro vertical -->
+        <div class="mi-hero-body">
+
+            <!-- IZQUIERDA: titulo + descripción -->
+            <div class="mi-hero-left">
+
+                <div class="mi-eyebrow">
+                    <span class="mi-bracket">[</span>
+                    <span>2024 / 25 — Domótica · UX/UI · Branding</span>
+                    <span class="mi-bracket">]</span>
+                </div>
+
+                <h1 class="mi-hero-title">
+                    <span class="mi-hero-line-1">Conecta</span>
+                    <span class="mi-hero-line-2">tu <em>hogar</em></span>
+                    <span class="mi-hero-line-3">en un</span>
+                    <span class="mi-hero-line-4">gesto.</span>
+                </h1>
+
+                <p class="mi-hero-desc">
+                    <img src="img/mido_logo.svg" alt="Mido" class="mi-hero-wordmark">
+                    es un sistema de domótica diseñado para transformar la manera
+                    en que las personas se conectan con sus hogares. Control
+                    simple, estético y centrado.
+                </p>
+
+                <div class="mi-hero-pills">
+                    <span class="mi-pill">Domótica</span>
+                    <span class="mi-pill">UX/UI</span>
+                    <span class="mi-pill">Branding</span>
+                    <span class="mi-pill">Prototyping</span>
+                </div>
+
+            </div>
+
+            <!-- DERECHA: composición de 2 mockups angulados con sombras
+                 y movimiento opuesto, atmósfera radial detrás. -->
+            <div class="mi-hero-right">
+                <span class="mi-mockup-rings" aria-hidden="true">
+                    <img src="img/mido_elipses_moradas.svg" alt="">
+                </span>
+                <!-- Phone trasero (categorías + clima) -->
+                <div class="mi-mockup-wrap mi-mockup-back" aria-hidden="true">
+                    <img
+                        src="img/mido_mockup_dashboard.png"
+                        alt=""
+                        class="mi-mockup-img"
+                        loading="eager"
+                        decoding="async"
+                    >
+                </div>
+                <!-- Phone delantero (rooms + temperatura) -->
+                <div class="mi-mockup-wrap mi-mockup-front">
+                    <img
+                        src="img/mido_hero_phone.png"
+                        alt="Mido — pantalla principal de la app en mockup de iPhone"
+                        class="mi-mockup-img"
+                        loading="eager"
+                        fetchpriority="high"
+                        decoding="async"
+                    >
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Pie de hero, anclado al bottom del viewport -->
+        <div class="mi-hero-foot">
+            <span>Por Agustín Avendaño</span>
+            <div class="mi-hero-foot-line" aria-hidden="true"></div>
+            <span>Universidad Católica · Diseño Integral</span>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         STATS — panel glassmorph único (no cards separadas)
+         Comparte el mismo background del hero (mi-top).
+         ===================================================== -->
+    <div class="mi-stats-bridge">
+        <div class="mi-stats mi-fade" role="group" aria-label="Datos del proyecto">
+            <div class="mi-stat">
+                <span class="mi-stat-num">01</span>
+                <span class="mi-stat-label">Proyecto</span>
+                <span class="mi-stat-value">Sistema de domótica<br>para hogares modernos</span>
+            </div>
+            <div class="mi-stat">
+                <span class="mi-stat-num">02</span>
+                <span class="mi-stat-label">Año</span>
+                <span class="mi-stat-value">2024 — 2025</span>
+            </div>
+            <div class="mi-stat">
+                <span class="mi-stat-num">03</span>
+                <span class="mi-stat-label">Rol</span>
+                <span class="mi-stat-value">Branding · UX/UI Design<br>Prototyping</span>
+            </div>
+            <div class="mi-stat">
+                <span class="mi-stat-num">04</span>
+                <span class="mi-stat-label">Herramientas</span>
+                <span class="mi-stat-value">Figma · Illustrator<br>Photoshop</span>
+            </div>
+        </div>
+    </div>
+    </div><!-- /.mi-top -->
+
+
+    <!-- =====================================================
+         SECTION 01 — CONTEXTO (light)
+         ===================================================== -->
+    <div class="mi-wrap">
+        <section class="mi-section">
+
+            <header class="mi-section-head mi-fade">
+                <span class="mi-section-num">⌗ 01</span>
+                <span class="mi-section-tag">Contexto</span>
+                <div class="mi-section-rule"></div>
+            </header>
+
+            <div class="mi-section-grid">
+                <h2 class="mi-section-title mi-fade">
+                    Un hogar que<br>
+                    <em>responde</em> a la vida<br>
+                    de quienes lo habitan.
+                </h2>
+
+                <div class="mi-section-body mi-fade mi-d1">
+                    <p class="mi-section-lead">La domótica dejó de ser un lujo. Es <em class="mi-em">una expectativa</em>: que la luz, la temperatura y la seguridad respondan al ritmo de cada día sin pedir permiso.</p>
+                    <p>El problema es que la mayoría de los sistemas actuales <em class="mi-em">complican lo que deberían simplificar</em>. Apps llenas de menús, instalaciones que requieren un técnico y curvas de aprendizaje que solo los más expertos toleran.</p>
+                    <p>De ahí nace <em class="mi-em">Mido</em>: un sistema pensado para que cualquier persona, sin importar su edad o nivel tecnológico, pueda controlar su hogar al primer intento. Tecnología cálida, no fría.</p>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+    <!-- =====================================================
+         BIG TYPE — declaración (fondo oscuro + acento violeta)
+         Bordes superior/inferior con fade suave hacia las
+         secciones light contiguas (transición sin cortes).
+         ===================================================== -->
+    <div class="mi-bigtype-wrap">
+        <span class="mi-bigtype-blob" aria-hidden="true"></span>
+        <div class="mi-bigtype mi-fade">
+            <span class="mi-bigtype-bracket">[</span>
+            <div class="mi-bigtype-stack">
+                <span class="mi-bigtype-line">Diseñado para</span>
+                <span class="mi-bigtype-line mi-bigtype-italic"><em>desaparecer</em></span>
+                <span class="mi-bigtype-line">en lo cotidiano.</span>
+            </div>
+            <span class="mi-bigtype-bracket">]</span>
+        </div>
+        <div class="mi-bigtype-specs mi-fade mi-d2">
+            <span class="mi-spec">
+                <strong class="mi-spec-num">01</strong>
+                <span class="mi-spec-label">Living Room</span>
+            </span>
+            <span class="mi-spec">
+                <strong class="mi-spec-num">02</strong>
+                <span class="mi-spec-label">22.0°<i>C</i></span>
+            </span>
+            <span class="mi-spec">
+                <strong class="mi-spec-num">03</strong>
+                <span class="mi-spec-label">8 dispositivos</span>
+            </span>
+            <span class="mi-spec">
+                <strong class="mi-spec-num">04</strong>
+                <span class="mi-spec-label">Modo nocturno</span>
+            </span>
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         MARQUEE — palabras clave del proyecto
+         ===================================================== -->
+    <div class="mi-marquee" aria-hidden="true">
+        <div class="mi-mq-track">
+            <span>Domótica</span><span class="mi-mq-dot">●</span>
+            <span>Conexión</span><span class="mi-mq-dot">●</span>
+            <span>Simplicidad</span><span class="mi-mq-dot">●</span>
+            <span>Confort</span><span class="mi-mq-dot">●</span>
+            <span>Precisión</span><span class="mi-mq-dot">●</span>
+            <span>Calma</span><span class="mi-mq-dot">●</span>
+            <span>Domótica</span><span class="mi-mq-dot">●</span>
+            <span>Conexión</span><span class="mi-mq-dot">●</span>
+            <span>Simplicidad</span><span class="mi-mq-dot">●</span>
+            <span>Confort</span><span class="mi-mq-dot">●</span>
+            <span>Precisión</span><span class="mi-mq-dot">●</span>
+            <span>Calma</span><span class="mi-mq-dot">●</span>
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         SECTION 02 — ENFOQUE DE DISEÑO (light)
+         ===================================================== -->
+    <div class="mi-wrap">
+        <section class="mi-section">
+
+            <header class="mi-section-head mi-fade">
+                <span class="mi-section-num">⌗ 02</span>
+                <span class="mi-section-tag">Enfoque de Diseño</span>
+                <div class="mi-section-rule"></div>
+            </header>
+
+            <div class="mi-section-grid">
+                <h2 class="mi-section-title mi-fade">
+                    La <em>conexión</em> como<br>
+                    concepto central.
+                </h2>
+
+                <div class="mi-section-body mi-fade mi-d1">
+                    <p>El proyecto se desarrolló bajo el concepto de <strong>conexión</strong>, entendido tanto como vínculo emocional con el hogar como conexión tecnológica entre dispositivos.</p>
+                    <p>El diseño debía ser <strong>mínimal, contemporáneo y fácilmente reconocible</strong>, reflejando orden, simplicidad y precisión.</p>
+                    <p>El objetivo fue que cualquier persona, sin importar su nivel tecnológico, pudiera entender y usar Mido sin instrucciones adicionales.</p>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+    <!-- =====================================================
+         CHAIN PATTERN DIVIDER — separador editorial
+         Usa el SVG real del manual (Patrón Morado.svg) sobre
+         fondo violeta + un dark-wash a la izquierda para
+         garantizar legibilidad del texto encima.
+         ===================================================== -->
+    <section class="mi-chain" aria-label="Patrón de marca Mido">
+        <!-- Patrón real de marca como capa decorativa -->
+        <img src="img/mido_patron_morado.svg" alt="" aria-hidden="true" class="mi-chain-asset mi-chain-asset-top">
+        <img src="img/mido_patron_morado.svg" alt="" aria-hidden="true" class="mi-chain-asset mi-chain-asset-bot">
+        <!-- Wash dark a la izquierda: mejora legibilidad sin tapar el patrón -->
+        <span class="mi-chain-wash" aria-hidden="true"></span>
+        <!-- Blobs orgánicos sutiles -->
+        <span class="mi-chain-blob mi-chain-blob-a" aria-hidden="true"></span>
+        <span class="mi-chain-blob mi-chain-blob-b" aria-hidden="true"></span>
+        <div class="mi-chain-content">
+            <span class="mi-chain-eyebrow">Sistema · Pattern</span>
+            <h2 class="mi-chain-title mi-fade">
+                Una red de <em>nodos</em><br>
+                que se conectan<br>
+                en silencio.
+            </h2>
+            <p class="mi-chain-sub mi-fade mi-d1">
+                El pattern oficial de Mido es el activo gráfico más reconocible
+                del manual: una cuadrícula de nodos por la que fluye una forma
+                orgánica encadenada. Sintetiza la marca en una sola imagen.
+            </p>
+            <span class="mi-chain-meta">MIDO_PATTERN — V2.0</span>
+        </div>
+    </section>
+
+
+    <!-- =====================================================
+         BENTO — los cuatro pilares del proyecto
+         ===================================================== -->
+    <div class="mi-wrap">
+        <div class="mi-bento mi-fade">
+
+            <article class="mi-bento-card mi-bento-large">
+                <div class="mi-bento-corners" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <span class="mi-bento-num">01</span>
+                <h3 class="mi-bento-title">Identidad<br>Visual</h3>
+                <p class="mi-bento-desc">Un sistema gráfico cohesivo que comunica orden, precisión y modernidad sin sacrificar la calidez del hogar.</p>
+                <span class="mi-bento-tag">Branding · Logotipo · Sistema</span>
+            </article>
+
+            <article class="mi-bento-card">
+                <div class="mi-bento-corners" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <span class="mi-bento-num">02</span>
+                <h3 class="mi-bento-title">Iconografía<br>propia</h3>
+                <p class="mi-bento-desc">Set de íconos custom que refleja la lógica de los espacios y dispositivos del hogar.</p>
+                <span class="mi-bento-tag">Vector · Sistema modular</span>
+            </article>
+
+            <article class="mi-bento-card">
+                <div class="mi-bento-corners" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <span class="mi-bento-num">03</span>
+                <h3 class="mi-bento-title">Dashboard<br>principal</h3>
+                <p class="mi-bento-desc">Arquitectura visual centrada en jerarquía, velocidad de lectura y control inmediato.</p>
+                <span class="mi-bento-tag">UI · Composición · Layout</span>
+            </article>
+
+            <article class="mi-bento-card mi-bento-wide">
+                <div class="mi-bento-corners" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <span class="mi-bento-num">04</span>
+                <h3 class="mi-bento-title">Flujos sin fricción</h3>
+                <p class="mi-bento-desc">Interacciones accesibles, intuitivas y sin instrucciones — cualquier persona puede controlar su hogar desde el primer día.</p>
+                <span class="mi-bento-tag">UX · Prototyping · Testing</span>
+            </article>
+
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         BRAND CARDS — sistema visual (rediseño)
+         Layout asimétrico: card de tipografía dominante a la
+         izq + columna derecha con paleta arriba e iconografía
+         abajo. Cada card con tratamiento visual diferenciado.
+         ===================================================== -->
+    <div class="mi-wrap">
+        <header class="mi-section-head mi-fade">
+            <span class="mi-section-num">⌗ 03</span>
+            <span class="mi-section-tag">Sistema Visual</span>
+            <div class="mi-section-rule"></div>
+        </header>
+
+        <h2 class="mi-brand-title mi-fade">
+            Tres piezas que <em>componen</em> la marca.
+        </h2>
+        <p class="mi-brand-intro mi-fade mi-d1">
+            Tipografía, color e iconografía como un solo lenguaje. Cada elemento
+            está hecho para funcionar tanto en el manual como dentro de la app.
+        </p>
+
+        <div class="mi-brand-grid">
+
+            <!-- TIPOGRAFÍA — card dominante a la izquierda -->
+            <article class="mi-brand-card mi-brand-typo mi-fade">
+                <header class="mi-brand-card-head">
+                    <span class="mi-brand-card-tag">Tipografía</span>
+                    <span class="mi-brand-card-spec">Helvetica Neue · Display</span>
+                </header>
+                <span class="mi-typo-sample" aria-hidden="true">Aa</span>
+                <div class="mi-typo-meta">
+                    <div class="mi-typo-meta-row">
+                        <span class="mi-typo-meta-key">Pesos</span>
+                        <span class="mi-typo-meta-val">Bold · Medium · Light · Thin</span>
+                    </div>
+                    <div class="mi-typo-meta-row">
+                        <span class="mi-typo-meta-key">Tracking</span>
+                        <span class="mi-typo-meta-val">−3% en display, 0% en body</span>
+                    </div>
+                    <div class="mi-typo-meta-row">
+                        <span class="mi-typo-meta-key">Caso</span>
+                        <span class="mi-typo-meta-val">Minúscula geométrica</span>
+                    </div>
+                </div>
+                <span class="mi-typo-glyphs" aria-hidden="true">m i d o · M I D O · 0 1 2 3 4 5</span>
+            </article>
+
+            <!-- COLUMNA DERECHA: paleta + iconografía -->
+            <div class="mi-brand-col">
+
+                <!-- PALETA — chips horizontales con muestra de uso -->
+                <article class="mi-brand-card mi-brand-palette mi-fade mi-d1">
+                    <header class="mi-brand-card-head">
+                        <span class="mi-brand-card-tag">Paleta</span>
+                        <span class="mi-brand-card-spec">04 colores oficiales</span>
+                    </header>
+                    <div class="mi-swatches">
+                        <div class="mi-swatch" style="--mi-c:#5954ff;">
+                            <span class="mi-swatch-chip"></span>
+                            <span class="mi-swatch-name">Violeta Mido</span>
+                            <span class="mi-swatch-hex">#5954FF</span>
+                        </div>
+                        <div class="mi-swatch" style="--mi-c:#2e2a7f;">
+                            <span class="mi-swatch-chip"></span>
+                            <span class="mi-swatch-name">Indigo</span>
+                            <span class="mi-swatch-hex">#2E2A7F</span>
+                        </div>
+                        <div class="mi-swatch" style="--mi-c:#acaafe;">
+                            <span class="mi-swatch-chip"></span>
+                            <span class="mi-swatch-name">Lavanda</span>
+                            <span class="mi-swatch-hex">#ACAAFE</span>
+                        </div>
+                        <div class="mi-swatch mi-swatch-bw" style="--mi-c:#000000;">
+                            <span class="mi-swatch-chip"></span>
+                            <span class="mi-swatch-name">Negro · Blanco</span>
+                            <span class="mi-swatch-hex">#000 / #FFF</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- ICONOGRAFÍA — solo íconos oficiales del manual -->
+                <article class="mi-brand-card mi-brand-icons mi-fade mi-d2">
+                    <header class="mi-brand-card-head">
+                        <span class="mi-brand-card-tag">Iconografía</span>
+                        <span class="mi-brand-card-spec">Set custom de marca</span>
+                    </header>
+                    <div class="mi-iconset">
+                        <span class="mi-iconset-item">
+                            <img src="img/mido_icon_iluminacion.svg" alt="Iluminación">
+                            <span class="mi-iconset-label">Iluminación</span>
+                        </span>
+                        <span class="mi-iconset-item">
+                            <img src="img/mido_icon_temperatura.svg" alt="Temperatura">
+                            <span class="mi-iconset-label">Clima</span>
+                        </span>
+                        <span class="mi-iconset-item">
+                            <img src="img/mido_icon_seguridad.svg" alt="Seguridad">
+                            <span class="mi-iconset-label">Seguridad</span>
+                        </span>
+                        <span class="mi-iconset-item">
+                            <img src="img/mido_icon_enchufe.svg" alt="Enchufes">
+                            <span class="mi-iconset-label">Energía</span>
+                        </span>
+                    </div>
+                </article>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         SECTION 04 — KGALLERY: Proceso & Pantallas
+         ===================================================== -->
+    <div class="mi-kgallery-outer">
+
+        <header class="mi-section-head mi-fade mi-kgallery-head">
+            <span class="mi-section-num">⌗ 04</span>
+            <span class="mi-section-tag">Proceso & Pantallas</span>
+            <div class="mi-section-rule"></div>
+        </header>
+
+        <p class="mi-kgallery-intro mi-fade mi-d1">
+            Una selección de pantallas y bocetos del proceso de diseño. Cada vista busca
+            <strong>simplicidad inmediata</strong> sin esconder la potencia del sistema.
+        </p>
+
+        <div class="mi-kgallery">
+            <div class="mi-kgallery-track" id="mi-kgallery-track">
+                <div class="mi-kgallery-item mi-kgallery-wide">
+                    <img src="img/mido_contenido16.webp" alt="Pantalla Mido 1" loading="eager" decoding="async">
+                </div>
+                <div class="mi-kgallery-item mi-kgallery-tall">
+                    <img src="img/mido_contenido15.webp" alt="Pantalla Mido 2" loading="eager" decoding="async">
+                </div>
+                <div class="mi-kgallery-item mi-kgallery-wide">
+                    <img src="img/mido_contenido4.webp" alt="Pantalla Mido 3" loading="eager" decoding="async">
+                </div>
+                <div class="mi-kgallery-item mi-kgallery-tall">
+                    <img src="img/mido_contenido5.webp" alt="Pantalla Mido 4" loading="eager" decoding="async">
+                </div>
+                <div class="mi-kgallery-item mi-kgallery-wide">
+                    <img src="img/mido_portada.webp" alt="Pantalla Mido 5" loading="lazy" decoding="async">
+                </div>
+                <div class="mi-kgallery-item mi-kgallery-tall">
+                    <img src="img/mido_contenido6.webp" alt="Pantalla Mido 6" loading="lazy" decoding="async">
+                </div>
+                <div class="mi-kgallery-item mi-kgallery-wide">
+                    <img src="img/mido_contenido12.webp" alt="Pantalla Mido 7" loading="lazy" decoding="async">
+                </div>
+                <div class="mi-kgallery-item mi-kgallery-tall">
+                    <img src="img/mido_contenido13.webp" alt="Pantalla Mido 8" loading="lazy" decoding="async">
+                </div>
+            </div>
+        </div>
+
+        <div class="mi-kgallery-hint">
+            <span class="mi-kgallery-line"></span>
+            <span class="mi-kgallery-text">Arrastra para explorar</span>
+            <span class="mi-kgallery-line"></span>
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SECTION 05 — ECOSISTEMA CONECTADO
+         Hub central con isotipo Mido real + 4 nodos con íconos
+         reales de la marca. Líneas SVG dibujándose al entrar.
+         ===================================================== -->
+    <section class="mi-eco">
+
+        <header class="mi-section-head mi-fade mi-eco-head">
+            <span class="mi-section-num">⌗ 05</span>
+            <span class="mi-section-tag">Ecosistema Conectado</span>
+            <div class="mi-section-rule"></div>
+        </header>
+
+        <h2 class="mi-eco-title mi-fade mi-d1">
+            Un solo <em>gesto</em>,<br>
+            todo el hogar respondiendo.
+        </h2>
+
+        <p class="mi-eco-intro mi-fade mi-d2">
+            Mido orquesta los sistemas esenciales del hogar bajo una misma capa
+            de control. Iluminación, temperatura, seguridad y energía — desde
+            el centro hacia afuera.
+        </p>
+
+        <div class="mi-eco-diagram" id="mi-eco-diagram">
+
+            <!-- Field de partículas/dots de fondo (atmosférico) -->
+            <span class="mi-eco-field" aria-hidden="true"></span>
+
+            <!-- Anillos concéntricos orbitales detrás del hub (16:9) -->
+            <svg class="mi-eco-rings" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <circle class="mi-eco-ring mi-eco-ring-1" cx="400" cy="225" r="90"/>
+                <circle class="mi-eco-ring mi-eco-ring-2" cx="400" cy="225" r="150"/>
+                <circle class="mi-eco-ring mi-eco-ring-3" cx="400" cy="225" r="220"/>
+            </svg>
+
+            <!-- Líneas dashed con flow animado: hub (400,225) → pills (16:9) -->
+            <svg class="mi-eco-lines" viewBox="0 0 800 450" preserveAspectRatio="none" aria-hidden="true">
+                <line class="mi-eco-line" x1="400" y1="225" x2="176" y2="81"/>
+                <line class="mi-eco-line" x1="400" y1="225" x2="624" y2="81"/>
+                <line class="mi-eco-line" x1="400" y1="225" x2="176" y2="369"/>
+                <line class="mi-eco-line" x1="400" y1="225" x2="624" y2="369"/>
+
+                <!-- Bullets de "data" viajando por las líneas -->
+                <circle class="mi-eco-pulse mi-eco-pulse-1" r="4"/>
+                <circle class="mi-eco-pulse mi-eco-pulse-2" r="4"/>
+                <circle class="mi-eco-pulse mi-eco-pulse-3" r="4"/>
+                <circle class="mi-eco-pulse mi-eco-pulse-4" r="4"/>
+            </svg>
+
+            <!-- Hub central con elipses concéntricas + isotipo + pulso -->
+            <div class="mi-eco-hub" aria-label="Mido — hub central">
+                <img src="img/mido_elipses_moradas.svg" alt="" aria-hidden="true" class="mi-eco-hub-halo">
+                <span class="mi-eco-hub-pulse" aria-hidden="true"></span>
+                <span class="mi-eco-hub-pulse mi-eco-hub-pulse-2" aria-hidden="true"></span>
+                <img src="img/mido_isotipo.svg" alt="Mido" class="mi-isotype">
+            </div>
+
+            <!-- 4 nodos en glass-morph, etiquetas en pill -->
+            <div class="mi-eco-node mi-eco-pos-1">
+                <span class="mi-eco-node-icon" aria-hidden="true">
+                    <img src="img/mido_icon_iluminacion.svg" alt="">
+                </span>
+                <span class="mi-eco-node-label">
+                    <span class="mi-eco-node-dot" aria-hidden="true"></span>
+                    Iluminación
+                </span>
+            </div>
+
+            <div class="mi-eco-node mi-eco-pos-2">
+                <span class="mi-eco-node-icon" aria-hidden="true">
+                    <img src="img/mido_icon_temperatura.svg" alt="">
+                </span>
+                <span class="mi-eco-node-label">
+                    <span class="mi-eco-node-dot" aria-hidden="true"></span>
+                    Temperatura
+                </span>
+            </div>
+
+            <div class="mi-eco-node mi-eco-pos-3">
+                <span class="mi-eco-node-icon" aria-hidden="true">
+                    <img src="img/mido_icon_seguridad.svg" alt="">
+                </span>
+                <span class="mi-eco-node-label">
+                    <span class="mi-eco-node-dot" aria-hidden="true"></span>
+                    Seguridad
+                </span>
+            </div>
+
+            <div class="mi-eco-node mi-eco-pos-4">
+                <span class="mi-eco-node-icon" aria-hidden="true">
+                    <img src="img/mido_icon_enchufe.svg" alt="">
+                </span>
+                <span class="mi-eco-node-label">
+                    <span class="mi-eco-node-dot" aria-hidden="true"></span>
+                    Enchufes
+                </span>
+            </div>
+
+        </div>
+
+        <!-- Stat strip debajo del diagrama -->
+        <div class="mi-eco-strip mi-fade mi-d3">
+            <div class="mi-eco-strip-item">
+                <span class="mi-eco-strip-num">04</span>
+                <span class="mi-eco-strip-text">Sistemas conectados</span>
+            </div>
+            <div class="mi-eco-strip-item">
+                <span class="mi-eco-strip-num">∞</span>
+                <span class="mi-eco-strip-text">Dispositivos por cuenta</span>
+            </div>
+            <div class="mi-eco-strip-item">
+                <span class="mi-eco-strip-num">1</span>
+                <span class="mi-eco-strip-text">Sola app, todo el hogar</span>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =====================================================
+         SECTION 06 — RESULTADOS
+         Continúa el fundamento oscuro de Eco (sin corte).
+         Violeta como protagonista + isotipo grande de fondo.
+         ===================================================== -->
+    <div class="mi-invert">
+        <span class="mi-invert-blob" aria-hidden="true"></span>
+        <img src="img/mido_isotipo.svg" alt="" aria-hidden="true" class="mi-invert-iso">
+
+        <div class="mi-wrap">
+            <section class="mi-section">
+
+                <header class="mi-section-head mi-fade">
+                    <span class="mi-section-num">⌗ 06</span>
+                    <span class="mi-section-tag">Resultados</span>
+                    <div class="mi-section-rule"></div>
+                </header>
+
+                <div class="mi-section-grid">
+
+                    <h2 class="mi-section-title mi-fade">
+                        Una propuesta <em>accesible</em>,<br>
+                        centrada en personas.
+                    </h2>
+
+                    <div class="mi-section-body mi-fade mi-d1">
+                        <p>El proyecto consolida una propuesta de domótica accesible, estética y centrada en las personas.</p>
+                        <p>El diseño permitió demostrar cómo la tecnología puede mejorar la vida diaria <strong>sin complejidad innecesaria</strong>, manteniendo una narrativa visual coherente, moderna y alineada con estándares actuales de interfaces inteligentes.</p>
+                    </div>
+
+                </div>
+
+                <div class="mi-result-stats">
+                    <div class="mi-result-stat mi-fade mi-d1">
+                        <span class="mi-result-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+                        </span>
+                        <span class="mi-result-num" data-target="14">0</span>
+                        <span class="mi-result-label">Pantallas diseñadas</span>
+                    </div>
+                    <div class="mi-result-stat mi-fade mi-d2">
+                        <span class="mi-result-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+                        </span>
+                        <span class="mi-result-num" data-target="100" data-suffix="%">0</span>
+                        <span class="mi-result-label">Sistema modular</span>
+                    </div>
+                    <div class="mi-result-stat mi-fade mi-d3">
+                        <span class="mi-result-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        </span>
+                        <span class="mi-result-num" data-target="3">0</span>
+                        <span class="mi-result-label">Niveles de profundidad</span>
+                    </div>
+                    <div class="mi-result-stat mi-fade mi-d4">
+                        <span class="mi-result-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+                        </span>
+                        <span class="mi-result-num" data-target="0" data-prefix="+">0</span>
+                        <span class="mi-result-label">Fricciones de uso</span>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         SECTION 07 — CONTENIDO PARA REDES (4:5 IG-format)
+         Las imágenes son piezas reales de redes sociales que
+         se hicieron para dar a conocer Mido y vender. Por eso
+         la grid respeta el aspect 4:5 (sin recortar texto).
+         Layout: 3×2 con tilt 3D al hover + click → lightbox.
+         ===================================================== -->
+    <section class="mi-showcase">
+
+        <header class="mi-section-head mi-fade mi-showcase-head">
+            <span class="mi-section-num">⌗ 07</span>
+            <span class="mi-section-tag">Campaña · Contenido para redes</span>
+            <div class="mi-section-rule"></div>
+        </header>
+
+        <h2 class="mi-showcase-title mi-fade mi-d1">
+            La marca <em>fuera</em> de la app.
+        </h2>
+        <p class="mi-showcase-intro mi-fade mi-d2">
+            Selección de piezas diseñadas para las redes sociales de Mido,
+            pensadas para <strong>presentar la marca</strong> y vender el sistema
+            a usuarios reales. Aspect ratio 4:5, formato Instagram.
+        </p>
+
+        <div class="mi-showcase-grid mi-fade mi-d3">
+            <button class="mi-showcase-card" type="button" data-mi-zoom="img/mido_contenido10.webp" aria-label="Ampliar pieza 01">
+                <img src="img/mido_contenido10.webp" alt="Pieza de campaña Mido — 01" loading="lazy" decoding="async">
+                <span class="mi-showcase-meta">01</span>
+                <span class="mi-showcase-overlay" aria-hidden="true">
+                    <span class="mi-showcase-caption">Pieza de campaña</span>
+                    <span class="mi-showcase-cta">Ver completa</span>
+                </span>
+            </button>
+            <button class="mi-showcase-card" type="button" data-mi-zoom="img/mido_contenido11.webp" aria-label="Ampliar pieza 02">
+                <img src="img/mido_contenido11.webp" alt="Pieza de campaña Mido — 02" loading="lazy" decoding="async">
+                <span class="mi-showcase-meta">02</span>
+                <span class="mi-showcase-overlay" aria-hidden="true">
+                    <span class="mi-showcase-caption">Pieza de campaña</span>
+                    <span class="mi-showcase-cta">Ver completa</span>
+                </span>
+            </button>
+            <button class="mi-showcase-card" type="button" data-mi-zoom="img/mido_contenido12.webp" aria-label="Ampliar pieza 03">
+                <img src="img/mido_contenido12.webp" alt="Pieza de campaña Mido — 03" loading="lazy" decoding="async">
+                <span class="mi-showcase-meta">03</span>
+                <span class="mi-showcase-overlay" aria-hidden="true">
+                    <span class="mi-showcase-caption">Pieza de campaña</span>
+                    <span class="mi-showcase-cta">Ver completa</span>
+                </span>
+            </button>
+            <button class="mi-showcase-card" type="button" data-mi-zoom="img/mido_contenido13.webp" aria-label="Ampliar pieza 04">
+                <img src="img/mido_contenido13.webp" alt="Pieza de campaña Mido — 04" loading="lazy" decoding="async">
+                <span class="mi-showcase-meta">04</span>
+                <span class="mi-showcase-overlay" aria-hidden="true">
+                    <span class="mi-showcase-caption">Pieza de campaña</span>
+                    <span class="mi-showcase-cta">Ver completa</span>
+                </span>
+            </button>
+            <button class="mi-showcase-card" type="button" data-mi-zoom="img/mido_contenido14.webp" aria-label="Ampliar pieza 05">
+                <img src="img/mido_contenido14.webp" alt="Pieza de campaña Mido — 05" loading="lazy" decoding="async">
+                <span class="mi-showcase-meta">05</span>
+                <span class="mi-showcase-overlay" aria-hidden="true">
+                    <span class="mi-showcase-caption">Pieza de campaña</span>
+                    <span class="mi-showcase-cta">Ver completa</span>
+                </span>
+            </button>
+            <button class="mi-showcase-card" type="button" data-mi-zoom="img/mido_contenido8.webp" aria-label="Ampliar pieza 06">
+                <img src="img/mido_contenido8.webp" alt="Pieza de campaña Mido — 06" loading="lazy" decoding="async">
+                <span class="mi-showcase-meta">06</span>
+                <span class="mi-showcase-overlay" aria-hidden="true">
+                    <span class="mi-showcase-caption">Pieza de campaña</span>
+                    <span class="mi-showcase-cta">Ver completa</span>
+                </span>
+            </button>
+            <button class="mi-showcase-card" type="button" data-mi-zoom="img/mido_contenido9.webp" aria-label="Ampliar pieza 07">
+                <img src="img/mido_contenido9.webp" alt="Pieza de campaña Mido — 07" loading="lazy" decoding="async">
+                <span class="mi-showcase-meta">07</span>
+                <span class="mi-showcase-overlay" aria-hidden="true">
+                    <span class="mi-showcase-caption">Pieza de campaña</span>
+                    <span class="mi-showcase-cta">Ver completa</span>
+                </span>
+            </button>
+            <button class="mi-showcase-card" type="button" data-mi-zoom="img/mido_contenido12.webp" aria-label="Ampliar pieza 08">
+                <img src="img/mido_contenido12.webp" alt="Pieza de campaña Mido — 08" loading="lazy" decoding="async">
+                <span class="mi-showcase-meta">08</span>
+                <span class="mi-showcase-overlay" aria-hidden="true">
+                    <span class="mi-showcase-caption">Pieza de campaña</span>
+                    <span class="mi-showcase-cta">Ver completa</span>
+                </span>
+            </button>
+        </div>
+
+        <div class="mi-showcase-foot mi-fade mi-d4">
+            <span class="mi-showcase-foot-line"></span>
+            <span class="mi-showcase-foot-text">Click en cualquier pieza para ampliarla</span>
+            <span class="mi-showcase-foot-line"></span>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CIERRE — Next project + footer (fundamento oscuro)
+         Botón estándar .btn-projects con override de colores
+         para legibilidad sobre fondo oscuro.
+         ===================================================== -->
+    <div class="mi-closing">
+
+        <div class="next-project-nav scroll-animate">
+            <span class="next-label">Siguiente Proyecto</span>
+            <div style="margin-top: 30px;">
+                <a href="proyecto-entrenapo.html" class="btn-projects">
+                    Entrena Po
+                </a>
+            </div>
+        </div>
+
+        <footer class="project-footer">
+            <p>© 2025 Agustín Avendaño</p>
+            <a href="redesign/explorations/works/inicio.html#archivo" class="back-home">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Home
+            </a>
+        </footer>
+
+    </div>
+
+
+    <!-- =====================================================
+         LIGHTBOX (compartido con script.js)
+         ===================================================== -->
+    <div id="imageModal" class="lightbox-modal">
+        <span class="close-btn">&times;</span>
+        <button class="nav-btn prev-btn" id="lbPrev">&#10094;</button>
+        <button class="nav-btn next-btn" id="lbNext">&#10095;</button>
+        <img class="lightbox-content" id="lightboxImg">
+        <div id="caption"></div>
+    </div>
+
+
+    <script src="script.js" defer></script>
+</body>
+</html>
