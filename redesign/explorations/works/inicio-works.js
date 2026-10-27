@@ -118,7 +118,28 @@
 
     /* --- 4. CAPÍTULOS DE CADA PORTADA --- */
     /* Marca, Web y En uso sobre la misma pieza. Las flechas recorren las pestañas, como en un tablist. Al abrir la
-       marca de Mend, su logo se dibuja con las animaciones del manual */
+       marca de Mend, su logo se dibuja con las animaciones del manual; la de Llegó se arma una vez y las tarjetas de
+       Tap In hacen tap mientras su capítulo está abierto */
+    let relojTj = [];
+    const tarjetas = (v, on) => {
+        relojTj.forEach(id => { clearTimeout(id); clearInterval(id); }); relojTj = [];
+        const ts = [...v.querySelectorAll('.pt-tj')];
+        ts.forEach((t, i) => { t.classList.remove('tap', 'va', 'sin'); t.dataset.slot = i; t.querySelector('.ondas').classList.remove('van'); });
+        if (!on || quieto) return;
+        const reiniciar = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+        /* Tap en la del frente; al segundo pasa hacia adelante y las otras avanzan. Ya invisible, salta sin transición
+           al puesto 3 y desde ahí entra al fondo */
+        const paso = () => {
+            const f = ts.find(t => t.dataset.slot === '0');
+            reiniciar(f, 'tap'); reiniciar(f.querySelector('.ondas'), 'van');
+            relojTj.push(setTimeout(() => { f.classList.add('va'); ts.forEach(t => { if (t !== f) t.dataset.slot = +t.dataset.slot - 1; }); }, 1000));
+            relojTj.push(setTimeout(() => {
+                f.classList.add('sin'); f.classList.remove('va', 'tap'); f.querySelector('.ondas').classList.remove('van'); f.dataset.slot = 3;
+                void f.offsetWidth; f.classList.remove('sin'); f.dataset.slot = 2;
+            }, 1750));
+        };
+        relojTj.push(setTimeout(() => { paso(); relojTj.push(setInterval(paso, 3200)); }, 1100));
+    };
     covs.forEach(c => {
         const tabs = [...c.querySelectorAll('[data-cap]')], vistas = [...c.querySelectorAll('.pt-vista')];
         const abrir = t => {
@@ -127,6 +148,8 @@
                 const on = k === +t.dataset.cap;
                 v.classList.toggle('on', on);
                 if (v.querySelector('.pt-mend-logo')) { v.classList.remove('dibuja'); if (on && !quieto) { void v.offsetWidth; v.classList.add('dibuja'); } }
+                if (v.querySelector('.pt-lf-logo, .pt-tjs')) { v.classList.remove('dibuja'); if (on) { void v.offsetWidth; v.classList.add('dibuja'); } }
+                if (v.querySelector('.pt-tjs')) tarjetas(v, on);
             });
         };
         tabs.forEach((t, k) => {
