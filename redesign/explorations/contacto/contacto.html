@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contacto: seis variantes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+    /* =======================================================
+       COMPARADOR DE CONTACTO · TOKENS Y BASE
+       ======================================================= */
+    /* Mismos tokens del home (marca C · Índice): negro, grises, blanco y el verde solo para "disponible" */
+    :root {
+        --negro: #0B0B0B; --grafito: #151514; --linea: #262625; --gris-oscuro: #3A3A38; --gris-medio: #8E8E8B; --gris-claro: #D9D9D6;
+        --blanco: #F5F5F3; --verde: #19B36B;
+        --sans: 'Geist', system-ui, sans-serif; --mono: 'Geist Mono', ui-monospace, monospace;
+        --margen: clamp(16px, 2.2vw, 32px); --medianil: 16px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1); --rapido: 160ms; --medio: 200ms;
+        color-scheme: dark;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: var(--negro); color: var(--blanco); font: 15px / 1.5 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; color: inherit; background: none; border: 0; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 1px solid currentColor; outline-offset: 4px; border-radius: 2px; }
+    .mono { font: 400 12px / 1.4 var(--mono); }
+    .gris { color: var(--gris-medio); }
+    .grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); padding-inline: var(--margen); }
+    .punto { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 0 3px rgba(25, 179, 107, 0.18); vertical-align: 1px; }
+
+    /* =======================================================
+       PRESENTACIÓN, INVESTIGACIÓN Y SELECTOR
+       ======================================================= */
+    .intro { padding-block: 72px 40px; row-gap: 28px; border-bottom: 1px solid var(--linea); }
+    .intro .rot { grid-column: 1 / span 3; padding-top: 0.6em; }
+    .intro h1 { grid-column: 4 / -1; font-size: clamp(32px, 4vw, 60px); font-weight: 500; letter-spacing: -0.05em; line-height: 1; text-wrap: balance; }
+    .intro .bajada { grid-column: 4 / span 7; color: var(--gris-claro); font-size: 16px; line-height: 1.5; max-width: 62ch; }
+    .hallazgos { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px var(--medianil); padding-top: 12px; }
+    .hallazgos section { display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid var(--linea); }
+    .hallazgos h2 { font-size: 15px; font-weight: 500; letter-spacing: -0.02em; }
+    .hallazgos p, .hallazgos li { color: var(--gris-medio); font-size: 13px; line-height: 1.5; }
+    .hallazgos ul { list-style: none; display: grid; gap: 6px; }
+    .hallazgos a { color: var(--blanco); border-bottom: 1px solid var(--gris-oscuro); transition: border-color var(--rapido) linear; }
+    .conclusion { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px var(--medianil); padding: 20px 0 0; border-top: 1px solid var(--gris-oscuro); }
+    .conclusion h2 { grid-column: 1 / -1; font-size: 15px; font-weight: 500; }
+    .conclusion ol { display: contents; }
+    .conclusion li { list-style: none; display: grid; grid-template-columns: 28px 1fr; color: var(--gris-claro); font-size: 14px; line-height: 1.45; }
+    .selector { position: sticky; top: 0; z-index: 20; padding-block: 12px; background: rgba(11, 11, 11, 0.86); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--linea); }
+    .selector .botones { grid-column: 1 / -1; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+    .selector .botones::-webkit-scrollbar { display: none; }
+    .op { flex: none; display: flex; align-items: baseline; gap: 8px; min-height: 40px; padding: 10px 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--linea); color: var(--gris-medio); font-size: 14px; transition: box-shadow var(--rapido) linear, color var(--rapido) linear, background-color var(--rapido) linear; }
+    .op .mono { font-size: 11px; }
+    .op[aria-pressed="true"] { background: var(--blanco); color: var(--negro); box-shadow: none; }
+    .op .rec { font: 400 10px var(--mono); padding: 2px 7px; border-radius: 99px; background: var(--verde); color: var(--negro); }
+    @media (hover: hover) {
+        .hallazgos a:hover { border-color: var(--blanco); }
+        .op[aria-pressed="false"]:hover { color: var(--blanco); box-shadow: inset 0 0 0 1px var(--gris-oscuro); }
+    }
+    .ficha { padding-block: 28px 0; row-gap: 10px; }
+    .ficha .mono { grid-column: 1 / span 3; padding-top: 0.3em; }
+    .ficha p { grid-column: 4 / span 7; color: var(--gris-claro); font-size: 15px; line-height: 1.5; max-width: 64ch; }
+    .ficha p b { color: var(--blanco); font-weight: 500; }
+
+    /* =======================================================
+       PIEZAS COMUNES DE LAS VARIANTES
+       ======================================================= */
+    .variante { display: none; } .variante.on { display: block; }
+    .contacto { position: relative; padding-block: 120px 56px; row-gap: 40px; }
+    .contacto .num { grid-column: 1 / span 3; padding-top: 0.9em; }
+    .titulo { font-size: clamp(44px, 6.4vw, 112px); font-weight: 500; letter-spacing: -0.06em; line-height: 0.92; text-wrap: balance; }
+    .estado { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; color: var(--gris-medio); }
+    .estado b { color: var(--blanco); font-weight: 400; }
+    .boton { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-weight: 500; letter-spacing: -0.01em; transition: gap var(--medio) var(--ease), transform var(--rapido) var(--ease); }
+    .boton:active { transform: scale(0.97); }
+    .boton i { font-style: normal; transition: transform var(--medio) var(--ease); }
+    .boton.claro { background: none; color: var(--blanco); box-shadow: inset 0 0 0 1px var(--gris-oscuro); }
+    @media (hover: hover) { .boton:hover { gap: 14px; } .boton:hover i { transform: translateX(2px); } }
+    .aviso { position: fixed; left: 50%; bottom: 24px; z-index: 40; display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-size: 14px; translate: -50% 140%; opacity: 0; transition: translate var(--medio) var(--ease), opacity var(--rapido) linear; pointer-events: none; }
+    .aviso.on { translate: -50% 0; opacity: 1; }
+    .pie { padding-block: 22px 28px; border-top: 1px solid var(--linea); row-gap: 10px; color: var(--gris-medio); }
+    .pie > :nth-child(1) { grid-column: 1 / span 3; color: var(--blanco); font-weight: 500; letter-spacing: -0.035em; }
+    .pie > :nth-child(1) span { opacity: 0.45; }
+    .pie > :nth-child(2) { grid-column: 4 / span 5; }
+    .pie > :nth-child(3) { grid-column: 9 / span 2; }
+    .pie > :nth-child(4) { grid-column: 11 / -1; justify-self: end; }
+    .pie a { border-bottom: 1px solid var(--gris-oscuro); }
+
+    /* =======================================================
+       V1 · ÍNDICE DE CANALES
+       ======================================================= */
+    /* Como el archivo: una lista con número, canal, dato y acción. La fila entera es el botón; al pasar, el dato se
+       enciende y aparece la acción. C copia el correo desde cualquier parte */
+    .v1 .titulo { grid-column: 4 / -1; }
+    .v1 .estado { grid-column: 4 / -1; }
+    .v1 ul { grid-column: 4 / -1; list-style: none; border-top: 1px solid var(--linea); }
+    .v1 li > * { display: grid; grid-template-columns: 48px 1.1fr 1.6fr auto; align-items: baseline; gap: 16px; width: 100%; padding: 22px 0; border-bottom: 1px solid var(--linea); text-align: left; transition: padding var(--medio) var(--ease); }
+    .v1 li .canal { font-size: clamp(20px, 2vw, 28px); font-weight: 500; letter-spacing: -0.035em; }
+    .v1 li .dato { color: var(--gris-medio); font-size: 15px; transition: color var(--rapido) linear; }
+    .v1 li .accion { color: var(--gris-medio); opacity: 0; translate: -6px 0; transition: opacity var(--rapido) linear, translate var(--medio) var(--ease); }
+    .v1 li .accion kbd { margin-left: 8px; padding: 2px 6px; border-radius: 4px; box-shadow: inset 0 0 0 1px var(--gris-oscuro); font: inherit; }
+    .v1 li > :focus-visible .accion { opacity: 1; translate: 0 0; }
+    @media (hover: hover) {
+        .v1 li > *:hover { padding-left: 12px; }
+        .v1 li > *:hover .dato { color: var(--blanco); }
+        .v1 li > *:hover .accion { opacity: 1; translate: 0 0; }
+    }
+
+    /* =======================================================
+       V2 · BRIEF EN UNA FRASE
+       ======================================================= */
+    /* El formulario es una frase en tipografía grande: los espacios se completan escribiendo y las opciones se eligen en
+       una lista que se abre en el lugar. Abajo, los canales directos, para quien prefiere no escribir aquí */
+    .v2 .titulo { grid-column: 4 / -1; font-size: clamp(30px, 3.6vw, 60px); line-height: 1.22; letter-spacing: -0.045em; font-weight: 400; color: var(--gris-medio); }
+    .v2 .nw { white-space: nowrap; }
+    .campo { position: relative; display: inline-block; color: var(--blanco); }
+    .campo input { width: 7ch; min-width: 3ch; max-width: 100%; padding: 0 0.08em; border-bottom: 2px solid var(--gris-oscuro); color: var(--blanco); font: inherit; letter-spacing: inherit; transition: border-color var(--rapido) linear; }
+    .campo input::placeholder { color: var(--gris-oscuro); }
+    .campo input:focus { outline: none; border-color: var(--blanco); }
+    .campo.lista > button { display: inline-flex; align-items: baseline; gap: 0.18em; padding: 0 0.08em; border-bottom: 2px solid var(--gris-oscuro); color: var(--blanco); font: inherit; letter-spacing: inherit; transition: border-color var(--rapido) linear; }
+    .campo.lista > button i { font-style: normal; font-size: 0.5em; color: var(--gris-medio); translate: 0 -0.3em; transition: rotate var(--medio) var(--ease); }
+    .campo.lista[data-abierta] > button { border-color: var(--blanco); }
+    .campo.lista[data-abierta] > button i { rotate: 180deg; }
+    .campo.lista[data-vacia] > button { color: var(--gris-oscuro); }
+    .menu { position: absolute; left: 0; top: calc(100% + 10px); z-index: 10; display: grid; min-width: 15em; padding: 6px; border-radius: 14px; background: var(--grafito); box-shadow: inset 0 0 0 1px var(--linea), 0 24px 60px -20px rgba(0, 0, 0, 0.8); font-size: 16px; letter-spacing: -0.01em; opacity: 0; translate: 0 -6px; visibility: hidden; transition: opacity var(--rapido) linear, translate var(--medio) var(--ease), visibility 0s linear var(--medio); }
+    .campo.lista[data-abierta] .menu { opacity: 1; translate: 0 0; visibility: visible; transition-delay: 0s; }
+    .menu button { display: flex; justify-content: space-between; gap: 16px; padding: 10px 12px; border-radius: 9px; color: var(--gris-claro); text-align: left; }
+    .menu button small { color: var(--gris-medio); font: 400 11px var(--mono); }
+    .menu button[aria-selected="true"], .menu button:focus-visible { background: #22221F; color: var(--blanco); outline: none; }
+    @media (hover: hover) { .menu button:hover { background: #22221F; color: var(--blanco); } }
+    .v2 .enviar { grid-column: 4 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+    .v2 .enviar .mono { color: var(--gris-medio); }
+    .v2 .directo { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--medianil); padding-top: 22px; border-top: 1px solid var(--linea); }
+    .v2 .directo > * { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+    .v2 .directo b { font-weight: 500; letter-spacing: -0.02em; }
+    .v2 .directo span { color: var(--gris-medio); font-size: 14px; }
+    .listo { grid-column: 4 / -1; display: none; flex-direction: column; gap: 14px; }
+    .listo h3 { font-size: clamp(30px, 3.6vw, 60px); font-weight: 500; letter-spacing: -0.045em; line-height: 1.05; }
+    .listo p { color: var(--gris-medio); max-width: 52ch; }
+    .v2.enviado .titulo, .v2.enviado .enviar { display: none; }
+    .v2.enviado .listo { display: flex; animation: entra 420ms var(--ease) both; }
+    @keyframes entra { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
+
+    /* =======================================================
+       V3 · ALCANCE Y PROCESO
+       ======================================================= */
+    /* Tres preguntas como chips a la izquierda y, a la derecha, una ficha que se arma sola con lo elegido y muestra qué
+       pasa después de enviar: el proceso contado, igual que los casos */
+    .v3 .titulo { grid-column: 4 / -1; }
+    .v3 .preguntas { grid-column: 4 / span 5; display: grid; gap: 28px; align-content: start; }
+    .v3 fieldset { border: 0; display: grid; gap: 10px; }
+    .v3 legend { margin-bottom: 10px; color: var(--gris-medio); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { min-height: 40px; padding: 8px 16px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--gris-oscuro); color: var(--gris-claro); font-size: 15px; transition: background-color var(--rapido) linear, color var(--rapido) linear, box-shadow var(--rapido) linear, transform var(--rapido) var(--ease); }
+    .chip:active { transform: scale(0.96); }
+    .chip[aria-pressed="true"] { background: var(--blanco); color: var(--negro); box-shadow: none; }
+    @media (hover: hover) { .chip[aria-pressed="false"]:hover { box-shadow: inset 0 0 0 1px var(--gris-medio); color: var(--blanco); } }
+    .v3 .linea-campo { display: grid; gap: 8px; }
+    .v3 .linea-campo input, .v3 .linea-campo textarea { width: 100%; padding: 10px 0; border-bottom: 1px solid var(--gris-oscuro); font-size: 17px; transition: border-color var(--rapido) linear; resize: none; }
+    .v3 .linea-campo input:focus, .v3 .linea-campo textarea:focus { outline: none; border-color: var(--blanco); }
+    .v3 .tarjeta { grid-column: 9 / -1; align-self: start; position: sticky; top: 90px; display: grid; gap: 18px; padding: 24px; border-radius: 18px; background: var(--grafito); box-shadow: inset 0 0 0 1px var(--linea); }
+    .v3 .resumen { font-size: 22px; font-weight: 500; letter-spacing: -0.035em; line-height: 1.2; min-height: 3.6em; }
+    .v3 .resumen em { font-style: normal; color: var(--gris-medio); }
+    .v3 .resumen span { display: inline-block; animation: entra 300ms var(--ease) both; }
+    .v3 ol { list-style: none; display: grid; gap: 12px; padding-top: 16px; border-top: 1px solid var(--linea); counter-reset: paso; }
+    .v3 ol li { display: grid; grid-template-columns: 28px 1fr; gap: 4px; color: var(--gris-claro); font-size: 14px; counter-increment: paso; }
+    .v3 ol li::before { content: '0' counter(paso); font: 400 11px var(--mono); color: var(--gris-medio); padding-top: 0.25em; }
+    .v3 ol li b { display: block; color: var(--blanco); font-weight: 500; }
+
+    /* =======================================================
+       V4 · AGENDA PRIMERO
+       ======================================================= */
+    /* El siguiente paso es una llamada de 20 minutos: la semana con horas libres, en la hora de Santiago y en la de quien
+       visita. Elegir una hora pide solo el correo. Escribir queda al lado, para quien prefiere no hablar todavía */
+    .v4 .titulo { grid-column: 4 / -1; }
+    .v4 .agenda { grid-column: 4 / span 6; display: grid; gap: 14px; }
+    .v4 .dias { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+    .dia { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--linea); text-align: left; transition: background-color var(--rapido) linear, box-shadow var(--rapido) linear; }
+    .dia b { font-size: 22px; font-weight: 500; letter-spacing: -0.04em; }
+    .dia[aria-pressed="true"] { background: var(--blanco); color: var(--negro); box-shadow: none; }
+    .dia[aria-pressed="true"] .mono { color: #5A5A56; }
+    .dia:disabled { opacity: 0.35; cursor: default; }
+    .v4 .horas { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .hora { display: flex; flex-direction: column; gap: 2px; padding: 12px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--gris-oscuro); text-align: left; transition: background-color var(--rapido) linear, box-shadow var(--rapido) linear, transform var(--rapido) var(--ease); animation: entra 300ms var(--ease) both; }
+    .hora:active { transform: scale(0.97); }
+    .hora b { font-weight: 500; }
+    .hora small { color: var(--gris-medio); font: 400 11px var(--mono); }
+    .hora[aria-pressed="true"] { background: var(--verde); color: var(--negro); box-shadow: none; }
+    .hora[aria-pressed="true"] small { color: rgba(0, 0, 0, 0.6); }
+    @media (hover: hover) { .dia:not(:disabled):not([aria-pressed="true"]):hover, .hora:not([aria-pressed="true"]):hover { box-shadow: inset 0 0 0 1px var(--gris-medio); } }
+    .v4 .confirmar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-top: 6px; opacity: 0.35; pointer-events: none; transition: opacity var(--medio) linear; }
+    .v4 .confirmar.on { opacity: 1; pointer-events: auto; }
+    .v4 .confirmar input { flex: 1 1 220px; min-height: 48px; padding: 0 18px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--gris-oscuro); }
+    .v4 .confirmar input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--blanco); }
+    .v4 .lado { grid-column: 11 / -1; display: grid; gap: 16px; align-content: start; }
+    .v4 .lado p { color: var(--gris-medio); font-size: 14px; }
+
+    /* =======================================================
+       V5 · EL CORREO COMO TITULAR
+       ======================================================= */
+    /* El correo es el titular, de margen a margen. Al tocarlo se copia y sus letras se ordenan en "copiado" una por una;
+       al rato vuelven. Debajo, tres salidas y los datos de siempre */
+    .v5 .titulo { grid-column: 1 / -1; padding-top: 8px; font-size: 100px; letter-spacing: -0.065em; line-height: 0.9; white-space: nowrap; }
+    .v5 .correo { display: inline-flex; position: relative; }
+    .v5 .correo .l { display: inline-block; transition: translate 360ms var(--ease), opacity 200ms linear; transition-delay: calc(var(--k) * 14ms); }
+    .v5 .correo .capa { position: absolute; left: 0; top: 0; display: inline-flex; pointer-events: none; }
+    .v5 .correo .capa .l { opacity: 0; translate: 0 0.5em; }
+    .v5 .correo.copiado > .base .l { opacity: 0; translate: 0 -0.5em; }
+    .v5 .correo.copiado .capa .l { opacity: 1; translate: 0 0; }
+    .v5 .bajo { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); row-gap: 24px; padding-top: 20px; border-top: 1px solid var(--linea); }
+    .v5 .bajo .estado { grid-column: 1 / span 3; flex-direction: column; align-items: flex-start; }
+    .v5 .bajo a, .v5 .bajo button { grid-column: span 3; display: flex; flex-direction: column; gap: 4px; text-align: left; }
+    .v5 .bajo b { font-size: 20px; font-weight: 500; letter-spacing: -0.035em; }
+    .v5 .bajo span { color: var(--gris-medio); font-size: 14px; }
+    @media (hover: hover) { .v5 .correo:hover .base .l { translate: 0 calc(sin(var(--k) * 1rad) * 0.03em); } }
+
+    /* =======================================================
+       V6 · COMANDO
+       ======================================================= */
+    /* El ADN de atajos de la marca hecho contacto: una línea que se escribe como una búsqueda y filtra las acciones.
+       Flechas para moverse, Enter para elegir, ⌘K o / para abrirla desde cualquier parte */
+    .v6 .titulo { grid-column: 4 / -1; }
+    .v6 .paleta { grid-column: 4 / span 7; border-radius: 18px; background: var(--grafito); box-shadow: inset 0 0 0 1px var(--linea), 0 40px 80px -40px rgba(0, 0, 0, 0.9); overflow: hidden; }
+    .v6 .busca { display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--linea); }
+    .v6 .busca input { flex: 1; font-size: 20px; letter-spacing: -0.02em; }
+    .v6 .busca input:focus { outline: none; }
+    .v6 .busca input::placeholder { color: var(--gris-oscuro); }
+    .v6 kbd { padding: 3px 7px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--gris-oscuro); color: var(--gris-medio); font: 400 11px var(--mono); }
+    .v6 ul { list-style: none; padding: 8px; display: grid; gap: 2px; min-height: 260px; align-content: start; }
+    .v6 li button { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 12px; width: 100%; padding: 12px; border-radius: 12px; text-align: left; color: var(--gris-claro); }
+    .v6 li button .ico { color: var(--gris-medio); font: 400 13px var(--mono); }
+    .v6 li button small { color: var(--gris-medio); font: 400 11px var(--mono); }
+    .v6 li button[aria-selected="true"] { background: #22221F; color: var(--blanco); }
+    .v6 .pie-paleta { display: flex; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 1px solid var(--linea); color: var(--gris-medio); }
+    .v6 .vacio { padding: 12px; color: var(--gris-medio); }
+
+    /* =======================================================
+       VISTA MÓVIL Y MOVIMIENTO REDUCIDO
+       ======================================================= */
+    @media (max-width: 860px) {
+        .grilla { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .intro .rot, .intro h1, .intro .bajada, .hallazgos, .conclusion, .ficha .mono, .ficha p, .contacto .num { grid-column: 1 / -1; }
+        .hallazgos, .conclusion { grid-template-columns: 1fr; }
+        .contacto { padding-block: 72px 40px; row-gap: 28px; }
+        .v1 .titulo, .v1 .estado, .v1 ul, .v2 .titulo, .v2 .enviar, .v2 .directo, .listo, .v3 .titulo, .v3 .preguntas, .v3 .tarjeta, .v4 .titulo, .v4 .agenda, .v4 .lado, .v6 .titulo, .v6 .paleta { grid-column: 1 / -1; }
+        .v1 li > * { grid-template-columns: 32px 1fr; row-gap: 2px; }
+        .v1 li .dato { grid-column: 2; } .v1 li .accion { display: none; }
+        .v2 .directo { grid-template-columns: 1fr; }
+        .v3 .tarjeta { position: static; }
+        .v4 .dias { grid-template-columns: repeat(5, minmax(56px, 1fr)); overflow-x: auto; }
+        .v4 .horas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .v6 .busca kbd { display: none; }
+        .v5 .bajo { grid-template-columns: 1fr; }
+        .v5 .bajo .estado, .v5 .bajo a, .v5 .bajo button { grid-column: 1 / -1; }
+        .pie > * { grid-column: 1 / -1 !important; justify-self: start !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
+    }
+</style>
+</head>
+<body>
+
+<!-- =======================================================
+     PRESENTACIÓN E INVESTIGACIÓN
+     ======================================================= -->
+<header class="intro grilla">
+    <span class="rot mono gris">S5 · Contacto</span>
+    <h1>Seis maneras de que un cliente te escriba</h1>
+    <p class="bajada">Revisé cómo resuelven el contacto estudios que venden marca y web, design engineers con sitio propio y guías para freelancers. Abajo, lo que encontré, lo que le sirve a tu portafolio y seis variantes funcionando, con tu marca. Todo se puede tocar: copiar, elegir, escribir y enviar (el envío es de prueba).</p>
+    <div class="hallazgos">
+        <section>
+            <h2>1. Personales y mínimos</h2>
+            <p>Los design engineers que no venden servicios dejan un correo o ni eso.</p>
+            <ul>
+                <li><a href="https://rauno.me" target="_blank" rel="noopener">Rauno Freiberg</a>: solo "Email", que se copia con un "Copied".</li>
+                <li><a href="https://paco.me" target="_blank" rel="noopener">Paco Coursey</a>: una línea, "Reach me at".</li>
+                <li><a href="https://emilkowal.ski" target="_blank" rel="noopener">Emil Kowalski</a>: un estado ("taking a break") y redes.</li>
+                <li><a href="https://brianlovin.com" target="_blank" rel="noopener">Brian Lovin</a> y <a href="https://jakub.kr" target="_blank" rel="noopener">Jakub Krehel</a>: links, sin canal directo.</li>
+            </ul>
+            <p>Sirve el tono, no la estrategia: su público ya los busca; el tuyo hay que ganarlo.</p>
+        </section>
+        <section>
+            <h2>2. Canales por propósito</h2>
+            <p>Los estudios de marca separan a quién le escribes y lo hacen copiable.</p>
+            <ul>
+                <li><a href="https://raggededge.com/contact" target="_blank" rel="noopener">Ragged Edge</a>: "Time to commit?" y una lista con botón Copiar.</li>
+                <li><a href="https://www.studiodumbar.com/contact" target="_blank" rel="noopener">Studio Dumbar</a>: "para proyectos nuevos, escribe a Wouter". Una persona con nombre.</li>
+                <li><a href="https://www.pentagram.com/about" target="_blank" rel="noopener">Pentagram</a>: los socios son el contacto de cada cliente.</li>
+                <li><a href="https://www.wearecollins.com" target="_blank" rel="noopener">Collins</a>: "Work with us" y el correo se copia.</li>
+                <li><a href="https://studiofreight.com/contact" target="_blank" rel="noopener">Studio Freight</a>: un bloque por tipo de consulta, con humor.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>3. Formularios que califican</h2>
+            <p>Los que reciben muchos proyectos preguntan qué, cuánto y para cuándo, con opciones en vez de texto.</p>
+            <ul>
+                <li><a href="https://cuberto.com/contacts/" target="_blank" rel="noopener">Cuberto</a>: "Tell us all the things", chips de servicio y de presupuesto.</li>
+                <li><a href="https://basement.studio/contact" target="_blank" rel="noopener">basement.studio</a>: formulario corto con presupuesto opcional y correo enorme.</li>
+                <li><a href="https://area17.com/contact" target="_blank" rel="noopener">AREA 17</a>: asunto y región, para derivar.</li>
+                <li><a href="https://dennissnellenberg.com/contact" target="_blank" rel="noopener">Dennis Snellenberg</a>: preguntas numeradas (sirve el gesto; su estética es anti referencia).</li>
+            </ul>
+        </section>
+        <section>
+            <h2>4. El gran llamado</h2>
+            <p>Una frase grande y un correo que se abre o se copia, con lugar y hora.</p>
+            <ul>
+                <li><a href="https://lusion.co" target="_blank" rel="noopener">Lusion</a>: "Let's work together" y botones "Let's talk" al correo.</li>
+                <li><a href="https://koto.com/contact/" target="_blank" rel="noopener">Koto</a>: "Work with us, wherever you are", hora con zona y el estudio más cercano.</li>
+                <li><a href="https://www.joffreyspitzer.com" target="_blank" rel="noopener">Joffrey Spitzer</a>: "Get in touch", correo y ciudad.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>5. La llamada como siguiente paso</h2>
+            <p>Las guías para freelancers de servicios insisten en que el paso siguiente sea una conversación y en decir qué pasa después de escribir.</p>
+            <ul>
+                <li><a href="https://www.paigebrunton.com/blog/build-a-web-designer-site-that-books-part-3" target="_blank" rel="noopener">Paige Brunton</a>: una llamada gratis convierte más que un formulario.</li>
+                <li><a href="https://www.pravinkumar.co/blog/webflow-contact-page-design-book-calls-2026" target="_blank" rel="noopener">Pravin Kumar</a>: tiempo de respuesta y agenda visibles duplicaron sus llamadas (dato de proveedor, con cautela).</li>
+                <li><a href="https://orbitforms.ai/blog/contact-form-for-agencies" target="_blank" rel="noopener">Orbit Forms</a>: presupuesto en rangos, como "inversión aproximada", y no más de tres preguntas al inicio.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>6. Chile</h2>
+            <p>WhatsApp llega al 89,7 % de quienes usan internet en Chile (<a href="https://ecosistemastartup.com/whatsapp-api-63-empresas-chilenas-migran-de-chat-a-canal-de-ventas-en-2026/" target="_blank" rel="noopener">Digital 2026, vía Ecosistemas Startup</a>) y la Ley de Prefijos de 2025 hizo que la gente conteste menos llamadas desconocidas. Una pyme espera poder escribirte por WhatsApp; una empresa más grande, por correo. Como canal en contacto suma; como botón flotante es tu anti referencia.</p>
+        </section>
+    </div>
+    <section class="conclusion">
+        <h2>Lo que le sirve a tu portafolio</h2>
+        <ol>
+        <li><span class="mono gris">01</span>Una persona, no un formulario: tu nombre, cuánto tardas en responder y qué pasa después.</li>
+        <li><span class="mono gris">02</span>Un paso principal y atajos al lado: escribir, y también copiar el correo, WhatsApp o agendar.</li>
+        <li><span class="mono gris">03</span>Calificar sin interrogar: tres preguntas con opciones (qué, cuándo, inversión opcional).</li>
+        <li><span class="mono gris">04</span>El detalle es la prueba: copiar con respuesta, foco visible, teclado, hora en vivo. Nada de plantilla.</li>
+        <li><span class="mono gris">05</span>El verde solo para "disponible" y el reloj de Santiago, como en el hero.</li>
+        <li><span class="mono gris">06</span>Un correo propio: <b>hola@agustindesign.cl</b>. El de la UC puede vencer al titularte; Cloudflare lo reenvía gratis a tu Gmail.</li>
+        </ol>
+    </section>
+</header>
+
+<!-- =======================================================
+     SELECTOR DE VARIANTES
+     ======================================================= -->
+<nav class="selector grilla" aria-label="Variantes de contacto">
+    <div class="botones" role="group">
+        <button class="op" type="button" aria-pressed="false" data-v="1"><span class="mono">01</span>Índice de canales</button>
+        <button class="op" type="button" aria-pressed="true" data-v="2"><span class="mono">02</span>Brief en una frase <span class="rec">Recomendada</span></button>
+        <button class="op" type="button" aria-pressed="false" data-v="3"><span class="mono">03</span>Alcance y proceso</button>
+        <button class="op" type="button" aria-pressed="false" data-v="4"><span class="mono">04</span>Agenda primero</button>
+        <button class="op" type="button" aria-pressed="false" data-v="5"><span class="mono">05</span>El correo como titular</button>
+        <button class="op" type="button" aria-pressed="false" data-v="6"><span class="mono">06</span>Comando</button>
+    </div>
+</nav>
+
+<!-- =======================================================
+     V1 · ÍNDICE DE CANALES
+     ======================================================= -->
+<div class="variante" data-variante="1">
+    <div class="ficha grilla"><span class="mono gris">01 · Índice de canales</span><p><b>Para quien ya sabe qué quiere.</b> Sigue la lógica del archivo: una lista sobria, cada canal en su fila, con su dato y su acción. Copia el correo con un toque o con la tecla C. Referencias: Ragged Edge, Studio Dumbar. Lo mejor: cero fricción y muy de tu marca. Lo que falta: no califica ni cuenta qué pasa después.</p></div>
+    <section class="contacto grilla v1">
+        <span class="num mono gris">04 · Contacto</span>
+        <h2 class="titulo">Hablemos de tu marca o tu web</h2>
+        <p class="estado mono"><span><span class="punto" aria-hidden="true"></span> <b>Disponible</b> para proyectos nuevos</span><span>Respondo en menos de 24 h hábiles</span><span>Santiago <b data-reloj>00:00</b></span></p>
+        <ul>
+            <li><button type="button" data-copiar><span class="mono gris">01</span><span class="canal">Correo</span><span class="dato">hola@agustindesign.cl</span><span class="accion mono">Copiar<kbd>C</kbd></span></button></li>
+            <li><a href="#" data-prueba="WhatsApp"><span class="mono gris">02</span><span class="canal">WhatsApp</span><span class="dato">+56 9 · · · · · · · ·</span><span class="accion mono">Abrir chat ↗</span></a></li>
+            <li><a href="#" data-prueba="la agenda"><span class="mono gris">03</span><span class="canal">Llamada</span><span class="dato">20 minutos por videollamada</span><span class="accion mono">Agendar ↗</span></a></li>
+            <li><a href="#" data-prueba="LinkedIn"><span class="mono gris">04</span><span class="canal">LinkedIn</span><span class="dato">Agustín Avendaño</span><span class="accion mono">Ver perfil ↗</span></a></li>
+            <li><a href="#" data-prueba="Instagram"><span class="mono gris">05</span><span class="canal">Instagram</span><span class="dato">@agustin.design</span><span class="accion mono">Ver ↗</span></a></li>
+        </ul>
+    </section>
+</div>
+
+<!-- =======================================================
+     V2 · BRIEF EN UNA FRASE
+     ======================================================= -->
+<div class="variante on" data-variante="2">
+    <div class="ficha grilla"><span class="mono gris">02 · Brief en una frase</span><p><b>Mi recomendación.</b> El formulario es una frase que se completa: se lee como un mensaje y no como un trámite, califica con tres opciones (qué, cuándo, inversión) y muestra tu oficio en cada detalle. Al enviar, dice cuándo vas a responder con la hora real. Abajo quedan los canales directos para quien prefiere escribirte por su cuenta. Referencias: Cuberto (calificar con opciones), Studio Dumbar (una persona), las guías de freelancers (decir qué pasa después).</p></div>
+    <section class="contacto grilla v2" data-brief>
+        <span class="num mono gris">04 · Contacto</span>
+        <form class="titulo" data-frase novalidate>
+            Hola Agustín, soy <span class="nw"><span class="campo"><input name="nombre" placeholder="tu nombre" autocomplete="name" aria-label="Tu nombre" data-crece></span>,</span> de <span class="nw"><span class="campo"><input name="empresa" placeholder="tu empresa" autocomplete="organization" aria-label="Tu empresa" data-crece></span>.</span>
+            Busco <span class="campo lista" data-vacia data-nombre="que"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>algo</span><i>▾</i></button>
+                <span class="menu" role="listbox" aria-label="Qué buscas"><button type="button" role="option" data-valor="una marca">Una marca <small>Identidad y manual</small></button><button type="button" role="option" data-valor="un sitio web">Un sitio web <small>Diseño y código</small></button><button type="button" role="option" data-valor="marca y sitio web">Marca y sitio web <small>Lo completo</small></button><button type="button" role="option" data-valor="un producto digital">Un producto digital <small>App o plataforma</small></button></span></span> para <span class="nw"><span class="campo lista" data-vacia data-nombre="cuando"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>cuándo</span><i>▾</i></button>
+                <span class="menu" role="listbox" aria-label="Para cuándo"><button type="button" role="option" data-valor="lo antes posible">Lo antes posible <small>Este mes</small></button><button type="button" role="option" data-valor="los próximos meses">Los próximos meses <small>1 a 3 meses</small></button><button type="button" role="option" data-valor="más adelante">Más adelante <small>Estoy explorando</small></button></span></span>,</span> con una inversión de <span class="nw"><span class="campo lista" data-vacia data-nombre="inversion"><button type="button" aria-haspopup="listbox" aria-expanded="false"><span>por definir</span><i>▾</i></button>
+                <span class="menu" role="listbox" aria-label="Inversión aproximada"><button type="button" role="option" data-valor="menos de $1,5 M">Menos de $1,5 M <small>CLP</small></button><button type="button" role="option" data-valor="$1,5 a $4 M">$1,5 a $4 M <small>CLP</small></button><button type="button" role="option" data-valor="$4 a $8 M">$4 a $8 M <small>CLP</small></button><button type="button" role="option" data-valor="más de $8 M">Más de $8 M <small>CLP</small></button><button type="button" role="option" data-valor="por definir">Por definir <small>Lo vemos juntos</small></button></span></span>.</span>
+            Respóndeme a <span class="nw"><span class="campo"><input name="correo" type="email" placeholder="tu correo" autocomplete="email" aria-label="Tu correo" data-crece></span>.</span>
+        </form>
+        <div class="enviar"><button class="boton" type="button" data-enviar>Enviar mensaje <i>→</i></button><span class="mono"><span class="punto" aria-hidden="true"></span> Disponible · respondo en menos de 24 h hábiles · Santiago <span data-reloj>00:00</span></span></div>
+        <div class="listo" aria-live="polite"><span class="mono gris">Mensaje enviado</span><h3 data-listo-titulo>Listo. Te escribo antes de mañana a esta hora.</h3><p>Leo cada mensaje yo mismo. Si es urgente, escríbeme por WhatsApp. Mientras tanto, puedes mirar cómo trabajo en los casos.</p><button class="boton claro" type="button" data-otra-vez>Escribir otro mensaje</button></div>
+        <div class="directo"><button type="button" data-copiar><b>hola@agustindesign.cl</b><span>Copiar correo</span></button><a href="#" data-prueba="WhatsApp"><b>WhatsApp</b><span>Escríbeme directo ↗</span></a><a href="#" data-prueba="la agenda"><b>Llamada de 20 min</b><span>Agenda una videollamada ↗</span></a></div>
+    </section>
+</div>
+
+<!-- =======================================================
+     V3 · ALCANCE Y PROCESO
+     ======================================================= -->
+<div class="variante" data-variante="3">
+    <div class="ficha grilla"><span class="mono gris">03 · Alcance y proceso</span><p><b>Para clientes que comparan proveedores.</b> Tres preguntas con chips y una ficha que se arma sola con lo elegido, más los pasos de lo que viene: respuesta, llamada y propuesta con fecha. Cuenta tu proceso como cuentas los casos. Referencias: Cuberto, basement.studio. Lo mejor: ordenado y profesional. Riesgo: se parece más a un formulario de estudio que a una persona.</p></div>
+    <section class="contacto grilla v3">
+        <span class="num mono gris">04 · Contacto</span>
+        <h2 class="titulo">Cuéntame qué necesitas</h2>
+        <div class="preguntas" data-alcance>
+            <fieldset data-grupo="que"><legend class="mono">01 · Qué necesitas</legend><div class="chips"><button class="chip" type="button" aria-pressed="false">Marca</button><button class="chip" type="button" aria-pressed="false">Sitio web</button><button class="chip" type="button" aria-pressed="false">Marca y web</button><button class="chip" type="button" aria-pressed="false">Producto digital</button></div></fieldset>
+            <fieldset data-grupo="etapa"><legend class="mono">02 · En qué etapa estás</legend><div class="chips"><button class="chip" type="button" aria-pressed="false">Parto de cero</button><button class="chip" type="button" aria-pressed="false">Tengo marca</button><button class="chip" type="button" aria-pressed="false">Quiero renovar</button></div></fieldset>
+            <fieldset data-grupo="cuando"><legend class="mono">03 · Para cuándo</legend><div class="chips"><button class="chip" type="button" aria-pressed="false">Este mes</button><button class="chip" type="button" aria-pressed="false">1 a 3 meses</button><button class="chip" type="button" aria-pressed="false">Estoy explorando</button></div></fieldset>
+            <div class="linea-campo"><label class="mono gris" for="v3-correo">04 · Tu correo</label><input id="v3-correo" type="email" placeholder="nombre@empresa.cl" autocomplete="email"></div>
+            <div class="linea-campo"><label class="mono gris" for="v3-nota">05 · Algo más (opcional)</label><textarea id="v3-nota" rows="2" placeholder="Un link, una referencia o una idea"></textarea></div>
+            <div><button class="boton" type="button" data-prueba-envio>Enviar <i>→</i></button></div>
+        </div>
+        <aside class="tarjeta">
+            <span class="mono gris">Tu proyecto</span>
+            <p class="resumen" data-resumen><em>Elige qué necesitas y lo armo aquí.</em></p>
+            <ol><li><span><b>Te respondo en menos de 24 h hábiles</b>Con preguntas, si hacen falta.</span></li><li><span><b>Llamada de 20 minutos</b>Para entender el negocio y el alcance.</span></li><li><span><b>Propuesta en 5 días hábiles</b>Alcance, etapas, plazos y precio.</span></li></ol>
+            <span class="estado mono"><span><span class="punto" aria-hidden="true"></span> <b>Disponible</b></span><span>Santiago <b data-reloj>00:00</b></span></span>
+        </aside>
+    </section>
+</div>
+
+<!-- =======================================================
+     V4 · AGENDA PRIMERO
+     ======================================================= -->
+<div class="variante" data-variante="4">
+    <div class="ficha grilla"><span class="mono gris">04 · Agenda primero</span><p><b>Para convertir más.</b> El paso siguiente es una llamada de 20 minutos, con las horas libres de la semana en la hora de Santiago y en la de quien visita. Elegir una hora pide solo el correo. Escribir queda al lado. Referencias: las guías de freelancers que miden llamadas agendadas. Lo mejor: lleva directo a conversar. Lo que pide: una agenda real (Cal.com, gratis) y estar disponible en esos bloques.</p></div>
+    <section class="contacto grilla v4">
+        <span class="num mono gris">04 · Contacto</span>
+        <h2 class="titulo">Conversemos 20 minutos</h2>
+        <div class="agenda" data-agenda>
+            <span class="mono gris" data-zona>Horas en Santiago</span>
+            <div class="dias" data-dias></div>
+            <div class="horas" data-horas></div>
+            <div class="confirmar" data-confirmar><input type="email" placeholder="tu correo" aria-label="Tu correo"><button class="boton" type="button" data-prueba-envio>Reservar <i>→</i></button></div>
+        </div>
+        <aside class="lado">
+            <p>Una videollamada corta para entender tu proyecto. Sin costo y sin compromiso.</p>
+            <p class="estado mono"><span><span class="punto" aria-hidden="true"></span> <b>Disponible</b></span><span>Santiago <b data-reloj>00:00</b></span></p>
+            <button class="boton claro" type="button" data-copiar>Prefiero escribir</button>
+        </aside>
+    </section>
+</div>
+
+<!-- =======================================================
+     V5 · EL CORREO COMO TITULAR
+     ======================================================= -->
+<div class="variante" data-variante="5">
+    <div class="ficha grilla"><span class="mono gris">05 · El correo como titular</span><p><b>Para un cierre con presencia.</b> El correo, de margen a margen, es el llamado. Al tocarlo se copia y sus letras se reordenan en "copiado". Debajo, las otras salidas y los datos. Referencias: basement.studio, Lusion, Collins. Lo mejor: memorable y muy simple. Lo que falta: no califica, y todo depende de que el cliente escriba un buen correo.</p></div>
+    <section class="contacto grilla v5">
+        <span class="num mono gris">04 · ¿Trabajamos juntos?</span>
+        <h2 class="titulo"><button type="button" class="correo" data-correo-grande aria-label="Copiar hola@agustindesign.cl"></button></h2>
+        <div class="bajo">
+            <p class="estado mono"><span><span class="punto" aria-hidden="true"></span> <b>Disponible</b> para proyectos nuevos</span><span>Santiago <b data-reloj>00:00</b></span></p>
+            <a href="#" data-prueba="WhatsApp"><b>WhatsApp ↗</b><span>Para algo rápido</span></a>
+            <a href="#" data-prueba="la agenda"><b>Agendar 20 min ↗</b><span>Para conversar el proyecto</span></a>
+            <a href="#" data-prueba="LinkedIn"><b>LinkedIn ↗</b><span>Para conocerme mejor</span></a>
+        </div>
+    </section>
+</div>
+
+<!-- =======================================================
+     V6 · COMANDO
+     ======================================================= -->
+<div class="variante" data-variante="6">
+    <div class="ficha grilla"><span class="mono gris">06 · Comando</span><p><b>Para lucir el código.</b> Los atajos de la marca hechos contacto: una línea donde se escribe y filtra las acciones, con flechas, Enter, ⌘K o /. Referencia: las paletas de comandos de Linear y Raycast, llevadas a algo que un cliente entiende. Lo mejor: demuestra que construyes. Riesgo: a un cliente no técnico puede parecerle raro; necesita que la primera vista ya muestre las opciones.</p></div>
+    <section class="contacto grilla v6">
+        <span class="num mono gris">04 · Contacto</span>
+        <h2 class="titulo">¿Qué quieres hacer?</h2>
+        <div class="paleta" data-paleta>
+            <div class="busca"><span class="mono gris">→</span><input type="text" placeholder="Escribe: correo, llamada, whatsapp…" aria-label="Buscar una acción" data-buscar><kbd>⌘K</kbd></div>
+            <ul role="listbox" data-acciones></ul>
+            <div class="pie-paleta mono"><span><span class="punto" aria-hidden="true"></span> Disponible · Santiago <span data-reloj>00:00</span></span><span>↑ ↓ para moverte · Enter para elegir</span></div>
+        </div>
+    </section>
+</div>
+
+<!-- =======================================================
+     PIE COMÚN
+     ======================================================= -->
+<footer class="pie grilla mono">
+    <span>agustín<span>.</span>design</span>
+    <span>Diseño de marca y desarrollo web · Hecho a mano en Santiago con HTML, CSS y JS</span>
+    <a href="#">Sobre este sitio</a>
+    <span>© 2026</span>
+</footer>
+
+<div class="aviso" role="status" data-aviso></div>
+
+<script>
+/* =======================================================
+   COMPARADOR DE CONTACTO
+   ======================================================= */
+(function () {
+    const CORREO = 'hola@agustindesign.cl';
+    const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* --- 1. RELOJ DE SANTIAGO Y AVISO --- */
+    const hora = d => new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
+    const pintarReloj = () => $$('[data-reloj]').forEach(el => { el.textContent = hora(new Date()); });
+    pintarReloj(); setInterval(pintarReloj, 15000);
+    let reloj;
+    const avisar = texto => { const a = $('[data-aviso]'); a.textContent = texto; a.classList.add('on'); clearTimeout(reloj); reloj = setTimeout(() => a.classList.remove('on'), 1800); };
+    const copiar = async () => { try { await navigator.clipboard.writeText(CORREO); } catch (e) {} avisar('✓ Correo copiado: ' + CORREO); };
+    $$('[data-copiar]').forEach(b => b.addEventListener('click', copiar));
+    $$('[data-prueba]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); avisar('En el sitio real abre ' + a.dataset.prueba); }));
+    $$('[data-prueba-envio]').forEach(b => b.addEventListener('click', () => avisar('✓ Enviado (de prueba)')));
+
+    /* --- 2. SELECTOR DE VARIANTES --- */
+    const elegir = v => {
+        $$('.op').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v));
+        $$('[data-variante]').forEach(s => s.classList.toggle('on', s.dataset.variante === v));
+        try { localStorage.setItem('contacto-variante', v); } catch (e) {}
+    };
+    $$('.op').forEach(b => b.addEventListener('click', () => elegir(b.dataset.v)));
+    try { const g = localStorage.getItem('contacto-variante'); if (g) elegir(g); } catch (e) {}
+    const activa = () => $('.variante.on').dataset.variante;
+
+    /* --- 3. V1: C COPIA EL CORREO --- */
+    document.addEventListener('keydown', e => {
+        if (activa() !== '1' || e.metaKey || e.ctrlKey || e.altKey || /input|textarea/i.test(e.target.tagName)) return;
+        if (e.key.toLowerCase() === 'c') copiar();
+    });
+
+    /* --- 4. V2: LA FRASE --- */
+    /* Los campos crecen con lo que se escribe (en caracteres) y las listas se abren en su lugar, con teclado */
+    const lienzo = document.createElement('canvas').getContext('2d');
+    const crecer = i => {
+        const cs = getComputedStyle(i), t = i.value || i.placeholder, px = parseFloat(cs.fontSize);
+        lienzo.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+        i.style.width = Math.ceil(lienzo.measureText(t).width + t.length * (parseFloat(cs.letterSpacing) || 0) + px * 0.2) + 'px';
+    };
+    const crecerTodos = () => $$('[data-crece]').forEach(crecer);
+    $$('[data-crece]').forEach(i => i.addEventListener('input', () => crecer(i)));
+    crecerTodos(); document.fonts && document.fonts.ready.then(crecerTodos); addEventListener('resize', crecerTodos);
+    $$('.op').forEach(b => b.addEventListener('click', () => requestAnimationFrame(crecerTodos)));
+    const cerrarListas = (excepto) => $$('.campo.lista').forEach(c => { if (c !== excepto) { c.removeAttribute('data-abierta'); c.firstElementChild.setAttribute('aria-expanded', 'false'); } });
+    $$('.campo.lista').forEach(c => {
+        const boton = c.firstElementChild, opciones = $$('[role="option"]', c);
+        const abrir = () => { cerrarListas(c); c.setAttribute('data-abierta', ''); boton.setAttribute('aria-expanded', 'true'); (opciones.find(o => o.getAttribute('aria-selected') === 'true') || opciones[0]).focus(); };
+        boton.addEventListener('click', () => c.hasAttribute('data-abierta') ? cerrarListas() : abrir());
+        opciones.forEach((o, k) => {
+            o.addEventListener('click', () => {
+                opciones.forEach(x => x.setAttribute('aria-selected', x === o));
+                boton.firstElementChild.textContent = o.dataset.valor; c.removeAttribute('data-vacia'); c.dataset.valor = o.dataset.valor;
+                cerrarListas(); boton.focus();
+            });
+            o.addEventListener('keydown', e => {
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); opciones[(k + (e.key === 'ArrowDown' ? 1 : opciones.length - 1)) % opciones.length].focus(); }
+                if (e.key === 'Escape') { cerrarListas(); boton.focus(); }
+            });
+        });
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('.campo.lista')) cerrarListas(); });
+    /* Al enviar: cuándo respondo, con la hora real de Santiago (24 h hábiles: si cae en fin de semana, pasa al lunes) */
+    const plazo = () => {
+        const d = new Date(Date.now() + 864e5), dia = new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long' }).format(d);
+        const salto = dia === 'sábado' ? 2 : dia === 'domingo' ? 1 : 0, f = new Date(d.getTime() + salto * 864e5);
+        return new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long', hour: '2-digit', minute: '2-digit', hour12: false }).format(f);
+    };
+    const brief = $('[data-brief]');
+    $('[data-enviar]').addEventListener('click', () => {
+        const nombre = $('[name="nombre"]', brief).value.trim(), correo = $('[name="correo"]', brief).value.trim();
+        if (!correo.includes('@')) { $('[name="correo"]', brief).focus(); avisar('Falta tu correo para responderte'); return; }
+        $('[data-listo-titulo]').textContent = `Listo${nombre ? ', ' + nombre.split(' ')[0] : ''}. Te escribo antes del ${plazo()} h.`;
+        brief.classList.add('enviado');
+    });
+    $('[data-otra-vez]').addEventListener('click', () => brief.classList.remove('enviado'));
+
+    /* --- 5. V3: CHIPS Y FICHA --- */
+    const alcance = $('[data-alcance]'), resumen = $('[data-resumen]');
+    const armar = () => {
+        const v = g => { const b = $(`[data-grupo="${g}"] [aria-pressed="true"]`, alcance); return b ? b.textContent : null; };
+        const que = v('que'), etapa = v('etapa'), cuando = v('cuando');
+        if (!que) { resumen.innerHTML = '<em>Elige qué necesitas y lo armo aquí.</em>'; return; }
+        const partes = [`<span>${que}</span>`];
+        if (etapa) partes.push(`<span><em>·</em> ${etapa.toLowerCase()}</span>`);
+        if (cuando) partes.push(`<span><em>·</em> ${cuando.toLowerCase()}</span>`);
+        resumen.innerHTML = partes.join(' ');
+    };
+    $$('fieldset', alcance).forEach(f => $$('.chip', f).forEach(c => c.addEventListener('click', () => { $$('.chip', f).forEach(x => x.setAttribute('aria-pressed', x === c && x.getAttribute('aria-pressed') !== 'true')); armar(); })));
+
+    /* --- 6. V4: AGENDA --- */
+    /* Días hábiles que vienen, con horas libres de ejemplo, en la hora de Santiago y en la de quien visita */
+    const zonaVisita = Intl.DateTimeFormat().resolvedOptions().timeZone, otraZona = zonaVisita !== 'America/Santiago';
+    if (otraZona) $('[data-zona]').textContent = 'Horas en Santiago y en tu zona (' + zonaVisita.split('/').pop().replace('_', ' ') + ')';
+    const dias = [], hoy = new Date();
+    for (let k = 1; dias.length < 5; k++) { const d = new Date(hoy.getTime() + k * 864e5), wd = d.getDay(); if (wd !== 0 && wd !== 6) dias.push(d); }
+    const libres = [['10:00', '11:30', '15:00', '17:30'], ['09:30', '12:00', '16:00'], [], ['10:30', '14:00', '15:30', '18:00'], ['09:00', '11:00']];
+    const cajaDias = $('[data-dias]'), cajaHoras = $('[data-horas]'), confirmar = $('[data-confirmar]');
+    const fmt = (d, o) => new Intl.DateTimeFormat('es-CL', o).format(d);
+    const pintarHoras = k => {
+        cajaHoras.innerHTML = ''; confirmar.classList.remove('on');
+        libres[k].forEach((h, i) => {
+            const b = document.createElement('button'); b.type = 'button'; b.className = 'hora'; b.style.animationDelay = i * 40 + 'ms'; b.setAttribute('aria-pressed', 'false');
+            let local = '';
+            if (otraZona) { const [hh, mm] = h.split(':').map(Number); const base = new Date(dias[k]); const off = (z) => new Date(base.toLocaleString('en-US', { timeZone: z })).getTime(); const dif = (off(zonaVisita) - off('America/Santiago')) / 6e4; const t = hh * 60 + mm + dif; local = `<small>${String(Math.floor(((t % 1440) + 1440) % 1440 / 60)).padStart(2, '0')}:${String(((t % 60) + 60) % 60).padStart(2, '0')} tu hora</small>`; }
+            b.innerHTML = `<b>${h}</b>${local || '<small>20 min</small>'}`;
+            b.addEventListener('click', () => { $$('.hora', cajaHoras).forEach(x => x.setAttribute('aria-pressed', x === b)); confirmar.classList.add('on'); $('input', confirmar).focus({ preventScroll: true }); });
+            cajaHoras.appendChild(b);
+        });
+    };
+    dias.forEach((d, k) => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'dia'; b.disabled = !libres[k].length; b.setAttribute('aria-pressed', 'false');
+        b.innerHTML = `<span class="mono gris">${fmt(d, { weekday: 'short' }).replace('.', '')}</span><b>${d.getDate()}</b><span class="mono gris">${libres[k].length ? libres[k].length + ' horas' : 'sin horas'}</span>`;
+        b.addEventListener('click', () => { $$('.dia', cajaDias).forEach(x => x.setAttribute('aria-pressed', x === b)); pintarHoras(k); });
+        cajaDias.appendChild(b);
+    });
+    cajaDias.firstElementChild.click();
+
+    /* --- 7. V5: EL CORREO QUE SE COPIA --- */
+    const grande = $('[data-correo-grande]');
+    const letras = (t, extra = '') => [...t].map((c, k) => `<span class="l" style="--k:${k}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+    grande.innerHTML = `<span class="base">${letras(CORREO)}</span><span class="capa" aria-hidden="true">${letras('copiado ✓')}</span>`;
+    /* El tamaño se calcula para que el correo calce justo de margen a margen */
+    const titular = grande.parentElement;
+    const ajustar = () => { if (!titular.offsetParent) return; titular.style.fontSize = ''; const base = parseFloat(getComputedStyle(titular).fontSize); titular.style.fontSize = Math.min(200, base * titular.clientWidth / grande.scrollWidth * 0.995) + 'px'; };
+    addEventListener('resize', ajustar); document.fonts && document.fonts.ready.then(ajustar);
+    $$('.op').forEach(b => b.addEventListener('click', () => requestAnimationFrame(ajustar)));
+    let vuelve;
+    grande.addEventListener('click', () => { copiar(); grande.classList.add('copiado'); clearTimeout(vuelve); vuelve = setTimeout(() => grande.classList.remove('copiado'), quieto ? 1200 : 1600); });
+
+    /* --- 8. V6: PALETA DE COMANDOS --- */
+    const acciones = [
+        { ico: '@', texto: 'Escribir un correo', tecla: 'hola@agustindesign.cl', claves: 'correo mail escribir email', hacer: () => avisar('En el sitio real abre tu correo') },
+        { ico: '⧉', texto: 'Copiar el correo', tecla: 'C', claves: 'copiar correo mail', hacer: copiar },
+        { ico: '◷', texto: 'Agendar 20 minutos', tecla: 'Videollamada', claves: 'agenda llamada reunion videollamada agendar', hacer: () => avisar('En el sitio real abre la agenda') },
+        { ico: '✆', texto: 'Escribir por WhatsApp', tecla: 'Chat', claves: 'whatsapp wsp chat mensaje', hacer: () => avisar('En el sitio real abre WhatsApp') },
+        { ico: 'in', texto: 'Ver LinkedIn', tecla: 'Perfil', claves: 'linkedin perfil cv', hacer: () => avisar('En el sitio real abre LinkedIn') },
+        { ico: '↘', texto: 'Ver los casos', tecla: 'Works', claves: 'casos proyectos trabajos works portafolio', hacer: () => avisar('En el sitio real baja a los casos') }
+    ];
+    const lista = $('[data-acciones]'), buscar = $('[data-buscar]');
+    let filtradas = acciones, sel = 0;
+    const pintarAcciones = () => {
+        const q = buscar.value.trim().toLowerCase();
+        filtradas = acciones.filter(a => !q || (a.texto + ' ' + a.claves).toLowerCase().includes(q));
+        sel = Math.min(sel, Math.max(0, filtradas.length - 1));
+        lista.innerHTML = filtradas.length ? '' : '<li class="vacio mono">Nada con eso. Prueba "correo" o "llamada".</li>';
+        filtradas.forEach((a, k) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<button type="button" role="option" aria-selected="${k === sel}"><span class="ico">${a.ico}</span><span>${a.texto}</span><small>${a.tecla}</small></button>`;
+            li.firstElementChild.addEventListener('click', a.hacer);
+            li.firstElementChild.addEventListener('mousemove', () => { if (sel !== k) { sel = k; marcar(); } });
+            lista.appendChild(li);
+        });
+    };
+    const marcar = () => $$('[role="option"]', lista).forEach((b, k) => b.setAttribute('aria-selected', k === sel));
+    buscar.addEventListener('input', () => { sel = 0; pintarAcciones(); });
+    buscar.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); sel = (sel + (e.key === 'ArrowDown' ? 1 : filtradas.length - 1)) % Math.max(1, filtradas.length); marcar(); }
+        if (e.key === 'Enter' && filtradas[sel]) filtradas[sel].hacer();
+    });
+    document.addEventListener('keydown', e => {
+        if (activa() !== '6') return;
+        if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !/input|textarea/i.test(e.target.tagName))) { e.preventDefault(); buscar.focus(); buscar.select(); }
+    });
+    pintarAcciones();
+})();
+/* =======================================================
+   FIN COMPARADOR DE CONTACTO
+   ======================================================= */
+</script>
+</body>
+</html>
