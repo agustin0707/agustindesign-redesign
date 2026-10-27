@@ -1,12 +1,12 @@
-<title>Destacados: uso, marcas y pasos</title>
+<title>Destacados: marcas sobre el fondo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&family=Poppins:wght@600;700&display=swap">
 <style>
-    /* Comparador de la quinta ronda: la marca animada de Llegó solo con su isotipo real y un barrido nuevo, y tres
-       placas de marca para Tap In. Cada maqueta es la portada real del home (captura a 1440 x 900) con la vista
+    /* Comparador de la sexta ronda: las marcas de Llegó y Tap In sin placa, directo sobre el fondo de la portada,
+       con la animación de Llegó afinada y las tarjetas de Tap In con un tap nuevo. Cada maqueta es la portada real del home (captura a 1440 x 900) con la vista
        reemplazada; todo se mide en unidades de contenedor (--u = 1 px de la portada) */
     :root {
         --negro: #0B0B0B; --papel: #E9E9E6; --gris-claro: #D9D9D6; --blanco: #F5F5F3;
@@ -40,13 +40,6 @@
     .proy-txt strong { font: 500 22px / 1.1 var(--sans); letter-spacing: -0.035em; text-wrap: balance; }
     .proy-txt p { margin: 0; color: var(--tinta-2); font-size: 14px; line-height: 1.45; }
     .proy-vista { grid-column: 4 / -1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-    .botones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-    .op { display: flex; flex-direction: column; gap: 3px; padding: 14px 16px 16px; border: 0; border-radius: 12px; background: #F5F5F3; color: var(--tinta-2); font-size: 13px; line-height: 1.4; text-align: left; cursor: pointer; box-shadow: inset 0 0 0 1px var(--linea-c); transition: box-shadow 160ms linear; }
-    .op .mono { color: var(--tinta-3); font-size: 11px; }
-    .op b { color: var(--tinta); font-weight: 500; font-size: 15px; letter-spacing: -0.02em; }
-    .op .rec { align-self: flex-start; margin-top: 6px; padding: 3px 9px; border-radius: 99px; background: var(--negro); color: var(--blanco); font: 400 11px var(--mono); }
-    .op[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--negro); }
-    @media (hover: hover) { .op[aria-pressed="false"]:hover { box-shadow: inset 0 0 0 1px var(--tinta-3); } }
     .barra-ctl { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
     .barra-ctl h3 { margin: 0; font: 500 18px / 1.2 var(--sans); letter-spacing: -0.03em; }
     .ctl { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border: 0; border-radius: 99px; background: var(--negro); color: var(--blanco); font: 400 12px var(--mono); cursor: pointer; }
@@ -60,17 +53,16 @@
     .cv { --u: calc(100cqw / 1440); position: relative; container-type: inline-size; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 10px; background: #0B3439; box-shadow: 0 30px 60px -36px rgba(0, 0, 0, 0.6); }
     .cv > img.base { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     .vista { position: absolute; left: calc(var(--u) * 612); top: calc(var(--u) * 179); width: calc(var(--u) * 796); height: calc(var(--u) * 621); color: #FFFFFF; }
-    .placa { position: absolute; inset: 0; border-radius: calc(var(--u) * 14); overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 calc(var(--u) * 50) calc(var(--u) * 90) calc(var(--u) * -40) rgba(0, 0, 0, 0.7); }
-    .opcion { display: none; } .opcion.on { display: block; }
+    .placa { position: absolute; inset: 0; }
 
     /* =======================================================
        LLEGÓ · EL ISOTIPO QUE SE ARMA Y EL PUNTO QUE ENTREGA
        ======================================================= */
-    /* Placa limpia: solo el logo sobre la bruma del manual. El nodo central aparece, sus dos brazos crecen hacia la
+    /* Sin placa: el logo vive sobre el fondo de la portada. El nodo central aparece, sus dos brazos crecen hacia la
        izquierda y hacia abajo (máscara de trazos), y los dos nodos sueltos llegan a su lugar. Después el nodo de la
-       derecha sale como un mensajero, destapa Llegó a su paso y se vuelve la o; el tilde se marca como un visto */
-    .lf-placa { background: radial-gradient(70% 80% at 85% 0%, rgba(183, 229, 226, 0.28), transparent 62%), radial-gradient(60% 70% at 0% 100%, rgba(5, 30, 34, 0.6), transparent 70%), linear-gradient(165deg, #12666B, #0B3A40 75%); }
-    .lf-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; fill: #FFFFFF; }
+       derecha sale como un mensajero, destapa Llegó con un borde difuso y se abre en la o; el tilde se marca al llegar.
+       Cada fase empieza antes de que termine la anterior, para que no haya tiempos muertos */
+    .lf-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; fill: #FFFFFF; filter: drop-shadow(0 calc(var(--u) * 10) calc(var(--u) * 30) rgba(4, 30, 33, 0.35)); }
     .lf-svg .brazo { fill: none; stroke: #FFFFFF; stroke-width: 22; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
     .lf-svg :is(.centro, .nodo, .mensajero, .letra-o) { transform-box: fill-box; transform-origin: center; }
     .lf-svg .centro, .lf-svg .cuerpo, .lf-svg .nodo, .lf-svg .mensajero, .lf-svg .letra-o, .lf-svg .tilde, .lf-svg .divisor, .lf-svg .linea-f { opacity: 0; }
@@ -78,105 +70,84 @@
     .lf-svg .corte { translate: 56px 0; }
     .lf-svg .divisor { transform-box: fill-box; transform-origin: center; }
     .lf-svg .tilde { clip-path: inset(100% 100% 0 0); }
-    .anima .lf-svg .centro { animation: lfPop 520ms var(--rebote) 150ms forwards, lfSale 1ms linear 1.2s forwards; }
-    .anima .lf-svg .cuerpo { animation: lfVe 1ms linear 400ms forwards; }
-    .anima .lf-svg .brazo { animation: lfTraza 700ms var(--viaje) 400ms forwards; }
-    .anima .lf-svg .brazo + .brazo { animation-delay: 520ms; }
-    .anima .lf-svg .n-arriba { animation: lfLlegaA 700ms var(--expo) 760ms forwards; }
-    .anima .lf-svg .n-derecha { animation: lfLlegaD 700ms var(--expo) 900ms forwards; }
-    .anima .lf-svg .mensajero { animation: lfVe 1ms linear 1.65s forwards, lfViaje 1000ms var(--viaje) 1.75s forwards, lfEntra 180ms ease-in 2.72s forwards; }
-    .anima .lf-svg .corte { animation: lfCorte 1000ms var(--viaje) 1.75s forwards; }
-    .anima .lf-svg .letra-o { animation: lfPop 420ms var(--rebote) 2.7s forwards; }
-    .anima .lf-svg .llegada { animation: lfOnda 800ms cubic-bezier(0.2, 0.7, 0.3, 1) 2.74s; }
-    .anima .lf-svg .tilde { animation: lfVe 1ms linear 2.86s forwards, lfTilde 380ms var(--expo) 2.86s forwards; }
-    .anima .lf-svg .divisor { animation: lfDivisor 520ms var(--expo) 3.05s forwards; }
-    .anima .lf-svg .linea-f { animation: lfFarma 640ms var(--expo) 3.2s forwards; }
-    .anima .lf-svg .linea-f + .linea-f { animation-delay: 3.3s; }
+    .anima .lf-svg .centro { animation: lfPop 560ms var(--rebote) 100ms forwards, lfSale 1ms linear 1s forwards; }
+    .anima .lf-svg .cuerpo { animation: lfVe 1ms linear 300ms forwards; }
+    .anima .lf-svg .brazo { animation: lfTraza 820ms var(--expo) 300ms forwards; }
+    .anima .lf-svg .brazo + .brazo { animation-delay: 400ms; }
+    .anima .lf-svg .n-arriba { animation: lfLlegaA 860ms var(--expo) 560ms forwards; }
+    .anima .lf-svg .n-derecha { animation: lfLlegaD 860ms var(--expo) 680ms forwards; }
+    .anima .lf-svg .mensajero { animation: lfVe 1ms linear 1.3s forwards, lfViaje 1100ms var(--lf-viaje) 1.34s forwards, lfFunde 340ms var(--ease) 2.36s forwards; }
+    .anima .lf-svg .corte { animation: lfCorte 1100ms var(--lf-viaje) 1.34s forwards; }
+    .anima .lf-svg .letra-o { animation: lfAbre 620ms var(--expo) 2.34s forwards; }
+    .anima .lf-svg .llegada { animation: lfOnda 900ms cubic-bezier(0.2, 0.7, 0.3, 1) 2.38s; }
+    .anima .lf-svg .tilde { animation: lfVe 1ms linear 2.56s forwards, lfTilde 460ms var(--expo) 2.56s forwards; }
+    .anima .lf-svg .divisor { animation: lfDivisor 620ms var(--expo) 2.7s forwards; }
+    .anima .lf-svg .linea-f { animation: lfFarma 760ms var(--expo) 2.82s forwards; }
+    .anima .lf-svg .linea-f + .linea-f { animation-delay: 2.92s; }
+    :root { --lf-viaje: cubic-bezier(0.7, 0, 0.2, 1); }
     @keyframes lfPop { from { opacity: 1; scale: 0; } to { opacity: 1; scale: 1; } }
     @keyframes lfVe { to { opacity: 1; } }
     @keyframes lfSale { to { opacity: 0; } }
     @keyframes lfTraza { to { stroke-dashoffset: 0; } }
-    @keyframes lfLlegaA { from { opacity: 0; translate: 0 -30px; } to { opacity: 1; translate: 0 0; } }
-    @keyframes lfLlegaD { from { opacity: 0; translate: 30px 0; } to { opacity: 1; translate: 0 0; } }
-    @keyframes lfViaje { from { translate: 0 0; } to { translate: 219.4px 3.8px; } }
-    @keyframes lfEntra { to { scale: 0.2; opacity: 0; } }
-    @keyframes lfCorte { from { translate: 56px 0; } to { translate: 275.4px 0; } }
-    @keyframes lfOnda { from { opacity: 0.9; scale: 1; } to { opacity: 0; scale: 3.6; } }
+    @keyframes lfLlegaA { from { opacity: 0; translate: 0 -24px; scale: 0.6; } to { opacity: 1; translate: 0 0; scale: 1; } }
+    @keyframes lfLlegaD { from { opacity: 0; translate: 24px 0; scale: 0.6; } to { opacity: 1; translate: 0 0; scale: 1; } }
+    @keyframes lfViaje { 0% { translate: 0 0; scale: 1; } 50% { scale: 1.22 0.84; } 100% { translate: 219.4px 3.8px; scale: 1; } }
+    @keyframes lfFunde { from { opacity: 1; translate: 219.4px 3.8px; scale: 1; } to { opacity: 0; translate: 219.4px 3.8px; scale: 2.4; } }
+    @keyframes lfCorte { from { translate: 56px 0; } to { translate: 300px 0; } }
+    @keyframes lfAbre { from { opacity: 0; scale: 0.5; } to { opacity: 1; scale: 1; } }
+    @keyframes lfOnda { from { opacity: 0.7; scale: 1; } to { opacity: 0; scale: 3.4; } }
     @keyframes lfTilde { to { clip-path: inset(0 0 0 0); } }
     @keyframes lfDivisor { from { opacity: 1; scale: 1 0; } to { opacity: 1; scale: 1 1; } }
-    @keyframes lfFarma { from { opacity: 0; translate: 0 9px; } to { opacity: 1; translate: 0 0; } }
+    @keyframes lfFarma { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
 
     /* =======================================================
-       TAP IN · TRES PLACAS DE MARCA
+       TAP IN · TARJETAS QUE HACEN TAP
        ======================================================= */
 
-    /* --- 1. TARJETAS QUE HACEN TAP --- */
-    /* Tres credenciales (proporción de tarjeta real, 85,6 x 54) apiladas, una por producto. La del frente hace tap
-       (se inclina hacia el lector y suelta ondas), sale por abajo y entra la siguiente. El wordmark es el mismo en todas */
-    .tj-placa { background: radial-gradient(70% 70% at 50% 100%, rgba(107, 92, 231, 0.35), transparent 70%), linear-gradient(170deg, #241C66, #120E33); perspective: calc(var(--u) * 1400); }
-    .tj-lector { position: absolute; left: 50%; bottom: calc(var(--u) * 70); width: calc(var(--u) * 300); height: calc(var(--u) * 2); translate: -50% 0; border-radius: 2px; background: linear-gradient(90deg, transparent, rgba(155, 142, 240, 0.8), transparent); filter: blur(0.5px); opacity: 0.6; }
-    .tj { --tono: #4A3CAE; position: absolute; left: 50%; top: 50%; width: calc(var(--u) * 480); aspect-ratio: 85.6 / 54; margin: calc(var(--u) * -140) 0 0 calc(var(--u) * -240); border-radius: calc(var(--u) * 20); background: radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, 0.22), transparent 55%), var(--tono); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 calc(var(--u) * 40) calc(var(--u) * 60) calc(var(--u) * -20) rgba(6, 3, 24, 0.7); transform-style: preserve-3d; transition: transform 700ms var(--expo), opacity 500ms var(--ease), filter 700ms var(--ease); }
-    .tj[data-slot="0"] { z-index: 3; transform: translateY(0) scale(1); }
-    .tj[data-slot="1"] { z-index: 2; transform: translateY(calc(var(--u) * -30)) scale(0.93); filter: brightness(0.8); }
-    .tj[data-slot="2"] { z-index: 1; transform: translateY(calc(var(--u) * -58)) scale(0.86); filter: brightness(0.62); }
-    .tj.tap { transform: translateY(calc(var(--u) * 14)) rotateX(24deg) scale(0.98); transition-duration: 260ms; }
-    .tj.sale { transform: translateY(calc(var(--u) * 340)) rotate(-4deg) scale(0.96); opacity: 0; transition-duration: 600ms; }
+    /* --- 1. LA PILA --- */
+    /* Tres credenciales (proporción de tarjeta real, 85,6 x 54) sobre el fondo de la portada, una por producto. Los
+       puestos 1 y 2 quedan detrás, más chicos y oscuros; el 3 es invisible y sirve para que la tarjeta que vuelve al
+       fondo entre con un fundido en vez de aparecer de golpe. La pila entra completa una vez (se anima el envoltorio) */
+    .tj-pila { position: absolute; inset: 0; }
+    .anima .tj-pila { animation: tjEntra 1000ms var(--expo) both; }
+    .tj { --tono: #4A3CAE; position: absolute; left: 50%; top: 50%; width: calc(var(--u) * 480); aspect-ratio: 85.6 / 54; margin: calc(var(--u) * -88) 0 0 calc(var(--u) * -240); border-radius: calc(var(--u) * 20); background: radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, 0.24), transparent 55%), var(--tono); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24), 0 calc(var(--u) * 46) calc(var(--u) * 80) calc(var(--u) * -26) rgba(8, 4, 30, 0.75); transition: transform 900ms var(--expo), opacity 700ms var(--ease), filter 900ms var(--ease); }
+    .tj[data-slot="0"] { z-index: 3; transform: none; }
+    .tj[data-slot="1"] { z-index: 2; transform: translateY(calc(var(--u) * -30)) scale(0.93); filter: brightness(0.82); }
+    .tj[data-slot="2"] { z-index: 1; transform: translateY(calc(var(--u) * -58)) scale(0.86); filter: brightness(0.66); }
+    .tj[data-slot="3"] { z-index: 0; transform: translateY(calc(var(--u) * -82)) scale(0.8); filter: brightness(0.5); opacity: 0; }
+    .tj.va { transform: translateY(calc(var(--u) * 26)) scale(1.1); filter: blur(calc(var(--u) * 10)); opacity: 0; transition-duration: 620ms, 340ms, 620ms; }
     .tj.sin { transition: none; }
+    @keyframes tjEntra { from { opacity: 0; translate: 0 calc(var(--u) * 60); } to { opacity: 1; translate: 0 0; } }
+
+    /* --- 2. CONTENIDO DE CADA TARJETA --- */
+    /* Isotipo arriba a la izquierda (solo Campus y Connect: Health todavía no tiene), señal NFC arriba a la derecha,
+       wordmark y nombre abajo */
     .tj .iso { position: absolute; left: calc(var(--u) * 26); top: calc(var(--u) * 24); width: calc(var(--u) * 44); aspect-ratio: 1; }
     .tj .iso .m { display: block; width: 100%; height: 100%; background: #FFFFFF; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
-    .tj .iso .orbita { display: block; width: 78%; margin: 11%; aspect-ratio: 1; border: calc(var(--u) * 2) solid #FFFFFF; border-radius: 50%; position: relative; }
-    .tj .iso .orbita::after { content: ''; position: absolute; top: calc(var(--u) * -5); left: 50%; width: calc(var(--u) * 8); height: calc(var(--u) * 8); margin-left: calc(var(--u) * -4); border-radius: 50%; background: #FFFFFF; }
-    .tj .nfc { position: absolute; right: calc(var(--u) * 26); top: calc(var(--u) * 26); width: calc(var(--u) * 30); overflow: visible; fill: none; stroke: #FFFFFF; stroke-width: 2.2; stroke-linecap: round; opacity: 0.85; }
+    .tj .nfc { position: absolute; right: calc(var(--u) * 26); top: calc(var(--u) * 26); width: calc(var(--u) * 30); overflow: visible; fill: none; stroke: #FFFFFF; stroke-width: 2.2; stroke-linecap: round; }
+    .tj .nfc path { opacity: 0.45; }
     .tj .tp-wm { position: absolute; left: calc(var(--u) * 28); bottom: calc(var(--u) * 24); width: calc(var(--u) * 150); fill: #FFFFFF; overflow: visible; }
     .tj .tp-wm .onda { display: none; }
     .tj .nom { position: absolute; right: calc(var(--u) * 26); bottom: calc(var(--u) * 24); font: 600 calc(var(--u) * 26) / 1 var(--poppins); letter-spacing: -0.04em; }
-    .ondas { position: absolute; left: 50%; top: 50%; width: calc(var(--u) * 120); aspect-ratio: 1; margin: calc(var(--u) * -60) 0 0 calc(var(--u) * -60); pointer-events: none; z-index: 4; }
-    .ondas i { position: absolute; inset: 0; border: 1.5px solid rgba(255, 255, 255, 0.8); border-radius: 50%; opacity: 0; }
-    .ondas.van i { animation: tjOnda 1100ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards; }
-    .ondas.van i:nth-child(2) { animation-delay: 140ms; } .ondas.van i:nth-child(3) { animation-delay: 280ms; }
-    @keyframes tjOnda { from { opacity: 0.9; scale: 0.6; } to { opacity: 0; scale: 4.2; } }
 
-    /* --- 2. EL WORDMARK A SANGRE --- */
-    /* El wordmark gigante cortado por el borde de la placa, como un afiche. El punto de la i hace tap y cada tap suelta
-       una onda enorme con el tono del producto, que cruza la placa; el nombre aparece junto al punto */
-    .ws-placa { --tono: #4A3CAE; background: #2D2560; transition: background-color 700ms var(--ease); }
-    .ws-placa .tp-wm { position: absolute; left: calc(var(--u) * -18); bottom: calc(var(--u) * -78); width: calc(var(--u) * 830); fill: #FFFFFF; overflow: visible; }
-    .ws-placa .tp-wm .onda { stroke: var(--tono); stroke-width: 3; }
-    .ws-placa .l { opacity: 0; transform-box: fill-box; transform-origin: 50% 100%; }
-    .ws-placa .punto { opacity: 0; transform-box: fill-box; transform-origin: 50% 100%; }
-    .ws-placa .onda { fill: none; vector-effect: non-scaling-stroke; opacity: 0; transform-box: fill-box; transform-origin: center; }
-    .anima .ws-placa .l { animation: wsLetra 1000ms var(--expo) calc(100ms + var(--k) * 80ms) forwards; }
-    .anima .ws-placa .punto { animation: wsCae 650ms cubic-bezier(0.5, 0, 0.75, 0) 700ms forwards, wsAplasta 500ms var(--expo) 1350ms; }
-    .ws-placa .punto.tap { animation: wsAplasta 520ms var(--expo) !important; opacity: 1; }
-    .ws-placa .onda.tap { animation: wsOnda 1600ms cubic-bezier(0.2, 0.7, 0.3, 1) !important; }
-    @keyframes wsLetra { from { opacity: 0; translate: 0 120px; } to { opacity: 1; translate: 0 0; } }
-    @keyframes wsCae { from { opacity: 1; translate: 0 -260px; } to { opacity: 1; translate: 0 0; } }
-    @keyframes wsAplasta { 0% { scale: 1.14 0.76; } 100% { scale: 1 1; } }
-    @keyframes wsOnda { from { opacity: 1; scale: 1; } to { opacity: 0; scale: 16; } }
-    .ws-nom { position: absolute; left: calc(var(--u) * 640); top: calc(var(--u) * 120); display: grid; }
-    .ws-nom span { grid-area: 1 / 1; display: flex; flex-direction: column; gap: calc(var(--u) * 6); opacity: 0; translate: 0 calc(var(--u) * 10); transition: opacity 400ms var(--ease), translate 600ms var(--expo); }
-    .ws-nom span.on { opacity: 1; translate: 0 0; }
-    .ws-nom b { font: 600 calc(var(--u) * 30) / 1 var(--poppins); letter-spacing: -0.04em; }
-    .ws-nom small { color: rgba(255, 255, 255, 0.6); font: 400 calc(var(--u) * 11) var(--mono); }
-
-    /* --- 3. BANDAS DE PRODUCTO --- */
-    /* El sistema completo a la vista: tres bandas, una por producto, con su tono. La activa se abre y muestra el lockup
-       entero; las otras quedan como lomos con su nombre. Va rotando sola */
-    .bd-placa { flex-direction: column; background: #120E33; }
-    .bd-placa.on { display: flex; }
-    .bd { --tono: #4A3CAE; position: relative; flex: 0 0 calc(var(--u) * 64); overflow: hidden; background: var(--tono); transition: flex-grow 800ms var(--expo), flex-basis 800ms var(--expo); }
-    .bd.on { flex: 1 1 0; }
-    .bd-lomo { position: absolute; left: calc(var(--u) * 28); right: calc(var(--u) * 28); top: 0; height: calc(var(--u) * 64); display: flex; align-items: center; justify-content: space-between; font: 400 calc(var(--u) * 12) var(--mono); color: rgba(255, 255, 255, 0.82); transition: opacity 300ms linear; }
-    .bd.on .bd-lomo { opacity: 0; }
-    .bd-lock { position: absolute; left: 50%; top: 50%; display: grid; grid-template-columns: calc(var(--u) * 70) calc(var(--u) * 220) auto; column-gap: calc(var(--u) * 22); align-items: center; translate: -50% -40%; opacity: 0; transition: opacity 300ms linear, translate 800ms var(--expo); }
-    .bd.on .bd-lock { opacity: 1; translate: -50% -54%; transition-delay: 200ms; }
-    .bd-lock .iso { width: 100%; aspect-ratio: 1; }
-    .bd-lock .iso .m { display: block; width: 100%; height: 100%; background: #FFFFFF; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
-    .bd-lock .iso .orbita { display: block; width: 78%; margin: 11%; aspect-ratio: 1; border: calc(var(--u) * 2) solid #FFFFFF; border-radius: 50%; position: relative; }
-    .bd-lock .iso .orbita::after { content: ''; position: absolute; top: calc(var(--u) * -6); left: 50%; width: calc(var(--u) * 10); height: calc(var(--u) * 10); margin-left: calc(var(--u) * -5); border-radius: 50%; background: #FFFFFF; }
-    .bd-lock .tp-wm { width: 100%; fill: #FFFFFF; overflow: visible; }
-    .bd-lock .tp-wm .onda { display: none; }
-    .bd-lock b { font: 600 calc(var(--u) * 64) / 1 var(--poppins); letter-spacing: -0.045em; }
+    /* --- 3. EL TAP --- */
+    /* La tarjeta del frente se apoya (baja y se comprime un instante), la señal NFC se enciende de adentro hacia afuera,
+       salen ondas desde ese punto y un brillo cruza la tarjeta. Después pasa hacia adelante y se desvanece: entró */
+    .tj::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.3) 50%, transparent 62%) 100% 0 / 250% 100% no-repeat; pointer-events: none; }
+    .tj.tap { animation: tjApoya 560ms var(--ease); }
+    .tj.tap::after { animation: tjBrillo 900ms var(--ease) 120ms both; }
+    .tj.tap .nfc path { animation: tjSenal 700ms var(--ease) both; }
+    .tj.tap .nfc path:nth-child(2) { animation-delay: 90ms; }
+    .tj.tap .nfc path:nth-child(3) { animation-delay: 180ms; }
+    .tj .ondas { position: absolute; right: calc(var(--u) * -9); top: calc(var(--u) * -9); width: calc(var(--u) * 100); aspect-ratio: 1; pointer-events: none; }
+    .tj .ondas i { position: absolute; inset: 0; border: 1.5px solid rgba(255, 255, 255, 0.75); border-radius: 50%; opacity: 0; }
+    .tj .ondas.van i { animation: tjOnda 1200ms cubic-bezier(0.2, 0.7, 0.3, 1) 180ms forwards; }
+    .tj .ondas.van i:nth-child(2) { animation-delay: 320ms; }
+    .tj .ondas.van i:nth-child(3) { animation-delay: 460ms; }
+    @keyframes tjApoya { 0% { translate: 0 0; scale: 1; } 30% { translate: 0 calc(var(--u) * 8); scale: 0.975; } 100% { translate: 0 0; scale: 1; } }
+    @keyframes tjBrillo { from { background-position: 100% 0; } to { background-position: 0% 0; } }
+    @keyframes tjSenal { 0% { opacity: 0.45; } 35% { opacity: 1; } 100% { opacity: 1; } }
+    @keyframes tjOnda { from { opacity: 0.9; scale: 0.3; } to { opacity: 0; scale: 3.6; } }
 
     /* =======================================================
        VISTA MÓVIL Y MOVIMIENTO REDUCIDO
@@ -184,7 +155,7 @@
     @media (max-width: 860px) {
         .rot, .intro h1, .intro ul, .proy-txt, .proy-vista { grid-column: 1 / -1; }
         .proy-txt { position: static; }
-        .botones, .pasos-txt { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .pasos-txt { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
@@ -192,12 +163,12 @@
 </style>
 
 <header class="intro grilla">
-    <span class="rot mono">Ronda 5 · Destacados</span>
-    <h1>Llegó con su isotipo real y tres placas para Tap In</h1>
+    <span class="rot mono">Ronda 6 · Destacados</span>
+    <h1>Las dos marcas, sin placa y sobre el fondo</h1>
     <ul>
-        <li><span class="mono">01</span><span><b>Llegó.</b> La animación usa solo el isotipo que quedó. El barrido ahora es un nodo que viaja, destapa la palabra y se vuelve la o; el tilde se marca al llegar. La placa queda limpia: solo el logo.</span></li>
-        <li><span class="mono">02</span><span><b>Tap In.</b> Tres placas nuevas: tarjetas que hacen tap, el wordmark a sangre y las bandas de producto.</span></li>
-        <li><span class="mono">03</span><span><b>Ya está en el home.</b> En uso de Llegó como secuencia (la papelería cambió por la entrega) y las portadas suben como hoja, igual que el archivo sobre Mend.</span></li>
+        <li><span class="mono">01</span><span><b>Llegó.</b> Sin el bloque detrás. Las fases se encadenan sin pausas, el mensajero se estira al viajar, destapa la palabra con un borde difuso y se abre en la o.</span></li>
+        <li><span class="mono">02</span><span><b>Tap In.</b> Las tarjetas, sin el bloque detrás. El tap ahora es físico: la tarjeta se apoya, se enciende la señal, salen ondas desde ahí y un brillo la cruza; luego pasa hacia adelante y la siguiente avanza.</span></li>
+        <li><span class="mono">03</span><span><b>Health sin isotipo.</b> Esa rama todavía no se desarrolla, así que su tarjeta lleva solo la señal, el wordmark y el nombre.</span></li>
     </ul>
 </header>
 
@@ -209,18 +180,18 @@
         <span class="mono">01 · Llegó Farma</span>
         <strong id="t-lf">Se arma la red y el punto entrega</strong>
         <p>El isotipo es una cruz de cinco nodos alrededor de un centro. La animación lo construye desde ahí y después cuenta el nombre: llegó.</p>
-        <p>Dura 3,6 s y corre una vez al abrir Marca, como Mend.</p>
+        <p>Dura 3,5 s y corre una vez al abrir Marca, como Mend.</p>
     </div>
     <div class="proy-vista">
         <div class="barra-ctl"><h3>Marca de Llegó Farma</h3><button type="button" class="ctl" data-repetir="lf">Repetir ↻</button></div>
         <div class="cv" data-marca="lf">
             <img class="base" src="v-llego-marca.webp" alt="Portada de Llegó Farma con el capítulo Marca">
-            <div class="vista"><div class="placa lf-placa"><svg class="lf-svg" viewBox="-110 -185 656 506" role="img" aria-label="Logo de Llegó Farma"><defs><mask id="lfBrazos" maskUnits="userSpaceOnUse" x="-20" y="20" width="80" height="70"><path class="brazo" pathLength="1" d="M32 41.2 H 4"/><path class="brazo" pathLength="1" d="M32 41.2 V 66"/></mask><clipPath id="lfBarre" clipPathUnits="userSpaceOnUse"><rect class="corte" x="-500" y="-20" width="500" height="130"/></clipPath></defs><circle class="centro" cx="32" cy="41.2" r="8.4"/><path class="cuerpo" mask="url(#lfBrazos)" d="M 39.5625 44.035156 C 41.648438 39.601562 38.1875 33.785156 33.277344 33.214844 C 26.695312 31.953125 23.941406 41.324219 17.160156 37.945312 C 14.140625 36.332031 11.769531 33.039062 8.007812 33.203125 C 3.238281 33.042969 -0.730469 37.710938 0.167969 42.394531 C 0.910156 48.011719 7.957031 50.824219 12.464844 47.554688 C 14.273438 46.378906 15.796875 44.644531 17.871094 43.917969 C 22.324219 42.289062 26.398438 46.109375 28.671875 49.523438 C 31.773438 54.394531 27.949219 57.664062 25.378906 61.484375 C 22.207031 66.832031 26.773438 73.980469 32.980469 73.246094 C 40.316406 72.46875 42.269531 63.78125 37.25 58.925781 L 37.128906 58.78125 C 34.457031 56.054688 33.769531 51.753906 36.351562 48.710938 C 37.464844 47.203125 38.855469 45.769531 39.5625 44.035156 "/><path class="nodo n-arriba" d="M 24.066406 16.617188 C 23.617188 27.65625 39.695312 28.304688 40.203125 17.3125 L 40.203125 17.121094 C 39.835938 6.890625 25.0625 6.378906 24.066406 16.617188 "/><path class="nodo n-derecha" d="M 48.015625 40.59375 C 47.566406 51.628906 63.644531 52.28125 64.152344 41.285156 L 64.152344 41.09375 C 63.785156 30.863281 49.007812 30.351562 48.015625 40.59375 "/><g clip-path="url(#lfBarre)"><path d="M 140.871094 57.773438 L 140.867188 66.375 L 106.867188 66.363281 L 106.863281 10.941406 L 116.4375 10.941406 L 116.429688 57.785156 Z M 140.871094 57.773438 "/><path d="M 178.285156 35.878906 C 182.296875 31.796875 188.71875 31.167969 193.449219 34.417969 C 196.226562 36.320312 197.734375 39.425781 197.796875 42.894531 L 175.53125 42.898438 C 175.375 40.28125 176.410156 37.785156 178.285156 35.878906 M 192.964844 59.589844 C 189.414062 60.78125 185.777344 60.523438 182.367188 59.0625 C 178.21875 57.289062 175.933594 53.863281 175.429688 49.222656 L 206.949219 49.21875 C 206.5 44.535156 205.863281 39.8125 203.9375 35.664062 C 201.964844 31.453125 198.605469 28.238281 194.238281 26.59375 C 183.355469 22.496094 171.496094 27.515625 167.5625 38.378906 C 165.605469 43.792969 165.664062 49.679688 167.816406 55.136719 L 160.6875 58.738281 C 159.652344 59.261719 158.601562 59.648438 157.417969 59.679688 C 154.703125 59.679688 153.675781 57.457031 153.566406 54.699219 L 153.5625 10.882812 L 144.902344 10.886719 L 144.894531 49.113281 L 144.925781 57.808594 C 144.9375 62.019531 147.195312 66.042969 151.375 67.328125 C 155.488281 68.605469 159.921875 68.25 163.890625 66.460938 C 166.90625 65.101562 169.648438 63.515625 172.519531 61.917969 C 178.828125 67.921875 187.089844 68.410156 195.214844 66.378906 C 198.386719 65.417969 201.230469 63.871094 203.617188 61.574219 L 199.691406 55.972656 C 197.570312 57.546875 195.414062 58.792969 192.964844 59.589844 "/><path d="M 241.1875 51.777344 C 241.1875 52.914062 240.859375 53.859375 240.148438 54.621094 C 237.996094 56.921875 235.164062 58.425781 232.003906 58.742188 C 226.550781 59.289062 221.707031 56.019531 220.207031 50.789062 C 219.214844 47.320312 219.261719 43.726562 220.417969 40.308594 C 222 35.640625 226.339844 32.746094 231.269531 32.9375 C 233.832031 33.035156 236.054688 33.992188 238.148438 35.382812 C 239.703125 36.414062 240.792969 37.792969 241.074219 39.691406 L 241.203125 44.09375 Z M 249.875 26.199219 L 242.085938 26.183594 C 241.515625 26.179688 241.15625 26.554688 241.152344 27.117188 L 241.199219 30.742188 C 241.203125 31.003906 241.121094 31.203125 240.964844 31.3125 C 240.460938 31.664062 240.566406 30.847656 239.328125 29.679688 C 232.792969 23.523438 222.128906 23.554688 215.910156 30.214844 C 209.414062 37.171875 208.863281 48.164062 212.539062 56.613281 C 216.230469 65.09375 225.871094 68.828125 234.328125 65.1875 C 236.925781 64.070312 239.023438 62.347656 240.960938 60.234375 L 241.066406 66.113281 C 240.929688 68.988281 239.75 71.511719 237.40625 73.1875 C 233.878906 75.707031 229.769531 75.832031 225.472656 75.308594 C 221.929688 74.878906 218.832031 73.097656 216.5 70.433594 L 212.429688 76.78125 C 219.382812 83.308594 228.949219 83.976562 237.851562 81.574219 C 243.648438 80.007812 248.257812 75.800781 249.402344 69.839844 C 249.691406 68.328125 249.878906 66.960938 249.878906 65.355469 Z M 249.875 26.199219 "/></g><path class="letra-o" d="M 276.484375 66.28125 L 254.914062 66.375 C 254.449219 66.375 254.003906 65.972656 254.007812 65.539062 L 254.039062 55.980469 L 254 44.453125 C 254.242188 33.273438 263.09375 24.1875 274.234375 23.644531 C 278.167969 23.453125 281.90625 24.238281 285.398438 26.097656 L 278.890625 32.214844 C 270.757812 30.003906 262.753906 35.683594 262.132812 43.984375 C 261.507812 52.308594 268.699219 59.222656 277.097656 58.109375 C 285.148438 57.042969 290.617188 48.757812 287.878906 40.722656 L 294.179688 34.777344 C 297.695312 41.433594 297.660156 49.355469 293.664062 56.039062 C 290.226562 61.785156 283.75 66.066406 276.484375 66.28125 "/><path class="tilde" d="M 282.394531 43.382812 C 278.699219 45.902344 273.460938 46.050781 268.886719 45.46875 L 288.183594 27.386719 C 291.816406 23.984375 298.382812 22.257812 303.171875 23.964844 Z M 282.394531 43.382812 "/><circle class="mensajero" cx="56.1" cy="41.2" r="8"/><circle class="llegada" cx="275.4" cy="45" r="10"/><path class="divisor" d="M 343.058594 82.488281 L 339.484375 82.488281 L 339.484375 0 L 343.058594 0 Z M 343.058594 82.488281 "/><g class="linea-f"><path d="M 389.292969 26.664062 L 389.289062 42.585938 L 385.9375 42.546875 L 385.933594 26.667969 L 382.199219 26.652344 L 382.203125 23.710938 L 385.933594 23.703125 C 385.890625 21.261719 385.871094 18.722656 387.863281 17.25 C 389.699219 15.890625 392.296875 15.976562 394.605469 16.304688 L 394.632812 19.140625 C 392.34375 18.976562 389.640625 18.691406 389.375 21.070312 C 389.28125 21.941406 389.289062 22.78125 389.285156 23.707031 L 394.609375 23.707031 L 394.652344 26.644531 Z M 389.292969 26.664062 "/><path d="M 404.460938 39.960938 C 406.464844 40.125 408.425781 39.277344 409.734375 37.859375 C 412.460938 34.910156 412.074219 28.863281 407.734375 26.863281 C 405.910156 26.023438 403.917969 26.027344 402.089844 26.863281 C 398.789062 28.375 397.582031 32.542969 398.933594 35.898438 C 399.863281 38.21875 401.867188 39.75 404.460938 39.960938 M 414.761719 42.53125 L 411.695312 42.578125 L 411.539062 39.585938 L 410.71875 40.480469 C 409.027344 42.324219 406.644531 42.933594 404.226562 42.882812 C 398.777344 42.769531 394.917969 38.269531 394.988281 32.957031 C 395.054688 27.785156 398.757812 23.417969 404.085938 23.390625 L 405.261719 23.382812 C 407.785156 23.527344 410.011719 24.628906 411.515625 26.726562 L 411.574219 23.714844 L 414.757812 23.703125 Z M 414.761719 42.53125 "/><path d="M 421.207031 28.042969 L 421.203125 42.566406 L 417.972656 42.574219 L 418.003906 27.597656 C 418.003906 26.421875 418.613281 25.253906 419.496094 24.589844 C 420.140625 24.101562 421.042969 23.75 421.855469 23.742188 L 427.738281 23.703125 L 427.742188 26.65625 L 421.558594 26.648438 C 421.375 26.75 421.25 27.035156 421.242188 27.226562 Z M 421.207031 28.042969 "/></g><g class="linea-f"><path d="M 402.949219 51.304688 C 402.234375 52.191406 401.785156 53.351562 401.785156 54.53125 L 401.753906 66.070312 L 398.421875 66.054688 L 398.363281 54.042969 C 398.355469 52.675781 397.730469 51.355469 396.695312 50.5625 C 395.292969 49.492188 393.398438 49.480469 391.835938 50.285156 C 389.882812 51.289062 389.339844 53.660156 389.335938 55.875 L 389.316406 66.074219 L 385.945312 66.042969 L 385.941406 47.210938 L 388.980469 47.1875 L 389.070312 49.75 C 390.378906 48.015625 392.015625 46.925781 394.148438 46.890625 L 395.0625 46.878906 C 397.460938 46.835938 399.613281 47.953125 400.75 50.289062 C 401.695312 48.382812 404.226562 46.886719 406.101562 46.875 L 407.671875 46.867188 C 411.347656 46.84375 414.152344 50.019531 414.167969 53.808594 L 414.210938 66.054688 L 410.867188 66.070312 L 410.828125 54.699219 C 410.824219 53.289062 410.421875 51.898438 409.484375 50.890625 C 408.011719 49.3125 404.65625 49.183594 402.949219 51.304688 "/><path d="M 432.929688 57.234375 L 432.929688 55.761719 C 432.636719 52.503906 430.125 49.902344 426.839844 49.734375 C 424.054688 49.59375 421.597656 51.007812 420.488281 53.59375 C 419.671875 55.503906 419.722656 57.8125 420.578125 59.699219 C 421.507812 61.742188 423.269531 62.980469 425.414062 63.382812 C 428.945312 64.046875 432.6875 61.324219 432.929688 57.234375 M 436.328125 66.035156 L 433.175781 66.082031 L 433.050781 63.015625 C 431.410156 65.253906 429.210938 66.230469 426.570312 66.371094 C 421.332031 66.65625 416.90625 62.796875 416.582031 57.519531 C 416.511719 56.359375 416.550781 55.191406 416.820312 53.992188 C 417.421875 51.3125 419.242188 49.039062 421.671875 47.832031 C 422.890625 47.230469 424.054688 46.839844 425.378906 46.855469 L 426.84375 46.875 C 428.765625 46.898438 430.714844 47.605469 432.007812 49.054688 L 433.019531 50.191406 L 433.15625 47.195312 L 436.316406 47.199219 Z M 436.328125 66.035156 "/></g></svg></div></div>
+            <div class="vista"><div class="placa lf-placa"><svg class="lf-svg" viewBox="-110 -185 656 506" role="img" aria-label="Logo de Llegó Farma"><defs><mask id="lfBrazos" maskUnits="userSpaceOnUse" x="-20" y="20" width="80" height="70"><path class="brazo" pathLength="1" d="M32 41.2 H 4"/><path class="brazo" pathLength="1" d="M32 41.2 V 66"/></mask><linearGradient id="lfPluma"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.93" stop-color="#FFFFFF"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient><mask id="lfBarre" maskUnits="userSpaceOnUse" x="-20" y="-20" width="480" height="140"><rect class="corte" x="-500" y="-20" width="500" height="130" fill="url(#lfPluma)"/></mask></defs><circle class="centro" cx="32" cy="41.2" r="8.4"/><path class="cuerpo" mask="url(#lfBrazos)" d="M 39.5625 44.035156 C 41.648438 39.601562 38.1875 33.785156 33.277344 33.214844 C 26.695312 31.953125 23.941406 41.324219 17.160156 37.945312 C 14.140625 36.332031 11.769531 33.039062 8.007812 33.203125 C 3.238281 33.042969 -0.730469 37.710938 0.167969 42.394531 C 0.910156 48.011719 7.957031 50.824219 12.464844 47.554688 C 14.273438 46.378906 15.796875 44.644531 17.871094 43.917969 C 22.324219 42.289062 26.398438 46.109375 28.671875 49.523438 C 31.773438 54.394531 27.949219 57.664062 25.378906 61.484375 C 22.207031 66.832031 26.773438 73.980469 32.980469 73.246094 C 40.316406 72.46875 42.269531 63.78125 37.25 58.925781 L 37.128906 58.78125 C 34.457031 56.054688 33.769531 51.753906 36.351562 48.710938 C 37.464844 47.203125 38.855469 45.769531 39.5625 44.035156 "/><path class="nodo n-arriba" d="M 24.066406 16.617188 C 23.617188 27.65625 39.695312 28.304688 40.203125 17.3125 L 40.203125 17.121094 C 39.835938 6.890625 25.0625 6.378906 24.066406 16.617188 "/><path class="nodo n-derecha" d="M 48.015625 40.59375 C 47.566406 51.628906 63.644531 52.28125 64.152344 41.285156 L 64.152344 41.09375 C 63.785156 30.863281 49.007812 30.351562 48.015625 40.59375 "/><g mask="url(#lfBarre)"><path d="M 140.871094 57.773438 L 140.867188 66.375 L 106.867188 66.363281 L 106.863281 10.941406 L 116.4375 10.941406 L 116.429688 57.785156 Z M 140.871094 57.773438 "/><path d="M 178.285156 35.878906 C 182.296875 31.796875 188.71875 31.167969 193.449219 34.417969 C 196.226562 36.320312 197.734375 39.425781 197.796875 42.894531 L 175.53125 42.898438 C 175.375 40.28125 176.410156 37.785156 178.285156 35.878906 M 192.964844 59.589844 C 189.414062 60.78125 185.777344 60.523438 182.367188 59.0625 C 178.21875 57.289062 175.933594 53.863281 175.429688 49.222656 L 206.949219 49.21875 C 206.5 44.535156 205.863281 39.8125 203.9375 35.664062 C 201.964844 31.453125 198.605469 28.238281 194.238281 26.59375 C 183.355469 22.496094 171.496094 27.515625 167.5625 38.378906 C 165.605469 43.792969 165.664062 49.679688 167.816406 55.136719 L 160.6875 58.738281 C 159.652344 59.261719 158.601562 59.648438 157.417969 59.679688 C 154.703125 59.679688 153.675781 57.457031 153.566406 54.699219 L 153.5625 10.882812 L 144.902344 10.886719 L 144.894531 49.113281 L 144.925781 57.808594 C 144.9375 62.019531 147.195312 66.042969 151.375 67.328125 C 155.488281 68.605469 159.921875 68.25 163.890625 66.460938 C 166.90625 65.101562 169.648438 63.515625 172.519531 61.917969 C 178.828125 67.921875 187.089844 68.410156 195.214844 66.378906 C 198.386719 65.417969 201.230469 63.871094 203.617188 61.574219 L 199.691406 55.972656 C 197.570312 57.546875 195.414062 58.792969 192.964844 59.589844 "/><path d="M 241.1875 51.777344 C 241.1875 52.914062 240.859375 53.859375 240.148438 54.621094 C 237.996094 56.921875 235.164062 58.425781 232.003906 58.742188 C 226.550781 59.289062 221.707031 56.019531 220.207031 50.789062 C 219.214844 47.320312 219.261719 43.726562 220.417969 40.308594 C 222 35.640625 226.339844 32.746094 231.269531 32.9375 C 233.832031 33.035156 236.054688 33.992188 238.148438 35.382812 C 239.703125 36.414062 240.792969 37.792969 241.074219 39.691406 L 241.203125 44.09375 Z M 249.875 26.199219 L 242.085938 26.183594 C 241.515625 26.179688 241.15625 26.554688 241.152344 27.117188 L 241.199219 30.742188 C 241.203125 31.003906 241.121094 31.203125 240.964844 31.3125 C 240.460938 31.664062 240.566406 30.847656 239.328125 29.679688 C 232.792969 23.523438 222.128906 23.554688 215.910156 30.214844 C 209.414062 37.171875 208.863281 48.164062 212.539062 56.613281 C 216.230469 65.09375 225.871094 68.828125 234.328125 65.1875 C 236.925781 64.070312 239.023438 62.347656 240.960938 60.234375 L 241.066406 66.113281 C 240.929688 68.988281 239.75 71.511719 237.40625 73.1875 C 233.878906 75.707031 229.769531 75.832031 225.472656 75.308594 C 221.929688 74.878906 218.832031 73.097656 216.5 70.433594 L 212.429688 76.78125 C 219.382812 83.308594 228.949219 83.976562 237.851562 81.574219 C 243.648438 80.007812 248.257812 75.800781 249.402344 69.839844 C 249.691406 68.328125 249.878906 66.960938 249.878906 65.355469 Z M 249.875 26.199219 "/></g><path class="letra-o" d="M 276.484375 66.28125 L 254.914062 66.375 C 254.449219 66.375 254.003906 65.972656 254.007812 65.539062 L 254.039062 55.980469 L 254 44.453125 C 254.242188 33.273438 263.09375 24.1875 274.234375 23.644531 C 278.167969 23.453125 281.90625 24.238281 285.398438 26.097656 L 278.890625 32.214844 C 270.757812 30.003906 262.753906 35.683594 262.132812 43.984375 C 261.507812 52.308594 268.699219 59.222656 277.097656 58.109375 C 285.148438 57.042969 290.617188 48.757812 287.878906 40.722656 L 294.179688 34.777344 C 297.695312 41.433594 297.660156 49.355469 293.664062 56.039062 C 290.226562 61.785156 283.75 66.066406 276.484375 66.28125 "/><path class="tilde" d="M 282.394531 43.382812 C 278.699219 45.902344 273.460938 46.050781 268.886719 45.46875 L 288.183594 27.386719 C 291.816406 23.984375 298.382812 22.257812 303.171875 23.964844 Z M 282.394531 43.382812 "/><circle class="mensajero" cx="56.1" cy="41.2" r="8"/><circle class="llegada" cx="275.4" cy="45" r="10"/><path class="divisor" d="M 343.058594 82.488281 L 339.484375 82.488281 L 339.484375 0 L 343.058594 0 Z M 343.058594 82.488281 "/><g class="linea-f"><path d="M 389.292969 26.664062 L 389.289062 42.585938 L 385.9375 42.546875 L 385.933594 26.667969 L 382.199219 26.652344 L 382.203125 23.710938 L 385.933594 23.703125 C 385.890625 21.261719 385.871094 18.722656 387.863281 17.25 C 389.699219 15.890625 392.296875 15.976562 394.605469 16.304688 L 394.632812 19.140625 C 392.34375 18.976562 389.640625 18.691406 389.375 21.070312 C 389.28125 21.941406 389.289062 22.78125 389.285156 23.707031 L 394.609375 23.707031 L 394.652344 26.644531 Z M 389.292969 26.664062 "/><path d="M 404.460938 39.960938 C 406.464844 40.125 408.425781 39.277344 409.734375 37.859375 C 412.460938 34.910156 412.074219 28.863281 407.734375 26.863281 C 405.910156 26.023438 403.917969 26.027344 402.089844 26.863281 C 398.789062 28.375 397.582031 32.542969 398.933594 35.898438 C 399.863281 38.21875 401.867188 39.75 404.460938 39.960938 M 414.761719 42.53125 L 411.695312 42.578125 L 411.539062 39.585938 L 410.71875 40.480469 C 409.027344 42.324219 406.644531 42.933594 404.226562 42.882812 C 398.777344 42.769531 394.917969 38.269531 394.988281 32.957031 C 395.054688 27.785156 398.757812 23.417969 404.085938 23.390625 L 405.261719 23.382812 C 407.785156 23.527344 410.011719 24.628906 411.515625 26.726562 L 411.574219 23.714844 L 414.757812 23.703125 Z M 414.761719 42.53125 "/><path d="M 421.207031 28.042969 L 421.203125 42.566406 L 417.972656 42.574219 L 418.003906 27.597656 C 418.003906 26.421875 418.613281 25.253906 419.496094 24.589844 C 420.140625 24.101562 421.042969 23.75 421.855469 23.742188 L 427.738281 23.703125 L 427.742188 26.65625 L 421.558594 26.648438 C 421.375 26.75 421.25 27.035156 421.242188 27.226562 Z M 421.207031 28.042969 "/></g><g class="linea-f"><path d="M 402.949219 51.304688 C 402.234375 52.191406 401.785156 53.351562 401.785156 54.53125 L 401.753906 66.070312 L 398.421875 66.054688 L 398.363281 54.042969 C 398.355469 52.675781 397.730469 51.355469 396.695312 50.5625 C 395.292969 49.492188 393.398438 49.480469 391.835938 50.285156 C 389.882812 51.289062 389.339844 53.660156 389.335938 55.875 L 389.316406 66.074219 L 385.945312 66.042969 L 385.941406 47.210938 L 388.980469 47.1875 L 389.070312 49.75 C 390.378906 48.015625 392.015625 46.925781 394.148438 46.890625 L 395.0625 46.878906 C 397.460938 46.835938 399.613281 47.953125 400.75 50.289062 C 401.695312 48.382812 404.226562 46.886719 406.101562 46.875 L 407.671875 46.867188 C 411.347656 46.84375 414.152344 50.019531 414.167969 53.808594 L 414.210938 66.054688 L 410.867188 66.070312 L 410.828125 54.699219 C 410.824219 53.289062 410.421875 51.898438 409.484375 50.890625 C 408.011719 49.3125 404.65625 49.183594 402.949219 51.304688 "/><path d="M 432.929688 57.234375 L 432.929688 55.761719 C 432.636719 52.503906 430.125 49.902344 426.839844 49.734375 C 424.054688 49.59375 421.597656 51.007812 420.488281 53.59375 C 419.671875 55.503906 419.722656 57.8125 420.578125 59.699219 C 421.507812 61.742188 423.269531 62.980469 425.414062 63.382812 C 428.945312 64.046875 432.6875 61.324219 432.929688 57.234375 M 436.328125 66.035156 L 433.175781 66.082031 L 433.050781 63.015625 C 431.410156 65.253906 429.210938 66.230469 426.570312 66.371094 C 421.332031 66.65625 416.90625 62.796875 416.582031 57.519531 C 416.511719 56.359375 416.550781 55.191406 416.820312 53.992188 C 417.421875 51.3125 419.242188 49.039062 421.671875 47.832031 C 422.890625 47.230469 424.054688 46.839844 425.378906 46.855469 L 426.84375 46.875 C 428.765625 46.898438 430.714844 47.605469 432.007812 49.054688 L 433.019531 50.191406 L 433.15625 47.195312 L 436.316406 47.199219 Z M 436.328125 66.035156 "/></g></svg></div></div>
         </div>
         <ol class="pasos-txt">
             <li><b>Centro</b>Aparece el nodo central con un pequeño rebote.</li>
             <li><b>Conexiones</b>Los brazos crecen hacia la izquierda y hacia abajo; los dos nodos sueltos llegan a su lugar.</li>
-            <li><b>Entrega</b>El nodo de la derecha sale como mensajero, destapa la palabra y se vuelve la o.</li>
+            <li><b>Entrega</b>El nodo de la derecha sale como mensajero, destapa la palabra con un borde difuso y se abre en la o.</li>
             <li><b>Visto</b>El tilde se marca como una confirmación; se levanta la línea y entra farma.</li>
         </ol>
     </div>
@@ -232,31 +203,17 @@
 <section class="proy grilla" aria-labelledby="t-tp">
     <div class="proy-txt">
         <span class="mono">02 · Tap In</span>
-        <strong id="t-tp">Tres placas de marca</strong>
-        <p>La anterior era el lockup suelto sobre un color plano. Estas parten de lo que Tap In es: una credencial que se toca para entrar.</p>
-        <p>Recomiendo las tarjetas: se entienden sin texto, muestran los tres productos con su tono y el tap es literal.</p>
+        <strong id="t-tp">Tarjetas que hacen tap</strong>
+        <p>Tap In es una credencial que se toca para entrar. Cada tarjeta hace tap y pasa; la siguiente avanza. Un ciclo cada 3,2 s.</p>
+        <p>Campus y Connect con su isotipo. Health todavía no tiene, así que va sin él.</p>
     </div>
     <div class="proy-vista">
-        <div class="botones" data-grupo="tp">
-            <button type="button" class="op" aria-pressed="true" data-o="tj"><span class="mono">01</span><b>Tarjetas que hacen tap</b>Tres credenciales apiladas; la del frente hace tap y pasa la siguiente.<span class="rec">Recomendada</span></button>
-            <button type="button" class="op" aria-pressed="false" data-o="ws"><span class="mono">02</span><b>Wordmark a sangre</b>El wordmark gigante y cortado; cada tap de la i suelta una onda de color.</button>
-            <button type="button" class="op" aria-pressed="false" data-o="bd"><span class="mono">03</span><b>Bandas de producto</b>Tres bandas con su tono; la activa se abre y muestra el lockup.</button>
-        </div>
-        <div class="barra-ctl"><span class="mono">Ciclo automático cada 2,8 s</span><button type="button" class="ctl" data-repetir="tp">Repetir ↻</button></div>
+        <div class="barra-ctl"><h3>Marca de Tap In</h3><button type="button" class="ctl" data-repetir="tp">Repetir ↻</button></div>
         <div class="cv" data-marca="tp">
             <img class="base" src="v-tapin-marca.webp" alt="Portada de Tap In con el capítulo Marca">
             <div class="vista">
-                <div class="placa tj-placa opcion on" data-o="tj">
-                    <span class="tj-lector"></span>
-                    <div class="tj" data-slot="0" style="--tono:#4A3CAE"><span class="iso"><span class="m" style="--svg:url('tp-forky.svg')"></span></span><svg class="nfc" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5a5 5 0 0 1 0 7"/><path d="M11 5.5a9.5 9.5 0 0 1 0 13"/><path d="M15 2.5a14 14 0 0 1 0 19"/></svg><svg class="tp-wm" viewBox="0 -24 389.87 174.6" role="img" aria-label="tap in"><path class="l" style="--k:0" d="M40.67,87.8c-5.84,0-10.58-4.75-10.58-10.62h.03v-12.91h14.7v-30.1h-14.7V14H.14v20.17h-.14v30.1l.02,12.91C.02,99.72,18.22,117.99,40.67,117.99c1.4,0,2.78-.07,4.15-.21v-30.83c-1.27.55-2.67.85-4.15.85Z"/><path class="l" style="--k:1" d="M108.81,35.52v3.81c-5.86-3.29-12.61-5.17-19.79-5.17-22.44,0-40.64,18.26-40.64,40.79s18.19,40.79,40.64,40.79c7.19,0,13.94-1.88,19.79-5.17v5.17h29.84V35.52h-29.84ZM108.8,76.8c-.2,8.74-7.32,15.77-16.07,15.77s-16.08-7.23-16.08-16.14,7.2-16.14,16.08-16.14c8.23,0,15.01,6.21,15.96,14.21h.12v2.31h0Z"/><path class="l" style="--k:2" d="M193.83,34.17c-7.19,0-13.94,1.88-19.79,5.17v-3.81h-29.84v115.08h29.84v-40.01c5.86,3.29,12.61,5.17,19.79,5.17,22.44,0,40.64-18.26,40.64-40.79s-18.19-40.79-40.64-40.79ZM190.12,92.57c-8.76,0-15.87-7.03-16.07-15.77h0v-2.31h.04v.87c.55-8.42,7.52-15.07,16.04-15.07s16.08,7.23,16.08,16.14-7.2,16.14-16.08,16.14Z"/><rect class="l" style="--k:3" x="262.57" y="35.52" width="29.99" height="80.23"/><path class="l" style="--k:4" d="M389.87,78.96c0-23.99-19.37-43.44-43.28-43.44-6.68,0-13,1.52-18.64,4.23v-4.23h-29.99v80.23h29.99v-36.73h.08c.75-8.15,7.57-14.52,15.89-14.52s15.13,6.38,15.89,14.52h.08v36.73h29.99v-36.65h0s0-.09,0-.14Z"/><rect class="punto" x="262.57" y="0" width="29.99" height="30.11" rx="12.55"/><circle class="onda" cx="277.57" cy="15.05" r="15"/></svg><span class="nom">Campus</span></div><div class="tj" data-slot="1" style="--tono:#6B5CE7"><span class="iso"><span class="m" style="--svg:url('tp-cerebro.svg')"></span></span><svg class="nfc" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5a5 5 0 0 1 0 7"/><path d="M11 5.5a9.5 9.5 0 0 1 0 13"/><path d="M15 2.5a14 14 0 0 1 0 19"/></svg><svg class="tp-wm" viewBox="0 -24 389.87 174.6" role="img" aria-label="tap in"><path class="l" style="--k:0" d="M40.67,87.8c-5.84,0-10.58-4.75-10.58-10.62h.03v-12.91h14.7v-30.1h-14.7V14H.14v20.17h-.14v30.1l.02,12.91C.02,99.72,18.22,117.99,40.67,117.99c1.4,0,2.78-.07,4.15-.21v-30.83c-1.27.55-2.67.85-4.15.85Z"/><path class="l" style="--k:1" d="M108.81,35.52v3.81c-5.86-3.29-12.61-5.17-19.79-5.17-22.44,0-40.64,18.26-40.64,40.79s18.19,40.79,40.64,40.79c7.19,0,13.94-1.88,19.79-5.17v5.17h29.84V35.52h-29.84ZM108.8,76.8c-.2,8.74-7.32,15.77-16.07,15.77s-16.08-7.23-16.08-16.14,7.2-16.14,16.08-16.14c8.23,0,15.01,6.21,15.96,14.21h.12v2.31h0Z"/><path class="l" style="--k:2" d="M193.83,34.17c-7.19,0-13.94,1.88-19.79,5.17v-3.81h-29.84v115.08h29.84v-40.01c5.86,3.29,12.61,5.17,19.79,5.17,22.44,0,40.64-18.26,40.64-40.79s-18.19-40.79-40.64-40.79ZM190.12,92.57c-8.76,0-15.87-7.03-16.07-15.77h0v-2.31h.04v.87c.55-8.42,7.52-15.07,16.04-15.07s16.08,7.23,16.08,16.14-7.2,16.14-16.08,16.14Z"/><rect class="l" style="--k:3" x="262.57" y="35.52" width="29.99" height="80.23"/><path class="l" style="--k:4" d="M389.87,78.96c0-23.99-19.37-43.44-43.28-43.44-6.68,0-13,1.52-18.64,4.23v-4.23h-29.99v80.23h29.99v-36.73h.08c.75-8.15,7.57-14.52,15.89-14.52s15.13,6.38,15.89,14.52h.08v36.73h29.99v-36.65h0s0-.09,0-.14Z"/><rect class="punto" x="262.57" y="0" width="29.99" height="30.11" rx="12.55"/><circle class="onda" cx="277.57" cy="15.05" r="15"/></svg><span class="nom">Connect</span></div><div class="tj" data-slot="2" style="--tono:#9B8EF0"><span class="iso"><span class="orbita"></span></span><svg class="nfc" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5a5 5 0 0 1 0 7"/><path d="M11 5.5a9.5 9.5 0 0 1 0 13"/><path d="M15 2.5a14 14 0 0 1 0 19"/></svg><svg class="tp-wm" viewBox="0 -24 389.87 174.6" role="img" aria-label="tap in"><path class="l" style="--k:0" d="M40.67,87.8c-5.84,0-10.58-4.75-10.58-10.62h.03v-12.91h14.7v-30.1h-14.7V14H.14v20.17h-.14v30.1l.02,12.91C.02,99.72,18.22,117.99,40.67,117.99c1.4,0,2.78-.07,4.15-.21v-30.83c-1.27.55-2.67.85-4.15.85Z"/><path class="l" style="--k:1" d="M108.81,35.52v3.81c-5.86-3.29-12.61-5.17-19.79-5.17-22.44,0-40.64,18.26-40.64,40.79s18.19,40.79,40.64,40.79c7.19,0,13.94-1.88,19.79-5.17v5.17h29.84V35.52h-29.84ZM108.8,76.8c-.2,8.74-7.32,15.77-16.07,15.77s-16.08-7.23-16.08-16.14,7.2-16.14,16.08-16.14c8.23,0,15.01,6.21,15.96,14.21h.12v2.31h0Z"/><path class="l" style="--k:2" d="M193.83,34.17c-7.19,0-13.94,1.88-19.79,5.17v-3.81h-29.84v115.08h29.84v-40.01c5.86,3.29,12.61,5.17,19.79,5.17,22.44,0,40.64-18.26,40.64-40.79s-18.19-40.79-40.64-40.79ZM190.12,92.57c-8.76,0-15.87-7.03-16.07-15.77h0v-2.31h.04v.87c.55-8.42,7.52-15.07,16.04-15.07s16.08,7.23,16.08,16.14-7.2,16.14-16.08,16.14Z"/><rect class="l" style="--k:3" x="262.57" y="35.52" width="29.99" height="80.23"/><path class="l" style="--k:4" d="M389.87,78.96c0-23.99-19.37-43.44-43.28-43.44-6.68,0-13,1.52-18.64,4.23v-4.23h-29.99v80.23h29.99v-36.73h.08c.75-8.15,7.57-14.52,15.89-14.52s15.13,6.38,15.89,14.52h.08v36.73h29.99v-36.65h0s0-.09,0-.14Z"/><rect class="punto" x="262.57" y="0" width="29.99" height="30.11" rx="12.55"/><circle class="onda" cx="277.57" cy="15.05" r="15"/></svg><span class="nom">Health</span></div>
-                    <span class="ondas"><i></i><i></i><i></i></span>
-                </div>
-                <div class="placa ws-placa opcion" data-o="ws">
-                    <svg class="tp-wm" viewBox="0 -24 389.87 174.6" role="img" aria-label="tap in"><path class="l" style="--k:0" d="M40.67,87.8c-5.84,0-10.58-4.75-10.58-10.62h.03v-12.91h14.7v-30.1h-14.7V14H.14v20.17h-.14v30.1l.02,12.91C.02,99.72,18.22,117.99,40.67,117.99c1.4,0,2.78-.07,4.15-.21v-30.83c-1.27.55-2.67.85-4.15.85Z"/><path class="l" style="--k:1" d="M108.81,35.52v3.81c-5.86-3.29-12.61-5.17-19.79-5.17-22.44,0-40.64,18.26-40.64,40.79s18.19,40.79,40.64,40.79c7.19,0,13.94-1.88,19.79-5.17v5.17h29.84V35.52h-29.84ZM108.8,76.8c-.2,8.74-7.32,15.77-16.07,15.77s-16.08-7.23-16.08-16.14,7.2-16.14,16.08-16.14c8.23,0,15.01,6.21,15.96,14.21h.12v2.31h0Z"/><path class="l" style="--k:2" d="M193.83,34.17c-7.19,0-13.94,1.88-19.79,5.17v-3.81h-29.84v115.08h29.84v-40.01c5.86,3.29,12.61,5.17,19.79,5.17,22.44,0,40.64-18.26,40.64-40.79s-18.19-40.79-40.64-40.79ZM190.12,92.57c-8.76,0-15.87-7.03-16.07-15.77h0v-2.31h.04v.87c.55-8.42,7.52-15.07,16.04-15.07s16.08,7.23,16.08,16.14-7.2,16.14-16.08,16.14Z"/><rect class="l" style="--k:3" x="262.57" y="35.52" width="29.99" height="80.23"/><path class="l" style="--k:4" d="M389.87,78.96c0-23.99-19.37-43.44-43.28-43.44-6.68,0-13,1.52-18.64,4.23v-4.23h-29.99v80.23h29.99v-36.73h.08c.75-8.15,7.57-14.52,15.89-14.52s15.13,6.38,15.89,14.52h.08v36.73h29.99v-36.65h0s0-.09,0-.14Z"/><rect class="punto" x="262.57" y="0" width="29.99" height="30.11" rx="12.55"/><circle class="onda" cx="277.57" cy="15.05" r="15"/></svg>
-                    <span class="ws-nom"><span data-i="0" class="on"><small>01 / 03</small><b>Campus</b></span><span data-i="1"><small>02 / 03</small><b>Connect</b></span><span data-i="2"><small>03 / 03</small><b>Health</b></span></span>
-                </div>
-                <div class="placa bd-placa opcion" data-o="bd">
-                    <div class="bd on" style="--tono:#4A3CAE"><div class="bd-lomo"><span>Campus</span><span>01</span></div><div class="bd-lock"><span class="iso"><span class="m" style="--svg:url('tp-forky.svg')"></span></span><svg class="tp-wm" viewBox="0 -24 389.87 174.6" role="img" aria-label="tap in"><path class="l" style="--k:0" d="M40.67,87.8c-5.84,0-10.58-4.75-10.58-10.62h.03v-12.91h14.7v-30.1h-14.7V14H.14v20.17h-.14v30.1l.02,12.91C.02,99.72,18.22,117.99,40.67,117.99c1.4,0,2.78-.07,4.15-.21v-30.83c-1.27.55-2.67.85-4.15.85Z"/><path class="l" style="--k:1" d="M108.81,35.52v3.81c-5.86-3.29-12.61-5.17-19.79-5.17-22.44,0-40.64,18.26-40.64,40.79s18.19,40.79,40.64,40.79c7.19,0,13.94-1.88,19.79-5.17v5.17h29.84V35.52h-29.84ZM108.8,76.8c-.2,8.74-7.32,15.77-16.07,15.77s-16.08-7.23-16.08-16.14,7.2-16.14,16.08-16.14c8.23,0,15.01,6.21,15.96,14.21h.12v2.31h0Z"/><path class="l" style="--k:2" d="M193.83,34.17c-7.19,0-13.94,1.88-19.79,5.17v-3.81h-29.84v115.08h29.84v-40.01c5.86,3.29,12.61,5.17,19.79,5.17,22.44,0,40.64-18.26,40.64-40.79s-18.19-40.79-40.64-40.79ZM190.12,92.57c-8.76,0-15.87-7.03-16.07-15.77h0v-2.31h.04v.87c.55-8.42,7.52-15.07,16.04-15.07s16.08,7.23,16.08,16.14-7.2,16.14-16.08,16.14Z"/><rect class="l" style="--k:3" x="262.57" y="35.52" width="29.99" height="80.23"/><path class="l" style="--k:4" d="M389.87,78.96c0-23.99-19.37-43.44-43.28-43.44-6.68,0-13,1.52-18.64,4.23v-4.23h-29.99v80.23h29.99v-36.73h.08c.75-8.15,7.57-14.52,15.89-14.52s15.13,6.38,15.89,14.52h.08v36.73h29.99v-36.65h0s0-.09,0-.14Z"/><rect class="punto" x="262.57" y="0" width="29.99" height="30.11" rx="12.55"/><circle class="onda" cx="277.57" cy="15.05" r="15"/></svg><b>Campus</b></div></div><div class="bd" style="--tono:#6B5CE7"><div class="bd-lomo"><span>Connect</span><span>02</span></div><div class="bd-lock"><span class="iso"><span class="m" style="--svg:url('tp-cerebro.svg')"></span></span><svg class="tp-wm" viewBox="0 -24 389.87 174.6" role="img" aria-label="tap in"><path class="l" style="--k:0" d="M40.67,87.8c-5.84,0-10.58-4.75-10.58-10.62h.03v-12.91h14.7v-30.1h-14.7V14H.14v20.17h-.14v30.1l.02,12.91C.02,99.72,18.22,117.99,40.67,117.99c1.4,0,2.78-.07,4.15-.21v-30.83c-1.27.55-2.67.85-4.15.85Z"/><path class="l" style="--k:1" d="M108.81,35.52v3.81c-5.86-3.29-12.61-5.17-19.79-5.17-22.44,0-40.64,18.26-40.64,40.79s18.19,40.79,40.64,40.79c7.19,0,13.94-1.88,19.79-5.17v5.17h29.84V35.52h-29.84ZM108.8,76.8c-.2,8.74-7.32,15.77-16.07,15.77s-16.08-7.23-16.08-16.14,7.2-16.14,16.08-16.14c8.23,0,15.01,6.21,15.96,14.21h.12v2.31h0Z"/><path class="l" style="--k:2" d="M193.83,34.17c-7.19,0-13.94,1.88-19.79,5.17v-3.81h-29.84v115.08h29.84v-40.01c5.86,3.29,12.61,5.17,19.79,5.17,22.44,0,40.64-18.26,40.64-40.79s-18.19-40.79-40.64-40.79ZM190.12,92.57c-8.76,0-15.87-7.03-16.07-15.77h0v-2.31h.04v.87c.55-8.42,7.52-15.07,16.04-15.07s16.08,7.23,16.08,16.14-7.2,16.14-16.08,16.14Z"/><rect class="l" style="--k:3" x="262.57" y="35.52" width="29.99" height="80.23"/><path class="l" style="--k:4" d="M389.87,78.96c0-23.99-19.37-43.44-43.28-43.44-6.68,0-13,1.52-18.64,4.23v-4.23h-29.99v80.23h29.99v-36.73h.08c.75-8.15,7.57-14.52,15.89-14.52s15.13,6.38,15.89,14.52h.08v36.73h29.99v-36.65h0s0-.09,0-.14Z"/><rect class="punto" x="262.57" y="0" width="29.99" height="30.11" rx="12.55"/><circle class="onda" cx="277.57" cy="15.05" r="15"/></svg><b>Connect</b></div></div><div class="bd" style="--tono:#9B8EF0"><div class="bd-lomo"><span>Health</span><span>03</span></div><div class="bd-lock"><span class="iso"><span class="orbita"></span></span><svg class="tp-wm" viewBox="0 -24 389.87 174.6" role="img" aria-label="tap in"><path class="l" style="--k:0" d="M40.67,87.8c-5.84,0-10.58-4.75-10.58-10.62h.03v-12.91h14.7v-30.1h-14.7V14H.14v20.17h-.14v30.1l.02,12.91C.02,99.72,18.22,117.99,40.67,117.99c1.4,0,2.78-.07,4.15-.21v-30.83c-1.27.55-2.67.85-4.15.85Z"/><path class="l" style="--k:1" d="M108.81,35.52v3.81c-5.86-3.29-12.61-5.17-19.79-5.17-22.44,0-40.64,18.26-40.64,40.79s18.19,40.79,40.64,40.79c7.19,0,13.94-1.88,19.79-5.17v5.17h29.84V35.52h-29.84ZM108.8,76.8c-.2,8.74-7.32,15.77-16.07,15.77s-16.08-7.23-16.08-16.14,7.2-16.14,16.08-16.14c8.23,0,15.01,6.21,15.96,14.21h.12v2.31h0Z"/><path class="l" style="--k:2" d="M193.83,34.17c-7.19,0-13.94,1.88-19.79,5.17v-3.81h-29.84v115.08h29.84v-40.01c5.86,3.29,12.61,5.17,19.79,5.17,22.44,0,40.64-18.26,40.64-40.79s-18.19-40.79-40.64-40.79ZM190.12,92.57c-8.76,0-15.87-7.03-16.07-15.77h0v-2.31h.04v.87c.55-8.42,7.52-15.07,16.04-15.07s16.08,7.23,16.08,16.14-7.2,16.14-16.08,16.14Z"/><rect class="l" style="--k:3" x="262.57" y="35.52" width="29.99" height="80.23"/><path class="l" style="--k:4" d="M389.87,78.96c0-23.99-19.37-43.44-43.28-43.44-6.68,0-13,1.52-18.64,4.23v-4.23h-29.99v80.23h29.99v-36.73h.08c.75-8.15,7.57-14.52,15.89-14.52s15.13,6.38,15.89,14.52h.08v36.73h29.99v-36.65h0s0-.09,0-.14Z"/><rect class="punto" x="262.57" y="0" width="29.99" height="30.11" rx="12.55"/><circle class="onda" cx="277.57" cy="15.05" r="15"/></svg><b>Health</b></div></div>
+                <div class="placa">
+                    <div class="tj-pila"><div class="tj" data-slot="0" style="--tono:#4A3CAE"><span class="iso"><span class="m" style="--svg:url('tp-forky.svg')"></span></span><svg class="nfc" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5a5 5 0 0 1 0 7"/><path d="M11 5.5a9.5 9.5 0 0 1 0 13"/><path d="M15 2.5a14 14 0 0 1 0 19"/></svg><svg class="tp-wm" viewBox="0 -24 389.87 174.6" role="img" aria-label="tap in"><path class="l" style="--k:0" d="M40.67,87.8c-5.84,0-10.58-4.75-10.58-10.62h.03v-12.91h14.7v-30.1h-14.7V14H.14v20.17h-.14v30.1l.02,12.91C.02,99.72,18.22,117.99,40.67,117.99c1.4,0,2.78-.07,4.15-.21v-30.83c-1.27.55-2.67.85-4.15.85Z"/><path class="l" style="--k:1" d="M108.81,35.52v3.81c-5.86-3.29-12.61-5.17-19.79-5.17-22.44,0-40.64,18.26-40.64,40.79s18.19,40.79,40.64,40.79c7.19,0,13.94-1.88,19.79-5.17v5.17h29.84V35.52h-29.84ZM108.8,76.8c-.2,8.74-7.32,15.77-16.07,15.77s-16.08-7.23-16.08-16.14,7.2-16.14,16.08-16.14c8.23,0,15.01,6.21,15.96,14.21h.12v2.31h0Z"/><path class="l" style="--k:2" d="M193.83,34.17c-7.19,0-13.94,1.88-19.79,5.17v-3.81h-29.84v115.08h29.84v-40.01c5.86,3.29,12.61,5.17,19.79,5.17,22.44,0,40.64-18.26,40.64-40.79s-18.19-40.79-40.64-40.79ZM190.12,92.57c-8.76,0-15.87-7.03-16.07-15.77h0v-2.31h.04v.87c.55-8.42,7.52-15.07,16.04-15.07s16.08,7.23,16.08,16.14-7.2,16.14-16.08,16.14Z"/><rect class="l" style="--k:3" x="262.57" y="35.52" width="29.99" height="80.23"/><path class="l" style="--k:4" d="M389.87,78.96c0-23.99-19.37-43.44-43.28-43.44-6.68,0-13,1.52-18.64,4.23v-4.23h-29.99v80.23h29.99v-36.73h.08c.75-8.15,7.57-14.52,15.89-14.52s15.13,6.38,15.89,14.52h.08v36.73h29.99v-36.65h0s0-.09,0-.14Z"/><rect class="punto" x="262.57" y="0" width="29.99" height="30.11" rx="12.55"/><circle class="onda" cx="277.57" cy="15.05" r="15"/></svg><span class="nom">Campus</span><span class="ondas"><i></i><i></i><i></i></span></div><div class="tj" data-slot="1" style="--tono:#6B5CE7"><span class="iso"><span class="m" style="--svg:url('tp-cerebro.svg')"></span></span><svg class="nfc" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5a5 5 0 0 1 0 7"/><path d="M11 5.5a9.5 9.5 0 0 1 0 13"/><path d="M15 2.5a14 14 0 0 1 0 19"/></svg><svg class="tp-wm" viewBox="0 -24 389.87 174.6" role="img" aria-label="tap in"><path class="l" style="--k:0" d="M40.67,87.8c-5.84,0-10.58-4.75-10.58-10.62h.03v-12.91h14.7v-30.1h-14.7V14H.14v20.17h-.14v30.1l.02,12.91C.02,99.72,18.22,117.99,40.67,117.99c1.4,0,2.78-.07,4.15-.21v-30.83c-1.27.55-2.67.85-4.15.85Z"/><path class="l" style="--k:1" d="M108.81,35.52v3.81c-5.86-3.29-12.61-5.17-19.79-5.17-22.44,0-40.64,18.26-40.64,40.79s18.19,40.79,40.64,40.79c7.19,0,13.94-1.88,19.79-5.17v5.17h29.84V35.52h-29.84ZM108.8,76.8c-.2,8.74-7.32,15.77-16.07,15.77s-16.08-7.23-16.08-16.14,7.2-16.14,16.08-16.14c8.23,0,15.01,6.21,15.96,14.21h.12v2.31h0Z"/><path class="l" style="--k:2" d="M193.83,34.17c-7.19,0-13.94,1.88-19.79,5.17v-3.81h-29.84v115.08h29.84v-40.01c5.86,3.29,12.61,5.17,19.79,5.17,22.44,0,40.64-18.26,40.64-40.79s-18.19-40.79-40.64-40.79ZM190.12,92.57c-8.76,0-15.87-7.03-16.07-15.77h0v-2.31h.04v.87c.55-8.42,7.52-15.07,16.04-15.07s16.08,7.23,16.08,16.14-7.2,16.14-16.08,16.14Z"/><rect class="l" style="--k:3" x="262.57" y="35.52" width="29.99" height="80.23"/><path class="l" style="--k:4" d="M389.87,78.96c0-23.99-19.37-43.44-43.28-43.44-6.68,0-13,1.52-18.64,4.23v-4.23h-29.99v80.23h29.99v-36.73h.08c.75-8.15,7.57-14.52,15.89-14.52s15.13,6.38,15.89,14.52h.08v36.73h29.99v-36.65h0s0-.09,0-.14Z"/><rect class="punto" x="262.57" y="0" width="29.99" height="30.11" rx="12.55"/><circle class="onda" cx="277.57" cy="15.05" r="15"/></svg><span class="nom">Connect</span><span class="ondas"><i></i><i></i><i></i></span></div><div class="tj" data-slot="2" style="--tono:#9B8EF0"><svg class="nfc" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5a5 5 0 0 1 0 7"/><path d="M11 5.5a9.5 9.5 0 0 1 0 13"/><path d="M15 2.5a14 14 0 0 1 0 19"/></svg><svg class="tp-wm" viewBox="0 -24 389.87 174.6" role="img" aria-label="tap in"><path class="l" style="--k:0" d="M40.67,87.8c-5.84,0-10.58-4.75-10.58-10.62h.03v-12.91h14.7v-30.1h-14.7V14H.14v20.17h-.14v30.1l.02,12.91C.02,99.72,18.22,117.99,40.67,117.99c1.4,0,2.78-.07,4.15-.21v-30.83c-1.27.55-2.67.85-4.15.85Z"/><path class="l" style="--k:1" d="M108.81,35.52v3.81c-5.86-3.29-12.61-5.17-19.79-5.17-22.44,0-40.64,18.26-40.64,40.79s18.19,40.79,40.64,40.79c7.19,0,13.94-1.88,19.79-5.17v5.17h29.84V35.52h-29.84ZM108.8,76.8c-.2,8.74-7.32,15.77-16.07,15.77s-16.08-7.23-16.08-16.14,7.2-16.14,16.08-16.14c8.23,0,15.01,6.21,15.96,14.21h.12v2.31h0Z"/><path class="l" style="--k:2" d="M193.83,34.17c-7.19,0-13.94,1.88-19.79,5.17v-3.81h-29.84v115.08h29.84v-40.01c5.86,3.29,12.61,5.17,19.79,5.17,22.44,0,40.64-18.26,40.64-40.79s-18.19-40.79-40.64-40.79ZM190.12,92.57c-8.76,0-15.87-7.03-16.07-15.77h0v-2.31h.04v.87c.55-8.42,7.52-15.07,16.04-15.07s16.08,7.23,16.08,16.14-7.2,16.14-16.08,16.14Z"/><rect class="l" style="--k:3" x="262.57" y="35.52" width="29.99" height="80.23"/><path class="l" style="--k:4" d="M389.87,78.96c0-23.99-19.37-43.44-43.28-43.44-6.68,0-13,1.52-18.64,4.23v-4.23h-29.99v80.23h29.99v-36.73h.08c.75-8.15,7.57-14.52,15.89-14.52s15.13,6.38,15.89,14.52h.08v36.73h29.99v-36.65h0s0-.09,0-.14Z"/><rect class="punto" x="262.57" y="0" width="29.99" height="30.11" rx="12.55"/><circle class="onda" cx="277.57" cy="15.05" r="15"/></svg><span class="nom">Health</span><span class="ondas"><i></i><i></i><i></i></span></div></div>
                 </div>
             </div>
         </div>
@@ -265,68 +222,45 @@
 
 <script>
 /* =======================================================
-   COMPARADOR · DESTACADOS RONDA 5
+   COMPARADOR · DESTACADOS RONDA 6
    ======================================================= */
 (function () {
     const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const marcas = {};
     document.querySelectorAll('[data-marca]').forEach(m => { marcas[m.dataset.marca] = m; });
-    const prods = ['#4A3CAE', '#6B5CE7', '#9B8EF0'];
-    let opTp = 'tj', reloj = [];
+    let reloj = [];
     const limpiar = () => { reloj.forEach(id => { clearTimeout(id); clearInterval(id); }); reloj = []; };
     const reiniciar = (el, cls) => { el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls); };
 
     /* --- 1. TARJETAS --- */
-    /* Slot 0 es la del frente. Tap: se inclina, ondas; después sale por abajo y vuelve al fondo sin transición */
+    /* Slot 0 es la del frente. Tap (se apoya, señal, ondas, brillo); después pasa hacia adelante y se desvanece mientras
+       las otras avanzan. Ya invisible, salta sin transición al puesto 3 y desde ahí entra al fondo con un fundido */
     const tjCiclo = () => {
-        const placa = marcas.tp.querySelector('[data-o="tj"]'), tarjetas = [...placa.querySelectorAll('.tj')], ondas = placa.querySelector('.ondas');
-        tarjetas.forEach((t, i) => { t.className = 'tj'; t.dataset.slot = i; });
+        const tarjetas = [...marcas.tp.querySelectorAll('.tj')];
+        tarjetas.forEach((t, i) => { t.className = 'tj'; t.dataset.slot = i; t.querySelector('.ondas').classList.remove('van'); });
         const paso = () => {
             const f = tarjetas.find(t => t.dataset.slot === '0');
-            f.classList.add('tap'); reiniciar(ondas, 'van');
-            reloj.push(setTimeout(() => { f.classList.remove('tap'); f.classList.add('sale'); tarjetas.forEach(t => { if (t !== f) t.dataset.slot = +t.dataset.slot - 1; }); }, 420));
-            reloj.push(setTimeout(() => { f.classList.add('sin'); f.classList.remove('sale'); f.dataset.slot = 2; f.style.opacity = 0; void f.offsetWidth; f.classList.remove('sin'); f.style.opacity = ''; }, 1050));
+            reiniciar(f, 'tap'); reiniciar(f.querySelector('.ondas'), 'van');
+            reloj.push(setTimeout(() => { f.classList.add('va'); tarjetas.forEach(t => { if (t !== f) t.dataset.slot = +t.dataset.slot - 1; }); }, 1000));
+            reloj.push(setTimeout(() => {
+                f.classList.add('sin'); f.classList.remove('va', 'tap'); f.querySelector('.ondas').classList.remove('van'); f.dataset.slot = 3;
+                void f.offsetWidth; f.classList.remove('sin'); f.dataset.slot = 2;
+            }, 1750));
         };
-        reloj.push(setTimeout(paso, 1200));
-        if (!quieto) reloj.push(setInterval(paso, 2800));
+        reloj.push(setTimeout(paso, 1100));
+        if (!quieto) reloj.push(setInterval(paso, 3200));
     };
 
-    /* --- 2. WORDMARK A SANGRE --- */
-    /* Después de la entrada, cada tap del punto cambia el tono, suelta la onda y cambia el nombre */
-    const wsCiclo = () => {
-        const placa = marcas.tp.querySelector('[data-o="ws"]'), punto = placa.querySelector('.punto'), onda = placa.querySelector('.onda'), noms = [...placa.querySelectorAll('.ws-nom span')];
-        let i = 0;
-        const marcar = n => noms.forEach(s => s.classList.toggle('on', +s.dataset.i === n));
-        placa.style.setProperty('--tono', prods[0]); marcar(0);
-        const paso = () => { i = (i + 1) % 3; placa.style.setProperty('--tono', prods[i]); reiniciar(punto, 'tap'); reiniciar(onda, 'tap'); marcar(i); };
-        reloj.push(setTimeout(() => reiniciar(onda, 'tap'), 1350));
-        if (!quieto) reloj.push(setInterval(paso, 2800));
-    };
-
-    /* --- 3. BANDAS --- */
-    const bdCiclo = () => {
-        const bandas = [...marcas.tp.querySelectorAll('.bd')]; let i = 0;
-        bandas.forEach((b, k) => b.classList.toggle('on', k === 0));
-        if (!quieto) reloj.push(setInterval(() => { i = (i + 1) % 3; bandas.forEach((b, k) => b.classList.toggle('on', k === i)); }, 2800));
-    };
-
-    /* --- 4. DISPARO, REPETIR Y CAMBIO DE OPCIÓN --- */
+    /* --- 2. DISPARO Y REPETIR --- */
     const correr = k => {
         const m = marcas[k]; m.classList.remove('anima'); void m.offsetWidth; m.classList.add('anima');
-        if (k === 'tp') { limpiar(); ({ tj: tjCiclo, ws: wsCiclo, bd: bdCiclo })[opTp](); }
+        if (k === 'tp') { limpiar(); tjCiclo(); }
     };
     const vistas = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { correr(e.target.dataset.marca); vistas.unobserve(e.target); } }), { threshold: 0.45 });
     Object.values(marcas).forEach(m => vistas.observe(m));
     document.querySelectorAll('[data-repetir]').forEach(b => b.addEventListener('click', () => correr(b.dataset.repetir)));
-    document.querySelector('[data-grupo="tp"]').addEventListener('click', e => {
-        const b = e.target.closest('.op'); if (!b) return;
-        e.currentTarget.querySelectorAll('.op').forEach(x => x.setAttribute('aria-pressed', x === b));
-        opTp = b.dataset.o;
-        marcas.tp.querySelectorAll('.opcion').forEach(o => o.classList.toggle('on', o.dataset.o === opTp));
-        correr('tp');
-    });
 })();
 /* =======================================================
-   FIN COMPARADOR · DESTACADOS RONDA 5
+   FIN COMPARADOR · DESTACADOS RONDA 6
    ======================================================= */
 </script>
