@@ -149,8 +149,24 @@
         };
         relojTj.push(setTimeout(() => { paso(); relojTj.push(setInterval(paso, 3200)); }, 1100));
     };
-    /* Al entrar o salir de pantalla, las tarjetas arrancan o se detienen si su capítulo está abierto */
-    alCambiarVista.push((c, ver) => { const v = c.querySelector('.pt-vista.on'); if (v && v.querySelector('.pt-tjs')) tarjetas(v, ver); });
+    /* Los sitios grabados (Web): el video se carga recién la primera vez que se ve y parte siempre desde el inicio, para
+       que se vean las animaciones de entrada del primer scroll. Con movimiento reducido queda en su primer cuadro */
+    /* En uso de Mend: el teléfono es un video de 28 s y el panel es CSS con el mismo ciclo. Cada vez que el video empieza
+       una vuelta, las animaciones del panel se reinician con él, para que lleguen juntos aunque el video tarde en cargar */
+    const sincronizar = vid => {
+        const uso = vid.closest('.pt-uso');
+        vid.onplaying = () => { uso.classList.add('reinicia'); void uso.offsetWidth; uso.classList.remove('reinicia'); };
+        vid.onended = () => { vid.currentTime = 0; vid.play().catch(() => {}); };
+    };
+    const videos = (v, on) => v.querySelectorAll('video[data-src]').forEach(vid => {
+        if (!on || quieto) { vid.pause(); return; }
+        if (!vid.getAttribute('src')) { vid.src = vid.dataset.src; if (vid.hasAttribute('data-sync')) sincronizar(vid); }
+        vid.currentTime = 0; vid.play().catch(() => {});
+    });
+    /* Al entrar o salir de pantalla, las tarjetas y los videos arrancan o se detienen si su capítulo está abierto */
+    alCambiarVista.push((c, ver) => { const v = c.querySelector('.pt-vista.on'); if (!v) return; if (v.querySelector('.pt-tjs')) tarjetas(v, ver); videos(v, ver); });
+    /* Si la página abrió con una portada ya en pantalla, su capítulo arranca de inmediato */
+    covs.forEach(c => { if (c.classList.contains('en-vista')) alCambiarVista.forEach(f => f(c, true)); });
     covs.forEach(c => {
         const tabs = [...c.querySelectorAll('[data-cap]')], vistas = [...c.querySelectorAll('.pt-vista')];
         const abrir = t => {
@@ -161,6 +177,7 @@
                 if (v.querySelector('.pt-mend-logo')) { v.classList.remove('dibuja'); if (on && !quieto) { void v.offsetWidth; v.classList.add('dibuja'); } }
                 if (v.querySelector('.pt-lf-logo, .pt-tjs')) { v.classList.remove('dibuja'); if (on) { void v.offsetWidth; v.classList.add('dibuja'); } }
                 if (v.querySelector('.pt-tjs')) tarjetas(v, on && c.classList.contains('en-vista'));
+                videos(v, on && c.classList.contains('en-vista'));
             });
         };
         tabs.forEach((t, k) => {
