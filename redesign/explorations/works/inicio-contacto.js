@@ -18,15 +18,21 @@
     $('[data-fecha]').textContent = new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
 
     /* --- 2. CANALES DIRECTOS --- */
-    /* Copiar el correo con respuesta. La agenda (Cal.com, conectada al calendario de iCloud) llega con el nombre y el correo
-       ya puestos si se escribieron en la frase */
+    /* Copiar el correo con respuesta. La agenda (Cal.com, conectada al calendario de iCloud) llega con lo que se escribió en
+       la frase ya puesto: nombre, correo, empresa y, en las notas, qué busca, para cuándo y con qué inversión. Todo eso
+       queda en el evento del calendario, junto con el correo y el WhatsApp que pida la agenda */
+    const valor = n => { const c = $(`[data-nombre="${n}"]`, brief); return c && c.dataset.valor; };
     const copiar = async () => { try { await navigator.clipboard.writeText(CORREO); } catch (e) {} avisar('✓ Correo copiado: ' + CORREO); };
     $$('[data-copiar]').forEach(b => b.addEventListener('click', copiar));
     $$('[data-agenda]').forEach(a => a.addEventListener('click', () => {
         const url = new URL('https://cal.com/agustindesign/20min');
-        const nombre = $('[name="nombre"]', brief).value.trim(), correo = $('[name="correo"]', brief).value.trim();
+        const campo = n => $(`[name="${n}"]`, brief).value.trim();
+        const nombre = campo('nombre'), correo = campo('correo'), empresa = campo('empresa');
         if (nombre) url.searchParams.set('name', nombre);
         if (correo.includes('@')) url.searchParams.set('email', correo);
+        if (empresa) url.searchParams.set('empresa', empresa);
+        const que = valor('que'), cuando = valor('cuando'), inversion = valor('inversion');
+        if (que || cuando || inversion) url.searchParams.set('notes', `Desde el portafolio: busca ${que || 'conversar un proyecto'}${cuando ? ' para ' + cuando : ''}${inversion ? ', con una inversión de ' + inversion : ''}.`);
         a.href = url.toString();
     }));
 
@@ -71,7 +77,6 @@
         const salto = dia === 'sábado' ? 2 : dia === 'domingo' ? 1 : 0, f = new Date(d.getTime() + salto * 864e5);
         return new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long' }).format(f) + ' a las ' + hora(f);
     };
-    const valor = n => { const c = $(`[data-nombre="${n}"]`, brief); return c && c.dataset.valor; };
     $('[data-enviar]', brief).addEventListener('click', () => {
         const campo = n => $(`[name="${n}"]`, brief).value.trim();
         const nombre = campo('nombre'), empresa = campo('empresa'), correo = campo('correo');
