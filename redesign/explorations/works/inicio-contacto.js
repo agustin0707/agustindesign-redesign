@@ -4,9 +4,8 @@
 (function () {
     const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
-    /* Correo de contacto. Mientras no exista hola@agustindesign.cl (se crea con el reenvío de correos de Cloudflare),
-       el mensaje se arma en el correo de quien escribe y va a este destino */
-    const CORREO = 'hola@agustindesign.cl';
+    /* Correo de contacto: el mensaje se arma en el correo de quien escribe y llega aquí */
+    const CORREO = 'agus.avendano@gmail.com';
     const brief = $('[data-brief]');
     if (!brief) return;
 
@@ -19,7 +18,7 @@
     $('[data-fecha]').textContent = new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
 
     /* --- 2. CANALES DIRECTOS --- */
-    /* Copiar el correo con respuesta. WhatsApp y la agenda quedan marcados como pendientes hasta tener el número y el link */
+    /* Copiar el correo con respuesta. La agenda queda marcada como pendiente hasta tener su link */
     const copiar = async () => { try { await navigator.clipboard.writeText(CORREO); } catch (e) {} avisar('✓ Correo copiado: ' + CORREO); };
     $$('[data-copiar]').forEach(b => b.addEventListener('click', copiar));
     $$('[data-pendiente]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); avisar('Pronto: ' + a.dataset.pendiente); }));
@@ -63,7 +62,7 @@
     const plazo = () => {
         const d = new Date(Date.now() + 864e5), dia = new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long' }).format(d);
         const salto = dia === 'sábado' ? 2 : dia === 'domingo' ? 1 : 0, f = new Date(d.getTime() + salto * 864e5);
-        return new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long', hour: '2-digit', minute: '2-digit', hour12: false }).format(f);
+        return new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long' }).format(f) + ' a las ' + hora(f);
     };
     const valor = n => { const c = $(`[data-nombre="${n}"]`, brief); return c && c.dataset.valor; };
     $('[data-enviar]', brief).addEventListener('click', () => {
@@ -72,7 +71,7 @@
         if (!correo.includes('@')) { $('[name="correo"]', brief).focus(); avisar('Falta tu correo para responderte'); return; }
         const frase = `Hola Agustín, soy ${nombre || '(nombre)'}${empresa ? ', de ' + empresa : ''}. Busco ${valor('que') || 'conversar un proyecto'} para ${valor('cuando') || 'cuando se pueda'}, con una inversión de ${valor('inversion') || 'por definir'}. Respóndeme a ${correo}.`;
         window.location.href = `mailto:${CORREO}?subject=${encodeURIComponent('Proyecto' + (empresa ? ' · ' + empresa : ''))}&body=${encodeURIComponent(frase)}`;
-        $('[data-listo-titulo]', brief).textContent = `Listo${nombre ? ', ' + nombre.split(' ')[0] : ''}. Te escribo antes del ${plazo()} h.`;
+        $('[data-listo-titulo]', brief).textContent = `Listo${nombre ? ', ' + nombre.split(' ')[0] : ''}. Te escribo antes del ${plazo()}.`;
         $('[data-listo-texto]', brief).textContent = 'Tu mensaje quedó listo en tu correo: solo falta enviarlo. Leo cada mensaje yo mismo; si es urgente, escríbeme por WhatsApp.';
         brief.classList.add('enviado');
     });
