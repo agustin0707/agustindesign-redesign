@@ -419,10 +419,11 @@
         /* --- 5. EN USO DE MEND: PACIENTE Y KINE --- */
         /* El producto funcionando entre sus dos lados: el panel del kine en un navegador de vidrio y el teléfono del
            paciente adelante, el mismo de la escalera. Todo vive en una escena de proporción fija (160 x 110 unidades,
-           --e es una unidad) para que los focos calcen con las pantallas en cualquier ancho. Ciclo de 12 s en dos
-           momentos, y la información viaja como lo que es, un dato con forma de la interfaz: Rosa toca "Algo molesto",
-           el dato sale del teléfono y aterriza en su fila del panel, que se enciende; el panel pasa a su ficha, el kine
-           marca su semana como revisada y ese dato viaja al teléfono, donde llega como aviso */
+           --e es una unidad) para que los datos calcen con las pantallas en cualquier ancho. El panel no es una captura:
+           está construido en HTML (en em, 1 em = 1,42 unidades) para que se actualice de verdad. Ciclo de 12 s:
+           Rosa toca "Algo molesto", el dato vuela al panel y entra como fila nueva arriba de la lista (los contadores
+           suben); el kine hace clic en ella, abre su ficha, aparece el check-in de hoy, marca la semana como revisada y
+           ese dato vuela al teléfono, donde cae como notificación */
         .pt-uso { --ciclo: 12s; position: absolute; inset: 0; container-type: size; display: grid; place-items: center; }
         .pt-uso-escena { --e: calc(100cqw / 160); position: relative; width: min(100cqw, 100cqh * 160 / 110); aspect-ratio: 160 / 110; container-type: inline-size; }
         .pt-uso-escena::before { content: ''; position: absolute; left: 4%; right: 2%; bottom: -4%; height: 22%; background: radial-gradient(50% 50% at 50% 50%, rgba(2, 18, 20, 0.45), transparent 70%); filter: blur(calc(var(--e) * 2)); }
@@ -432,50 +433,156 @@
         .pt-uso-barra span { position: absolute; left: 50%; translate: -50% 0; display: flex; align-items: center; gap: 0.5em; padding: 0.3em 1.6em; border-radius: 99px; background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.82); font: 400 clamp(7px, calc(var(--e) * 1.6), 11px) var(--mono); white-space: nowrap; }
         .pt-uso-barra svg { width: 0.9em; fill: none; stroke: currentColor; stroke-width: 2; }
         .pt-uso-nav .pt-pant { position: relative; aspect-ratio: 1366 / 680; overflow: hidden; }
-        .pt-uso .pt-pant img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
+        .pt-uso .pt-tel .pt-pant img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
         .pt-uso .pt-tel { position: absolute; left: calc(var(--e) * 117.5); top: calc(var(--e) * 18); height: calc(var(--e) * 92); z-index: 2; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 calc(var(--e) * 6) calc(var(--e) * 12) calc(var(--e) * -2) rgba(3, 20, 22, 0.65); animation: ptUsoEntra 900ms var(--ease) 140ms both; }
         @keyframes ptUsoEntra { from { opacity: 0; translate: 0 calc(var(--e) * 5); } to { opacity: 1; translate: 0 0; } }
 
-        /* Pantallas: el panel navega de lado y en el teléfono el aviso sube, como en la app */
-        .pt-uso-nav .pt-pant img:first-child { animation: ptUsoPanelA var(--ciclo) var(--ease) infinite; }
-        .pt-uso-nav .pt-pant img + img { opacity: 0; animation: ptUsoPanelB var(--ciclo) var(--ease) infinite; }
-        .pt-uso .pt-tel .pt-pant img:first-child { animation: ptUsoTelA var(--ciclo) var(--ease) infinite; }
-        .pt-uso .pt-tel .pt-pant img + img { opacity: 0; animation: ptUsoTelB var(--ciclo) var(--ease) infinite; }
-        @keyframes ptUsoPanelA { 0%, 48% { opacity: 1; translate: 0 0; } 53% { opacity: 0; translate: -5% 0; } 95% { opacity: 0; translate: 5% 0; } 100% { opacity: 1; translate: 0 0; } }
-        @keyframes ptUsoPanelB { 0%, 48% { opacity: 0; translate: 5% 0; } 53%, 95% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: -5% 0; } }
-        @keyframes ptUsoTelA { 0%, 73% { opacity: 1; translate: 0 0; } 77% { opacity: 0; translate: 0 -3%; } 95% { opacity: 0; translate: 0 3%; } 100% { opacity: 1; translate: 0 0; } }
-        @keyframes ptUsoTelB { 0%, 73% { opacity: 0; translate: 0 6%; } 78%, 95% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 -3%; } }
+        /* --- 5.1 EL PANEL DEL KINE EN HTML --- */
+        /* Réplica liviana del panel real: barra, columna de pacientes y la vista principal, que pasa de "Tu día" a la
+           ficha de Rosa. Los colores son los del panel; las posiciones del cursor viven en variables (--fila, --marcar) */
+        .kp { --tinta: #1F3B3E; --gris: #74878A; --crema: #FFFCF5; --na: #FCE6C6; --na-t: #A2601A; --az: #DAEEF0; --az-t: #2C5E66; --ve: #DDEFE5; --ve-t: #2E6B57; --fila-x: 42; --fila-y: 18.7; --marcar-x: 75.9; --marcar-y: 13.7; position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #365D61, #2A4C50); color: var(--tinta); font: 400 calc(var(--e) * 1.42) / 1.25 var(--sans); letter-spacing: -0.01em; text-align: left; }
+        .kp .serif { font-family: Georgia, 'Times New Roman', serif; font-style: italic; letter-spacing: -0.02em; }
+        .kp-av { flex: none; display: grid; place-items: center; width: 2.3em; aspect-ratio: 1; border-radius: 50%; background: #F1EFE7; color: var(--tinta); font-size: 0.72em; font-style: normal; }
+        .kp-top { flex: none; display: flex; align-items: center; gap: 1.4em; height: 3.6em; padding: 0 1.4em; color: #FFFFFF; }
+        .kp-logo { font-size: 1.3em; font-weight: 600; letter-spacing: -0.05em; }
+        .kp-top > span { font-size: 0.8em; opacity: 0.8; }
+        .kp-top .kp-yo { display: flex; align-items: center; gap: 0.6em; margin-left: auto; opacity: 1; }
+        .kp-yo .kp-av { background: #D5ECEC; color: #2E5357; }
+        .kp-cuerpo { flex: 1; min-height: 0; display: flex; gap: 0.8em; padding: 0 0.9em 0.9em; }
+        .kp-lado { flex: none; width: 19em; padding: 1.2em 1em; border-radius: 1.2em; background: var(--crema); overflow: hidden; }
+        .kp-hola { margin: 0 0 0.7em 0.2em; font-size: 1.2em; }
+        .kp-chips { display: flex; flex-wrap: wrap; gap: 0.4em; margin-bottom: 1.1em; }
+        .kp-chips > span { padding: 0.35em 0.7em; border-radius: 99px; background: #F1EFE7; font-size: 0.74em; }
+        .kp .na { background: var(--na); color: var(--na-t); } .kp .az { background: var(--az); color: var(--az-t); } .kp .ve { background: var(--ve); color: var(--ve-t); }
+        .kp-sec { margin: 0 0 0.4em 0.3em; color: var(--na-t); font-size: 0.74em; }
+        .kp-pac { display: flex; align-items: center; gap: 0.6em; padding: 0.5em 0.4em; border-radius: 0.8em; }
+        .kp-pac b, .kp-fila b { display: block; font-size: 0.86em; font-weight: 500; }
+        .kp-pac small, .kp-fila small { display: block; color: var(--gris); font-size: 0.7em; }
+        .kp-cambia { display: grid !important; } .kp-cambia > span { grid-area: 1 / 1; }
+        .kp-cuenta { display: inline-block; height: 1lh; overflow: hidden; vertical-align: top; } .kp-cuenta > span { display: flex; flex-direction: column; }
+        .kp-main { position: relative; flex: 1; min-width: 0; border-radius: 1.2em; background: var(--crema); overflow: hidden; }
+        .kp-vista { position: absolute; inset: 0; padding: 1.3em 1.7em; }
+        .kp-fecha { color: var(--gris); font-size: 0.72em; }
+        .kp h4 { margin: 0.1em 0 0.7em; font-size: 2em; font-weight: 400; letter-spacing: -0.045em; line-height: 1.1; }
+        .kp-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6em; margin-bottom: 1em; }
+        .kp-stats > span { display: flex; flex-direction: column; padding: 0.7em 0.9em; border-radius: 0.9em; font-size: 0.74em; }
+        .kp-stats b { font-size: 2.7em; font-weight: 400; letter-spacing: -0.05em; line-height: 1.1; }
+        .kp-lista { padding: 0.8em 0.9em 0; border-radius: 1em; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(31, 59, 62, 0.06); }
+        .kp-lista > p { margin: 0 0 0.3em 0.3em; color: #4C5E60; font-size: 0.8em; }
+        .kp-fila { height: 3.1em; overflow: hidden; }
+        .kp-fila > div { display: flex; align-items: center; gap: 0.7em; height: 3.1em; padding: 0 0.6em; border-radius: 0.7em; }
+        .kp-badge { margin-left: auto; padding: 0.35em 0.75em; border-radius: 99px; font-size: 0.68em; white-space: nowrap; }
+        .kp-fila u { color: var(--gris); font-size: 0.8em; text-decoration: none; }
+        .kp-ficha { display: flex; align-items: center; gap: 0.9em; }
+        .kp-ficha .kp-av { width: 2.8em; font-size: 0.9em; }
+        .kp-ficha h4 { margin: 0 0 0.2em; font-size: 1.8em; }
+        .kp-datos { display: flex; gap: 0.4em; } .kp-datos > span { padding: 0.3em 0.7em; border-radius: 99px; box-shadow: inset 0 0 0 1px rgba(31, 59, 62, 0.14); font-size: 0.66em; }
+        .kp-escribir { align-self: flex-start; margin-left: auto; padding: 0.55em 1em; border-radius: 0.7em; background: #D5ECEC; color: #2E5357; font-size: 0.76em; }
+        .kp-tabs { display: inline-flex; gap: 0.2em; margin: 0.9em 0; padding: 0.25em; border-radius: 99px; background: #EAF3F3; font-size: 0.74em; }
+        .kp-tabs > span { padding: 0.45em 0.9em; border-radius: 99px; color: #4C5E60; }
+        .kp-tabs .on { background: #FFFFFF; color: var(--tinta); box-shadow: 0 1px 3px rgba(31, 59, 62, 0.12); }
+        .kp-semana { padding: 1em 1.2em; border-radius: 1em; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(31, 59, 62, 0.06); }
+        .kp-semana-top { display: flex; align-items: center; justify-content: space-between; }
+        .kp h5 { margin: 0; font-size: 1.2em; font-weight: 400; letter-spacing: -0.03em; }
+        .kp-marcar { display: inline-grid; border-radius: 0.7em; overflow: hidden; font-size: 0.74em; }
+        .kp-marcar > span { grid-area: 1 / 1; padding: 0.65em 1.1em; background: #D5ECEC; color: #2E5357; white-space: nowrap; text-align: center; }
+        .kp-marcar > span + span { background: #2E5357; color: #FFFFFF; opacity: 0; }
+        .kp-dias { display: flex; gap: 1.5em; margin: 0.9em 0 0.7em; color: var(--gris); font-size: 0.72em; }
+        .kp-dias > span { display: flex; flex-direction: column; align-items: center; gap: 0.3em; }
+        .kp-dias .hoy { position: relative; padding: 0.3em 0.45em; border-radius: 99px; box-shadow: inset 0 0 0 1px var(--tinta); color: var(--tinta); }
+        .kp-dias .hoy i { display: grid; place-items: center; width: 1.4em; aspect-ratio: 1; border-radius: 50%; background: var(--tinta); color: #FFFFFF; font-style: normal; font-size: 0.8em; opacity: 0; }
+        .kp-tabla { font-size: 0.72em; }
+        .kp-th, .kp-tr { display: grid; grid-template-columns: 1fr 1fr 1.5fr 4em; gap: 1em; align-items: center; padding: 0.6em 0.5em; }
+        .kp-th { color: var(--gris); }
+        .kp-tr { border-radius: 0.6em; opacity: 0; }
+        .kp-tr i { display: inline-block; width: 0.6em; aspect-ratio: 1; margin-right: 0.4em; border-radius: 50%; background: #E39B3B; }
+        .kp-tr .kp-badge { margin: 0; text-align: center; }
+        .kp-ia { margin: 0.8em 0 0 0.3em; color: var(--gris); font-size: 0.68em; }
+        .kp-sec.gris { margin-top: 0.9em; color: var(--gris); }
+        .kp-par { display: grid; grid-template-columns: 1.3fr 1fr; gap: 0.7em; margin-top: 0.7em; }
+        .kp-carta { padding: 0.9em 1.1em; border-radius: 1em; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(31, 59, 62, 0.06); font-size: 0.74em; }
+        .kp h6 { margin: 0 0 0.7em; font-size: 1.05em; font-weight: 500; }
+        .kp-carta p { margin: 0; } .kp-carta p + small + p { margin-top: 0.6em; }
+        .kp-carta small { display: block; color: var(--gris); font-size: 0.9em; }
+        .kp-barras { display: flex; align-items: flex-end; gap: 0.35em; height: 3.4em; margin-bottom: 0.5em; }
+        .kp-barras i { flex: 1; height: var(--h); border-radius: 0.25em; background: #CFE5E4; }
+        .kp-barras i:last-child { background: #E39B3B; }
 
-        /* Focos: un anillo de luz sobre lo que importa en cada momento, medido en unidades de la escena */
-        .pt-uso-foco { position: absolute; z-index: 3; left: calc(var(--e) * var(--x)); top: calc(var(--e) * var(--y)); width: calc(var(--e) * var(--w)); height: calc(var(--e) * var(--h)); border-radius: calc(var(--e) * var(--r, 1.4)); box-shadow: 0 0 0 1.5px #FFFFFF, 0 0 calc(var(--e) * 3) rgba(183, 229, 226, 0.7); opacity: 0; pointer-events: none; animation: var(--anim) var(--ciclo) var(--ease) infinite; }
-        .pt-uso-foco.boton { --x: 120.6; --y: 70.8; --w: 16.9; --h: 5.4; --r: 2.7; --anim: ptUsoFocoBoton; }
-        .pt-uso-foco.fila { --x: 37.2; --y: 49.4; --w: 77; --h: 7.6; --r: 1.6; --anim: ptUsoFocoFila; }
-        .pt-uso-foco.marcar { --x: 82; --y: 39.5; --w: 22; --h: 4.5; --r: 1.2; --anim: ptUsoFocoMarcar; }
-        .pt-uso-foco.aviso { --x: 120.4; --y: 40.6; --w: 36.6; --h: 11.8; --r: 2.2; --anim: ptUsoFocoAviso; }
-        @keyframes ptUsoFocoBoton { 0%, 5% { opacity: 0; scale: 1.08; } 8%, 44% { opacity: 1; scale: 1; } 48%, 100% { opacity: 0; scale: 1; } }
-        @keyframes ptUsoFocoFila { 0%, 21% { opacity: 0; scale: 1.05; } 24%, 45% { opacity: 1; scale: 1; } 48%, 100% { opacity: 0; scale: 1; } }
-        @keyframes ptUsoFocoMarcar { 0%, 58% { opacity: 0; scale: 1.08; } 61%, 92% { opacity: 1; scale: 1; } 95%, 100% { opacity: 0; scale: 1; } }
-        @keyframes ptUsoFocoAviso { 0%, 75% { opacity: 0; scale: 1.06; } 78%, 92% { opacity: 1; scale: 1; } 95%, 100% { opacity: 0; scale: 1; } }
+        /* --- 5.2 LO QUE PASA EN EL PANEL --- */
+        /* La fila de Rosa crece arriba de la lista y destella; los contadores giran de 8 a 9; el subtítulo de Rosa en la
+           columna cambia. El cursor llega, hace clic y la vista pasa a la ficha (la columna queda y marca a Rosa). En la
+           ficha aparece el check-in de hoy, el cursor marca la semana y el botón cambia a "Semana revisada" */
+        .kp-fila.nueva { height: 0; animation: kpCrece var(--ciclo) var(--ease) infinite; }
+        .kp-fila.nueva > div { animation: kpDestello var(--ciclo) linear infinite; }
+        .kp-cuenta > span { animation: kpCuenta var(--ciclo) var(--ease) infinite; }
+        .kp-cambia > span:first-child { animation: kpSale var(--ciclo) var(--ease) infinite; }
+        .kp-cambia > span + span { opacity: 0; animation: kpEntraTexto var(--ciclo) var(--ease) infinite; }
+        .kp-pac.rosa { animation: kpElegida var(--ciclo) var(--ease) infinite; }
+        .kp-vista.a { animation: kpVistaA var(--ciclo) var(--ease) infinite; }
+        .kp-vista.b { opacity: 0; animation: kpVistaB var(--ciclo) var(--ease) infinite; }
+        .kp-tr.nueva { animation: kpCheckin var(--ciclo) var(--ease) infinite; }
+        .kp-dias .hoy i { animation: kpVisto var(--ciclo) var(--rebote) infinite; }
+        .kp-marcar { animation: kpPresiona var(--ciclo) var(--ease) infinite; }
+        .kp-marcar > span + span { animation: kpRevisada var(--ciclo) var(--ease) infinite; }
+        @keyframes kpCrece { 0%, 19% { height: 0; } 24%, 93% { height: 3.1em; } 94%, 100% { height: 0; } }
+        @keyframes kpDestello { 0%, 21% { background: rgba(252, 230, 198, 0); } 23% { background: rgba(252, 230, 198, 1); } 31% { background: rgba(252, 230, 198, 0.45); } 33% { background: rgba(213, 236, 236, 1); } 36%, 100% { background: rgba(213, 236, 236, 0); } }
+        @keyframes kpCuenta { 0%, 21% { translate: 0 0; } 25%, 93% { translate: 0 -50%; } 94%, 100% { translate: 0 0; } }
+        @keyframes kpSale { 0%, 21% { opacity: 1; } 24%, 95% { opacity: 0; } 98%, 100% { opacity: 1; } }
+        @keyframes kpEntraTexto { 0%, 21% { opacity: 0; } 24%, 95% { opacity: 1; } 98%, 100% { opacity: 0; } }
+        @keyframes kpElegida { 0%, 36% { background: rgba(213, 236, 236, 0); } 39%, 95% { background: rgba(213, 236, 236, 1); } 98%, 100% { background: rgba(213, 236, 236, 0); } }
+        @keyframes kpVistaA { 0%, 36% { opacity: 1; translate: 0 0; } 40% { opacity: 0; translate: -3em 0; } 95% { opacity: 0; translate: 3em 0; } 99%, 100% { opacity: 1; translate: 0 0; } }
+        @keyframes kpVistaB { 0%, 36% { opacity: 0; translate: 3em 0; } 40%, 95% { opacity: 1; translate: 0 0; } 99%, 100% { opacity: 0; translate: -3em 0; } }
+        @keyframes kpCheckin { 0%, 42% { opacity: 0; translate: 0 0.8em; background: rgba(252, 230, 198, 0); } 45% { opacity: 1; translate: 0 0; background: rgba(252, 230, 198, 1); } 54%, 100% { opacity: 1; translate: 0 0; background: rgba(252, 230, 198, 0.35); } }
+        @keyframes kpVisto { 0%, 44% { opacity: 0; scale: 0.3; } 47%, 100% { opacity: 1; scale: 1; } }
+        @keyframes kpPresiona { 0%, 55% { scale: 1; } 56% { scale: 0.94; } 58%, 100% { scale: 1; } }
+        @keyframes kpRevisada { 0%, 56% { opacity: 0; } 58%, 100% { opacity: 1; } }
 
-        /* Toques: el dedo sobre el botón, una gota de luz que se abre */
-        .pt-uso-toque { position: absolute; z-index: 3; left: calc(var(--e) * var(--x)); top: calc(var(--e) * var(--y)); width: calc(var(--e) * 5); aspect-ratio: 1; margin: calc(var(--e) * -2.5) 0 0 calc(var(--e) * -2.5); border-radius: 50%; background: rgba(255, 255, 255, 0.6); opacity: 0; pointer-events: none; animation: var(--anim) var(--ciclo) linear infinite; }
-        .pt-uso-toque.a { --x: 129; --y: 73.5; --anim: ptUsoToqueA; }
-        .pt-uso-toque.b { --x: 93; --y: 41.8; --anim: ptUsoToqueB; }
-        @keyframes ptUsoToqueA { 0%, 4% { opacity: 0; scale: 0.3; } 5% { opacity: 0.9; scale: 0.5; } 12%, 100% { opacity: 0; scale: 2.6; } }
-        @keyframes ptUsoToqueB { 0%, 58% { opacity: 0; scale: 0.3; } 59% { opacity: 0.9; scale: 0.5; } 66%, 100% { opacity: 0; scale: 2.6; } }
+        /* El cursor del kine y la gota de cada clic, en coordenadas del panel (em) */
+        .kp-cursor { position: absolute; left: 0; top: 0; z-index: 4; width: 1.5em; overflow: visible; fill: #FFFFFF; stroke: var(--tinta); stroke-width: 1.3; stroke-linejoin: round; filter: drop-shadow(0 0.15em 0.25em rgba(0, 0, 0, 0.3)); opacity: 0; animation: kpCursor var(--ciclo) var(--ease) infinite; }
+        .kp-clic { position: absolute; z-index: 3; left: calc(var(--x) * 1em); top: calc(var(--y) * 1em); width: 3em; aspect-ratio: 1; margin: -1.5em 0 0 -1.5em; border-radius: 50%; background: rgba(46, 83, 87, 0.3); opacity: 0; animation: var(--anim) var(--ciclo) linear infinite; }
+        .kp-clic.uno { --x: var(--fila-x); --y: var(--fila-y); --anim: kpClicUno; }
+        .kp-clic.dos { --x: var(--marcar-x); --y: var(--marcar-y); --anim: kpClicDos; }
+        @keyframes kpCursor {
+            0%, 25% { opacity: 0; translate: 66em 36em; }
+            27% { opacity: 1; translate: 64em 34em; }
+            32%, 33% { opacity: 1; translate: calc(var(--fila-x) * 1em) calc(var(--fila-y) * 1em); scale: 1; }
+            33.8% { scale: 0.85; } 35%, 46% { scale: 1; translate: calc(var(--fila-x) * 1em) calc(var(--fila-y) * 1em); }
+            54%, 55% { translate: calc(var(--marcar-x) * 1em) calc(var(--marcar-y) * 1em); scale: 1; }
+            56% { scale: 0.85; } 57.5% { scale: 1; translate: calc(var(--marcar-x) * 1em) calc(var(--marcar-y) * 1em); opacity: 1; }
+            66% { opacity: 0; translate: calc(var(--marcar-x) * 1em - 6em) calc(var(--marcar-y) * 1em + 9em); }
+            100% { opacity: 0; translate: 66em 36em; }
+        }
+        @keyframes kpClicUno { 0%, 33.5% { opacity: 0; scale: 0.2; } 34% { opacity: 1; scale: 0.4; } 39%, 100% { opacity: 0; scale: 1.6; } }
+        @keyframes kpClicDos { 0%, 55.8% { opacity: 0; scale: 0.2; } 56.3% { opacity: 1; scale: 0.4; } 61%, 100% { opacity: 0; scale: 1.6; } }
 
-        /* Datos que viajan: una píldora con la tipografía y el color del panel. Se despega del botón, viaja en arco
-           (el envoltorio mueve el eje x y la píldora el eje y, con curvas distintas) y se disuelve donde aterriza */
+        /* --- 5.3 EL TELÉFONO: TOQUE, SELECCIÓN Y NOTIFICACIÓN --- */
+        /* Rosa toca "Algo molesto": una gota de luz y el botón queda elegido (una copia en HTML encima de la captura).
+           La respuesta del kine llega arriba como notificación, que cae con un leve rebote */
+        .pt-uso-toque { position: absolute; z-index: 3; left: calc(var(--e) * 129); top: calc(var(--e) * 73.5); width: calc(var(--e) * 5); aspect-ratio: 1; margin: calc(var(--e) * -2.5) 0 0 calc(var(--e) * -2.5); border-radius: 50%; background: rgba(255, 255, 255, 0.6); opacity: 0; pointer-events: none; animation: ptUsoToque var(--ciclo) linear infinite; }
+        @keyframes ptUsoToque { 0%, 3.5% { opacity: 0; scale: 0.3; } 4% { opacity: 0.9; scale: 0.5; } 11%, 100% { opacity: 0; scale: 2.6; } }
+        .pt-uso-sel { position: absolute; z-index: 3; left: calc(var(--e) * 120.6); top: calc(var(--e) * 70.8); width: calc(var(--e) * 16.9); height: calc(var(--e) * 5.4); display: flex; align-items: center; justify-content: center; gap: 0.4em; border-radius: 99px; background: #FFFFFF; color: #2E5357; font: 500 calc(var(--e) * 1.45) / 1 var(--sans); letter-spacing: -0.01em; white-space: nowrap; opacity: 0; animation: ptUsoSel var(--ciclo) var(--ease) infinite; }
+        .pt-uso-sel svg { width: 1.1em; fill: none; stroke: currentColor; stroke-width: 2.2; }
+        @keyframes ptUsoSel { 0%, 4% { opacity: 0; scale: 0.9; } 6%, 94% { opacity: 1; scale: 1; } 97%, 100% { opacity: 0; scale: 1; } }
+        .pt-uso-push { position: absolute; z-index: 3; left: calc(var(--e) * 119.6); top: calc(var(--e) * 21.5); width: calc(var(--e) * 38.4); display: grid; grid-template-columns: auto 1fr; gap: 0.25em 0.7em; padding: 0.85em 0.9em; border-radius: 1.3em; background: rgba(250, 252, 251, 0.94); color: #1F3B3E; font: 400 calc(var(--e) * 1.35) / 1.25 var(--sans); letter-spacing: -0.01em; text-align: left; box-shadow: 0 calc(var(--e) * 1.5) calc(var(--e) * 4) rgba(3, 20, 22, 0.45); opacity: 0; animation: ptUsoPush var(--ciclo) var(--ease) infinite; }
+        .pt-uso-push > i { grid-row: span 3; display: grid; place-items: center; width: 2.4em; aspect-ratio: 1; border-radius: 0.6em; background: #2E5357; color: #FFFFFF; font-style: normal; font-size: 1.1em; }
+        .pt-uso-push small { display: flex; justify-content: space-between; color: #74878A; font-size: 0.78em; }
+        .pt-uso-push b { font-weight: 500; }
+        .pt-uso-push span { color: #4C5E60; font-size: 0.86em; }
+        @keyframes ptUsoPush { 0%, 70% { opacity: 0; translate: 0 -120%; scale: 0.96; } 72% { opacity: 1; animation-timing-function: cubic-bezier(0.34, 1.4, 0.64, 1); } 76%, 92% { opacity: 1; translate: 0 0; scale: 1; } 96%, 100% { opacity: 0; translate: 0 -120%; scale: 0.96; } }
+
+        /* --- 5.4 EL DATO QUE VIAJA --- */
+        /* Una ficha con el dato y quién lo manda, que se despega del botón con un pequeño salto, viaja en arco (el
+           envoltorio mueve el eje x y la ficha el eje y, con curvas distintas) y al llegar se abre y se funde en lo que provoca: la fila nueva del panel o la notificación del teléfono */
         .pt-uso-dato { position: absolute; z-index: 5; left: calc(var(--e) * var(--x)); top: calc(var(--e) * var(--y)); pointer-events: none; animation: var(--ax) var(--ciclo) linear infinite; }
-        .pt-uso-dato > span { display: flex; align-items: center; gap: 0.5em; padding: 0.6em 1em; transform: translate(-50%, -50%); border-radius: 99px; background: #FFFDF7; color: #1F3B3E; font: 500 clamp(8px, calc(var(--e) * 2.2), 14px) / 1 var(--sans); letter-spacing: -0.01em; white-space: nowrap; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7), 0 calc(var(--e) * 1.4) calc(var(--e) * 3.4) rgba(3, 20, 22, 0.5); opacity: 0; animation: var(--ay) var(--ciclo) linear infinite; }
-        .pt-uso-dato i { width: 0.62em; aspect-ratio: 1; border-radius: 50%; background: #E39B3B; box-shadow: 0 0 0 0.25em rgba(227, 155, 59, 0.22); }
-        .pt-uso-dato svg { width: 1.05em; fill: none; stroke: #2F6F6B; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-        .pt-uso-dato.a { --x: 129; --y: 73.5; --ax: ptUsoDatoAx; --ay: ptUsoDatoAy; }
-        .pt-uso-dato.b { --x: 93; --y: 41.8; --ax: ptUsoDatoBx; --ay: ptUsoDatoBy; }
-        @keyframes ptUsoDatoAx { 0%, 10% { translate: 0 0; animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); } 21%, 100% { translate: calc(var(--e) * -25.8) 0; } }
-        @keyframes ptUsoDatoAy { 0%, 7% { opacity: 0; scale: 0.8; translate: 0 0; } 10% { opacity: 1; scale: 1.06; translate: 0 calc(var(--e) * -2); animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1); } 21% { opacity: 1; scale: 1; translate: 0 calc(var(--e) * -19.6); } 24%, 100% { opacity: 0; scale: 0.6; translate: 0 calc(var(--e) * -19.6); } }
-        @keyframes ptUsoDatoBx { 0%, 63% { translate: 0 0; animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); } 74%, 100% { translate: calc(var(--e) * 45.7) 0; } }
-        @keyframes ptUsoDatoBy { 0%, 60% { opacity: 0; scale: 0.8; translate: 0 0; } 63% { opacity: 1; scale: 1.06; translate: 0 calc(var(--e) * -2); animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1); } 68% { scale: 1; translate: 0 calc(var(--e) * -8); animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.6); } 74% { opacity: 1; scale: 1; translate: 0 calc(var(--e) * 4.7); } 77%, 100% { opacity: 0; scale: 0.6; translate: 0 calc(var(--e) * 4.7); } }
+        .pt-uso-dato > span { display: flex; align-items: center; gap: 0.55em; padding: 0.45em 0.95em 0.45em 0.45em; transform: translate(-50%, -50%); border-radius: 99px; background: linear-gradient(180deg, #FFFFFF, #F6F2E8); color: #1F3B3E; font: 500 clamp(8px, calc(var(--e) * 2), 13px) / 1.1 var(--sans); letter-spacing: -0.01em; white-space: nowrap; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8), 0 0 calc(var(--e) * 4) rgba(183, 229, 226, 0.55), 0 calc(var(--e) * 1.4) calc(var(--e) * 3.4) rgba(3, 20, 22, 0.45); opacity: 0; animation: var(--ay) var(--ciclo) linear infinite; }
+        .pt-uso-dato > span > i { display: grid; place-items: center; width: 2em; aspect-ratio: 1; border-radius: 50%; background: #2E5357; color: #FFFFFF; font: 500 0.62em / 1 var(--sans); font-style: normal; }
+        .pt-uso-dato small { display: block; color: #74878A; font-size: 0.72em; font-weight: 400; }
+        .pt-uso-dato.a { --x: 129; --y: 73.5; --dx: -51; --dy: -33.5; --ax: ptUsoDatoAx; --ay: ptUsoDatoAy; }
+        .pt-uso-dato.b { --x: 107.7; --y: 32.9; --dx: 31.1; --dy: -7.8; --ax: ptUsoDatoBx; --ay: ptUsoDatoBy; }
+        @keyframes ptUsoDatoAx { 0%, 9% { translate: 0 0; animation-timing-function: cubic-bezier(0.55, 0, 0.35, 1); } 19%, 100% { translate: calc(var(--e) * var(--dx)) 0; } }
+        @keyframes ptUsoDatoAy { 0%, 6% { opacity: 0; scale: 0.6; translate: 0 0; } 8% { opacity: 1; scale: 1.08; translate: 0 calc(var(--e) * -3); animation-timing-function: cubic-bezier(0.25, 0.6, 0.35, 1); } 19% { opacity: 1; scale: 1; translate: 0 calc(var(--e) * var(--dy)); } 22%, 100% { opacity: 0; scale: 1.5 0.6; translate: 0 calc(var(--e) * var(--dy)); } }
+        @keyframes ptUsoDatoBx { 0%, 61% { translate: 0 0; animation-timing-function: cubic-bezier(0.55, 0, 0.35, 1); } 71%, 100% { translate: calc(var(--e) * var(--dx)) 0; } }
+        @keyframes ptUsoDatoBy { 0%, 58% { opacity: 0; scale: 0.6; translate: 0 0; } 60% { opacity: 1; scale: 1.08; translate: 0 calc(var(--e) * -3); animation-timing-function: cubic-bezier(0.25, 0.6, 0.35, 1); } 71% { opacity: 1; scale: 1; translate: 0 calc(var(--e) * var(--dy)); } 74%, 100% { opacity: 0; scale: 1.5 0.6; translate: 0 calc(var(--e) * var(--dy)); } }
 
         /* Rótulo de cada momento, que sube dentro de su línea */
         .pt-uso-rot { position: absolute; left: 0; top: calc(var(--e) * 82); width: calc(var(--e) * 104); display: grid; overflow: hidden; }
@@ -484,8 +591,8 @@
         .pt-uso-rot > span + span { opacity: 0; animation: ptUsoRotB var(--ciclo) var(--ease) infinite; }
         .pt-uso-rot small { color: rgba(255, 255, 255, 0.7); font: 400 11px var(--mono); }
         .pt-uso-rot b { font-size: clamp(18px, 1.7vw, 26px); font-weight: 500; letter-spacing: -0.035em; line-height: 1.1; text-wrap: balance; }
-        @keyframes ptUsoRotA { 0%, 47% { opacity: 1; translate: 0 0; } 51% { opacity: 0; translate: 0 -40%; } 95% { opacity: 0; translate: 0 40%; } 99%, 100% { opacity: 1; translate: 0 0; } }
-        @keyframes ptUsoRotB { 0%, 49% { opacity: 0; translate: 0 40%; } 53%, 95% { opacity: 1; translate: 0 0; } 99%, 100% { opacity: 0; translate: 0 -40%; } }
+        @keyframes ptUsoRotA { 0%, 44% { opacity: 1; translate: 0 0; } 48% { opacity: 0; translate: 0 -40%; } 95% { opacity: 0; translate: 0 40%; } 99%, 100% { opacity: 1; translate: 0 0; } }
+        @keyframes ptUsoRotB { 0%, 46% { opacity: 0; translate: 0 40%; } 50%, 94% { opacity: 1; translate: 0 0; } 98%, 100% { opacity: 0; translate: 0 -40%; } }
 
         /* =======================================================
            3. ARCHIVO: HOJA DE CONTACTOS O LISTA
@@ -731,7 +838,7 @@
                         <div class="pt-vistas">
                             <div class="pt-vista"><svg class="pt-mend-logo" viewBox="-16 -6 370 100" role="img" aria-label="Mend salud"><g class="encaje" transform="translate(0 5.17)"><g class="ej-full"><polygon points="67.14 25.03 64.65 15.16 35.07 22.71 40.41 2.64 30.63 0 25.71 18.49 12.84 5.53 5.68 12.74 27.86 35.05 0 42.16 2.49 52.04 31.96 44.51 26.64 64.5 36.41 67.14 41.35 48.62 54.3 61.66 61.46 54.46 39.28 32.14 67.14 25.03"/></g><g class="ej-pair"><g class="ej-a"><polygon points="67.140,25.030 64.650,15.160 35.070,22.710 40.410,2.640 30.630,0.000 25.710,18.490 12.840,5.530 5.680,12.740 27.860,35.050 39.280,32.140"/></g><g class="ej-b"><polygon points="27.860,35.050 0.000,42.160 2.490,52.040 31.960,44.510 26.640,64.500 36.410,67.140 41.350,48.620 54.300,61.660 61.460,54.460 39.280,32.140"/></g></g></g><path class="trazo" pathLength="1" d="M335.64,0h-11.93l.03,16.81c-1.82-1.23-3.81-2.24-5.97-3.03-15.25-5.01-31.43,1.58-36.32,16.88v.33c-2.14-8.35-7.68-13.79-14.72-16.28-.14-.05-.28-.1-.42-.15-.16-.05-.31-.1-.47-.15-3.1-.88-6.29-1.31-9.42-1.26-.12,0-.24,0-.36.01-.55.01-1.1.05-1.64.1-.39.03-.79.08-1.19.12-.47.06-.93.12-1.4.2-.05,0-.1.01-.16.02-.25.04-.48.1-.73.15-.52.11-1.04.22-1.55.35-.21.06-.42.12-.63.19-.43.12-.85.26-1.26.4-.42.15-.83.3-1.25.48-.17.07-.33.14-.5.21-.42.18-.84.38-1.27.59-.27.14-.53.29-.79.44-4.34,2.4-7.9,6.11-9.96,11.28-1.29,3.25-1.8,6.46-1.91,10.01v3.26c-.36,4.96-3.72,9.46-7.58,11.89-5.04,3.16-11.04,3.18-16.28.56l21.14-21.26c1.39-4.57,3.1-9.12,6.46-12.67-8.21-7.8-20.77-9.52-30.88-5.26-.58.24-1.14.51-1.69.79-2.64,1.32-4.98,3.02-7,5.04-.17.17-.34.35-.5.53-.08.08-.15.16-.23.25-2.79,3.1-4.89,6.98-6.03,11.56-.04-.19-.08-.37-.12-.55,0,.02,0,.03,0,.04-1.92-8.97-7.64-14.76-14.98-17.35-.14-.05-.28-.1-.43-.15-.16-.05-.31-.1-.47-.15-3.1-.88-6.29-1.3-9.41-1.26-.12,0-.24,0-.36.01-.55.01-1.1.05-1.64.1-.39.03-.79.08-1.18.12-.47.06-.94.12-1.4.2-.05,0-.1.01-.16.02-.25.04-.48.1-.73.15-.52.11-1.04.22-1.55.35-.21.06-.42.12-.63.19-.42.12-.85.26-1.26.4-.41.15-.83.3-1.25.48-.17.07-.33.14-.5.21-.42.18-.84.38-1.27.58-2.51,1.27-4.77,2.97-6.68,5.12-2.6-2.94-5.89-5.07-9.61-6.38-.14-.05-.28-.1-.43-.15-.16-.05-.31-.1-.47-.15-3.1-.88-6.29-1.3-9.41-1.26-.12,0-.24,0-.36.01-.55.01-1.1.05-1.64.1-.39.03-.79.08-1.19.12-.47.06-.93.12-1.4.2-.05,0-.1.01-.16.02-.25.04-.48.1-.73.15-.52.11-1.04.22-1.55.35-.21.06-.42.12-.63.19-.42.12-.85.26-1.26.4-.42.15-.83.3-1.25.48-.17.07-.33.14-.5.21-.42.18-.84.38-1.27.58-4.7,2.37-8.57,6.24-10.75,11.72-1.29,3.25-1.8,6.46-1.91,10v27.71h11.99v-8.14s.01-19.56.01-19.56c0-.25.02-.49.04-.74h0c0-3.33,1.23-6.41,3.24-8.86.83-1.01,1.8-1.81,2.85-2.44.03-.02.07-.04.1-.06.27-.16.54-.31.82-.44.18-.09.37-.18.56-.26.17-.07.34-.14.51-.21.33-.13.68-.24,1.03-.34.06-.02.12-.04.17-.05.42-.12.85-.21,1.3-.28.02,0,.05,0,.07-.01.36-.06.74-.1,1.12-.13.16-.02.33-.03.49-.04.06,0,.13-.01.19-.02h.3c.26,0,.53-.03.79-.02,2.71.04,5.04.77,6.96,2.02.06.04.11.07.16.11.26.18.52.36.77.56.16.12.3.25.45.38.13.12.27.24.4.37.23.22.44.45.65.68.04.05.09.1.13.15,2.09,2.42,3.28,5.74,3.4,9.64v27.72h11.99v-27.69c0-.25.03-.49.05-.74h0c0-3.33,1.23-6.41,3.24-8.86.83-1.01,1.8-1.81,2.85-2.44.03-.02.07-.04.1-.06.27-.16.54-.31.82-.44.18-.09.37-.18.56-.26l.51-.21c.33-.13.68-.24,1.03-.34.06-.02.12-.04.17-.05.42-.12.85-.21,1.3-.28.02,0,.05,0,.07-.01.36-.06.74-.1,1.12-.13.16-.02.33-.03.49-.04.06,0,.13-.01.19-.02h.3c.26,0,.53-.03.79-.02,2.71.04,5.04.77,6.96,2.02.06.04.11.07.16.11.26.18.52.36.77.56.16.12.3.25.45.38.13.12.27.24.4.37.23.22.44.45.65.68.04.05.09.1.13.15,2.09,2.42,3.28,5.74,3.4,9.64v27.72h11.93l.06-17.31h0c3.13,7.87,9.31,13.74,17.42,16.13,6.5,1.92,13.45,1.46,19.53-1.11,2.18-2.33,5.72-3.68,10.17-3.77.25,0,.54-.02.83-.02,2.35,0,4.41.37,6.14.86v-22.29c0-.25.02-.49.04-.74v-.02c0-2.31.61-4.51,1.66-6.46,1.04-1.77,2.41-3.32,4.03-4.56.13-.09.27-.18.41-.27.03-.02.07-.04.1-.06.27-.16.54-.31.82-.44.18-.09.37-.18.56-.26l.51-.21c.33-.13.67-.24,1.03-.34.06-.02.12-.04.17-.05.42-.12.85-.21,1.3-.29.02,0,.05,0,.07-.01.36-.06.74-.1,1.12-.13.16-.02.32-.03.49-.04.07,0,.13-.01.19-.02h.3c.27,0,.53-.03.79-.02,2.71.04,5.04.77,6.96,2.02.06.04.11.07.16.11.26.18.52.36.77.56.16.12.3.25.45.38.14.12.27.24.4.37.23.22.44.45.65.68.04.05.09.1.13.15,2.09,2.42,3.29,5.74,3.4,9.64v21.83c.61.12,1.17.46,1.54.98.47.65.6,1.48.35,2.24l-.87,2.68h.7l2.94-9.12c.72-2.27.82-4.35.71-5.13-.02-.11-.02-.23-.02-.34,0-1.24.91-2.35,2.15-2.52l5.38-.77c.12-.02.24-.03.35-.03.73,0,1.43.32,1.91.89.56.66.73,1.56.47,2.38l-1.02,3.15c1.5,2.16,3.26,4.03,5.24,5.59.55.44,1.12.85,1.7,1.24,2.49,1.67,5.26,2.9,8.21,3.66l1.07-3.24c.34-1.02,1.3-1.72,2.37-1.72h3.99c.8,0,1.56.39,2.03,1.04s.6,1.49.35,2.25l-.85,2.57c1-.05,2-.16,3.01-.3,3.92-4.21,8.56-5.85,12.08-5.85h.13c1.54,0,2.93.32,4.11.93l1.24-3.81c.68-2.13.89-3.89.81-4.75-.22-.67-.14-1.4.21-2.02.38-.67,1.05-1.12,1.81-1.23l3.24-.47V13.15l-.03-13.15h.06ZM201.67,45.51l-.66.66c-3-5.91-2.22-13.12,1.99-18.27.12-.15.24-.31.37-.46,5.02-5.7,13.24-7.17,20.08-3.66l-21.79,21.72h0ZM307.72,54.67c-8.83,0-15.99-7.14-15.99-15.95s7.16-15.95,15.99-15.95,15.99,7.14,15.99,15.95-7.16,15.95-15.99,15.95Z"/><path class="trazo" pathLength="1" d="M235.99,72.15c-2.78-1.58-6.42-3.46-5.15-6.19.87-1.92,3.18-2.74,5.61-2.83,3.76-.14,6.59,1.78,7.58,4.61l.23-.05,1.73-4.22c-2.31-1.06-5.49-1.92-9.08-1.78-4.68.1-8.33,1.78-9.6,4.85-1.68,3.98,2.72,6.53,5.78,8.21,3.64,1.97,6.59,4.13,5.26,7.01-1.1,2.3-3.82,3.02-6.19,2.93-3.93-.1-6.82-2.74-7.87-5.42l-.17.05-1.85,4.37c2.54,1.63,6.25,2.59,9.89,2.54,4.8-.05,8.44-1.82,9.77-5.33,1.39-3.5-1.21-6.05-5.96-8.74h.02Z"/><path class="trazo" pathLength="1" d="M327.82,81.99l10.29-31.97-5.32.77.06.14c.23,1.3-.06,3.6-.87,6.14l-2.54,7.83c-.64-1.87-2.31-3.22-5.21-3.22-4.28-.05-10.87,3.02-14.63,11.76-.53,1.25-.89,2.39-1.14,3.46-3.81,5.34-8.4,7.72-7.65,5.28l6.71-20.21h-3.99l-2.31,7.01c-2.49,6.72-8.21,14.54-13.65,14.54-2.54,0-4.45-1.68-2.95-6.19l5.09-15.36h-5.26v.14c.23,1.25,0,3.79-.81,6.38l-2.68,8.09c-3.76,5.36-8.83,9-7.33,4.2l9.95-30.77-5.38.77v.05c.17,1.25,0,3.7-.81,6.24l-6.38,19.82-.04-.04c-3.82,5.38-8.5,7.97-7.63,5.14l6.54-20.02h-.93c-.98,1.1-2.26,2.06-3.76,2.98-.52-1.97-2.37-3.26-5.38-3.26-4.4,0-10.93,3.02-14.69,11.76-3.47,8.11-.4,12.53,4.28,12.53,3.59,0,7.87-2.78,11.22-7.54l-1.04,3.17c-1.1,3.46.58,4.37,2.2,4.37,2.85,0,6.1-3.05,8.58-7.06l-.77,2.4c-1.04,3.31.58,4.37,2.37,4.37,2.66,0,5.89-2.94,8.32-6.88-1.26,5.25,1.96,7.12,5.55,7.12,5.26,0,9.66-4.13,12.72-8.79l-1.45,4.46c-1.1,3.41.58,4.37,2.31,4.37,2.87,0,6.27-3.33,8.78-7.59-.58,4.94,2.06,7.59,5.68,7.59s7.86-2.78,11.22-7.58l-1.04,3.22c-1.1,3.41.58,4.37,2.2,4.37,3.24,0,7-3.94,9.54-8.74l-.35-.38c-3.82,5.38-8.5,7.97-7.63,5.14h.01ZM251.43,83.52c-3.64,0-4.68-4.22-2.02-10.42,2.72-6.34,7.4-9.89,11.16-9.79,2.95.05,3.76,2.35,3.53,4.27l-1.5,4.71c-2.54,6.43-7.34,11.23-11.16,11.23h0ZM315.91,83.52c-3.64,0-4.68-4.22-2.02-10.42,2.72-6.34,7.4-9.79,11.1-9.7,2.95.1,3.7,2.45,3.47,4.56l-1.39,4.32c-2.54,6.43-7.34,11.23-11.16,11.23h0Z"/></svg></div>
                             <div class="pt-vista on"><div class="pt-escalera"><div class="pt-tel e1"><div class="pt-pant"><img src="media/md-s-calendario.jpg" alt="Mend: el calendario de la semana" loading="lazy" decoding="async"></div></div><div class="pt-tel e2"><div class="pt-pant"><img src="media/md-s-inicio.jpg" alt="Mend: el inicio con la rutina del día" loading="lazy" decoding="async"></div></div><div class="pt-tel e0"><div class="pt-pant"><img class="pt-recorre" src="media/md-explorar-larga.jpg" alt="Mend: explorar rutinas y ejercicios" loading="lazy" decoding="async" style="--dura:14s"></div></div></div></div>
-                            <div class="pt-vista"><div class="pt-uso" role="img" aria-label="Mend en uso: la paciente marca en su check-in que está algo molesta y el dato llega a su fila en el panel del kine; el kine marca su semana como revisada y a ella le llega el aviso"><div class="pt-uso-escena"><div class="pt-uso-nav"><div class="pt-uso-barra"><i></i><i></i><i></i><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>app.mendsalud.cl</span></div><div class="pt-pant"><img src="media/md-uso-panel-dia.webp" alt="" loading="lazy" decoding="async"><img src="media/md-uso-panel-rosa.webp" alt="" loading="lazy" decoding="async"></div></div><div class="pt-tel"><div class="pt-pant"><img src="media/md-uso-checkin.webp" alt="" loading="lazy" decoding="async"><img src="media/md-uso-aviso.webp" alt="" loading="lazy" decoding="async"></div></div><span class="pt-uso-foco boton"></span><span class="pt-uso-foco fila"></span><span class="pt-uso-foco marcar"></span><span class="pt-uso-foco aviso"></span><span class="pt-uso-toque a"></span><span class="pt-uso-toque b"></span><span class="pt-uso-dato a"><span><i></i>Rosa · Algo molesto</span></span><span class="pt-uso-dato b"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Semana revisada</span></span><span class="pt-uso-rot"><span><small>01 / 02 · Paciente y kine</small><b>Rosa cuenta que está algo molesta y el dato llega a su fila en el panel</b></span><span><small>02 / 02 · Paciente y kine</small><b>El kine marca su semana como revisada y a ella le llega el aviso</b></span></span></div></div></div>
+                            <div class="pt-vista"><div class="pt-uso" role="img" aria-label="Mend en uso: la paciente marca en su check-in que está algo molesta y entra como fila nueva en el panel del kine; el kine abre su ficha, ve el check-in, marca la semana como revisada y a ella le llega la notificación"><div class="pt-uso-escena"><div class="pt-uso-nav"><div class="pt-uso-barra"><i></i><i></i><i></i><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>app.mendsalud.cl</span></div><div class="pt-pant"><div class="kp" aria-hidden="true"><div class="kp-top"><b class="kp-logo">✳ mend</b><span>Lunes, 26 de octubre</span><span class="kp-yo"><i class="kp-av">PS</i>Paula Soto, kine</span></div><div class="kp-cuerpo"><div class="kp-lado"><p class="kp-hola">Buenas noches, <span class="serif">Paula</span></p><div class="kp-chips"><span class="na"><span class="kp-cuenta"><span><span>8</span><span>9</span></span></span> atención</span><span>2 por revisar</span><span>2 al día</span></div><p class="kp-sec">Requieren atención</p><div class="kp-pac rosa"><i class="kp-av">RD</i><span><b>Rosa Díaz</b><small class="kp-cambia"><span>Señal de alarma · ayer</span><span>Algo molesto · hoy</span></small></span></div><div class="kp-pac"><i class="kp-av">AA</i><span><b>Agustina Avendaño</b><small>Muy sensible · hoy</small></span></div><div class="kp-pac"><i class="kp-av">CR</i><span><b>Carmen Rivas</b><small>Pide llamada · 10:02</small></span></div><div class="kp-pac"><i class="kp-av">EC</i><span><b>Elena Castro</b><small>Dolor alto seguido</small></span></div><div class="kp-pac"><i class="kp-av">SH</i><span><b>Sofía Herrera</b><small>Primera semana</small></span></div><p class="kp-sec gris">Por revisar</p><div class="kp-pac"><i class="kp-av">MR</i><span><b>Marta Rojas</b><small>Dos semanas bajas</small></span></div><div class="kp-pac"><i class="kp-av">AT</i><span><b>Ana Torres</b><small>1 día activo</small></span></div></div><div class="kp-main"><div class="kp-vista a"><span class="kp-fecha">Lunes, 26 de octubre</span><h4>Tu <span class="serif">día</span></h4><div class="kp-stats"><span class="na"><b><span class="kp-cuenta"><span><span>8</span><span>9</span></span></span></b>Requieren atención</span><span class="az"><b>2</b>Por revisar</span><span class="ve"><b>2</b>Al día</span><span><b>1</b>Aún no entra</span></div><div class="kp-lista"><p>Para mirar primero</p><div class="kp-fila nueva"><div><i class="kp-av">RD</i><span><b>Rosa Díaz</b><small>Hoy, algo molesto · recién</small></span><span class="kp-badge na">Check-in nuevo</span><u>→</u></div></div><div class="kp-fila"><div><i class="kp-av">AA</i><span><b>Agustina Avendaño</b><small>Hoy, dolor 4</small></span><span class="kp-badge na">Muy sensible</span><u>→</u></div></div><div class="kp-fila"><div><i class="kp-av">CR</i><span><b>Carmen Rivas</b><small>Pidió una llamada · hoy 10:02</small></span><span class="kp-badge az">Pide llamada</span><u>→</u></div></div><div class="kp-fila"><div><i class="kp-av">EC</i><span><b>Elena Castro</b><small>Muy sensible 2 días seguidos</small></span><span class="kp-badge az">Dolor alto seguido</span><u>→</u></div></div><div class="kp-fila"><div><i class="kp-av">SH</i><span><b>Sofía Herrera</b><small>Entró hace 8 días, aún sin rutinas</small></span><span class="kp-badge az">Primera semana</span><u>→</u></div></div></div></div><div class="kp-vista b"><div class="kp-ficha"><i class="kp-av">RD</i><div><h4>Rosa Díaz</h4><span class="kp-datos"><span>Semana 3 con Mend</span><span>RUT 12.345.671-8</span><span>Cesfam de ejemplo</span></span></div><span class="kp-escribir">Escribirle</span></div><div class="kp-tabs"><span class="on">Semana</span><span>Evolución</span><span>Plan</span><span>Avisos</span><span>Preguntas</span><span>Datos</span></div><div class="kp-semana"><div class="kp-semana-top"><h5>Esta <span class="serif">semana</span></h5><span class="kp-marcar"><span>Marcar semana revisada</span><span>✓ Semana revisada</span></span></div><div class="kp-dias"><span class="hoy">L<i>✓</i></span><span>M<small>27</small></span><span>M<small>28</small></span><span>J<small>29</small></span><span>V<small>30</small></span><span>S<small>31</small></span><span>D<small>1</small></span></div><div class="kp-tabla"><div class="kp-th"><span>Día</span><span>Cómo estaba</span><span>Qué hizo</span><span></span></div><div class="kp-tr nueva"><span>Lun 26 · hoy</span><span><i></i>Algo molesto</span><span>Check-in, rutina pendiente</span><span class="kp-badge na">Nuevo</span></div></div><p class="kp-ia">✦ Con la IA: un resumen de la semana que revisas antes de que lo vea Rosa</p></div><div class="kp-par"><div class="kp-carta"><h6>Cómo ha estado</h6><div class="kp-barras"><i style="--h:40%"></i><i style="--h:55%"></i><i style="--h:35%"></i><i style="--h:70%"></i><i style="--h:60%"></i><i style="--h:80%"></i><i style="--h:45%"></i><i style="--h:65%"></i><i style="--h:75%"></i><i style="--h:50%"></i><i style="--h:85%"></i><i style="--h:30%"></i></div><small>Últimas 3 semanas · la última barra es hoy</small></div><div class="kp-carta"><h6>Su plan</h6><p>Fuerza de piernas con silla</p><small>3 veces por semana · Nivel 1</small><p>Caminata</p><small>De 10 a 30 minutos</small></div></div></div><span class="kp-clic uno"></span><span class="kp-clic dos"></span></div></div><svg class="kp-cursor" viewBox="0 0 16 22"><path d="M1 1v17l4.6-4.4 3 6.8 2.8-1.2-3-6.6H15z"/></svg></div></div></div><div class="pt-tel"><div class="pt-pant"><img src="media/md-uso-checkin.webp" alt="" loading="lazy" decoding="async"></div></div><span class="pt-uso-toque"></span><span class="pt-uso-sel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>Algo molesto</span><div class="pt-uso-push"><i>✳</i><small><span>Mend</span><span>ahora</span></small><b>Tu kine revisó tu semana</b><span>Paula Soto vio tus registros. Sigue a tu ritmo.</span></div><span class="pt-uso-dato a"><span><i>RD</i><span>Algo molesto<small>Rosa · check-in de hoy</small></span></span></span><span class="pt-uso-dato b"><span><i>PS</i><span>Semana revisada<small>Paula · tu kine</small></span></span></span><span class="pt-uso-rot"><span><small>01 / 02 · Paciente y kine</small><b>Rosa cuenta que está algo molesta y entra arriba de la lista de su kine</b></span><span><small>02 / 02 · Paciente y kine</small><b>El kine abre su ficha, ve el check-in y marca la semana; a ella le llega el aviso</b></span></span></div></div></div>
                         </div>
                     </div>
                     <div class="pt-txt">
