@@ -15,7 +15,6 @@
     const hora = d => new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
     const pintarReloj = () => $$('[data-reloj-ct]').forEach(el => { el.textContent = hora(new Date()); });
     pintarReloj(); setInterval(pintarReloj, 15000);
-    $('[data-fecha]').textContent = new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
 
     /* --- 2. CANALES DIRECTOS --- */
     /* Copiar el correo responde en la misma fila. La agenda (Cal.com, conectada al calendario de iCloud) llega con lo que
@@ -81,6 +80,7 @@
                 opciones.forEach(x => x.setAttribute('aria-selected', x === o));
                 boton.firstElementChild.textContent = o.dataset.valor; c.removeAttribute('data-vacia'); c.dataset.valor = o.dataset.valor;
                 c.classList.remove('cambia'); void c.offsetWidth; c.classList.add('cambia');
+                eco(c.dataset.nombre, o.dataset.valor, true); marcar(c);
                 cerrarListas(); boton.focus(); revisar();
             });
             o.addEventListener('keydown', e => {
@@ -93,20 +93,49 @@
     });
     document.addEventListener('click', e => { if (!e.target.closest('.ct-lista')) cerrarListas(); });
 
+    /* La luz se ubica detrás del campo con el foco, se desliza al siguiente y se apaga cuando el foco sale de la frase */
+    const luz = $('[data-luz]', brief);
+    const alumbrar = c => {
+        const r = c.getBoundingClientRect(), b = brief.getBoundingClientRect();
+        const pos = `${Math.round(r.left + r.width / 2 - b.left - luz.offsetWidth / 2)}px ${Math.round(r.top + r.height / 2 - b.top - luz.offsetHeight / 2)}px`;
+        if (!luz.classList.contains('on')) { luz.style.transition = 'opacity 400ms linear'; luz.style.translate = pos; void luz.offsetWidth; luz.style.transition = ''; }
+        luz.style.translate = pos; luz.classList.add('on');
+    };
+    frase.addEventListener('focusin', e => { const c = e.target.closest('.ct-campo'); if (c) alumbrar(c); });
+    frase.addEventListener('focusout', e => { if (!frase.contains(e.relatedTarget)) luz.classList.remove('on'); });
+
+    /* Lo confirmado se marca una sola vez, como con plumón: al elegir de una lista o al salir de un campo bien escrito */
+    $$('.ct-campo', brief).forEach(c => c.insertAdjacentHTML('beforeend', '<i class="ct-plumon" aria-hidden="true"></i>'));
+    const marcar = c => { if (!quieto) c.classList.add('marcado'); };
+
+    /* El correo de al lado repite cada hueco: lo tipeado aparece al mismo tiempo y lo elegido en una lista se escribe letra
+       por letra. Un hueco vacío queda como barra */
+    const tipeos = new WeakMap();
+    const eco = (n, texto, escribir) => $$(`[data-eco="${n}"]`, brief).forEach(el => {
+        clearInterval(tipeos.get(el)); el.classList.remove('escribiendo'); el.classList.toggle('vacio', !texto);
+        if (!escribir || quieto || !texto) { el.textContent = texto; return; }
+        let i = 0; el.textContent = ''; el.classList.add('escribiendo');
+        tipeos.set(el, setInterval(() => { el.textContent = texto.slice(0, ++i); if (i >= texto.length) { clearInterval(tipeos.get(el)); el.classList.remove('escribiendo'); } }, 34));
+    });
+    ['nombre', 'empresa', 'que', 'cuando', 'inversion', 'correo'].forEach(n => eco(n, ''));
+
     /* --- 4. AVANCE Y VALIDACIÓN --- */
-    /* Seis tramos: nombre, empresa, qué, cuándo, inversión y un correo válido. El correo confirma con un visto al quedar bien
-       escrito; el botón queda tenue hasta que lo esté */
+    /* Seis tramos: nombre, empresa, qué, cuándo, inversión y un correo válido. El botón se llena uno por cada tramo; el correo
+       confirma con un visto al quedar bien escrito y entonces aparece el atajo. El texto del avance queda para lectores de pantalla */
     const correoOk = () => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(campo('correo'));
-    const barras = $$('.ct-avance .barras i', brief), textoAvance = $('[data-avance-texto]', brief), boton = $('[data-enviar]', brief);
+    const textoAvance = $('[data-avance-texto]', brief), boton = $('[data-enviar]', brief);
     const revisar = () => {
         const hechos = [!!campo('nombre'), !!campo('empresa'), !!valor('que'), !!valor('cuando'), !!valor('inversion'), correoOk()];
         const n = hechos.filter(Boolean).length;
-        barras.forEach((b, i) => b.classList.toggle('on', i < n));
+        boton.style.setProperty('--lleno', n / 6);
         textoAvance.textContent = n === 6 ? 'Todo listo' : correoOk() ? `${n} de 6 · ya puedes enviar` : n ? `${n} de 6` : 'Completa la frase';
         $('[name="correo"]', brief).parentElement.classList.toggle('ok', correoOk());
         boton.toggleAttribute('data-falta', !correoOk());
     };
-    $$('[data-crece]', brief).forEach(i => i.addEventListener('input', () => { crecer(i); i.parentElement.classList.remove('error'); revisar(); }));
+    $$('[data-crece]', brief).forEach(i => {
+        i.addEventListener('input', () => { crecer(i); i.parentElement.classList.remove('error'); eco(i.name, i.value.trim()); alumbrar(i.parentElement); revisar(); });
+        i.addEventListener('change', () => { if (i.name === 'correo' ? correoOk() : i.value.trim()) marcar(i.parentElement); });
+    });
     revisar();
 
     /* --- 5. ENVIAR Y EL COMPROBANTE --- */
@@ -117,10 +146,12 @@
         const salto = dia === 'sábado' ? 2 : dia === 'domingo' ? 1 : 0, f = new Date(d.getTime() + salto * 864e5);
         return new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', weekday: 'long' }).format(f) + ' a las ' + hora(f);
     };
+    let falta;
     const enviar = () => {
         if (!correoOk()) {
-            const c = $('[name="correo"]', brief); c.parentElement.classList.remove('error'); void c.offsetWidth; c.parentElement.classList.add('error'); c.focus();
-            textoAvance.textContent = 'Falta tu correo para responderte'; return;
+            const c = $('[name="correo"]', brief), t = $('[data-enviar-texto]', boton); c.parentElement.classList.remove('error'); void c.offsetWidth; c.parentElement.classList.add('error'); c.focus();
+            textoAvance.textContent = 'Falta tu correo para responderte';
+            t.textContent = 'Falta tu correo'; clearTimeout(falta); falta = setTimeout(() => { t.textContent = 'Enviar mensaje'; }, 1800); return;
         }
         const nombre = campo('nombre'), empresa = campo('empresa'), correo = campo('correo');
         const texto = `Hola Agustín, soy ${nombre || '(nombre)'}${empresa ? ', de ' + empresa : ''}. Busco ${valor('que') || 'conversar un proyecto'} para ${valor('cuando') || 'cuando se pueda'}, con una inversión de ${valor('inversion') || 'por definir'}. Respóndeme a ${correo}.`;
@@ -178,15 +209,36 @@
     const avance = () => { pendiente = false; arriba.style.setProperty('--avance', (window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)).toFixed(3)); };
     window.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(avance); } }, { passive: true });
     avance();
-    const marca = $('[data-marca]'), caja = marca.parentElement;
+    const marca = $('[data-marca]'), caja = marca.parentElement, letras = [...marca.children];
+    /* En pantallas táctiles la ola engruesa la firma: se deja un poco de aire para que no toque los bordes */
+    const holgura = window.matchMedia('(hover: none)').matches ? 0.95 : 1;
     const ajustarMarca = () => {
+        letras.forEach(l => l.style.removeProperty('--w'));
         caja.style.fontSize = '100px';
         const l = marca.children, ancho = l[l.length - 1].getBoundingClientRect().right - l[0].getBoundingClientRect().left;
-        caja.style.fontSize = (100 * (caja.clientWidth - 2 * parseFloat(getComputedStyle(caja).paddingLeft)) / ancho) + 'px';
+        caja.style.fontSize = (holgura * 100 * (caja.clientWidth - 2 * parseFloat(getComputedStyle(caja).paddingLeft)) / ancho) + 'px';
     };
     ajustarMarca(); window.addEventListener('resize', ajustarMarca); if (document.fonts) document.fonts.ready.then(ajustarMarca);
     if (quieto) marca.classList.add('entra');
     else new IntersectionObserver(es => es.forEach(e => marca.classList.toggle('entra', e.isIntersecting)), { threshold: 0.3 }).observe(caja);
+
+    /* --- 9. EL PESO DE LA FIRMA --- */
+    /* Las letras cerca del cursor engordan y las lejanas se afinan; lejos de la firma vuelven a su peso. Los centros se miden
+       en reposo, para que el cambio de ancho no mueva el blanco. Solo con mouse y sin movimiento reducido */
+    if (!quieto && window.matchMedia('(hover: hover)').matches) {
+        const pie = $('[data-pie]');
+        let xs = [], yc = 0, ultimo = null, enCola = false;
+        const medirLetras = () => { xs = letras.map(l => l.offsetLeft + l.offsetWidth / 2); yc = marca.offsetTop + marca.offsetHeight / 2; };
+        const pesar = () => {
+            enCola = false;
+            const r = pie.getBoundingClientRect(), x = ultimo.clientX - r.left, t = parseFloat(caja.style.fontSize);
+            const cerca = Math.max(0, 1 - Math.abs(ultimo.clientY - r.top - yc) / (t * 1.2));
+            letras.forEach((l, i) => { const f = Math.max(0, 1 - Math.abs(x - xs[i]) / (t * 1.1)); l.style.setProperty('--w', Math.round(500 + cerca * (200 + 600 * f * f - 500))); });
+        };
+        pie.addEventListener('pointermove', e => { ultimo = e; if (!enCola) { enCola = true; requestAnimationFrame(pesar); } });
+        pie.addEventListener('pointerleave', () => letras.forEach(l => l.style.removeProperty('--w')));
+        medirLetras(); window.addEventListener('resize', medirLetras); if (document.fonts) document.fonts.ready.then(medirLetras);
+    }
 })();
 /* =======================================================
    FIN JS · CONTACTO Y FOOTER
