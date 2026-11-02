@@ -8,18 +8,20 @@
     const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     /* --- 1. CURVA --- */
-    /* Bézier cúbica resuelta con Newton, en la misma notación que CSS: arranque decidido, llegada larga */
+    /* Bézier cúbica resuelta con Newton, en la misma notación que CSS: arranque firme y llegada larga, con un pico de
+       velocidad moderado (2,9 veces el promedio) para que los saltos largos no se vean a tirones */
     const bezier = (x1, y1, x2, y2) => {
         const A = (a, b) => 1 - 3 * b + 3 * a, B = (a, b) => 3 * b - 6 * a, C = a => 3 * a;
         const f = (t, a, b) => ((A(a, b) * t + B(a, b)) * t + C(a)) * t, d = (t, a, b) => 3 * A(a, b) * t * t + 2 * B(a, b) * t + C(a);
         return x => { let t = x; for (let i = 0; i < 6; i++) { const e = f(t, x1, x2) - x, s = d(t, x1, x2); if (Math.abs(e) < 1e-5 || !s) break; t -= e / s; } return f(Math.min(1, Math.max(0, t)), y1, y2); };
     };
-    const curva = bezier(0.6, 0, 0.12, 1);
+    const curva = bezier(0.45, 0, 0.2, 1);
 
     /* --- 2. VELO E ÍNDICE --- */
     /* Las secciones se registran con su posición y el índice se arma en cada salto. Es una lupa: los rótulos se reparten
-       parejo y su cercanía a la marca (--g) los agranda y les da más espacio. Cada sección se ancla donde termina su salto,
-       así al llegar la marca queda exacta en el destino */
+       parejo y su cercanía a la marca (--g) los agranda y les da más espacio. La marca no copia el scroll (las secciones
+       miden muy distinto y eso la hacía tironear): avanza del origen al destino con la misma curva y el mismo tiempo del
+       viaje, así llegan juntas. Se mueve con transform para no recalcular el layout en cada cuadro */
     const secciones = [];
     const velo = document.createElement('div'), indice = document.createElement('div');
     velo.className = 'velo-nav'; indice.className = 'indice-nav';
@@ -40,22 +42,21 @@
         riel.innerHTML = lista.map((s, i) => `<span class="et" style="--i:${i}"><span class="nom">${s.nombre}</span></span>`).join('') + '<i class="marca"></i>';
         ets = [...riel.querySelectorAll('.et')]; marca = riel.querySelector('.marca');
     };
-    const pintar = () => {
-        const alto = riel.clientHeight, pos = posicion(window.scrollY), aqui = Math.floor(pos);
+    const pintar = (k = 0) => {
+        const alto = riel.clientHeight, pos = viaje.p0 + (viaje.hacia - viaje.p0) * curva(k), aqui = Math.round(pos);
         const [a, b] = [Math.min(viaje.desde, viaje.hacia), Math.max(viaje.desde, viaje.hacia)], baja = viaje.hacia > viaje.desde;
         const g = ets.map((_, i) => { const x = Math.max(0, 1 - Math.abs(i - pos) / 1.5); return x * x * (3 - 2 * x); });
         const w = g.map(x => 1 + 1.6 * x), suma = w.reduce((t, x) => t + x, 0);
         let acc = 0;
         const ys = w.map(x => { const y = (acc + x / 2) / suma * alto; acc += x; return y; });
         ets.forEach((el, i) => {
-            el.style.top = ys[i] + 'px'; el.style.setProperty('--g', g[i].toFixed(3));
+            el.style.transform = `translateY(${ys[i]}px)`; el.style.setProperty('--g', g[i].toFixed(3));
             const estado = i === aqui ? 'aqui' : i < a || i > b ? '' : (baja ? i < aqui : i > aqui) ? 'pasado' : 'camino';
             el.classList.toggle('aqui', estado === 'aqui'); el.classList.toggle('pasado', estado === 'pasado'); el.classList.toggle('camino', estado === 'camino');
             el.classList.toggle('destino', i === viaje.hacia && i !== aqui);
         });
-        const i1 = Math.min(ets.length - 1, aqui + 1);
-        const ym = ys[aqui] + (ys[i1] - ys[aqui]) * (pos - aqui);
-        marca.style.top = ym + 'px'; indice.style.setProperty('--my', ym + 'px');
+        const i0 = Math.floor(pos), i1 = Math.min(ets.length - 1, i0 + 1);
+        marca.style.transform = `translateY(${ys[i0] + (ys[i1] - ys[i0]) * (pos - i0)}px)`;
     };
     const ocultar = () => { indice.classList.add('sale'); indice.classList.remove('on'); velo.classList.remove('on'); };
 
@@ -77,7 +78,7 @@
 
     /* --- 4. IR A UNA POSICIÓN --- */
     /* Menos de 1,2 pantallas: solo desliza (hasta 800 ms). Más lejos: el velo baja la página a un tercio, el índice entra
-       en cascada y la marca lo recorre con la lupa (de 650 a 1200 ms); en el último 30% la página se vuelve a encender, y al llegar la
+       en cascada y la marca lo recorre con la lupa (de 700 a 1300 ms); en el último 30% la página se vuelve a encender, y al llegar la
        marca se asienta y el destino parpadea una vez */
     window.desplazar = y => {
         parar();
@@ -87,11 +88,12 @@
         if (d < h * 1.2) { viaje = null; deslizar(desde, hasta, Math.min(800, 420 + d * 0.3)); return; }
         armar();
         const a = anclas(); let hacia = 0; a.forEach((y, i) => { if (Math.abs(y - hasta) < Math.abs(a[hacia] - hasta)) hacia = i; });
-        viaje = { desde: Math.floor(posicion(desde)), hacia };
+        const p0 = posicion(desde);
+        viaje = { desde: Math.round(p0), hacia, p0 };
         indice.classList.remove('sale'); pintar(); void indice.offsetWidth;
         indice.classList.add('on'); velo.classList.add('on'); activo = true;
-        despues(() => deslizar(desde, hasta, Math.min(1200, 650 + 260 * Math.log2(1 + d / h)), k => { pintar(); if (k > 0.7) velo.classList.remove('on'); }, () => {
-            pintar(); velo.classList.remove('on');
+        despues(() => deslizar(desde, hasta, Math.min(1300, 700 + 260 * Math.log2(1 + d / h)), k => { pintar(k); if (k > 0.7) velo.classList.remove('on'); }, () => {
+            pintar(1); velo.classList.remove('on');
             marca.classList.add('asienta'); ets[viaje.hacia].classList.add('confirma');
             despues(() => { ocultar(); activo = false; }, 520);
         }), 140);
