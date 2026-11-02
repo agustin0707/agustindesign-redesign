@@ -19,9 +19,9 @@
 
     /* --- 2. VELO E ÍNDICE --- */
     /* Las secciones se registran con su posición y el índice se arma en cada salto. Es una lupa: los rótulos se reparten
-       parejo y su cercanía a la marca (--g) los agranda y les da más espacio. La marca no copia el scroll (las secciones
-       miden muy distinto y eso la hacía tironear): avanza del origen al destino con la misma curva y el mismo tiempo del
-       viaje, así llegan juntas. Se mueve con transform para no recalcular el layout en cada cuadro */
+       parejo y su cercanía a la posición del viaje (--g) los agranda y les da más espacio. Esa posición no copia el scroll
+       (las secciones miden muy distinto y eso la hacía tironear): avanza del origen al destino con la misma curva y el mismo
+       tiempo del viaje, así llegan juntas. Se mueve con transform para no recalcular el layout en cada cuadro */
     const secciones = [];
     const velo = document.createElement('div'), indice = document.createElement('div');
     velo.className = 'velo-nav'; indice.className = 'indice-nav';
@@ -29,7 +29,7 @@
     indice.innerHTML = '<div class="riel"></div>';
     document.body.append(velo, indice);
     const riel = indice.firstChild;
-    let lista = [], ets = [], marca = null, viaje = null;
+    let lista = [], ets = [], viaje = null;
     const anclas = () => { const max = document.documentElement.scrollHeight - window.innerHeight; return lista.map(s => Math.min(s.y, max)); };
     const posicion = top => {
         const a = anclas(); let k = 0;
@@ -39,8 +39,8 @@
     };
     const armar = () => {
         lista = secciones.map(s => ({ nombre: s.nombre, y: s.y() })).sort((a, b) => a.y - b.y);
-        riel.innerHTML = lista.map((s, i) => `<span class="et" style="--i:${i}"><span class="nom">${s.nombre}</span></span>`).join('') + '<i class="marca"></i>';
-        ets = [...riel.querySelectorAll('.et')]; marca = riel.querySelector('.marca');
+        riel.innerHTML = lista.map((s, i) => `<span class="et" style="--i:${i}"><span class="nom">${s.nombre}</span></span>`).join('');
+        ets = [...riel.querySelectorAll('.et')];
     };
     const pintar = (k = 0) => {
         const alto = riel.clientHeight, pos = viaje.p0 + (viaje.hacia - viaje.p0) * curva(k), aqui = Math.round(pos);
@@ -55,8 +55,6 @@
             el.classList.toggle('aqui', estado === 'aqui'); el.classList.toggle('pasado', estado === 'pasado'); el.classList.toggle('camino', estado === 'camino');
             el.classList.toggle('destino', i === viaje.hacia && i !== aqui);
         });
-        const i0 = Math.floor(pos), i1 = Math.min(ets.length - 1, i0 + 1);
-        marca.style.transform = `translateY(${ys[i0] + (ys[i1] - ys[i0]) * (pos - i0)}px)`;
     };
     const ocultar = () => { indice.classList.add('sale'); indice.classList.remove('on'); velo.classList.remove('on'); };
 
@@ -78,8 +76,8 @@
 
     /* --- 4. IR A UNA POSICIÓN --- */
     /* Menos de 1,2 pantallas: solo desliza (hasta 800 ms). Más lejos: el velo baja la página a un tercio, el índice entra
-       en cascada y la marca lo recorre con la lupa (de 700 a 1300 ms); en el último 30% la página se vuelve a encender, y al llegar la
-       marca se asienta y el destino parpadea una vez */
+       en cascada y la lupa lo recorre (de 700 a 1300 ms); en el último 30% la página se vuelve a encender, y al llegar el destino
+       parpadea una vez y su raya hace un pulso */
     window.desplazar = y => {
         parar();
         const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -94,7 +92,7 @@
         indice.classList.add('on'); velo.classList.add('on'); activo = true;
         despues(() => deslizar(desde, hasta, Math.min(1300, 700 + 260 * Math.log2(1 + d / h)), k => { pintar(k); if (k > 0.7) velo.classList.remove('on'); }, () => {
             pintar(1); velo.classList.remove('on');
-            marca.classList.add('asienta'); ets[viaje.hacia].classList.add('confirma');
+            ets[viaje.hacia].classList.add('confirma');
             despues(() => { ocultar(); activo = false; }, 520);
         }), 140);
     };
