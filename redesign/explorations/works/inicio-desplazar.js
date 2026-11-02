@@ -54,7 +54,8 @@
             el.classList.toggle('destino', i === viaje.hacia && i !== aqui);
         });
         const i1 = Math.min(ets.length - 1, aqui + 1);
-        marca.style.top = (ys[aqui] + (ys[i1] - ys[aqui]) * (pos - aqui)) + 'px';
+        const ym = ys[aqui] + (ys[i1] - ys[aqui]) * (pos - aqui);
+        marca.style.top = ym + 'px'; indice.style.setProperty('--my', ym + 'px');
     };
     const ocultar = () => { indice.classList.add('sale'); indice.classList.remove('on'); velo.classList.remove('on'); };
 

@@ -1012,14 +1012,17 @@
            ======================================================= */
         /* Los saltos largos (volver arriba desde el footer, ir al contacto desde el hero) muestran un índice del home a la
            derecha mientras la página recorre el camino atenuada. Es una lupa: Hero, Works, Archivo y Contact repartidos
-           parejo, y los cercanos a la marca crecen y se apartan para darle lugar, como el dock de macOS. Lo recorrido queda
+           parejo y juntos, y los cercanos a la marca crecen y se apartan para darle lugar, como el dock de macOS. Lo recorrido queda
            en gris, lo actual en blanco, lo que falta del camino en tenue y el destino con una flecha desde el arranque. Los
            rótulos entran en cascada y, al llegar, la marca hace un pulso. Lo arma y lo mueve inicio-desplazar.js */
         .velo-nav { position: fixed; inset: 0; z-index: 200; background: linear-gradient(90deg, rgba(11, 11, 11, 0.68) 45%, rgba(11, 11, 11, 0.9)); opacity: 0; pointer-events: none; transition: opacity 380ms linear; }
         .velo-nav.on { opacity: 1; transition-duration: 220ms; }
-        .indice-nav { --tenue: #4A4A47; --apagado: #2E2E2C; position: fixed; right: var(--margen); top: 50%; height: min(44vh, 380px); translate: 0 -50%; z-index: 210; width: 240px; pointer-events: none; opacity: 0; transition: opacity 200ms linear 180ms; }
+        .indice-nav { --tenue: #4A4A47; --apagado: #2E2E2C; position: fixed; right: var(--margen); top: 50%; height: min(30vh, 260px); translate: 0 -50%; z-index: 210; width: 240px; pointer-events: none; opacity: 0; transition: opacity 200ms linear 180ms; }
         .indice-nav.on { opacity: 1; transition: opacity 120ms linear; }
         .indice-nav .riel { position: absolute; inset: 0; }
+        /* Fondo propio: una sombra suave que nace del borde derecho y una luz tenue que sigue a la marca (--my, lo pone
+           inicio-desplazar.js). Entra y sale con la opacidad del índice */
+        .indice-nav::before { content: ''; position: absolute; z-index: -1; top: -40vh; bottom: -40vh; right: calc(-1 * var(--margen)); width: min(72vw, 940px); background: radial-gradient(circle 240px at calc(100% - var(--margen) - 70px) calc(40vh + var(--my, 50%)), rgba(245, 245, 243, 0.06), transparent 70%), radial-gradient(ellipse 85% 50% at 100% 50%, rgba(11, 11, 11, 0.85), rgba(11, 11, 11, 0.5) 45%, transparent 78%); pointer-events: none; }
 
         /* --- 7.1 RÓTULOS EN LUPA --- */
         /* --g va de 0 a 1 según la cercanía a la marca: agranda el rótulo desde su borde derecho y alarga su raya. Entran en
@@ -1040,7 +1043,7 @@
         .indice-nav .marca { position: absolute; right: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--blanco); translate: 0 -50%; }
         .indice-nav .marca.asienta { animation: idxAsienta 420ms var(--ease); }
         @keyframes idxAsienta { 35% { scale: 1.5; } }
-        @media (max-width: 768px) { .indice-nav { width: 170px; height: min(40vh, 300px); } }
+        @media (max-width: 768px) { .indice-nav { width: 170px; height: min(28vh, 220px); } .indice-nav::before { width: 100vw; } }
     </style>
 </head>
 <body>
