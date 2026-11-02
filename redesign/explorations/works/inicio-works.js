@@ -5,7 +5,7 @@
     const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const conMouse = window.matchMedia('(hover: hover)').matches;
     const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
-    const irA = y => window.scrollTo({ top: y, behavior: quieto ? 'auto' : 'smooth' });
+    const irA = y => window.desplazar(y);
 
     /* --- 1. TÍTULOS QUE ENTRAN LETRA A LETRA --- */
     /* Mismo gesto del nombre del hero, disparado cuando el título entra en pantalla. Las del hero las arma hero-base.js */

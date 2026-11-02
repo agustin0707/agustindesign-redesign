@@ -2,8 +2,7 @@
    INICIO JS · HOME (HERO + WORKS)
    ======================================================= */
 (function () {
-    const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const ir = y => window.scrollTo({ top: y, behavior: quieto ? 'auto' : 'smooth' });
+    const ir = y => window.desplazar(y);
 
     /* --- 1. ENLACES INTERNOS --- */
     /* Works y "ver proyectos" bajan a la apertura de works; el logo y About vuelven arriba */

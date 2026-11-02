@@ -787,7 +787,7 @@
            lado, el correo que va a llegar se escribe con cada hueco. Una luz suave sigue al campo activo, lo confirmado se
            marca como con plumón y el botón se llena por tramos. Al enviar, la frase se vuelve un comprobante.
            Tres grises (blanco, gris medio y tenue, más la línea) y tres tamaños (la frase, 16 y rótulos de 12 en mono) */
-        .ct, .pie { --linea: #262625; --tenue: #4A4A47; --grafito: #151514; --hover: #22221F; --verde: #19B36B; --rapido: 160ms; --medio: 200ms; --t-frase: clamp(28px, 3vw, 50px); --t-lee: 16px; }
+        .ct, .pie { --suave: cubic-bezier(0.45, 0, 0.2, 1); --linea: #262625; --tenue: #4A4A47; --grafito: #151514; --hover: #22221F; --verde: #19B36B; --rapido: 160ms; --medio: 200ms; --t-frase: clamp(28px, 3vw, 50px); --t-lee: 16px; }
         .ct { position: relative; z-index: 5; overflow-x: clip; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); row-gap: 44px; padding: 140px var(--margen) 96px; background: var(--negro); font-size: var(--t-lee); }
         .ct-punto { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 0 3px rgba(25, 179, 107, 0.18); vertical-align: 1px; animation: ctLatido 2.4s ease-in-out infinite; }
         @keyframes ctLatido { 50% { box-shadow: 0 0 0 5px rgba(25, 179, 107, 0.06); } }
@@ -960,18 +960,20 @@
         .pie-fila { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; padding-inline: var(--margen); }
 
         /* --- 1. LA FIRMA --- */
-        /* Al pasar, la firma se apaga a gris tenue y una luz sigue al cursor: --luz es su radio y cada letra recorta el mismo
-           degradado, corrido por su posición (--ox, --oy). El punto deja su lugar, viaja entre las letras hasta quedar bajo el
-           cursor y se vuelve verde, el color de disponible; las letras se abren con transform para no pisar la entrada, que usa
-           translate. En el teléfono pasa lo mismo arrastrando el dedo */
-        @property --luz { syntax: '<length>'; inherits: true; initial-value: 4000px; }
+        /* Al pasar, la firma se apaga de a poco a gris tenue y una luz sigue al cursor con un leve retraso. --apaga (de 0 a 1)
+           mezcla el borde del degradado de blanco a tenue: así la entrada y la salida son un fundido, sin saltos de tamaño.
+           Cada letra recorta el mismo degradado, corrido por su posición (--ox, --oy), con radio --luz-r. El punto deja su
+           lugar, viaja entre las letras hasta quedar bajo el cursor y se enciende en blanco; las letras se abren con transform
+           para no pisar la entrada, que usa translate. En el teléfono pasa lo mismo arrastrando el dedo */
+        @property --apaga { syntax: '<number>'; inherits: true; initial-value: 0; }
         .pie-marca-caja { overflow: hidden; padding: calc(48px + 0.06em) var(--margen) 0.04em; touch-action: pan-y; }
-        .pie-marca { --luz: 4000px; position: relative; display: flex; justify-content: center; white-space: nowrap; font-weight: 500; letter-spacing: -0.07em; line-height: 1.04; user-select: none; transition: --luz 480ms var(--ease); }
-        .pie-marca .l { display: inline-block; color: transparent; background: radial-gradient(var(--luz) circle at calc(var(--x, 50%) - var(--ox, 0px)) calc(var(--y, 50%) - var(--oy, 0px)), var(--blanco) 38%, var(--tenue) 100%); -webkit-background-clip: text; background-clip: text; translate: 0 110%; transition: translate 900ms var(--ease) calc(var(--k) * 28ms), transform 260ms var(--ease); }
+        .pie-marca { --apaga: 0; position: relative; display: flex; justify-content: center; white-space: nowrap; font-weight: 500; letter-spacing: -0.07em; line-height: 1.04; user-select: none; transition: --apaga 900ms var(--suave); }
+        .pie-marca.alumbrada { --apaga: 1; transition-duration: 600ms; }
+        .pie-marca .l { display: inline-block; color: transparent; background: radial-gradient(var(--luz-r, 300px) circle at calc(var(--x, 50%) - var(--ox, 0px)) calc(var(--y, 50%) - var(--oy, 0px)), var(--blanco) 32%, color-mix(in srgb, var(--tenue) calc(var(--apaga) * 100%), var(--blanco)) 100%); -webkit-background-clip: text; background-clip: text; translate: 0 110%; transition: translate 900ms var(--ease) calc(var(--k) * 28ms), transform 460ms var(--ease); }
         .pie-marca.entra .l { translate: 0 0; }
-        .pie-marca .punto { background: none; color: var(--tenue); transition: translate 900ms var(--ease) calc(var(--k) * 28ms), transform 260ms var(--ease), color var(--medio) linear, text-shadow var(--medio) linear; }
+        .pie-marca .punto { background: none; color: var(--tenue); transition: translate 900ms var(--ease) calc(var(--k) * 28ms), transform 460ms var(--ease), color 400ms var(--suave); }
         .pie-marca .punto.suelto { position: absolute; left: 0; top: 0; }
-        .pie-marca .punto.fuera { color: var(--verde); text-shadow: 0 0 0.18em rgba(25, 179, 107, 0.55); }
+        .pie-marca .punto.fuera { color: var(--blanco); }
 
         /* --- 2. LINKS Y VOLVER ARRIBA --- */
         /* El sitio en blanco, las redes en gris; los atajos de teclado aparecen al pasar. Arriba marca con su anillo cuánto llevas */
@@ -1004,6 +1006,15 @@
         @media (prefers-reduced-motion: reduce) {
             .pie-marca .l { translate: 0 0; transition: none; }
         }
+
+        /* =======================================================
+           7. NAVEGACIÓN SUAVE
+           ======================================================= */
+        /* Los saltos largos (volver arriba desde el footer, ir al contacto desde el hero) cruzan las portadas y el archivo:
+           en vez de pasar todo a toda velocidad, una cortina negra cubre un instante, el salto ocurre detrás y la página llega
+           deslizando. La crea y la mueve inicio-desplazar.js */
+        .velo-nav { position: fixed; inset: 0; z-index: 200; background: var(--negro); opacity: 0; pointer-events: none; transition: opacity 420ms cubic-bezier(0.45, 0, 0.2, 1); }
+        .velo-nav.on { opacity: 1; transition-duration: 220ms; }
     </style>
 </head>
 <body>
@@ -1190,7 +1201,6 @@
             <a href="#contacto">Contacto <kbd>C</kbd></a>
             <a class="red" href="https://www.linkedin.com/in/agust%C3%ADn-avenda%C3%B1o-3047b8311/" target="_blank" rel="noopener">LinkedIn ↗</a>
             <a class="red" href="https://www.instagram.com/_agustin.avg/" target="_blank" rel="noopener">Instagram ↗</a>
-            <a class="red" href="https://github.com/agustin0707" target="_blank" rel="noopener">GitHub ↗</a>
             <a class="red" href="https://www.behance.net/agustnavendao1" target="_blank" rel="noopener">Behance ↗</a>
             <button class="pie-arriba-btn" type="button" data-arriba>Arriba <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="fondo" cx="12" cy="12" r="10"/><circle class="avance" cx="12" cy="12" r="10" pathLength="1"/><path class="flecha" d="M12 16V8m-3.5 3.5L12 8l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </nav>
@@ -1205,6 +1215,7 @@
     <script src="../hero/hero-base.js"></script>
     <script src="../hero/h1-capas.js"></script>
     <script src="works-base.js"></script>
+    <script src="inicio-desplazar.js"></script>
     <script src="inicio-works.js"></script>
     <script src="inicio.js"></script>
     <script src="inicio-contacto.js"></script>

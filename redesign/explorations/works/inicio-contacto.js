@@ -166,7 +166,7 @@
             $('[data-listo-plazo]', brief).textContent = `Te escribo antes del ${plazo()}`;
             boton.classList.remove('enviando'); $('[data-enviar-texto]', boton).textContent = 'Enviar mensaje';
             brief.classList.add('enviado');
-            brief.scrollIntoView({ behavior: quieto ? 'auto' : 'smooth', block: 'start' });
+            window.desplazar(brief.getBoundingClientRect().top + window.scrollY);
         }, quieto ? 0 : 650);
     };
     boton.addEventListener('click', enviar);
@@ -179,7 +179,7 @@
 
     /* --- 6. ENLACES Y ATAJOS --- */
     /* Contact (en el hero, la barra y el footer) baja a la frase. H vuelve arriba, W baja a works y C al contacto */
-    const ir = y => window.scrollTo({ top: y, behavior: quieto ? 'auto' : 'smooth' });
+    const ir = y => window.desplazar(y);
     const aContacto = () => { ir(brief.getBoundingClientRect().top + window.scrollY); history.replaceState(null, '', '#contacto'); };
     $$('a[href="#contacto"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); aContacto(); }));
     window.addEventListener('keydown', e => {
@@ -231,6 +231,7 @@
         ancho = punto.getBoundingClientRect().width; punto.classList.add('suelto');
         const ultima = letras[letras.length - 1];
         bordes = letras.map(x => x.offsetLeft).concat(ultima.offsetLeft + ultima.offsetWidth);
+        marca.style.setProperty('--luz-r', (parseFloat(caja.style.fontSize) * 0.95) + 'px');
         ubicar(actual);
     };
     ajustarMarca(); window.addEventListener('resize', ajustarMarca); if (document.fonts) document.fonts.ready.then(ajustarMarca);
@@ -238,16 +239,25 @@
     else new IntersectionObserver(es => es.forEach(e => marca.classList.toggle('entra', e.isIntersecting)), { threshold: 0.3 }).observe(caja);
 
     /* --- 9. LA LUZ Y EL PUNTO --- */
-    /* La luz va bajo el cursor (o el dedo) y el punto salta al borde más cercano. Al salir, la luz vuelve a cubrir la firma y
-       el punto regresa a su lugar y a su gris */
+    /* La luz persigue al cursor (o al dedo) con un leve retraso, en cada cuadro, y el punto salta al borde más cercano. Al
+       entrar, la luz arranca donde está el cursor (la firma todavía está blanca, así que no se nota). Al salir, la firma se
+       vuelve a encender de a poco y el punto regresa a su lugar y a su gris */
+    let destino = null, luzX = 0, luzY = 0, siguiendo = false;
+    const seguir = () => {
+        luzX += (destino[0] - luzX) * 0.16; luzY += (destino[1] - luzY) * 0.16;
+        marca.style.setProperty('--x', luzX.toFixed(1) + 'px'); marca.style.setProperty('--y', luzY.toFixed(1) + 'px');
+        siguiendo = Math.abs(destino[0] - luzX) + Math.abs(destino[1] - luzY) > 0.5;
+        if (siguiendo) requestAnimationFrame(seguir);
+    };
     const alumbrarFirma = e => {
-        const r = marca.getBoundingClientRect(), x = e.clientX - r.left;
-        marca.style.setProperty('--x', x + 'px'); marca.style.setProperty('--y', (e.clientY - r.top) + 'px');
-        marca.style.setProperty('--luz', (parseFloat(caja.style.fontSize) * 0.95) + 'px');
+        const r = marca.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+        if (!marca.classList.contains('alumbrada')) { luzX = x; luzY = y; marca.classList.add('alumbrada'); }
+        destino = [x, y];
+        if (!siguiendo) { siguiendo = true; requestAnimationFrame(seguir); }
         let g = 0; bordes.forEach((b, i) => { if (Math.abs(b - x) < Math.abs(bordes[g] - x)) g = i; });
         if (g !== actual) ubicar(g);
     };
-    const apagarFirma = () => { marca.style.removeProperty('--luz'); ubicar(CASA); };
+    const apagarFirma = () => { marca.classList.remove('alumbrada'); ubicar(CASA); };
     caja.addEventListener('pointermove', alumbrarFirma);
     caja.addEventListener('pointerleave', apagarFirma); caja.addEventListener('pointercancel', apagarFirma);
     caja.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') apagarFirma(); });
