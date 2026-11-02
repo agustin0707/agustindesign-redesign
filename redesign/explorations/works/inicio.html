@@ -1011,41 +1011,36 @@
            7. NAVEGACIÓN SUAVE
            ======================================================= */
         /* Los saltos largos (volver arriba desde el footer, ir al contacto desde el hero) muestran un índice del home a la
-           derecha mientras la página recorre el camino atenuada. Cada sección es un tramo del riel con su largo real; lo
-           recorrido queda en gris, lo actual en blanco, lo que falta del camino en tenue y el destino marcado con una flecha
-           desde el arranque. El riel se dibuja de arriba abajo, los rótulos entran en cascada y, al llegar, la marca hace un
-           pulso. Lo arma y lo mueve inicio-desplazar.js */
+           derecha mientras la página recorre el camino atenuada. Es una lupa: Hero, Works, Archivo y Contact repartidos
+           parejo, y los cercanos a la marca crecen y se apartan para darle lugar, como el dock de macOS. Lo recorrido queda
+           en gris, lo actual en blanco, lo que falta del camino en tenue y el destino con una flecha desde el arranque. Los
+           rótulos entran en cascada y, al llegar, la marca hace un pulso. Lo arma y lo mueve inicio-desplazar.js */
         .velo-nav { position: fixed; inset: 0; z-index: 200; background: linear-gradient(90deg, rgba(11, 11, 11, 0.68) 45%, rgba(11, 11, 11, 0.9)); opacity: 0; pointer-events: none; transition: opacity 380ms linear; }
         .velo-nav.on { opacity: 1; transition-duration: 220ms; }
-        .indice-nav { --tenue: #4A4A47; --apagado: #2E2E2C; position: fixed; right: var(--margen); top: 16vh; bottom: 14vh; z-index: 210; width: 170px; pointer-events: none; opacity: 0; transition: opacity 200ms linear 180ms; }
+        .indice-nav { --tenue: #4A4A47; --apagado: #2E2E2C; position: fixed; right: var(--margen); top: 50%; height: min(44vh, 380px); translate: 0 -50%; z-index: 210; width: 240px; pointer-events: none; opacity: 0; transition: opacity 200ms linear 180ms; }
         .indice-nav.on { opacity: 1; transition: opacity 120ms linear; }
         .indice-nav .riel { position: absolute; inset: 0; }
 
-        /* --- 7.1 TRAMOS --- */
-        .indice-nav .seg { position: absolute; right: -1px; width: 3px; background: var(--apagado); transform: scaleY(0); transform-origin: top; transition: transform 380ms var(--ease), background-color var(--rapido) linear; }
-        .indice-nav.on .seg { transform: scaleY(1); }
-        .indice-nav .seg.pasado, .indice-nav .seg.aqui { background: var(--gris-medio); }
-        .indice-nav .seg.camino { background: var(--tenue); }
-
-        /* --- 7.2 RÓTULOS --- */
-        /* Entran en cascada con --i y salen en orden inverso */
-        .indice-nav .et { position: absolute; right: 16px; font: 400 12px var(--mono); color: var(--apagado); white-space: nowrap; opacity: 0; translate: 8px 0; transition: color var(--rapido) linear, opacity 240ms linear calc(var(--i) * 26ms), translate 420ms var(--ease) calc(var(--i) * 26ms); }
-        .indice-nav.on .et { opacity: 1; translate: 0 0; }
-        .indice-nav.sale .et { transition-delay: 0s, calc((8 - var(--i)) * 18ms), 0s; }
-        .indice-nav .et::after { content: ''; position: absolute; right: -16px; top: 0.75em; width: 8px; height: 1px; background: currentColor; }
+        /* --- 7.1 RÓTULOS EN LUPA --- */
+        /* --g va de 0 a 1 según la cercanía a la marca: agranda el rótulo desde su borde derecho y alarga su raya. Entran en
+           cascada con --i y salen en orden inverso */
+        .indice-nav .et { --g: 0; position: absolute; right: 24px; font: 500 14px var(--sans); letter-spacing: -0.02em; color: var(--apagado); white-space: nowrap; opacity: 0; translate: 8px -50%; transition: color var(--rapido) linear, opacity 240ms linear calc(var(--i) * 26ms), translate 420ms var(--ease) calc(var(--i) * 26ms); }
+        .indice-nav.on .et { opacity: 1; translate: 0 -50%; }
+        .indice-nav.sale .et { transition-delay: 0s, calc((4 - var(--i)) * 18ms), 0s; }
+        .indice-nav .nom { display: inline-block; transform-origin: right center; scale: calc(1 + 1.1 * var(--g)); }
+        .indice-nav .et::after { content: ''; position: absolute; right: -24px; top: 50%; width: calc(6px + 10px * var(--g)); height: 1px; background: currentColor; }
         .indice-nav .et.camino { color: var(--tenue); }
         .indice-nav .et.pasado { color: var(--gris-medio); }
         .indice-nav .et.aqui, .indice-nav .et.destino { color: var(--blanco); }
-        .indice-nav .et.destino::before { content: '→ '; }
-        .indice-nav .et.destino::after { width: 12px; height: 2px; }
+        .indice-nav .et.destino .nom::before { content: '→ '; }
         .indice-nav .et.confirma { animation: idxConfirma 520ms linear; }
         @keyframes idxConfirma { 30% { opacity: 0.35; } }
 
-        /* --- 7.3 LA MARCA --- */
+        /* --- 7.2 LA MARCA --- */
         .indice-nav .marca { position: absolute; right: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--blanco); translate: 0 -50%; }
         .indice-nav .marca.asienta { animation: idxAsienta 420ms var(--ease); }
         @keyframes idxAsienta { 35% { scale: 1.5; } }
-        @media (max-width: 768px) { .indice-nav { width: 120px; top: 18vh; } }
+        @media (max-width: 768px) { .indice-nav { width: 170px; height: min(40vh, 300px); } }
     </style>
 </head>
 <body>
