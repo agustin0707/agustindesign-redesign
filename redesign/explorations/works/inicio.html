@@ -811,10 +811,12 @@
         .ab-panel .mono:last-of-type { right: 14px; }
 
         /* --- 4.3 FICHA --- */
-        /* Datos que no repiten la bajada. Los dos puntos de la hora laten cada segundo */
-        .ab-datos div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 9px 0; border-top: 1px solid var(--regla); font-size: 15px; }
-        .ab-datos dt { padding-top: 3px; color: var(--suave); }
-        .ab-datos dd { font-variant-numeric: tabular-nums; }
+        /* Dos columnas de rótulo y valor, sin líneas: el orden lo dan la tipografía y el espacio. Los dos puntos de la hora
+           laten cada segundo */
+        .ab-datos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px var(--medianil); }
+        .ab-datos div { display: grid; gap: 4px; align-content: start; }
+        .ab-datos dt { color: var(--suave); }
+        .ab-datos dd { font-size: 18px; letter-spacing: -0.02em; line-height: 1.25; font-variant-numeric: tabular-nums; text-wrap: balance; }
         .ab-hora i { font-style: normal; animation: abDosPuntos 1s steps(1) infinite; }
         @keyframes abDosPuntos { 50% { opacity: 0.2; } }
 
@@ -838,22 +840,27 @@
         }
 
         /* --- 4.5 FILAS --- */
-        /* Rótulos en las columnas 1 a 3 y contenido de la 4 a la 12; el texto corrido conserva su medida. Al llegar desde
-           el índice, el rótulo se marca con una línea y vuelve solo (.marca) */
+        /* Rótulos en las columnas 1 a 3 y contenido de la 4 a la 12. Las filas se separan por aire, sin líneas. Al llegar
+           desde el índice, el rótulo se marca con una línea y vuelve solo (.marca) */
         .ab-filas { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; padding-bottom: 96px; }
-        .ab-fila { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; padding: 26px 0 34px; border-top: 1px solid var(--regla); scroll-margin-top: 90px; }
-        .ab-fila:first-child { border-top: 0; }
+        .ab-fila { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; padding: 48px 0; scroll-margin-top: 90px; }
+        .ab-fila:first-child { padding-top: 56px; }
         .ab-rotulo { grid-column: 1 / span 3; padding-top: 4px; color: var(--suave); transition: color 200ms linear; }
         .ab-rotulo::after { content: ''; display: block; width: 0; height: 1px; margin-top: 10px; background: currentColor; transition: width 320ms var(--ease); }
         .ab-fila.marca .ab-rotulo { color: var(--negro); }
         .ab-fila.marca .ab-rotulo::after { width: 40px; }
         .ab-fila > :not(.ab-rotulo) { grid-column: 4 / -1; }
-        .ab-quien { max-width: 26ch; font-size: clamp(22px, 2vw, 30px); letter-spacing: -0.04em; line-height: 1.2; text-wrap: pretty; }
-        .ab-quien span { color: var(--suave); }
-        .ab-lista { list-style: none; }
-        .ab-lista li { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 10px 0; border-top: 1px solid var(--regla); font-size: 18px; letter-spacing: -0.02em; }
-        .ab-lista li:first-child { border-top: 0; padding-top: 0; }
-        .ab-lista .mono { color: var(--suave); white-space: nowrap; }
+        /* Quién se lee como se escucha: cada palabra se enciende cuando la línea de lectura pasa por ella (--k, de 0 a 1, lo
+           escribe inicio-about.js). La marca, la experiencia y el código ya parten encendidos */
+        .ab-quien { font-size: clamp(30px, 3.7vw, 60px); font-weight: 500; letter-spacing: -0.05em; line-height: 1.06; text-wrap: pretty; }
+        .ab-quien .w { --k: 0; color: color-mix(in srgb, var(--negro) calc(18% + 82% * var(--k)), var(--gris-claro)); transition: color 120ms linear; }
+        .ab-quien b { font-weight: 500; }
+        .ab-quien b .w { --k: 1; }
+        /* Formación como créditos: tres columnas, nombre arriba y detalle abajo */
+        .ab-creditos { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--medianil); }
+        .ab-creditos li { display: grid; gap: 6px; align-content: start; }
+        .ab-creditos b { font-size: clamp(22px, 2vw, 30px); font-weight: 500; letter-spacing: -0.04em; line-height: 1.05; }
+        .ab-creditos span { max-width: 24ch; color: var(--suave); }
 
         /* --- 4.6 SERVICIOS CON SU PRUEBA --- */
         /* Cada servicio lleva al proyecto que lo demuestra. Al pasar por una fila, las demás se apagan, como en el archivo */
@@ -879,10 +886,11 @@
         .ab-pasos p { max-width: 28ch; color: var(--suave); }
 
         /* --- 4.8 CIERRE HACIA EL CONTACTO --- */
-        .ab-sigue a { display: inline-flex; align-items: baseline; gap: 12px; font-size: clamp(22px, 2vw, 30px); letter-spacing: -0.04em; }
-        .ab-sigue .fl { transition: translate 160ms var(--ease); }
-        .ab-sigue kbd { display: none; align-self: center; }
-        @media (hover: hover) and (pointer: fine) { .ab-sigue kbd { display: inline-grid; } .ab-sigue a:hover .fl { translate: 0 3px; } }
+        /* Una pregunta en gris y la respuesta en negro, que baja al contacto */
+        .ab-sigue p { font-size: clamp(30px, 3.4vw, 54px); font-weight: 500; letter-spacing: -0.05em; line-height: 1.08; color: var(--suave); text-wrap: balance; }
+        .ab-sigue a { display: inline-flex; align-items: baseline; gap: 0.2em; color: var(--negro); }
+        .ab-sigue .fl { transition: translate 200ms var(--ease); }
+        @media (hover: hover) { .ab-sigue a:hover .fl { translate: 0 0.1em; } }
 
         /* --- 4.9 TELÉFONO --- */
         /* Título primero, después el retrato cuadrado y la ficha. Los pasos bajan por una línea vertical */
@@ -894,7 +902,8 @@
             .ab-titulo { font-size: 20vw; }
             .ab-panel { grid-column: 1 / -1; grid-row: 2; aspect-ratio: 1; max-width: 100%; }
             .ab-base { grid-column: 1 / -1; grid-row: 3; padding-top: 24px; }
-            .ab-datos div { grid-template-columns: 90px 1fr; }
+            .ab-fila { padding: 36px 0; }
+            .ab-creditos { grid-template-columns: 1fr; gap: 20px; }
             .ab-rotulo, .ab-fila > :not(.ab-rotulo) { grid-column: 1 / -1; }
             .ab-rotulo { padding-bottom: 12px; }
             .ab-servicios li { grid-template-columns: minmax(0, 1fr) auto; row-gap: 2px; }
@@ -908,6 +917,7 @@
         @media (prefers-reduced-motion: reduce) {
             .ab-an, .ab-rotulo::after { transition: none; }
             .ab-hora i { animation: none; }
+            .ab-quien .w { --k: 1; }
             .ab-panel img { translate: none; }
         }
 
@@ -1325,7 +1335,7 @@
             </div>
         </div>
         <div class="ab-filas">
-            <div class="ab-fila" id="ab-quien" data-f="quien"><span class="ab-rotulo mono">Quién</span><p class="ab-quien">Trabajo entre la marca, la experiencia y el código, que casi siempre van en manos distintas. <span>Juntarlos es lo que hace que la web se vea y funcione tal como se diseñó.</span></p></div>
+            <div class="ab-fila" id="ab-quien" data-f="quien"><span class="ab-rotulo mono">Quién</span><p class="ab-quien" data-ab-lectura>Trabajo entre <b>la marca,</b> <b>la experiencia</b> y <b>el código,</b> que casi siempre van en manos distintas. Juntarlos es lo que hace que la web se vea y funcione tal como se diseñó.</p></div>
             <div class="ab-fila" id="ab-que" data-f="que"><span class="ab-rotulo mono">Qué hago</span><ul class="ab-servicios">
                 <li><span>Marca y web desde cero</span><span class="mono t">Proyecto completo</span><a class="mono ej" href="#p-llego" data-ir-cov="0">Llegó Farma <span>↗</span></a></li>
                 <li><span>Web para una marca que ya existe</span><span class="mono t">Sitio</span><span></span></li>
@@ -1333,8 +1343,8 @@
                 <li><span>Producto digital con marca</span><span class="mono t">Web app</span><a class="mono ej" href="#p-mend" data-ir-cov="2">Mend <span>↗</span></a></li>
             </ul></div>
             <div class="ab-fila" id="ab-como" data-f="como"><span class="ab-rotulo mono">Cómo trabajo</span><ol class="ab-pasos"><li><b>Entender</b><p>Conversamos del negocio, de quién llega al sitio y de qué tiene que lograr.</p></li><li><b>Decidir</b><p>Defino la marca y la estructura, con el porqué de cada decisión.</p></li><li><b>Diseñar</b><p>La web pantalla por pantalla, en escritorio y teléfono.</p></li><li><b>Construir</b><p>La programo a mano, rápida y precisa, y la dejo publicada.</p></li></ol></div>
-            <div class="ab-fila" id="ab-formacion" data-f="formacion"><span class="ab-rotulo mono">Formación</span><ul class="ab-lista"><li><span>Diseño UC</span><span class="mono">Me titulo en dic 2026</span></li><li><span>Intercambio en Diseño Gráfico · UPF</span><span class="mono">Barcelona</span></li><li><span>UX Enterprise · Shifta</span><span class="mono">Curso</span></li></ul></div>
-            <div class="ab-fila ab-sigue"><span class="ab-rotulo mono">Sigue</span><div><a href="#contacto">Conversemos <kbd>C</kbd><span class="fl" aria-hidden="true">↓</span></a></div></div>
+            <div class="ab-fila" id="ab-formacion" data-f="formacion"><span class="ab-rotulo mono">Formación</span><ul class="ab-creditos"><li><b>Diseño UC</b><span>Me titulo en diciembre de 2026</span></li><li><b>UPF, Barcelona</b><span>Intercambio en Diseño Gráfico</span></li><li><b>Shifta</b><span>Curso UX Enterprise</span></li></ul></div>
+            <div class="ab-fila ab-sigue"><span class="ab-rotulo mono">Sigue</span><p>¿Tienes un proyecto en mente? <a href="#contacto">Conversemos <span class="fl" aria-hidden="true">↓</span></a></p></div>
         </div>
     </section>
 

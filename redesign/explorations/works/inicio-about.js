@@ -2,8 +2,8 @@
    INICIO JS · ABOUT
    ======================================================= */
 /* La hoja clara se abre al entrar, el retrato sube desde la base de su panel y la portada se arma una vez. La ficha lleva
-   la hora de Santiago en vivo y el índice (o las teclas 1 a 4) baja a cada fila y la marca. About (en el hero, la barra y
-   el footer) y la tecla A llegan aquí */
+   la hora de Santiago en vivo, Quién se enciende palabra a palabra al leerlo y el índice (o las teclas 1 a 4) baja a cada
+   fila y la marca. About (en el hero, la barra y el footer) y la tecla A llegan aquí */
 (function () {
     const ab = document.getElementById('about');
     if (!ab) return;
@@ -19,15 +19,29 @@
 
     /* --- 2. LA HOJA SE ABRE Y EL RETRATO SUBE --- */
     /* --e va de 0 a 1 en el primer 60% de pantalla que recorre la hoja: los costados del fondo se cierran hacia el borde.
-       --sube hace lo mismo con el panel en el 90% de la pantalla y saca el recorte desde su base */
+       --sube hace lo mismo con el panel en el 90% de la pantalla y saca el recorte desde su base. Cada palabra de Quién se
+       enciende cuando la línea de lectura (62% de la pantalla) pasa por ella; dentro de cada línea, de izquierda a derecha */
     const panel = ab.querySelector('.ab-panel');
     const limitar = x => Math.min(1, Math.max(0, x));
+
+    /* Quién se separa en palabras (.w) sin tocar el HTML; las que van en negrita parten encendidas desde el CSS */
+    const lectura = ab.querySelector('[data-ab-lectura]');
+    [...lectura.childNodes].flatMap(n => n.nodeType === 3 ? [n] : [...n.childNodes].filter(c => c.nodeType === 3)).forEach(t => {
+        const f = document.createDocumentFragment();
+        t.textContent.split(/(\s+)/).forEach(p => f.append(/^\s*$/.test(p) ? p : Object.assign(document.createElement('span'), { className: 'w', textContent: p })));
+        t.replaceWith(f);
+    });
+    const palabras = [...lectura.querySelectorAll(':scope > .w')];
     let pendiente = 0;
     const abrir = () => {
         pendiente = 0;
         const vh = window.innerHeight;
         ab.style.setProperty('--e', (quieto ? 1 : limitar((vh - ab.getBoundingClientRect().top) / (vh * 0.6))).toFixed(4));
         panel.style.setProperty('--sube', (quieto ? 1 : limitar((vh - panel.getBoundingClientRect().top) / (vh * 0.9))).toFixed(4));
+        if (!quieto) {
+            const q = lectura.getBoundingClientRect(), tramo = vh * 0.08;
+            palabras.forEach(w => { const r = w.getBoundingClientRect(); w.style.setProperty('--k', limitar((vh * 0.62 - r.top - (r.left - q.left) / q.width * tramo) / tramo).toFixed(3)); });
+        }
     };
     window.addEventListener('scroll', () => { if (!pendiente) pendiente = requestAnimationFrame(abrir); }, { passive: true });
     window.addEventListener('resize', abrir);
