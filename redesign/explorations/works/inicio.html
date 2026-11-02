@@ -6,7 +6,7 @@
     <title>agustín.design · Diseño de marca y desarrollo web</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <link rel="preload" as="image" href="../../../img/fotodeperfilgus5.webp" fetchpriority="high">
     <link rel="stylesheet" href="../hero/hero-base.css">
     <link rel="stylesheet" href="works-base.css">
@@ -954,19 +954,24 @@
            6. FOOTER · LA FIRMA
            ======================================================= */
         /* Tres franjas: la firma de margen a margen, una fila de links con volver arriba al final y la línea legal con el colofón
-           vivo, que mide cuánto cargó y cuánto pesa la página. La firma sube letra por letra al entrar y cambia de peso con el
-           cursor: las letras cercanas engordan y las lejanas se afinan (Geist es variable). En pantallas táctiles corre una ola */
+           vivo, que mide cuánto cargó y cuánto pesa la página. La firma sube letra por letra al entrar y, al pasar, una luz
+           sigue al cursor mientras el punto viaja entre las letras */
         .pie { position: relative; z-index: 5; overflow: hidden; background: var(--negro); border-top: 1px solid var(--linea); font-size: var(--t-lee); }
         .pie-fila { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; padding-inline: var(--margen); }
 
         /* --- 1. LA FIRMA --- */
-        .pie-marca-caja { overflow: hidden; padding: calc(48px + 0.06em) var(--margen) 0.04em; }
-        .pie-marca { display: flex; justify-content: center; white-space: nowrap; font-weight: 500; letter-spacing: -0.07em; line-height: 1.04; color: var(--blanco); user-select: none; }
-        .pie-marca .l { display: inline-block; font-weight: var(--w, 500); translate: 0 110%; transition: translate 900ms var(--ease) calc(var(--k) * 28ms), font-weight 380ms var(--ease); }
-        .pie-marca .gris-l { color: var(--tenue); }
+        /* Al pasar, la firma se apaga a gris tenue y una luz sigue al cursor: --luz es su radio y cada letra recorta el mismo
+           degradado, corrido por su posición (--ox, --oy). El punto deja su lugar, viaja entre las letras hasta quedar bajo el
+           cursor y se vuelve verde, el color de disponible; las letras se abren con transform para no pisar la entrada, que usa
+           translate. En el teléfono pasa lo mismo arrastrando el dedo */
+        @property --luz { syntax: '<length>'; inherits: true; initial-value: 4000px; }
+        .pie-marca-caja { overflow: hidden; padding: calc(48px + 0.06em) var(--margen) 0.04em; touch-action: pan-y; }
+        .pie-marca { --luz: 4000px; position: relative; display: flex; justify-content: center; white-space: nowrap; font-weight: 500; letter-spacing: -0.07em; line-height: 1.04; user-select: none; transition: --luz 480ms var(--ease); }
+        .pie-marca .l { display: inline-block; color: transparent; background: radial-gradient(var(--luz) circle at calc(var(--x, 50%) - var(--ox, 0px)) calc(var(--y, 50%) - var(--oy, 0px)), var(--blanco) 38%, var(--tenue) 100%); -webkit-background-clip: text; background-clip: text; translate: 0 110%; transition: translate 900ms var(--ease) calc(var(--k) * 28ms), transform 260ms var(--ease); }
         .pie-marca.entra .l { translate: 0 0; }
-        @media (hover: none) { .pie-marca.entra .l { animation: pieOla 3.2s ease-in-out calc(var(--k) * 110ms) infinite; } }
-        @keyframes pieOla { 0%, 100% { font-weight: 300; } 50% { font-weight: 760; } }
+        .pie-marca .punto { background: none; color: var(--tenue); transition: translate 900ms var(--ease) calc(var(--k) * 28ms), transform 260ms var(--ease), color var(--medio) linear, text-shadow var(--medio) linear; }
+        .pie-marca .punto.suelto { position: absolute; left: 0; top: 0; }
+        .pie-marca .punto.fuera { color: var(--verde); text-shadow: 0 0 0.18em rgba(25, 179, 107, 0.55); }
 
         /* --- 2. LINKS Y VOLVER ARRIBA --- */
         /* El sitio en blanco, las redes en gris; los atajos de teclado aparecen al pasar. Arriba marca con su anillo cuánto llevas */
@@ -997,7 +1002,7 @@
             .pie-legal { flex-direction: column; align-items: flex-start; gap: 6px; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .pie-marca .l { translate: 0 0; transition: none; animation: none !important; }
+            .pie-marca .l { translate: 0 0; transition: none; }
         }
     </style>
 </head>
@@ -1179,7 +1184,7 @@
     </main>
 
     <footer class="pie" data-pie>
-        <div class="pie-marca-caja"><div class="pie-marca" aria-hidden="true" data-marca><span class="l" style="--k:0">a</span><span class="l" style="--k:1">g</span><span class="l" style="--k:2">u</span><span class="l" style="--k:3">s</span><span class="l" style="--k:4">t</span><span class="l" style="--k:5">í</span><span class="l" style="--k:6">n</span><span class="l gris-l" style="--k:7">.</span><span class="l" style="--k:8">d</span><span class="l" style="--k:9">e</span><span class="l" style="--k:10">s</span><span class="l" style="--k:11">i</span><span class="l" style="--k:12">g</span><span class="l" style="--k:13">n</span></div></div>
+        <div class="pie-marca-caja"><div class="pie-marca" aria-hidden="true" data-marca><span class="l" style="--k:0">a</span><span class="l" style="--k:1">g</span><span class="l" style="--k:2">u</span><span class="l" style="--k:3">s</span><span class="l" style="--k:4">t</span><span class="l" style="--k:5">í</span><span class="l" style="--k:6">n</span><span class="l punto" style="--k:7">.</span><span class="l" style="--k:8">d</span><span class="l" style="--k:9">e</span><span class="l" style="--k:10">s</span><span class="l" style="--k:11">i</span><span class="l" style="--k:12">g</span><span class="l" style="--k:13">n</span></div></div>
         <nav class="pie-fila pie-links" aria-label="Pie de página">
             <a href="#works">Trabajo <kbd>W</kbd></a>
             <a href="#contacto">Contacto <kbd>C</kbd></a>

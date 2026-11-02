@@ -209,36 +209,48 @@
     const avance = () => { pendiente = false; arriba.style.setProperty('--avance', (window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)).toFixed(3)); };
     window.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(avance); } }, { passive: true });
     avance();
-    const marca = $('[data-marca]'), caja = marca.parentElement, letras = [...marca.children];
-    /* En pantallas táctiles la ola engruesa la firma: se deja un poco de aire para que no toque los bordes */
-    const holgura = window.matchMedia('(hover: none)').matches ? 0.95 : 1;
+    const marca = $('[data-marca]'), caja = marca.parentElement, punto = $('.punto', marca), CASA = [...marca.children].indexOf(punto);
+    const letras = [...marca.children].filter(l => l !== punto);
+    let ancho = 0, bordes = [], actual = CASA;
+    /* El punto queda en el borde g (entre la letra g-1 y la g): las de la izquierda se corren medio punto a la izquierda y
+       las de la derecha a la derecha. Cada letra guarda su posición para que la luz caiga en el mismo lugar en todas */
+    const ubicar = g => {
+        actual = g;
+        letras.forEach((l, i) => {
+            const d = i < g ? -ancho / 2 : ancho / 2;
+            l.style.transform = `translateX(${d}px)`; l.style.setProperty('--ox', (l.offsetLeft + d) + 'px'); l.style.setProperty('--oy', l.offsetTop + 'px');
+        });
+        punto.style.transform = `translateX(${bordes[g] - ancho / 2}px)`; punto.classList.toggle('fuera', g !== CASA);
+    };
+    /* Se mide con el punto en su lugar; después sale del flujo y las letras, juntas, guardan sus bordes */
     const ajustarMarca = () => {
-        letras.forEach(l => l.style.removeProperty('--w'));
+        letras.forEach(l => { l.style.transform = ''; }); punto.style.transform = ''; punto.classList.remove('suelto');
         caja.style.fontSize = '100px';
-        const l = marca.children, ancho = l[l.length - 1].getBoundingClientRect().right - l[0].getBoundingClientRect().left;
-        caja.style.fontSize = (holgura * 100 * (caja.clientWidth - 2 * parseFloat(getComputedStyle(caja).paddingLeft)) / ancho) + 'px';
+        const l = marca.children, total = l[l.length - 1].getBoundingClientRect().right - l[0].getBoundingClientRect().left;
+        caja.style.fontSize = (100 * (caja.clientWidth - 2 * parseFloat(getComputedStyle(caja).paddingLeft)) / total) + 'px';
+        ancho = punto.getBoundingClientRect().width; punto.classList.add('suelto');
+        const ultima = letras[letras.length - 1];
+        bordes = letras.map(x => x.offsetLeft).concat(ultima.offsetLeft + ultima.offsetWidth);
+        ubicar(actual);
     };
     ajustarMarca(); window.addEventListener('resize', ajustarMarca); if (document.fonts) document.fonts.ready.then(ajustarMarca);
     if (quieto) marca.classList.add('entra');
     else new IntersectionObserver(es => es.forEach(e => marca.classList.toggle('entra', e.isIntersecting)), { threshold: 0.3 }).observe(caja);
 
-    /* --- 9. EL PESO DE LA FIRMA --- */
-    /* Las letras cerca del cursor engordan y las lejanas se afinan; lejos de la firma vuelven a su peso. Los centros se miden
-       en reposo, para que el cambio de ancho no mueva el blanco. Solo con mouse y sin movimiento reducido */
-    if (!quieto && window.matchMedia('(hover: hover)').matches) {
-        const pie = $('[data-pie]');
-        let xs = [], yc = 0, ultimo = null, enCola = false;
-        const medirLetras = () => { xs = letras.map(l => l.offsetLeft + l.offsetWidth / 2); yc = marca.offsetTop + marca.offsetHeight / 2; };
-        const pesar = () => {
-            enCola = false;
-            const r = pie.getBoundingClientRect(), x = ultimo.clientX - r.left, t = parseFloat(caja.style.fontSize);
-            const cerca = Math.max(0, 1 - Math.abs(ultimo.clientY - r.top - yc) / (t * 1.2));
-            letras.forEach((l, i) => { const f = Math.max(0, 1 - Math.abs(x - xs[i]) / (t * 1.1)); l.style.setProperty('--w', Math.round(500 + cerca * (200 + 600 * f * f - 500))); });
-        };
-        pie.addEventListener('pointermove', e => { ultimo = e; if (!enCola) { enCola = true; requestAnimationFrame(pesar); } });
-        pie.addEventListener('pointerleave', () => letras.forEach(l => l.style.removeProperty('--w')));
-        medirLetras(); window.addEventListener('resize', medirLetras); if (document.fonts) document.fonts.ready.then(medirLetras);
-    }
+    /* --- 9. LA LUZ Y EL PUNTO --- */
+    /* La luz va bajo el cursor (o el dedo) y el punto salta al borde más cercano. Al salir, la luz vuelve a cubrir la firma y
+       el punto regresa a su lugar y a su gris */
+    const alumbrarFirma = e => {
+        const r = marca.getBoundingClientRect(), x = e.clientX - r.left;
+        marca.style.setProperty('--x', x + 'px'); marca.style.setProperty('--y', (e.clientY - r.top) + 'px');
+        marca.style.setProperty('--luz', (parseFloat(caja.style.fontSize) * 0.95) + 'px');
+        let g = 0; bordes.forEach((b, i) => { if (Math.abs(b - x) < Math.abs(bordes[g] - x)) g = i; });
+        if (g !== actual) ubicar(g);
+    };
+    const apagarFirma = () => { marca.style.removeProperty('--luz'); ubicar(CASA); };
+    caja.addEventListener('pointermove', alumbrarFirma);
+    caja.addEventListener('pointerleave', apagarFirma); caja.addEventListener('pointercancel', apagarFirma);
+    caja.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') apagarFirma(); });
 })();
 /* =======================================================
    FIN JS · CONTACTO Y FOOTER
