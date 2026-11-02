@@ -1014,7 +1014,7 @@
            derecha mientras la página recorre el camino atenuada. Es una lupa: Hero, Works, Archivo y Contact repartidos
            parejo y juntos, y los cercanos a la posición del viaje crecen y se apartan para darle lugar, como el dock de macOS.
            Sin punto ni flecha: la lupa ya dice dónde vas. Lo recorrido queda en gris, lo actual y el destino en blanco y lo
-           que falta del camino en tenue. Los rótulos entran en cascada y, al llegar, la raya del destino hace un pulso. Lo
+           que falta del camino en tenue. Los rótulos entran en cascada y, al llegar, el índice se apaga quieto, sin pulso. Lo
            arma y lo mueve inicio-desplazar.js */
         .velo-nav { position: fixed; inset: 0; z-index: 200; background: linear-gradient(90deg, rgba(11, 11, 11, 0.68) 45%, rgba(11, 11, 11, 0.9)); opacity: 0; pointer-events: none; transition: opacity 380ms linear; }
         .velo-nav.on { opacity: 1; transition-duration: 220ms; }
@@ -1027,22 +1027,23 @@
 
         /* --- 7.1 RÓTULOS EN LUPA --- */
         /* --g va de 0 a 1 según la cercanía a la posición del viaje: agranda el rótulo desde su borde derecho y alarga su raya. Entran en
-           cascada con --i y salen en orden inverso */
+           cascada con --i desde 8 px a la derecha y salen en orden inverso solo con opacidad; vuelven a su lugar de partida
+           cuando ya no se ven */
         .indice-nav .et { --g: 0; position: absolute; top: 0; right: 24px; font: 500 14px var(--sans); letter-spacing: -0.02em; color: var(--apagado); white-space: nowrap; opacity: 0; translate: 8px -50%; transition: color var(--rapido) linear, opacity 240ms linear calc(var(--i) * 26ms), translate 420ms var(--ease) calc(var(--i) * 26ms); }
         .indice-nav.on .et { opacity: 1; translate: 0 -50%; }
-        .indice-nav.sale .et { transition-delay: 0s, calc((4 - var(--i)) * 18ms), 0s; }
+        .indice-nav.sale .et { transition: color var(--rapido) linear, opacity 220ms linear calc((4 - var(--i)) * 18ms), translate 0s linear 420ms; }
         .indice-nav .nom { display: inline-block; transform-origin: right center; scale: calc(1 + 1.1 * var(--g)); }
-        .indice-nav .et::after { content: ''; position: absolute; right: -24px; top: 50%; width: calc(6px + 10px * var(--g)); height: 1px; background: currentColor; transform-origin: right; }
+        .indice-nav .et::after { content: ''; position: absolute; right: -24px; top: 50%; width: calc(6px + 10px * var(--g)); height: 1px; background: currentColor; }
         .indice-nav .et.camino { color: var(--tenue); }
         .indice-nav .et.pasado { color: var(--gris-medio); }
         .indice-nav .et.aqui, .indice-nav .et.destino { color: var(--blanco); }
 
-        /* --- 7.2 LLEGADA --- */
-        /* El destino parpadea una vez y su raya se estira y vuelve */
-        .indice-nav .et.confirma { animation: idxConfirma 520ms linear; }
-        .indice-nav .et.confirma::after { animation: idxRaya 420ms var(--ease); }
-        @keyframes idxConfirma { 30% { opacity: 0.35; } }
-        @keyframes idxRaya { 35% { scale: 1.8 1; } }
+        /* --- 7.2 SIN BARRA EN LOS SALTOS --- */
+        /* Mientras navega un botón no aparece la barra de scroll: con barras flotantes (macOS) se oculta, con barras fijas
+           (Windows) solo se vuelve transparente para que la página no se corra. La pone y la quita inicio-desplazar.js */
+        html.nav-oculta { scrollbar-width: none; }
+        html.nav-oculta::-webkit-scrollbar { display: none; }
+        html.nav-tapada { scrollbar-color: transparent transparent; }
         @media (max-width: 768px) { .indice-nav { width: 170px; height: min(28vh, 220px); } .indice-nav::before { width: 90vw; } }
     </style>
 </head>

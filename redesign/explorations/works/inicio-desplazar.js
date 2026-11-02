@@ -59,25 +59,31 @@
     const ocultar = () => { indice.classList.add('sale'); indice.classList.remove('on'); velo.classList.remove('on'); };
 
     /* --- 3. DESLIZAR --- */
+    /* Mientras navega un botón, la barra de scroll no aparece: con barras flotantes (macOS) se oculta y con barras fijas
+       (Windows) se vuelve transparente, para que la página no se corra. Vuelve 1,2 s después de llegar, cuando la barra
+       flotante ya se apagó sola, o apenas la persona hace scroll por su cuenta */
+    const raiz = document.documentElement;
+    const tapar = si => { raiz.classList.remove('nav-oculta', 'nav-tapada'); if (si) raiz.classList.add(window.innerWidth > raiz.clientWidth ? 'nav-tapada' : 'nav-oculta'); };
     let cuadro = 0, esperas = [], activo = false;
     const despues = (fn, ms) => esperas.push(setTimeout(fn, ms));
-    const parar = () => { cancelAnimationFrame(cuadro); esperas.forEach(clearTimeout); esperas = []; if (activo && viaje) ocultar(); activo = false; };
-    ['wheel', 'touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, () => { if (activo) parar(); }, { passive: true }));
+    const parar = () => { cancelAnimationFrame(cuadro); esperas.forEach(clearTimeout); esperas = []; if (activo && viaje) ocultar(); activo = false; tapar(false); };
+    ['wheel', 'touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, () => { if (activo) parar(); else tapar(false); }, { passive: true }));
     const deslizar = (desde, hasta, dura, cada, fin) => {
         const t0 = performance.now();
         const paso = ahora => {
             const k = Math.min(1, (ahora - t0) / dura);
             window.scrollTo(0, desde + (hasta - desde) * curva(k));
             if (cada) cada(k);
-            if (k < 1) cuadro = requestAnimationFrame(paso); else if (fin) fin(); else activo = false;
+            if (k < 1) cuadro = requestAnimationFrame(paso);
+            else { despues(() => tapar(false), 1200); if (fin) fin(); else activo = false; }
         };
-        activo = true; cuadro = requestAnimationFrame(paso);
+        activo = true; tapar(true); cuadro = requestAnimationFrame(paso);
     };
 
     /* --- 4. IR A UNA POSICIÓN --- */
     /* Menos de 1,2 pantallas: solo desliza (hasta 800 ms). Más lejos: el velo baja la página a un tercio, el índice entra
-       en cascada y la lupa lo recorre (de 700 a 1300 ms); en el último 30% la página se vuelve a encender, y al llegar el destino
-       parpadea una vez y su raya hace un pulso */
+       en cascada y la lupa lo recorre (de 700 a 1300 ms); en el último 30% la página se vuelve a encender. Al llegar no hay
+       pulso ni parpadeo (se leían como un rebote): la lupa se asienta sola y el índice se apaga sin moverse */
     window.desplazar = y => {
         parar();
         const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -92,8 +98,7 @@
         indice.classList.add('on'); velo.classList.add('on'); activo = true;
         despues(() => deslizar(desde, hasta, Math.min(1300, 700 + 260 * Math.log2(1 + d / h)), k => { pintar(k); if (k > 0.7) velo.classList.remove('on'); }, () => {
             pintar(1); velo.classList.remove('on');
-            ets[viaje.hacia].classList.add('confirma');
-            despues(() => { ocultar(); activo = false; }, 520);
+            despues(() => { ocultar(); activo = false; }, 420);
         }), 140);
     };
     window.desplazar.seccion = (nombre, y) => secciones.push({ nombre, y });
