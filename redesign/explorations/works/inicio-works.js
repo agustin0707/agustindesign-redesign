@@ -113,7 +113,10 @@
 
     /* --- 3. SALTOS: ÍNDICE, REGLA Y TECLAS 1, 2 Y 3 --- */
     /* Cada portada queda quieta un poco después de terminar su destape */
-    const irCov = i => { const r = pista.getBoundingClientRect(); irA(window.scrollY + r.top + (FIN[i] / LARGO) * (r.height - window.innerHeight)); };
+    const yCov = i => { const r = pista.getBoundingClientRect(); return window.scrollY + r.top + (FIN[i] / LARGO) * (r.height - window.innerHeight); };
+    const irCov = i => irA(yCov(i));
+    /* Las tres portadas son tramos del índice que aparece en los saltos largos */
+    ['Llegó Farma', 'Tap In', 'Mend'].forEach((n, i) => window.desplazar.seccion(n, () => yCov(i)));
     document.querySelectorAll('[data-ir-cov]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); irCov(+b.dataset.irCov); }));
     window.addEventListener('keydown', e => {
         if (e.metaKey || e.ctrlKey || e.altKey || !['1', '2', '3'].includes(e.key) || /input|textarea|select/i.test(e.target.tagName)) return;
