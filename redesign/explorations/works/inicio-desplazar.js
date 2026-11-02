@@ -3,7 +3,7 @@
    ======================================================= */
 /* Un solo desplazamiento para todo el home: volver arriba, works, contacto, archivo, cada portada y los atajos. Acelera
    decidido y llega largo y suave, dura según la distancia y se detiene si la persona toma el control (rueda, toque o
-   tecla). En los saltos largos muestra el índice del home (Hero, Works, Archivo y Contact) mientras recorre el camino */
+   tecla). En los saltos largos muestra el índice del home (Hero, Works, Archivo, About y Contact) mientras recorre el camino */
 (function () {
     const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -83,13 +83,14 @@
     /* --- 4. IR A UNA POSICIÓN --- */
     /* Menos de 1,2 pantallas: solo desliza (hasta 800 ms). Más lejos: el velo baja la página a un tercio, el índice entra
        en cascada y la lupa lo recorre (de 700 a 1300 ms); en el último 30% la página se vuelve a encender. Al llegar no hay
-       pulso ni parpadeo (se leían como un rebote): la lupa se asienta sola y el índice se apaga sin moverse */
-    window.desplazar = y => {
+       pulso ni parpadeo (se leían como un rebote): la lupa se asienta sola y el índice se apaga sin moverse. Con corto
+       (saltos dentro de una misma sección, como las filas del About) solo desliza, sin índice */
+    window.desplazar = (y, corto) => {
         parar();
         const max = document.documentElement.scrollHeight - window.innerHeight;
         const hasta = Math.round(Math.max(0, Math.min(max, y))), desde = window.scrollY, d = Math.abs(hasta - desde), h = window.innerHeight;
         if (quieto || d < 2) { window.scrollTo(0, hasta); return; }
-        if (d < h * 1.2) { viaje = null; deslizar(desde, hasta, Math.min(800, 420 + d * 0.3)); return; }
+        if (d < h * 1.2 || corto) { viaje = null; deslizar(desde, hasta, Math.min(800, 420 + d * 0.3)); return; }
         armar();
         const a = anclas(); let hacia = 0; a.forEach((y, i) => { if (Math.abs(y - hasta) < Math.abs(a[hacia] - hasta)) hacia = i; });
         const p0 = posicion(desde);
@@ -106,6 +107,7 @@
     window.desplazar.seccion('Hero', () => 0);
     window.desplazar.seccion('Works', arriba('#works'));
     window.desplazar.seccion('Archivo', arriba('#archivo'));
+    window.desplazar.seccion('About', arriba('#about'));
     window.desplazar.seccion('Contact', arriba('#contacto'));
 })();
 /* =======================================================

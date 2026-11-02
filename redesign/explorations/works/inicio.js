@@ -5,7 +5,7 @@
     const ir = y => window.desplazar(y);
 
     /* --- 1. ENLACES INTERNOS --- */
-    /* Works y "ver proyectos" bajan a la apertura de works; el logo y About vuelven arriba */
+    /* Works y "ver proyectos" bajan a la apertura de works; el logo vuelve arriba (About lo maneja inicio-about.js) */
     const works = document.getElementById('works');
     document.querySelectorAll('a[href="#works"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); ir(works.getBoundingClientRect().top + window.scrollY); history.replaceState(null, '', '#works'); }));
     document.querySelectorAll('[data-arriba]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); ir(0); history.replaceState(null, '', location.pathname); }));

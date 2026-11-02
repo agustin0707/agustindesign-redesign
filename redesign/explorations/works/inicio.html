@@ -781,6 +781,81 @@
         @media (max-width: 768px) { .barra .der { grid-column: 2; } }
 
         /* =======================================================
+           4. ABOUT · FICHA CON ATAJOS
+           ======================================================= */
+        /* Hoja clara entre el archivo y el contacto (referentes: Frank Chimero, Paco Coursey, Jhey Tompkins y Lee Robinson).
+           Pantalla dividida: el retrato en su panel y una ficha con datos, la hora en vivo y atajos (1 a 4) que bajan a
+           cada fila. La hoja se abre al entrar (--e) y la portada se arma una vez (.espera); lo maneja inicio-about.js */
+        .ab { --regla: rgba(11, 11, 11, 0.14); --suave: #5E5E5B; --panel: #CBCBC8; --e: 1; position: relative; z-index: 5; isolation: isolate; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: clamp(72px, 8vw, 128px) var(--margen) 0; color: var(--negro); }
+        .ab::before { --x: calc((1 - var(--e)) * 4vw); content: ''; position: absolute; inset: 0; z-index: -1; background: var(--gris-claro); border-radius: 22px 22px 0 0; clip-path: inset(0 var(--x) 0 var(--x) round 22px 22px 0 0); }
+        .ab-an { transition: opacity 360ms linear calc(var(--i, 0) * 70ms), translate 560ms var(--ease) calc(var(--i, 0) * 70ms); }
+        .ab.espera .ab-an { opacity: 0; translate: 0 14px; }
+
+        /* --- 4.1 PORTADA DIVIDIDA --- */
+        /* El retrato recortado se apoya en el borde inferior del panel; la ficha reparte título, datos y atajos en su alto */
+        .ab-portada { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; min-height: clamp(560px, 50vw, 760px); border-bottom: 1px solid var(--regla); }
+        .ab-panel { grid-column: 1 / span 6; position: relative; overflow: clip; background: var(--panel); border-radius: 4px 4px 0 0; }
+        .ab-panel img { position: absolute; bottom: 0; left: calc(50% - 34%); width: auto; height: 94%; max-width: none; filter: contrast(1.05); }
+        .ab-panel .mono { position: absolute; top: 12px; color: var(--gris-oscuro); }
+        .ab-panel .mono:first-of-type { left: 14px; }
+        .ab-panel .mono:last-of-type { right: 14px; }
+        .ab-ficha { grid-column: 8 / -1; display: grid; align-content: space-between; gap: 32px; padding-bottom: 26px; }
+        .ab-titulo { font-size: clamp(64px, 9vw, 150px); font-weight: 500; letter-spacing: -0.065em; line-height: 0.8; margin-left: -0.04em; }
+        .ab-bajada { margin-top: 24px; max-width: 30ch; font-size: clamp(18px, 1.6vw, 22px); letter-spacing: -0.025em; line-height: 1.25; text-wrap: pretty; }
+
+        /* --- 4.2 DATOS Y ATAJOS --- */
+        .ab-datos div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 9px 0; border-top: 1px solid var(--regla); font-size: 15px; }
+        .ab-datos dt { padding-top: 3px; color: var(--suave); }
+        .ab-datos dd { font-variant-numeric: tabular-nums; }
+        .ab-atajos { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-size: 14px; }
+        .ab-atajos > .mono { margin-right: 4px; color: var(--suave); }
+        .ab-atajos button { display: inline-flex; align-items: center; gap: 7px; }
+        .ab kbd { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 5px; box-shadow: inset 0 0 0 1px rgba(11, 11, 11, 0.24), inset 0 -2px 0 rgba(11, 11, 11, 0.14); font: 400 11px var(--mono); transition: background-color 120ms linear, color 120ms linear; }
+        .ab-atajos button.pulsada kbd { background: var(--negro); color: var(--gris-claro); }
+        @media (hover: hover) { .ab-atajos button:hover kbd { background: rgba(11, 11, 11, 0.08); } }
+
+        /* --- 4.3 FILAS --- */
+        /* Al llegar desde un atajo, el rótulo de la fila se marca con una línea y vuelve solo (.marca) */
+        .ab-filas { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; padding-bottom: 96px; }
+        .ab-fila { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; padding: 26px 0 34px; border-top: 1px solid var(--regla); scroll-margin-top: 90px; }
+        .ab-fila:first-child { border-top: 0; }
+        .ab-rotulo { grid-column: 1 / span 3; padding-top: 4px; color: var(--suave); transition: color 200ms linear; }
+        .ab-rotulo::after { content: ''; display: block; width: 0; height: 1px; margin-top: 10px; background: currentColor; transition: width 320ms var(--ease); }
+        .ab-fila.marca .ab-rotulo { color: var(--negro); }
+        .ab-fila.marca .ab-rotulo::after { width: 40px; }
+        .ab-fila > :not(.ab-rotulo) { grid-column: 4 / span 6; }
+        .ab-quien { max-width: 26ch; font-size: clamp(22px, 2vw, 30px); letter-spacing: -0.04em; line-height: 1.2; text-wrap: pretty; }
+        .ab-quien span { color: var(--suave); }
+        .ab-lista { list-style: none; }
+        .ab-lista li { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 13px 0; border-top: 1px solid var(--regla); font-size: clamp(20px, 1.8vw, 27px); letter-spacing: -0.035em; }
+        .ab-lista li:first-child { border-top: 0; padding-top: 0; }
+        .ab-lista .mono { color: var(--suave); letter-spacing: 0; white-space: nowrap; }
+        .ab-lista.chica li { padding: 10px 0; font-size: 15px; letter-spacing: 0; }
+        .ab-pasos { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px var(--medianil); counter-reset: paso; }
+        .ab-pasos li { display: grid; gap: 6px; align-content: start; counter-increment: paso; }
+        .ab-pasos li::before { content: counter(paso, decimal-leading-zero); font: 400 12px var(--mono); color: var(--suave); }
+        .ab-pasos b { font-size: 18px; font-weight: 500; letter-spacing: -0.02em; }
+        .ab-pasos p { max-width: 36ch; color: var(--suave); }
+
+        /* --- 4.4 TELÉFONO --- */
+        @media (max-width: 768px) {
+            .ab { grid-template-columns: repeat(4, 1fr); padding-top: 64px; }
+            .ab::before { border-radius: 18px 18px 0 0; clip-path: inset(0 var(--x) 0 var(--x) round 18px 18px 0 0); }
+            .ab-portada { min-height: 0; }
+            .ab-panel { grid-column: 1 / -1; aspect-ratio: 4 / 5; max-width: 100%; }
+            .ab-ficha { grid-column: 1 / -1; padding-top: 24px; }
+            .ab-titulo { font-size: 20vw; }
+            .ab-datos div { grid-template-columns: 90px 1fr; }
+            .ab-rotulo, .ab-fila > :not(.ab-rotulo) { grid-column: 1 / -1; }
+            .ab-rotulo { padding-bottom: 12px; }
+            .ab-pasos { grid-template-columns: 1fr; }
+            .ab-filas { padding-bottom: 64px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .ab-an, .ab-rotulo::after { transition: none; }
+        }
+
+        /* =======================================================
            5. CONTACTO · BRIEF EN UNA FRASE
            ======================================================= */
         /* Abre con "Conversemos", que sube letra por letra como "Archivo". El formulario es una frase que se completa y, al
@@ -1011,7 +1086,7 @@
            7. NAVEGACIÓN SUAVE
            ======================================================= */
         /* Los saltos largos (volver arriba desde el footer, ir al contacto desde el hero) muestran un índice del home a la
-           derecha mientras la página recorre el camino atenuada. Es una lupa: Hero, Works, Archivo y Contact repartidos
+           derecha mientras la página recorre el camino atenuada. Es una lupa: Hero, Works, Archivo, About y Contact repartidos
            parejo y juntos, y los cercanos a la posición del viaje crecen y se apartan para darle lugar, como el dock de macOS.
            Sin punto ni flecha: la lupa ya dice dónde vas. Lo recorrido queda en gris, lo actual y el destino en blanco y lo
            que falta del camino en tenue. Los rótulos entran en cascada y, al llegar, el índice se apaga quieto, sin pulso. Lo
@@ -1049,7 +1124,7 @@
 </head>
 <body>
 
-    <header class="barra" data-barra-home><a href="#" class="logo" data-arriba>agustín<span>.</span>design</a><ul><li><a href="#works">Works</a></li><li><a href="#" data-arriba>About</a></li><li><a href="#contacto">Contact</a></li></ul><span class="der mono">Santiago</span></header>
+    <header class="barra" data-barra-home><a href="#" class="logo" data-arriba>agustín<span>.</span>design</a><ul><li><a href="#works">Works</a></li><li><a href="#about">About</a></li><li><a href="#contacto">Contact</a></li></ul><span class="der mono">Santiago</span></header>
 
     <div class="escena-hero">
     <section class="hero" data-parallax>
@@ -1057,7 +1132,7 @@
             <a href="#" class="logo" data-arriba>agustín<span class="punto">.</span>design<span class="cursor"></span></a>
             <span class="mono der"><span class="punto-vivo" aria-hidden="true"></span><span class="reloj" data-reloj>Santiago 00:00</span></span>
         </nav>
-        <ul class="links-actual"><li><a href="#works">Works</a></li><li><a href="#">About</a></li><li><a href="#contacto">Contact</a></li></ul>
+        <ul class="links-actual"><li><a href="#works">Works</a></li><li><a href="#about">About</a></li><li><a href="#contacto">Contact</a></li></ul>
 
         <div class="retrato" data-capa="0.6"><div class="retrato-in"><img src="../../../img/fotodeperfilgus5.webp" alt="" fetchpriority="high" width="3073" height="1750"></div></div>
 
@@ -1174,6 +1249,29 @@
         <ul class="fichas" data-hoja></ul>
     </section>
 
+    <section class="ab" id="about" aria-labelledby="ab-titulo">
+        <div class="ab-portada" data-ab-portada>
+            <div class="ab-panel ab-an" style="--i:0"><img src="media/ab-retrato.webp" alt="Agustín Avendaño sonriendo, con lentes de sol y polera gris" width="1000" height="1228" loading="lazy" decoding="async"><span class="mono">Retrato</span><span class="mono">Santiago</span></div>
+            <div class="ab-ficha">
+                <div><h2 class="ab-titulo" id="ab-titulo"><span data-letras>Sobre mí</span></h2><p class="ab-bajada ab-an" style="--i:1">Diseño marcas y construyo los sitios donde viven, sin traspasos entre diseño y código.</p></div>
+                <dl class="ab-datos ab-an" style="--i:2">
+                    <div><dt class="mono">Nombre</dt><dd>Agustín Avendaño</dd></div>
+                    <div><dt class="mono">Oficio</dt><dd>Diseñador integral</dd></div>
+                    <div><dt class="mono">Hace</dt><dd>Marca, experiencia y código</dd></div>
+                    <div><dt class="mono">Base</dt><dd>Santiago, Chile</dd></div>
+                    <div><dt class="mono">Hora</dt><dd data-ab-hora>Santiago</dd></div>
+                </dl>
+                <div class="ab-atajos ab-an" style="--i:3"><span class="mono">Atajos</span><button type="button" data-ab-fila="quien" aria-keyshortcuts="1"><kbd>1</kbd>Quién</button><button type="button" data-ab-fila="que" aria-keyshortcuts="2"><kbd>2</kbd>Qué hago</button><button type="button" data-ab-fila="como" aria-keyshortcuts="3"><kbd>3</kbd>Cómo trabajo</button><button type="button" data-ab-fila="formacion" aria-keyshortcuts="4"><kbd>4</kbd>Formación</button></div>
+            </div>
+        </div>
+        <div class="ab-filas">
+            <div class="ab-fila" data-f="quien"><span class="ab-rotulo mono">Quién</span><p class="ab-quien">Soy Agustín Avendaño, diseñador integral en Santiago. <span>Identidad, experiencia y código, de la primera idea al sitio publicado, en las mismas manos.</span></p></div>
+            <div class="ab-fila" data-f="que"><span class="ab-rotulo mono">Qué hago</span><ul class="ab-lista"><li><span>Marca y web desde cero</span><span class="mono">Proyecto completo</span></li><li><span>Web para una marca que ya existe</span><span class="mono">Sitio</span></li><li><span>Landings de lanzamiento</span><span class="mono">One page</span></li><li><span>Producto digital con marca</span><span class="mono">Web app</span></li></ul></div>
+            <div class="ab-fila" data-f="como"><span class="ab-rotulo mono">Cómo trabajo</span><ol class="ab-pasos"><li><b>Entender</b><p>Conversamos del negocio, de quién llega al sitio y de qué tiene que lograr.</p></li><li><b>Decidir</b><p>Defino la marca y la estructura, con el porqué de cada decisión.</p></li><li><b>Diseñar</b><p>La web pantalla por pantalla, en escritorio y teléfono.</p></li><li><b>Construir</b><p>La programo a mano, rápida y precisa, y la dejo publicada.</p></li></ol></div>
+            <div class="ab-fila" data-f="formacion"><span class="ab-rotulo mono">Formación</span><ul class="ab-lista chica"><li><span>Diseño UC</span><span class="mono">Me titulo en dic 2026</span></li><li><span>Intercambio en Diseño Gráfico · UPF</span><span class="mono">Barcelona</span></li><li><span>UX Enterprise · Shifta</span><span class="mono">Curso</span></li></ul></div>
+        </div>
+    </section>
+
     <section class="ct" id="contacto" data-brief aria-labelledby="ct-titulo">
         <h2 class="ct-titulo" id="ct-titulo"><span data-letras>Conversemos</span><sup class="mono" title="Respondo en menos de 24 h hábiles">(24 h)</sup></h2>
         <span class="ct-luz" aria-hidden="true" data-luz></span>
@@ -1228,6 +1326,7 @@
         <div class="pie-marca-caja"><div class="pie-marca" aria-hidden="true" data-marca><span class="l" style="--k:0">a</span><span class="l" style="--k:1">g</span><span class="l" style="--k:2">u</span><span class="l" style="--k:3">s</span><span class="l" style="--k:4">t</span><span class="l" style="--k:5">í</span><span class="l" style="--k:6">n</span><span class="l punto" style="--k:7">.</span><span class="l" style="--k:8">d</span><span class="l" style="--k:9">e</span><span class="l" style="--k:10">s</span><span class="l" style="--k:11">i</span><span class="l" style="--k:12">g</span><span class="l" style="--k:13">n</span></div></div>
         <nav class="pie-fila pie-links" aria-label="Pie de página">
             <a href="#works">Trabajo <kbd>W</kbd></a>
+            <a href="#about">Sobre mí <kbd>A</kbd></a>
             <a href="#contacto">Contacto <kbd>C</kbd></a>
             <a class="red" href="https://www.linkedin.com/in/agust%C3%ADn-avenda%C3%B1o-3047b8311/" target="_blank" rel="noopener">LinkedIn ↗</a>
             <a class="red" href="https://www.instagram.com/_agustin.avg/" target="_blank" rel="noopener">Instagram ↗</a>
@@ -1249,5 +1348,6 @@
     <script src="inicio-works.js"></script>
     <script src="inicio.js"></script>
     <script src="inicio-contacto.js"></script>
+    <script src="inicio-about.js"></script>
 </body>
 </html>
