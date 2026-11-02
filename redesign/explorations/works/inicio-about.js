@@ -1,8 +1,9 @@
 /* =======================================================
    INICIO JS · ABOUT
    ======================================================= */
-/* La hoja clara se abre al entrar y su portada se arma una vez. La ficha lleva la hora de Santiago en vivo y los atajos
-   1 a 4 bajan a cada fila y la marcan. About (en el hero, la barra y el footer) y la tecla A llegan aquí */
+/* La hoja clara se abre al entrar, el retrato sube desde la base de su panel y la portada se arma una vez. La ficha lleva
+   la hora de Santiago en vivo y el índice (o las teclas 1 a 4) baja a cada fila y la marca. About (en el hero, la barra y
+   el footer) y la tecla A llegan aquí */
 (function () {
     const ab = document.getElementById('about');
     if (!ab) return;
@@ -13,23 +14,27 @@
     /* --- 1. HORA DE SANTIAGO --- */
     const reloj = new Intl.DateTimeFormat('es-CL', { timeZone: 'America/Santiago', hour: '2-digit', minute: '2-digit', hour12: false });
     const hora = ab.querySelector('[data-ab-hora]');
-    const tic = () => { hora.textContent = `${reloj.format(new Date())} en Santiago`; };
+    const tic = () => { const [h, m] = reloj.format(new Date()).split(':'); hora.innerHTML = `${h}<i>:</i>${m}`; };
     tic(); setInterval(tic, 15000);
 
-    /* --- 2. LA HOJA SE ABRE --- */
-    /* --e va de 0 a 1 en el primer 60% de pantalla que recorre la hoja: los costados del fondo se cierran hacia el borde */
+    /* --- 2. LA HOJA SE ABRE Y EL RETRATO SUBE --- */
+    /* --e va de 0 a 1 en el primer 60% de pantalla que recorre la hoja: los costados del fondo se cierran hacia el borde.
+       --sube hace lo mismo con el panel en el 90% de la pantalla y saca el recorte desde su base */
+    const panel = ab.querySelector('.ab-panel');
+    const limitar = x => Math.min(1, Math.max(0, x));
     let pendiente = 0;
     const abrir = () => {
         pendiente = 0;
-        const e = quieto ? 1 : Math.min(1, Math.max(0, (window.innerHeight - ab.getBoundingClientRect().top) / (window.innerHeight * 0.6)));
-        ab.style.setProperty('--e', e.toFixed(4));
+        const vh = window.innerHeight;
+        ab.style.setProperty('--e', (quieto ? 1 : limitar((vh - ab.getBoundingClientRect().top) / (vh * 0.6))).toFixed(4));
+        panel.style.setProperty('--sube', (quieto ? 1 : limitar((vh - panel.getBoundingClientRect().top) / (vh * 0.9))).toFixed(4));
     };
     window.addEventListener('scroll', () => { if (!pendiente) pendiente = requestAnimationFrame(abrir); }, { passive: true });
     window.addEventListener('resize', abrir);
     abrir();
 
     /* --- 3. ENTRADA --- */
-    /* Retrato, bajada, datos y atajos esperan abajo y entran en cascada cuando la portada aparece (el título sube letra a
+    /* Retrato, bajada, ficha e índice esperan abajo y entran en cascada cuando la portada aparece (el título sube letra a
        letra con los demás) */
     const portada = ab.querySelector('[data-ab-portada]');
     if (!quieto && 'IntersectionObserver' in window) {
@@ -38,8 +43,8 @@
         io.observe(portada);
     }
 
-    /* --- 4. ATAJOS A LAS FILAS --- */
-    /* Botones o teclas 1 a 4 (solo con el About en pantalla, así no chocan con las portadas). Deslizan sin el índice del
+    /* --- 4. ÍNDICE Y ATAJOS A LAS FILAS --- */
+    /* Índice o teclas 1 a 4 (solo con el About en pantalla, así no chocan con las portadas). Deslizan sin el índice del
        home, porque no cambian de sección, y al llegar el rótulo se marca */
     const saltar = f => {
         const fila = ab.querySelector(`.ab-fila[data-f="${f}"]`);
@@ -47,7 +52,7 @@
         setTimeout(() => { fila.classList.add('marca'); setTimeout(() => fila.classList.remove('marca'), 1600); }, quieto ? 0 : 820);
     };
     const botones = [...ab.querySelectorAll('[data-ab-fila]')];
-    botones.forEach(b => b.addEventListener('click', () => saltar(b.dataset.abFila)));
+    botones.forEach(b => b.addEventListener('click', e => { e.preventDefault(); saltar(b.dataset.abFila); }));
 
     /* --- 5. ENLACES Y TECLA A --- */
     const aAbout = () => { ir(ab.getBoundingClientRect().top + window.scrollY); history.replaceState(null, '', '#about'); };
