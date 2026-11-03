@@ -244,6 +244,7 @@
         .pt-tope { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); color: rgba(255, 255, 255, 0.74); }
         .pt-tope > :nth-child(1) { grid-column: 1 / span 3; } .pt-tope > :nth-child(2) { grid-column: 4 / span 5; } .pt-tope > :nth-child(3) { grid-column: 9 / -1; justify-self: end; }
         .pt-tope a { border-bottom: 1px solid rgba(255, 255, 255, 0.4); }
+        .pt-tope .en-linea a { white-space: nowrap; }
         .pt-tope .en-linea::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: #3FCF8E; vertical-align: 1px; }
         .pt-txt { grid-column: 1 / span 5; grid-row: 3; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
         .pt-txt h3 { font-size: clamp(56px, 6.4vw, 120px); font-weight: 500; letter-spacing: -0.06em; line-height: 0.86; }
@@ -656,7 +657,7 @@
         /* --- 2. FILAS --- */
         .fichas { grid-column: 1 / -1; list-style: none; border-top: 1px solid #262625; }
         .ficha a { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: 20px 0; border-bottom: 1px solid #262625; }
-        .f-num { grid-column: 1; }
+        .f-num { grid-column: 1; transition: color 400ms var(--hover-lento); }
         .f-texto { grid-column: 2 / span 3; display: flex; flex-direction: column; gap: 10px; }
         .f-nombre { display: inline-flex; align-items: baseline; gap: 0.3em; font-size: clamp(22px, 2.2vw, 34px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; transition: color 500ms var(--hover-lento); }
         .f-flecha { font-size: 0.55em; letter-spacing: 0; opacity: 0; transform: translate(-6px, 4px); transition: opacity 400ms var(--hover-lento), transform 600ms var(--hover-lento); }
@@ -671,15 +672,22 @@
         .ficha.entra .f-tira { clip-path: inset(0 0 0 0); transition: clip-path 1100ms var(--ease) var(--retraso, 0ms); }
         .f-tira-in { display: flex; gap: 8px; height: 100%; width: max-content; will-change: transform; }
         .f-tira img { width: auto; height: 100%; border-radius: 3px; transition: opacity 500ms var(--hover-lento); }
+        /* Rueda: el mismo gesto de los links del hero. "06 piezas" rueda letra por letra y deja "Abrir ↗", el número se
+           enciende y aparece la flecha. Las demás filas no cambian: solo se marca la que eliges */
+        .f-piezas { position: relative; display: inline-flex; overflow: hidden; }
+        .f-piezas .c { display: inline-block; white-space: pre; transition: translate 760ms var(--hover-lento) calc(var(--i) * 24ms); }
+        .f-piezas .otra { position: absolute; right: 0; top: 0; display: flex; color: var(--blanco); }
+        .f-piezas .otra .c { translate: 0 110%; }
         .ficha a:focus-visible { outline-offset: 2px; }
         .ficha a:focus-visible .f-flecha { opacity: 1; transform: none; }
+        .ficha a:focus-visible .f-num { color: var(--blanco); }
+        .ficha a:focus-visible .f-piezas .uno .c { translate: 0 -110%; }
+        .ficha a:focus-visible .f-piezas .otra .c { translate: 0 0; }
         @media (hover: hover) {
-            .fichas:hover .f-nombre, .fichas:hover .f-contexto { color: var(--gris-oscuro); }
-            .fichas:hover .f-tira img { opacity: 0.3; }
-            .fichas .ficha a:hover .f-nombre { color: var(--blanco); }
-            .fichas .ficha a:hover .f-contexto { color: var(--gris-medio); }
-            .fichas .ficha a:hover .f-tira img { opacity: 1; }
             .ficha a:hover .f-flecha { opacity: 1; transform: none; }
+            .ficha a:hover .f-num { color: var(--blanco); }
+            .ficha a:hover .f-piezas .uno .c { translate: 0 -110%; }
+            .ficha a:hover .f-piezas .otra .c { translate: 0 0; }
         }
 
         /* --- 4. VISTA LISTA --- */
@@ -767,6 +775,8 @@
             .pt-uso *, .pt-uso *::before, .pt-uso *::after { animation: none !important; }
             .pt-uso-rot > span:first-child { opacity: 1; }
             .pt-vista { transition: none; }
+            /* En el archivo, "Abrir ↗" cambia sin rodar */
+            .f-piezas .c { transition: none; }
             /* El logo de Llegó queda armado y las tarjetas quietas, sin entrada */
             .pt-lf-logo * { animation-duration: 1ms !important; animation-delay: 0ms !important; }
             .dibuja .pt-tjs { animation: none; }
@@ -782,8 +792,9 @@
         /* La apertura de works sube sobre el hero fijo como una cortina negra. La barra compacta solo aparece
            cuando el hero ya quedó atrás, para no duplicar la navegación del hero */
         .escena-hero .apertura { z-index: 20; background: var(--negro); color: var(--blanco); }
-        .barra { opacity: 0; pointer-events: none; transition: opacity 300ms linear, translate 260ms var(--ease); }
-        .barra.visible { opacity: 1; pointer-events: auto; }
+        /* Mientras está apagada queda oculta también para el teclado: sus links no reciben foco a ciegas sobre el hero */
+        .barra { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity 300ms linear, translate 260ms var(--ease), visibility 0s linear 300ms; }
+        .barra.visible { opacity: 1; pointer-events: auto; visibility: visible; transition-delay: 0s; }
         .barra .logo { grid-column: 1; }
         .barra .der { grid-column: 3; }
         /* Barra legible: con la mezcla por diferencia, su texto se montaba sobre las piezas del archivo. Sobre works
@@ -1080,6 +1091,8 @@
         .ct-otra > span { margin-right: 8px; color: var(--gris-medio); }
         .ct-otra a, .ct-otra button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--linea); color: var(--blanco); letter-spacing: -0.01em; transition: background-color var(--medio) linear, box-shadow var(--medio) linear; }
         .ct-otra svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+        /* El teléfono de WhatsApp va relleno: con trazo, a 18 px, se empasta */
+        .ct-otra svg .relleno { fill: currentColor; stroke: none; }
         .ct-otra em { font-style: normal; color: var(--gris-medio); transition: transform var(--medio) var(--ease), color var(--rapido) linear; }
         .ct-otra .copiado { box-shadow: inset 0 0 0 1px var(--blanco); }
         .ct-aviso { position: fixed; left: 50%; bottom: 24px; z-index: 60; padding: 12px 18px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-size: 14px; translate: -50% 140%; opacity: 0; transition: translate var(--medio) var(--ease), opacity var(--rapido) linear; pointer-events: none; }
@@ -1130,7 +1143,8 @@
            lugar, viaja entre las letras hasta quedar bajo el cursor y se enciende en blanco; las letras se abren con transform
            para no pisar la entrada, que usa translate. En el teléfono pasa lo mismo arrastrando el dedo */
         @property --apaga { syntax: '<number>'; inherits: true; initial-value: 0; }
-        .pie-marca-caja { overflow: hidden; padding: calc(48px + 0.06em) var(--margen) 0.04em; touch-action: pan-y; }
+        /* Abajo deja 0,18 em: la cola de la g baja más que la línea y el recorte la cortaba */
+        .pie-marca-caja { overflow: hidden; padding: calc(48px + 0.06em) var(--margen) 0.18em; touch-action: pan-y; }
         .pie-marca { --apaga: 0; position: relative; display: flex; justify-content: center; white-space: nowrap; font-weight: 500; letter-spacing: -0.07em; line-height: 1.04; user-select: none; transition: --apaga 900ms var(--suave); }
         .pie-marca.alumbrada { --apaga: 1; transition-duration: 600ms; }
         .pie-marca .l { display: inline-block; color: transparent; background: radial-gradient(var(--luz-r, 300px) circle at calc(var(--x, 50%) - var(--ox, 0px)) calc(var(--y, 50%) - var(--oy, 0px)), var(--blanco) 32%, color-mix(in srgb, var(--tenue) calc(var(--apaga) * 100%), var(--blanco)) 100%); -webkit-background-clip: text; background-clip: text; translate: 0 110%; transition: translate 900ms var(--ease) calc(var(--k) * 28ms), transform 460ms var(--ease); }
@@ -1423,8 +1437,8 @@
         <div class="ct-otra">
             <span>¿Prefieres otra vía?</span>
             <button type="button" data-copiar title="agus.avendano@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></svg><span data-copiar-texto>Copiar correo</span><span class="oculto"> agus.avendano@gmail.com</span></button>
-            <a href="https://wa.me/56956247539?text=Hola%20Agust%C3%ADn%2C%20vi%20tu%20portafolio%20y%20quiero%20conversar%20un%20proyecto." target="_blank" rel="noopener">WhatsApp <em aria-hidden="true">↗</em></a>
-            <a href="https://cal.com/agustindesign/20min" target="_blank" rel="noopener" data-agenda>Agendar 20 min <em aria-hidden="true">↗</em></a>
+            <a href="https://wa.me/56956247539?text=Hola%20Agust%C3%ADn%2C%20vi%20tu%20portafolio%20y%20quiero%20conversar%20un%20proyecto." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 20.4l1.2-3.9a8.4 8.4 0 1 1 3.1 3z"/><path class="relleno" d="M9.3 8.3c.2-.4.5-.5.8-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.3 0 .5-.1.7l-.6.7c.5 1 1.3 1.8 2.3 2.3l.7-.6c.2-.2.4-.2.7-.1l1.6.7c.3.1.4.3.4.5v.5c0 .3-.1.6-.5.8-.8.5-1.9.5-3.1-.1a8.6 8.6 0 0 1-3.8-3.8c-.6-1.2-.6-2.3-.1-3.1z"/></svg>WhatsApp <em aria-hidden="true">↗</em></a>
+            <a href="https://cal.com/agustindesign/20min" target="_blank" rel="noopener" data-agenda><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M8 3.5v4M16 3.5v4M4 10h16M12 13v2.6l1.7 1"/></svg>Agendar 20 min <em aria-hidden="true">↗</em></a>
         </div>
     </section>
     </main>

@@ -207,8 +207,10 @@
 
     /* --- 6. ARCHIVO: HOJA DE CONTACTOS O LISTA --- */
     /* Cada fila con su línea de contexto y su tira de piezas. Con mouse, la tira se recorre siguiendo la posición
-       horizontal del cursor sobre la fila, con inercia. La vista Lista deja solo la tipografía */
+       horizontal del cursor sobre la fila, con inercia (constante de 520 ms, medida en tiempo). "06 piezas" va letra por
+       letra, con una copia "Abrir ↗" que rueda al pasar. La vista Lista deja solo la tipografía */
     const hoja = document.querySelector('[data-hoja]');
+    const letrear = t => [...t].map((c, i) => `<span class="c" style="--i:${i}">${c}</span>`).join('');
     if (hoja) {
         hoja.innerHTML = window.WORKS.archivo.map(([nombre, disc, anio, , piezas, contexto, pagina], i) => `
             <li class="ficha" style="--retraso:${i * 90}ms"><a href="${pagina}">
@@ -220,7 +222,7 @@
                 </span>
                 <span class="f-disc-l mono gris">${disc}</span>
                 <span class="f-tira" aria-hidden="true"><span class="f-tira-in">${piezas.map(([archivo, ancho]) => `<img src="media/archivo/${archivo}.webp" width="${ancho}" height="440" alt="" loading="lazy" decoding="async">`).join('')}</span></span>
-                <span class="f-anio mono"><span>${anio}</span><span class="gris">${String(piezas.length).padStart(2, '0')} piezas</span></span>
+                <span class="f-anio mono"><span>${anio}</span><span class="f-piezas gris"><span class="uno">${letrear(`${String(piezas.length).padStart(2, '0')} piezas`)}</span><span class="otra" aria-hidden="true">${letrear('Abrir ↗')}</span></span></span>
             </a></li>`).join('');
         const fichas = [...hoja.querySelectorAll('.ficha')];
         const medir = () => fichas.forEach(f => {
@@ -233,13 +235,15 @@
 
         if (!quieto) fichas.forEach(f => {
             const a = f.querySelector('a'), tira = f.querySelector('.f-tira'), interior = f.querySelector('.f-tira-in');
-            let x = 0, destino = 0, corre = false;
-            const paso = () => {
-                x += (destino - x) * 0.085;
+            let x = 0, destino = 0, cuadro = 0, antes = 0;
+            const paso = t => {
+                cuadro = 0;
+                const dt = antes ? Math.min(t - antes, 64) : 16; antes = t;
+                x += (destino - x) * (1 - Math.exp(-dt / 520));
                 interior.style.transform = `translate3d(${(-x).toFixed(1)}px, 0, 0)`;
-                if (Math.abs(destino - x) > 0.3) requestAnimationFrame(paso); else corre = false;
+                if (Math.abs(destino - x) > 0.3) cuadro = requestAnimationFrame(paso); else antes = 0;
             };
-            const ir = v => { destino = v; if (!corre) { corre = true; requestAnimationFrame(paso); } };
+            const ir = v => { destino = v; if (!cuadro) cuadro = requestAnimationFrame(paso); };
             if (conMouse) {
                 a.addEventListener('mousemove', e => {
                     const r = tira.getBoundingClientRect();

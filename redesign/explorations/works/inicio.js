@@ -24,6 +24,8 @@
         else if (dy < 0) { subida -= dy; if (subida > 90 || top > -120) barra.classList.remove('oculta'); }
     };
     window.addEventListener('scroll', () => { if (!pendiente) { pendiente = true; requestAnimationFrame(revisar); } }, { passive: true });
+    /* Si el foco del teclado entra a la barra escondida al bajar, vuelve a aparecer */
+    barra.addEventListener('focusin', () => barra.classList.remove('oculta'));
     revisar();
 })();
 /* =======================================================
