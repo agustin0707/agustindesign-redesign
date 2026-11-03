@@ -1,7 +1,7 @@
 /* =======================================================
    INICIO JS · ABOUT
    ======================================================= */
-/* La hoja clara se abre al entrar, el retrato sube desde la base de su panel y la portada se arma una vez. La ficha lleva
+/* La hoja clara sube tapando al archivo, el retrato sube desde la base de su panel y la portada se arma una vez. La ficha lleva
    la hora de Santiago en vivo, Quién se enciende palabra a palabra al leerlo y el índice (o las teclas 1 a 4) baja a cada
    fila y la marca. About (en el hero, la barra y el footer) y la tecla A llegan aquí */
 (function () {
@@ -17,12 +17,16 @@
     const tic = () => { const [h, m] = reloj.format(new Date()).split(':'); hora.innerHTML = `${h}<i>:</i>${m}`; };
     tic(); setInterval(tic, 15000);
 
-    /* --- 2. LA HOJA SE ABRE Y EL RETRATO SUBE --- */
-    /* --e va de 0 a 1 en el primer 60% de pantalla que recorre la hoja: los costados del fondo se cierran hacia el borde.
-       --sube hace lo mismo con el panel en el 90% de la pantalla y saca el recorte desde su base. Cada palabra de Quién se
-       enciende cuando la línea de lectura (62% de la pantalla) pasa por ella; dentro de cada línea, de izquierda a derecha */
+    /* --- 2. LA HOJA TAPA AL ARCHIVO Y EL RETRATO SUBE --- */
+    /* El archivo queda fijo en su último tramo y --p (0 a 1 en el 85% de pantalla que recorre la hoja) lo achica y apaga;
+       cuando la hoja llega arriba, el archivo deja de pintarse. --sube va de 0 a 1 en el 90% de la pantalla y saca el
+       recorte desde la base del panel. Cada palabra de Quién se enciende cuando la línea de lectura (62% de la pantalla)
+       pasa por ella; dentro de cada línea, de izquierda a derecha */
     const panel = ab.querySelector('.ab-panel');
     const limitar = x => Math.min(1, Math.max(0, x));
+    const hoja = quieto ? null : document.querySelector('.hoja');
+    const fijar = () => hoja.style.setProperty('--fija', `${Math.min(0, window.innerHeight - hoja.offsetHeight)}px`);
+    if (hoja) { hoja.classList.add('pila'); fijar(); new ResizeObserver(fijar).observe(hoja); window.addEventListener('resize', fijar); }
 
     /* Quién se separa en palabras (.w) sin tocar el HTML; las que van en negrita parten encendidas desde el CSS */
     const lectura = ab.querySelector('[data-ab-lectura]');
@@ -36,7 +40,11 @@
     const abrir = () => {
         pendiente = 0;
         const vh = window.innerHeight;
-        ab.style.setProperty('--e', (quieto ? 1 : limitar((vh - ab.getBoundingClientRect().top) / (vh * 0.6))).toFixed(4));
+        if (hoja) {
+            const top = ab.getBoundingClientRect().top;
+            hoja.style.setProperty('--p', limitar((vh - top) / (vh * 0.85)).toFixed(4));
+            hoja.classList.toggle('tapada', top <= 0);
+        }
         panel.style.setProperty('--sube', (quieto ? 1 : limitar((vh - panel.getBoundingClientRect().top) / (vh * 0.9))).toFixed(4));
         if (!quieto) {
             const q = lectura.getBoundingClientRect(), tramo = vh * 0.08;

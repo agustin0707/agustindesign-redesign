@@ -641,7 +641,7 @@
            ======================================================= */
         /* Sube como una hoja sobre la última portada, que queda fija debajo. Dos vistas (referencia: Instrument y
            Collins): la hoja de contactos, con una tira de piezas por proyecto, o una lista solo tipográfica */
-        .hoja { position: relative; z-index: 5; min-height: 100svh; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-content: start; margin-top: -100svh; padding: 88px var(--margen) 140px; border-radius: 22px 22px 0 0; background: var(--negro); box-shadow: 0 -40px 80px rgba(0, 0, 0, 0.5); }
+        .hoja { position: relative; z-index: 5; min-height: 100svh; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-content: start; padding: 88px var(--margen) 140px; border-radius: 22px 22px 0 0; background: var(--negro); box-shadow: 0 -40px 80px rgba(0, 0, 0, 0.5); }
 
         /* --- 1. CABECERA --- */
         .hoja-cab { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); align-items: end; padding-bottom: 32px; }
@@ -689,6 +689,19 @@
         .fichas.lista .f-contexto, .fichas.lista .f-disc, .fichas.lista .f-tira { display: none; }
         .fichas.lista .f-disc-l { display: block; grid-column: 6 / span 4; }
         .fichas.lista .f-anio { grid-column: 10 / -1; flex-direction: row; justify-content: flex-end; gap: 18px; }
+
+        /* --- 5. PILA: EL ABOUT TAPA AL ARCHIVO --- */
+        /* El mismo gesto con que el archivo tapó a Mend. El ancla lleva la subida de una pantalla y el id, así los saltos a
+           Archivo no leen la posición fija de la hoja. Con .pila (la pone inicio-about.js) la hoja se queda en su último
+           tramo (--fija: la pantalla menos su alto) y se achica y apaga con --p mientras la hoja clara sube encima; tapada,
+           deja de pintarse */
+        .hoja-ancla { display: flow-root; height: 0; margin-top: -100svh; }
+        .hoja.pila { --p: 0; position: sticky; top: var(--fija, 0px); scale: calc(1 - var(--p) * 0.06); transform-origin: 50% 100%; }
+        /* Al achicarse, los costados dejarían ver la portada de Mend: un fondo negro más ancho los cubre, desde bajo las
+           esquinas para no tapar su radio */
+        .hoja.pila::before { content: ''; position: absolute; inset: 40px -4% 0; z-index: -1; background: var(--negro); pointer-events: none; }
+        .hoja.pila::after { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; background: var(--negro); opacity: calc(var(--p) * 0.6); pointer-events: none; }
+        .hoja.tapada { visibility: hidden; }
 
         /* =======================================================
            VISTA MÓVIL
@@ -785,10 +798,10 @@
            ======================================================= */
         /* Hoja clara entre el archivo y el contacto (referentes: Frank Chimero, Paco Coursey, Jhey Tompkins y Lee Robinson).
            Pantalla dividida: el retrato en su panel y, al lado, el título arriba y la ficha con el índice apoyados en la base
-           del retrato. La hoja se abre al entrar (--e), el recorte sube (--sube) y la portada se arma una vez (.espera); lo
-           maneja inicio-about.js */
-        .ab { --regla: rgba(11, 11, 11, 0.14); --suave: #5E5E5B; --panel: #CBCBC8; --e: 1; position: relative; z-index: 5; isolation: isolate; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: clamp(72px, 8vw, 128px) var(--margen) 0; color: var(--negro); }
-        .ab::before { --x: calc((1 - var(--e)) * 4vw); content: ''; position: absolute; inset: 0; z-index: -1; background: var(--gris-claro); border-radius: 22px 22px 0 0; clip-path: inset(0 var(--x) 0 var(--x) round 22px 22px 0 0); }
+           del retrato. La hoja sube sobre el archivo como él sobre Mend y cierra con las mismas esquinas con que empieza; el
+           recorte sube (--sube) y la portada se arma una vez (.espera). Lo maneja inicio-about.js */
+        .ab { --regla: rgba(11, 11, 11, 0.14); --suave: #5E5E5B; --panel: #CBCBC8; position: relative; z-index: 5; isolation: isolate; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--medianil); padding: clamp(72px, 8vw, 128px) var(--margen) 0; color: var(--negro); }
+        .ab::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--gris-claro); border-radius: 22px; box-shadow: 0 -40px 80px rgba(0, 0, 0, 0.55); }
         .ab-an { transition: opacity 360ms linear calc(var(--i, 0) * 70ms), translate 560ms var(--ease) calc(var(--i, 0) * 70ms); }
         .ab.espera .ab-an { opacity: 0; translate: 0 14px; }
 
@@ -856,11 +869,16 @@
         .ab-quien .w { --k: 0; color: color-mix(in srgb, var(--negro) calc(18% + 82% * var(--k)), var(--gris-claro)); transition: color 120ms linear; }
         .ab-quien b { font-weight: 500; }
         .ab-quien b .w { --k: 1; }
-        /* Formación como créditos: tres columnas, nombre arriba y detalle abajo */
+        /* Formación como créditos: tres columnas con el isotipo de cada institución a una tinta, apoyados en una base común,
+           y debajo el nombre y el detalle */
         .ab-creditos { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--medianil); }
         .ab-creditos li { display: grid; gap: 6px; align-content: start; }
         .ab-creditos b { font-size: clamp(22px, 2vw, 30px); font-weight: 500; letter-spacing: -0.04em; line-height: 1.05; }
         .ab-creditos span { max-width: 24ch; color: var(--suave); }
+        .ab-creditos .ab-iso { display: flex; align-items: flex-end; height: 64px; margin-bottom: 22px; }
+        .ab-iso img { width: auto; height: 100%; }
+        .ab-iso .upf { height: 80%; }
+        .ab-iso .shifta { height: 34%; }
 
         /* --- 4.6 SERVICIOS CON SU PRUEBA --- */
         /* Cada servicio lleva al proyecto que lo demuestra. Al pasar por una fila, las demás se apagan, como en el archivo */
@@ -886,24 +904,26 @@
         .ab-pasos p { max-width: 28ch; color: var(--suave); }
 
         /* --- 4.8 CIERRE HACIA EL CONTACTO --- */
-        /* Una pregunta en gris y la respuesta en negro, que baja al contacto */
-        .ab-sigue p { font-size: clamp(30px, 3.4vw, 54px); font-weight: 500; letter-spacing: -0.05em; line-height: 1.08; color: var(--suave); text-wrap: balance; }
-        .ab-sigue a { display: inline-flex; align-items: baseline; gap: 0.2em; color: var(--negro); }
-        .ab-sigue .fl { transition: translate 200ms var(--ease); }
-        @media (hover: hover) { .ab-sigue a:hover .fl { translate: 0 0.1em; } }
+        /* La pregunta queda sola, en negro, como última línea de la hoja; el "Conversemos" gigante del contacto la responde.
+           La tecla C y la barra siguen llevando al contacto */
+        .ab-sigue p { font-size: clamp(34px, 4.4vw, 72px); font-weight: 500; letter-spacing: -0.05em; line-height: 1.04; text-wrap: balance; }
 
         /* --- 4.9 TELÉFONO --- */
         /* Título primero, después el retrato cuadrado y la ficha. Los pasos bajan por una línea vertical */
         @media (max-width: 768px) {
             .ab { grid-template-columns: repeat(4, 1fr); padding-top: 64px; }
-            .ab::before { border-radius: 18px 18px 0 0; clip-path: inset(0 var(--x) 0 var(--x) round 18px 18px 0 0); }
+            .ab::before { border-radius: 18px; }
             .ab-portada { min-height: 0; }
             .ab-cab { grid-column: 1 / -1; grid-row: 1; padding-bottom: 28px; }
             .ab-titulo { font-size: 20vw; }
             .ab-panel { grid-column: 1 / -1; grid-row: 2; aspect-ratio: 1; max-width: 100%; }
             .ab-base { grid-column: 1 / -1; grid-row: 3; padding-top: 24px; }
             .ab-fila { padding: 36px 0; }
-            .ab-creditos { grid-template-columns: 1fr; gap: 20px; }
+            .ab-creditos { grid-template-columns: 1fr; gap: 24px; }
+            /* En el teléfono el isotipo va a la izquierda, centrado en una caja fija, y el texto a su lado */
+            .ab-creditos li { grid-template-columns: 64px minmax(0, 1fr); column-gap: 16px; row-gap: 4px; align-items: center; }
+            .ab-creditos .ab-iso { grid-row: span 2; justify-content: center; align-items: center; height: 52px; margin: 0; }
+            .ab-iso .shifta { width: 100%; height: auto; }
             .ab-rotulo, .ab-fila > :not(.ab-rotulo) { grid-column: 1 / -1; }
             .ab-rotulo { padding-bottom: 12px; }
             .ab-servicios li { grid-template-columns: minmax(0, 1fr) auto; row-gap: 2px; }
@@ -1306,7 +1326,8 @@
         </div>
     </section>
 
-    <section class="hoja" id="archivo">
+    <div class="hoja-ancla" id="archivo"></div>
+    <section class="hoja" aria-label="Archivo">
         <div class="hoja-cab">
             <h2><span data-letras>Archivo</span><sup class="mono">(05)</sup></h2>
             <p>Proyectos anteriores. Editorial, identidad y producto, de 2022 a 2025.</p>
@@ -1343,8 +1364,8 @@
                 <li><span>Producto digital con marca</span><span class="mono t">Web app</span><a class="mono ej" href="#p-mend" data-ir-cov="2">Mend <span>↗</span></a></li>
             </ul></div>
             <div class="ab-fila" id="ab-como" data-f="como"><span class="ab-rotulo mono">Cómo trabajo</span><ol class="ab-pasos"><li><b>Entender</b><p>Conversamos del negocio, de quién llega al sitio y de qué tiene que lograr.</p></li><li><b>Decidir</b><p>Defino la marca y la estructura, con el porqué de cada decisión.</p></li><li><b>Diseñar</b><p>La web pantalla por pantalla, en escritorio y teléfono.</p></li><li><b>Construir</b><p>La programo a mano, rápida y precisa, y la dejo publicada.</p></li></ol></div>
-            <div class="ab-fila" id="ab-formacion" data-f="formacion"><span class="ab-rotulo mono">Formación</span><ul class="ab-creditos"><li><b>Diseño UC</b><span>Me titulo en diciembre de 2026</span></li><li><b>UPF, Barcelona</b><span>Intercambio en Diseño Gráfico</span></li><li><b>Shifta</b><span>Curso UX Enterprise</span></li></ul></div>
-            <div class="ab-fila ab-sigue"><span class="ab-rotulo mono">Sigue</span><p>¿Tienes un proyecto en mente? <a href="#contacto">Conversemos <span class="fl" aria-hidden="true">↓</span></a></p></div>
+            <div class="ab-fila" id="ab-formacion" data-f="formacion"><span class="ab-rotulo mono">Formación</span><ul class="ab-creditos"><li><span class="ab-iso"><img src="media/ab-uc.svg" alt="" width="75" height="101" loading="lazy" decoding="async"></span><b>Diseño UC</b><span>Me titulo en diciembre de 2026</span></li><li><span class="ab-iso"><img class="upf" src="media/ab-upf.png" alt="" width="177" height="177" loading="lazy" decoding="async"></span><b>UPF, Barcelona</b><span>Intercambio en Diseño Gráfico</span></li><li><span class="ab-iso"><img class="shifta" src="media/ab-shifta.svg" alt="" width="146" height="32" loading="lazy" decoding="async"></span><b>Shifta</b><span>Curso UX Enterprise</span></li></ul></div>
+            <div class="ab-fila ab-sigue"><p>¿Tienes un proyecto en mente?</p></div>
         </div>
     </section>
 
