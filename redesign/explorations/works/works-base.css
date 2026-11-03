@@ -48,18 +48,19 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
    ======================================================= */
 /* El nombre entre cuatro marcas de corte, del mismo gris que el punto. Viven en un pseudo-elemento, así ninguna página
    cambia su HTML, y cuelgan fuera de la caja: el texto sigue alineado a la grilla. El trazo nunca baja de 1 px ni los
-   brazos de 4 px, para que se vean a 16 px. Al pasar el mouse se cierran sobre el nombre */
+   brazos de 4 px, para que se vean a 16 px. La firma del footer usa las mismas marcas (su color y su caja van en el home) */
 :is(.nav, .barra) .logo { position: relative; justify-self: start; line-height: 1; }
-:is(.nav, .barra) .logo::before {
-    content: ''; position: absolute; inset: -0.21em -0.31em -0.39em; pointer-events: none; opacity: 0.45;
+:is(.nav, .barra) .logo::before, .pie-marca::before {
+    content: ''; position: absolute; inset: -0.21em -0.31em -0.39em; pointer-events: none;
     --t: max(1px, 0.018em); --b: max(4px, 0.09em); --c: linear-gradient(currentColor, currentColor);
     background: var(--c) left top / var(--b) var(--t), var(--c) left top / var(--t) var(--b),
                 var(--c) right top / var(--b) var(--t), var(--c) right top / var(--t) var(--b),
                 var(--c) left bottom / var(--b) var(--t), var(--c) left bottom / var(--t) var(--b),
                 var(--c) right bottom / var(--b) var(--t), var(--c) right bottom / var(--t) var(--b);
     background-repeat: no-repeat;
-    transition: inset 200ms var(--ease);
 }
+/* En la barra, las marcas se cierran sobre el nombre al pasar el mouse */
+:is(.nav, .barra) .logo::before { opacity: 0.45; transition: inset 200ms var(--ease); }
 @media (hover: hover) { :is(.nav, .barra) .logo:hover::before { inset: -0.13em -0.23em -0.31em; } }
 @media (prefers-reduced-motion: reduce) { :is(.nav, .barra) .logo::before { transition: none; } }
 

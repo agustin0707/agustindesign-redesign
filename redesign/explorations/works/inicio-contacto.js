@@ -229,7 +229,10 @@
         letras.forEach(l => { l.style.transform = ''; }); punto.style.transform = ''; punto.classList.remove('suelto');
         caja.style.fontSize = '100px';
         const l = marca.children, total = l[l.length - 1].getBoundingClientRect().right - l[0].getBoundingClientRect().left - 2 * aire();
-        caja.style.fontSize = (100 * (caja.clientWidth - 2 * parseFloat(getComputedStyle(caja).paddingLeft)) / total) + 'px';
+        /* El relleno lateral es el margen más el lugar de las marcas, que crece con la firma: medido a 100 px, esa parte
+           se suma al ancho del nombre y el margen queda fijo */
+        const margen = parseFloat(getComputedStyle($('.pie-fila')).paddingLeft), marcas = parseFloat(getComputedStyle(caja).paddingLeft) - margen;
+        caja.style.fontSize = (100 * (caja.clientWidth - 2 * margen) / (total + 2 * marcas)) + 'px';
         ancho = punto.getBoundingClientRect().width; punto.classList.add('suelto');
         const ultima = letras[letras.length - 1], a = aire();
         bordes = letras.map(x => x.offsetLeft + a).concat(ultima.offsetLeft + ultima.offsetWidth - a);
