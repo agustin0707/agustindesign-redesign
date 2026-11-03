@@ -26,7 +26,9 @@
     salida();
 
     /* --- 3. NOMBRE VIVO --- */
-    /* Las letras cercanas al cursor suben un poco, como una ola. Solo con mouse y sin reducir movimiento */
+    /* Las letras cercanas al cursor suben un poco, como una ola. Solo con mouse y sin reducir movimiento. La ola sigue a un
+       cursor suavizado y su fuerza (presencia) crece al entrar y se apaga al salir, las dos con inercia medida en tiempo:
+       las letras suben y bajan sin cortes, en vez de saltar al borde del hero */
     if (quieto || !window.matchMedia('(hover: hover)').matches) return;
     const letras = [...hero.querySelectorAll('.nombre .l')];
     let centros = [];
@@ -34,19 +36,29 @@
     setTimeout(medir, 2100);
     window.addEventListener('resize', medir);
     window.addEventListener('scroll', () => { centros = []; }, { passive: true });
-    let mx = -9999, my = -9999, cuadro = false;
-    const ola = () => {
-        cuadro = false;
+    const SIGUE = 160, ENTRA = 380, SALE = 620;
+    let mx = 0, my = 0, sx = 0, sy = 0, dentro = 0, presencia = 0, cuadro = 0, antes = 0;
+    const ola = t => {
+        cuadro = 0;
+        const dt = antes ? Math.min(t - antes, 64) : 16;
+        antes = t;
+        const k = 1 - Math.exp(-dt / SIGUE), kp = 1 - Math.exp(-dt / (dentro ? ENTRA : SALE));
+        sx += (mx - sx) * k; sy += (my - sy) * k; presencia += (dentro - presencia) * kp;
         if (!centros.length) medir();
         letras.forEach((l, i) => {
             const c = centros[i];
-            const d = Math.hypot(mx - c.x, (my - c.y) * 0.6);
-            const fuerza = Math.exp(-(d * d) / (2 * 140 * 140));
+            const d = Math.hypot(sx - c.x, (sy - c.y) * 0.6);
+            const fuerza = Math.exp(-(d * d) / (2 * 140 * 140)) * presencia;
             l.style.translate = `0 ${(-fuerza * c.h * 0.07).toFixed(2)}px`;
         });
+        const quieta = Math.abs(mx - sx) + Math.abs(my - sy) < 0.3 && Math.abs(dentro - presencia) < 0.002;
+        if (quieta) { antes = 0; if (!dentro) { presencia = 0; letras.forEach(l => { l.style.translate = ''; }); } }
+        else pedir();
     };
-    hero.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; if (!cuadro) { cuadro = true; requestAnimationFrame(ola); } });
-    hero.addEventListener('mouseleave', () => { mx = my = -9999; requestAnimationFrame(ola); });
+    const pedir = () => { if (!cuadro) cuadro = requestAnimationFrame(ola); };
+    hero.addEventListener('mouseenter', e => { mx = sx = e.clientX; my = sy = e.clientY; dentro = 1; pedir(); });
+    hero.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dentro = 1; pedir(); });
+    hero.addEventListener('mouseleave', () => { dentro = 0; pedir(); });
 })();
 /* =======================================================
    FIN JS · HERO 1 CAPAS
