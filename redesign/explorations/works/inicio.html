@@ -697,9 +697,9 @@
            deja de pintarse */
         .hoja-ancla { display: flow-root; height: 0; margin-top: -100svh; }
         .hoja.pila { --p: 0; position: sticky; top: var(--fija, 0px); scale: calc(1 - var(--p) * 0.06); transform-origin: 50% 100%; }
-        /* Al achicarse, los costados dejarían ver la portada de Mend: un fondo negro más ancho los cubre, desde bajo las
-           esquinas para no tapar su radio */
-        .hoja.pila::before { content: ''; position: absolute; inset: 40px -4% 0; z-index: -1; background: var(--negro); pointer-events: none; }
+        /* Al achicarse, los costados dejarían ver la portada de Mend: un fondo negro los cubre, desde bajo las esquinas para
+           no tapar su radio. Crece con --p lo justo para compensar la escala (la mitad de 1 / escala − 1 por lado), sin desbordar la página */
+        .hoja.pila::before { content: ''; position: absolute; inset: 40px calc((1 / (1 - var(--p) * 0.06) - 1) * -50%) 0; z-index: -1; background: var(--negro); pointer-events: none; }
         .hoja.pila::after { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; background: var(--negro); opacity: calc(var(--p) * 0.6); pointer-events: none; }
         .hoja.tapada { visibility: hidden; }
 
@@ -888,6 +888,8 @@
         .ab-servicios .mono { color: var(--suave); white-space: nowrap; }
         .ab-servicios .ej { justify-self: end; color: var(--negro); }
         .ab-servicios .ej span { display: inline-block; transition: translate 160ms var(--ease); }
+        /* El servicio que todavía no tiene proyecto publicado lo avisa en gris, sin enlace */
+        .ab-servicios .pronto { justify-self: end; color: var(--suave); }
         @media (hover: hover) {
             .ab-servicios:has(li:hover) li:not(:hover) { color: rgba(11, 11, 11, 0.4); }
             .ab-servicios .ej:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -927,7 +929,7 @@
             .ab-rotulo, .ab-fila > :not(.ab-rotulo) { grid-column: 1 / -1; }
             .ab-rotulo { padding-bottom: 12px; }
             .ab-servicios li { grid-template-columns: minmax(0, 1fr) auto; row-gap: 2px; }
-            .ab-servicios .t, .ab-servicios .ej { grid-row: 2; }
+            .ab-servicios .t, .ab-servicios .ej, .ab-servicios .pronto { grid-row: 2; }
             .ab-pasos { grid-template-columns: 1fr; gap: 0; }
             .ab-pasos li { padding: 0 0 24px 22px; border-top: 0; border-left: 1px solid var(--regla); }
             .ab-pasos li:last-child { padding-bottom: 0; }
@@ -1132,6 +1134,10 @@
         .pie-marca.alumbrada { --apaga: 1; transition-duration: 600ms; }
         .pie-marca .l { display: inline-block; color: transparent; background: radial-gradient(var(--luz-r, 300px) circle at calc(var(--x, 50%) - var(--ox, 0px)) calc(var(--y, 50%) - var(--oy, 0px)), var(--blanco) 32%, color-mix(in srgb, var(--tenue) calc(var(--apaga) * 100%), var(--blanco)) 100%); -webkit-background-clip: text; background-clip: text; translate: 0 110%; transition: translate 900ms var(--ease) calc(var(--k) * 28ms), transform 460ms var(--ease); }
         .pie-marca.entra .l { translate: 0 0; }
+        /* Con el interletrado negativo la caja de cada letra es más angosta que el dibujo, y el degradado solo pinta dentro
+           de la caja: las letras se cortaban a la derecha. El relleno agranda la caja y el margen negativo lo descuenta, así
+           el dibujo no se mueve; inicio-contacto.js resta ese aire al medir */
+        .pie-marca .l:not(.punto) { padding: 0.1em 0.14em; margin: -0.1em -0.14em; }
         .pie-marca .punto { background: none; color: var(--tenue); transition: translate 900ms var(--ease) calc(var(--k) * 28ms), transform 460ms var(--ease), color 400ms var(--suave); }
         .pie-marca .punto.suelto { position: absolute; left: 0; top: 0; }
         .pie-marca .punto.fuera { color: var(--blanco); }
@@ -1359,7 +1365,7 @@
             <div class="ab-fila" id="ab-quien" data-f="quien"><span class="ab-rotulo mono">Quién</span><p class="ab-quien" data-ab-lectura>Trabajo entre <b>la marca,</b> <b>la experiencia</b> y <b>el código,</b> que casi siempre van en manos distintas. Juntarlos es lo que hace que la web se vea y funcione tal como se diseñó.</p></div>
             <div class="ab-fila" id="ab-que" data-f="que"><span class="ab-rotulo mono">Qué hago</span><ul class="ab-servicios">
                 <li><span>Marca y web desde cero</span><span class="mono t">Proyecto completo</span><a class="mono ej" href="#p-llego" data-ir-cov="0">Llegó Farma <span>↗</span></a></li>
-                <li><span>Web para una marca que ya existe</span><span class="mono t">Sitio</span><span></span></li>
+                <li><span>Web para una marca que ya existe</span><span class="mono t">Sitio</span><span class="mono pronto">Próximamente</span></li>
                 <li><span>Landings de lanzamiento</span><span class="mono t">One page</span><a class="mono ej" href="#p-tapin" data-ir-cov="1">Tap In <span>↗</span></a></li>
                 <li><span>Producto digital con marca</span><span class="mono t">Web app</span><a class="mono ej" href="#p-mend" data-ir-cov="2">Mend <span>↗</span></a></li>
             </ul></div>

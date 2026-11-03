@@ -222,15 +222,17 @@
         });
         punto.style.transform = `translateX(${bordes[g] - ancho / 2}px)`; punto.classList.toggle('fuera', g !== CASA);
     };
-    /* Se mide con el punto en su lugar; después sale del flujo y las letras, juntas, guardan sus bordes */
+    /* Se mide con el punto en su lugar; después sale del flujo y las letras, juntas, guardan sus bordes. Cada letra lleva
+       un aire a los lados (para que el degradado no la corte) que se resta en el ancho y en los bordes */
+    const aire = () => parseFloat(getComputedStyle(letras[0]).paddingLeft);
     const ajustarMarca = () => {
         letras.forEach(l => { l.style.transform = ''; }); punto.style.transform = ''; punto.classList.remove('suelto');
         caja.style.fontSize = '100px';
-        const l = marca.children, total = l[l.length - 1].getBoundingClientRect().right - l[0].getBoundingClientRect().left;
+        const l = marca.children, total = l[l.length - 1].getBoundingClientRect().right - l[0].getBoundingClientRect().left - 2 * aire();
         caja.style.fontSize = (100 * (caja.clientWidth - 2 * parseFloat(getComputedStyle(caja).paddingLeft)) / total) + 'px';
         ancho = punto.getBoundingClientRect().width; punto.classList.add('suelto');
-        const ultima = letras[letras.length - 1];
-        bordes = letras.map(x => x.offsetLeft).concat(ultima.offsetLeft + ultima.offsetWidth);
+        const ultima = letras[letras.length - 1], a = aire();
+        bordes = letras.map(x => x.offsetLeft + a).concat(ultima.offsetLeft + ultima.offsetWidth - a);
         marca.style.setProperty('--luz-r', (parseFloat(caja.style.fontSize) * 0.95) + 'px');
         ubicar(actual);
     };
