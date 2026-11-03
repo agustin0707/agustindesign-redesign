@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body>
+<title>Logo agustín.design · Ronda 5</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&family=Inter:ital,wght@1,200..400&display=swap" rel="stylesheet">
+<style>
+/* Layout: hoja de cierre con dos familias de tres fichas y, abajo, el sistema completo en sus usos reales con un selector para comparar */
+:root {
+    --bg: #F5F5F3; --fg: #0B0B0B; --mute: #8E8E8B; --line: #D9D9D6; --stage: #ECECE9; --soft: #5C5C59;
+    --op-bg: #0B0B0B; --op-fg: #F5F5F3; --op-stage: #151514;
+    --sans: 'Geist', ui-sans-serif, system-ui, sans-serif; --mono: 'Geist Mono', ui-monospace, Menlo, monospace; --firma: 'Inter', 'Helvetica Neue', sans-serif;
+    --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0B0B0B; --fg: #F5F5F3; --line: #262625; --stage: #151514; --soft: #A3A3A0; --op-bg: #F5F5F3; --op-fg: #0B0B0B; --op-stage: #ECECE9; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0B0B0B; --fg: #F5F5F3; --line: #262625; --stage: #151514; --soft: #A3A3A0; --op-bg: #F5F5F3; --op-fg: #0B0B0B; --op-stage: #ECECE9; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+.hoja { max-width: 1440px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 140px; }
+@media (min-width: 769px) { .hoja { padding-left: max(5vw, env(safe-area-inset-left, 0px)); padding-right: max(5vw, env(safe-area-inset-right, 0px)); } }
+[hidden] { display: none !important; }
+.rot { font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em; color: var(--mute); }
+
+/* --- CABECERA --- */
+.cab { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.cab h1 { margin: 8px 0 0; font-weight: 500; font-size: clamp(36px, 5vw, 64px); letter-spacing: -0.05em; line-height: 1; text-wrap: balance; }
+.cab p { margin: 14px 0 0; max-width: 62ch; color: var(--soft); font-size: 16px; }
+@media (max-width: 600px) { .cab { grid-template-columns: 1fr; } .tema { justify-self: start; } }
+.tema { font: 400 12px var(--mono); color: var(--fg); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+.tema:focus-visible, .mg:focus-visible, .copiar:focus-visible, .selector button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+
+/* --- FAMILIAS --- */
+.fam { margin-top: 56px; }
+.fam-cab { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; padding-bottom: 14px; }
+.fam-cab h2 { margin: 0; font-weight: 500; font-size: 24px; letter-spacing: -0.04em; }
+.fam-cab p { margin: 0; color: var(--soft); max-width: 70ch; }
+.grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr)); gap: 16px; }
+
+/* --- FICHA --- */
+.ficha { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; transition: border-color 160ms var(--ease); }
+.ficha.elegida { border-color: var(--fg); }
+.ficha-top { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+.ficha-top .num { font: 500 12px var(--mono); }
+.ficha-top .nom { font-weight: 500; letter-spacing: -0.02em; flex: 1; min-width: 0; }
+.ficha-top .rec { font: 400 11px var(--mono); color: var(--mute); }
+.mg { font: 400 12px var(--mono); color: var(--soft); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; transition: background 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease); }
+.mg::before { content: '☆'; font-size: 13px; }
+.elegida .mg { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.elegida .mg::before { content: '★'; }
+@media (hover: hover) { .mg:hover { border-color: var(--fg); color: var(--fg); } .elegida .mg:hover { color: var(--bg); } .tema:hover, .selector button:hover { border-color: var(--fg); } }
+
+.escena { position: relative; aspect-ratio: 16 / 8; background: var(--stage); display: grid; place-items: center; overflow: hidden; }
+[data-fit] { min-width: 0; min-height: 0; }
+.escena .caja { width: 72%; height: 46%; display: grid; place-items: center; }
+.escena .rot-mov { position: absolute; left: 14px; bottom: 12px; font: 400 11px var(--mono); color: var(--mute); }
+
+/* Fila de usos: la barra de navegación a todo el ancho; abajo, la versión invertida y el favicon a 32 y 16 px */
+.usos { display: grid; grid-template-columns: 1fr auto; border-top: 1px solid var(--line); }
+.usos > div { min-width: 0; padding: 12px 14px; display: flex; align-items: center; }
+.nav { grid-column: 1 / -1; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); }
+.nav .caja { flex: 1 1 auto; max-width: 240px; height: 19px; display: flex; align-items: center; }
+.nav .links { font: 400 11px var(--mono); color: var(--mute); white-space: nowrap; }
+.inv { background: var(--op-stage); justify-content: center; --fg: var(--op-fg); --bg: var(--op-bg); --stage: var(--op-stage); color: var(--fg); }
+.inv .caja { width: 160px; max-width: 100%; height: 30px; display: grid; place-items: center; }
+.favs { gap: 10px; border-left: 1px solid var(--line); }
+.fav { background: #0B0B0B; --fg: #F5F5F3; --bg: #0B0B0B; color: var(--fg); display: grid; place-items: center; overflow: hidden; flex: none; }
+.fav.f32 { width: 32px; height: 32px; border-radius: 7px; }
+.fav.f16 { width: 16px; height: 16px; border-radius: 4px; }
+.fav .caja { width: 74%; height: 74%; display: grid; place-items: center; }
+.porque { margin: 0; padding: 12px 14px 14px; border-top: 1px solid var(--line); color: var(--soft); font-size: 14px; text-wrap: pretty; }
+@media (max-width: 480px) { .nav .links { display: none; } }
+
+
+/* =======================================================
+   LOGO · MARCAS DE CORTE
+   ======================================================= */
+/* Todo en em: la misma pieza sirve a cualquier tamaño y JS solo ajusta el font-size para calzar la caja */
+.m { position: relative; font-family: var(--sans); font-weight: 500; letter-spacing: -0.055em; line-height: 1; white-space: nowrap; color: var(--fg); display: inline-flex; align-items: baseline; }
+.m .g { color: var(--mute); }
+
+/* --- 1. TRAZO ÓPTICO --- */
+/* El trazo nunca baja de 1 px y los brazos nunca bajan de 4 px: en la barra y el favicon las marcas ya no desaparecen */
+.m .crop { position: relative; padding: 0.16em 0.26em 0.34em; --t: max(1px, 0.018em); --b: max(4px, 0.09em); --s: max(2px, 0.05em); }
+.m .crop i { position: absolute; width: var(--b); height: var(--b); border: 0 solid var(--mute); transition: translate 200ms var(--ease); }
+.m .crop i:nth-child(1) { top: 0; left: 0; border-width: var(--t) 0 0 var(--t); translate: calc(var(--s) * -1) calc(var(--s) * -1); }
+.m .crop i:nth-child(2) { top: 0; right: 0; border-width: var(--t) var(--t) 0 0; translate: var(--s) calc(var(--s) * -1); }
+.m .crop i:nth-child(3) { bottom: 0; left: 0; border-width: 0 0 var(--t) var(--t); translate: calc(var(--s) * -1) var(--s); }
+.m .crop i:nth-child(4) { bottom: 0; right: 0; border-width: 0 var(--t) var(--t) 0; translate: var(--s) var(--s); }
+
+/* --- 2. SÍMBOLO --- */
+/* La a sola: marcas más gruesas y más cerca para que se lea a 16 px */
+.m .crop.sim { padding: 0.06em 0.3em 0.22em; --t: max(1px, 0.04em); --b: max(3px, 0.2em); --s: 0px; }
+
+/* --- 3. COLOR DE LAS MARCAS --- */
+.m .crop.fg i, .ficha.opt :is(.nav, .fav) .m .crop i { border-color: var(--fg); }
+
+/* --- 4. LAS MARCAS SE CIERRAN --- */
+/* Al pasar el mouse por el escenario o por el logo de la barra, las cuatro esquinas se acercan al nombre */
+@media (hover: hover) {
+    :is(.escena:hover, .nav-real a:hover) .m .crop i:nth-child(1) { translate: 0.03em 0.03em; }
+    :is(.escena:hover, .nav-real a:hover) .m .crop i:nth-child(2) { translate: -0.03em 0.03em; }
+    :is(.escena:hover, .nav-real a:hover) .m .crop i:nth-child(3) { translate: 0.03em -0.03em; }
+    :is(.escena:hover, .nav-real a:hover) .m .crop i:nth-child(4) { translate: -0.03em -0.03em; }
+}
+@media (prefers-reduced-motion: reduce) { .m .crop i { transition: none; } }
+
+
+/* =======================================================
+   EL SISTEMA EN USO
+   ======================================================= */
+/* --- 1. SELECTOR --- */
+/* Cambia el color de las marcas en todos los usos a la vez: grises, del color del texto u ópticas */
+.selector { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; flex-wrap: wrap; }
+.selector button { font: 400 12px var(--mono); color: var(--soft); background: none; border: 1px solid transparent; border-radius: 999px; padding: 6px 12px; cursor: pointer; transition: background 160ms var(--ease), color 160ms var(--ease); }
+.selector button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.sistema[data-m="fg"] .m .crop i, .sistema[data-m="opt"] :is(.nav-real, .fav, .app, .avatar) .m .crop i { border-color: var(--fg); }
+
+/* --- 2. PIEZAS --- */
+.uso { display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr); }
+.uso > div { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; min-width: 0; display: flex; flex-direction: column; }
+.uso .ancho { grid-column: 1 / -1; }
+@media (max-width: 900px) { .uso { grid-template-columns: 1fr; } }
+.uso .rot { display: block; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.uso .lienzo { flex: 1; background: var(--stage); display: grid; place-items: center; padding: 28px 14px; min-height: 150px; }
+
+/* Pestaña del navegador con el favicon a 16 px */
+.pest { display: inline-flex; align-items: center; gap: 10px; max-width: 100%; background: var(--bg); border-radius: 10px; padding: 10px 14px; font-size: 13px; color: var(--soft); }
+.pest > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+/* Ícono en la pantalla de inicio del iPhone (apple-touch-icon) */
+.app-cel { display: grid; justify-items: center; gap: 6px; font-size: 11px; color: var(--fg); }
+.app { width: 60px; height: 60px; border-radius: 14px; }
+.app .caja { width: 58%; height: 58%; }
+
+/* Avatar redondo de redes */
+.avatar { width: 88px; height: 88px; border-radius: 50%; }
+.avatar .caja { width: 50%; height: 50%; }
+
+/* Barra del sitio a su tamaño real */
+.nav-real { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 26px; flex-wrap: wrap; }
+.nav-real a { color: inherit; text-decoration: none; }
+.nav-real .links { font: italic 300 18px var(--firma); color: var(--fg); display: flex; gap: 40px; }
+.nav-real .hora { font: 400 12px var(--mono); color: var(--fg); }
+@media (max-width: 600px) { .nav-real .links { display: none; } }
+
+/* Firma del footer a todo el ancho, en el tema contrario */
+.pie-real { background: var(--op-stage); --fg: var(--op-fg); --bg: var(--op-bg); color: var(--fg); padding: 40px 26px 18px; }
+.pie-real .caja { width: 100%; height: clamp(80px, 19vw, 270px); display: grid; place-items: center start; }
+
+
+/* --- BARRA DE ELEGIDAS --- */
+.barra { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; display: flex; gap: 12px; align-items: center; background: var(--fg); color: var(--bg); border-radius: 999px; padding: 8px 8px 8px 18px; font: 400 13px var(--mono); max-width: calc(100% - 32px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); }
+.barra span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.copiar { font: 500 12px var(--mono); background: var(--bg); color: var(--fg); border: 0; border-radius: 999px; padding: 8px 14px; cursor: pointer; flex: none; }
+</style>
+
+<main class="hoja">
+    <header class="cab">
+        <div>
+            <span class="rot">Marca · Logo · Ronda 5 · 3 nov 2026</span>
+            <h1>Cierre</h1>
+            <p>Elegiste la 01, la 04 y la 07: corte justo sin enlace, y la a entre marcas como símbolo. Ya queda una sola decisión, el color de las marcas. Además el trazo ahora tiene un mínimo, así que se ve en la barra y en el favicon. Abajo está el sistema completo, con un selector para comparar las tres opciones en todos los usos.</p>
+        </div>
+        <button class="tema" id="tema" type="button">Ver en oscuro</button>
+    </header>
+    <div id="familias"></div>
+    <section class="fam sistema" id="sistema" data-m="fg">
+        <div class="fam-cab"><h2>El sistema en uso</h2><p>Cada pieza a su tamaño real. Las marcas de la barra se cierran al pasar el mouse por el logo, como en el sitio.</p></div>
+        <div class="selector" role="group" aria-label="Color de las marcas" style="margin-bottom:16px">
+            <button type="button" data-m="fg" aria-pressed="true">Del color del texto · 02 + 05</button>
+            <button type="button" data-m="gris" aria-pressed="false">Grises · 01 + 04</button>
+            <button type="button" data-m="opt" aria-pressed="false">Ópticas · 03 + 05</button>
+        </div>
+        <div class="uso">
+            <div><span class="rot">Pestaña del navegador · 16 px</span><div class="lienzo"><span class="pest"><span class="fav f16"><span class="caja" data-fit data-iso></span></span><span>agustín.design · Marca y web</span></span></div></div>
+            <div><span class="rot">Inicio del iPhone · 60 px</span><div class="lienzo"><span class="app-cel"><span class="fav app"><span class="caja" data-fit data-iso></span></span><span>agustín.design</span></span></div></div>
+            <div><span class="rot">Avatar de redes · 88 px</span><div class="lienzo"><span class="fav avatar"><span class="caja" data-fit data-iso></span></span></div></div>
+            <div class="ancho"><span class="rot">Barra del sitio · 22 px</span><div class="nav-real"><a href="#" id="uso-nav" aria-label="agustín.design, inicio"></a><span class="links"><span>Works</span><span>About</span><span>Contact</span></span><span class="hora">Santiago</span></div></div>
+            <div class="ancho"><span class="rot">Firma del footer · a todo el ancho</span><div class="pie-real"><div class="caja" data-fit id="uso-pie"></div></div></div>
+        </div>
+    </section>
+</main>
+<div class="barra" id="barra" hidden><span id="lista"></span><button class="copiar" id="copiar" type="button">Copiar</button></div>
+
+<script>
+/* =======================================================
+   LOGOS · DATOS Y FICHAS
+   ======================================================= */
+(function () {
+    /* --- 1. LAS 6 OPCIONES --- */
+    /* mark: el logo completo · nav: su versión en la barra (si no, el mismo) · iso: lo que cabe en un favicon · f: clase extra de la ficha */
+    const esquinas = '<i></i><i></i><i></i><i></i>';
+    const nombre = 'agustín<span class="g">.</span>design';
+    const corte = c => `<span class="m"><span class="crop ${c}">${esquinas}${nombre}</span></span>`;
+    const sim = (c, dentro = 'a') => `<span class="m"><span class="crop sim ${c}">${esquinas}${dentro}</span></span>`;
+    const junto = (c, dentro) => `<span class="m"><span class="crop sim ${c}" style="font-size:.9em">${esquinas}${dentro || 'a'}</span>&nbsp;&nbsp;${nombre}</span>`;
+
+    const familias = [
+        { t: 'El logo', d: 'La 01 y la 04 con el trazo corregido, más una tercera que combina las dos según el tamaño.', o: [
+            { n: 'Grises', mark: corte(''), iso: sim(''), p: 'Es la 01 de la ronda 4 con el trazo corregido. Es la más silenciosa: las marcas y el punto son del mismo gris, y el nombre queda solo en primer plano.' },
+            { n: 'Del color del texto', rec: true, mark: corte('fg'), iso: sim('fg'), p: 'Es la 04 con el mismo trazo. Las marcas son del color del nombre y el gris queda solo para el punto, que pasa a ser el único acento. Se lee igual a 16 px que a todo el ancho y se resume en una regla. Mi recomendación.' },
+            { n: 'Ópticas', mark: corte(''), iso: sim('fg'), f: 'opt', p: 'Funciona como una tipografía con tamaños ópticos: en grande (footer, piezas) las marcas son grises y en chico (barra, favicon) toman el color del texto para no desaparecer. Es la más fina, pero obliga a recordar dos reglas.' }
+        ] },
+        { t: 'El símbolo', d: 'La 07 en tres versiones: favicon, ícono del iPhone y avatar de redes.', o: [
+            { n: 'a, marcas grises', mark: sim(''), nav: junto(''), iso: sim(''), p: 'Va con la 01. Sobre el fondo negro, el gris de las marcas pierde fuerza a 16 px.' },
+            { n: 'a, marcas del texto', rec: true, mark: sim('fg'), nav: junto('fg'), iso: sim('fg'), p: 'Va con la 02 y la 03. Es el que más contrasta a 16 px y repite el logo en chico. Mi recomendación.' },
+            { n: 'a y punto', mark: sim('fg', 'a<span class="g">.</span>'), nav: junto('fg', 'a<span class="g">.</span>'), iso: sim('fg', 'a<span class="g">.</span>'), p: 'Suma el punto gris del logo y amarra el símbolo al nombre. A 16 px el punto queda en casi un píxel y la a tiene que achicarse para dejarle espacio.' }
+        ] }
+    ];
+
+    /* --- 2. FICHAS --- */
+    const raiz = document.getElementById('familias');
+    let k = 0;
+    familias.forEach(f => {
+        const s = document.createElement('section');
+        s.className = 'fam';
+        s.innerHTML = `<div class="fam-cab"><h2>${f.t}</h2><p>${f.d}</p></div><div class="grilla"></div>`;
+        f.o.forEach(o => {
+            const n = String(++k).padStart(2, '0');
+            const a = document.createElement('article');
+            a.className = `ficha ${o.f || ''}`; a.dataset.n = n;
+            a.innerHTML = `
+                <div class="ficha-top"><span class="num">${n}</span><span class="nom">${o.n}</span>${o.rec ? '<span class="rec">Recomendada</span>' : ''}<button class="mg" type="button" aria-pressed="false">Me gusta</button></div>
+                <div class="escena"><div class="caja" data-fit>${o.mark}</div><span class="rot-mov">Pasa el mouse</span></div>
+                <div class="usos">
+                    <div class="nav"><div class="caja" data-fit="izq">${o.nav || o.mark}</div><span class="links">Works · About · Contact</span></div>
+                    <div class="inv"><div class="caja" data-fit>${o.mark}</div></div>
+                    <div class="favs"><span class="fav f32"><span class="caja" data-fit>${o.iso}</span></span><span class="fav f16"><span class="caja" data-fit>${o.iso}</span></span></div>
+                </div>
+                <p class="porque">${o.p}</p>`;
+            s.querySelector('.grilla').append(a);
+        });
+        raiz.append(s);
+    });
+
+    /* --- 3. EL SISTEMA EN USO --- */
+    /* Las piezas se pintan con marcas grises y el selector las cambia por CSS según data-m */
+    const sistema = document.getElementById('sistema');
+    sistema.querySelectorAll('[data-iso]').forEach(c => { c.innerHTML = sim(''); });
+    document.getElementById('uso-pie').innerHTML = corte('');
+    const nav = document.getElementById('uso-nav');
+    nav.innerHTML = corte('');
+    nav.firstElementChild.style.fontSize = '22px';
+    nav.addEventListener('click', e => e.preventDefault());
+    sistema.querySelector('.selector').addEventListener('click', e => {
+        const b = e.target.closest('button');
+        if (!b) return;
+        sistema.dataset.m = b.dataset.m;
+        sistema.querySelectorAll('.selector button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    });
+
+    /* --- 4. CALCE --- */
+    /* Mide cada logo a 100 px y lo escala para que entre en su caja sin deformarse */
+    const calzar = () => document.querySelectorAll('[data-fit]').forEach(c => {
+        const m = c.firstElementChild;
+        m.style.fontSize = '100px';
+        const r = m.getBoundingClientRect(), w = c.clientWidth, h = c.clientHeight;
+        if (!r.width || !r.height) return;
+        m.style.fontSize = `${Math.min(w / r.width, h / r.height) * 100}px`;
+    });
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(calzar);
+    if (document.fonts) document.fonts.addEventListener('loadingdone', calzar);
+    window.addEventListener('load', calzar);
+    let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(calzar, 80); });
+
+    /* --- 5. ELEGIDAS --- */
+    const CLAVE = 'logo-r5-elegidas';
+    let elegidas = [];
+    try { elegidas = JSON.parse(localStorage.getItem(CLAVE)) || []; } catch (e) { elegidas = []; }
+    const barra = document.getElementById('barra'), lista = document.getElementById('lista');
+    const pintar = () => {
+        document.querySelectorAll('.ficha').forEach(a => {
+            const si = elegidas.includes(a.dataset.n);
+            a.classList.toggle('elegida', si);
+            a.querySelector('.mg').setAttribute('aria-pressed', si);
+        });
+        elegidas.sort();
+        barra.hidden = !elegidas.length;
+        lista.textContent = `Me quedo con: ${elegidas.join(', ')}`;
+        try { localStorage.setItem(CLAVE, JSON.stringify(elegidas)); } catch (e) {}
+    };
+    document.querySelector('.hoja').addEventListener('click', e => {
+        const b = e.target.closest('.mg');
+        if (!b) return;
+        const n = b.closest('.ficha').dataset.n;
+        elegidas = elegidas.includes(n) ? elegidas.filter(x => x !== n) : [...elegidas, n];
+        pintar();
+    });
+    document.getElementById('copiar').addEventListener('click', e => {
+        const btn = e.currentTarget, ok = () => { btn.textContent = 'Copiado'; setTimeout(() => { btn.textContent = 'Copiar'; }, 1400); };
+        const texto = `Logo ronda 5, me quedo con: ${elegidas.join(', ')}`;
+        try {
+            navigator.clipboard.writeText(texto).then(ok, () => { getSelection().selectAllChildren(lista); });
+        } catch (err) { getSelection().selectAllChildren(lista); }
+    });
+    pintar();
+
+    /* --- 6. TEMA --- */
+    const tema = document.getElementById('tema'), html = document.documentElement;
+    const oscuro = () => html.dataset.theme ? html.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    const rotular = () => { tema.textContent = oscuro() ? 'Ver en claro' : 'Ver en oscuro'; };
+    tema.addEventListener('click', () => { html.dataset.theme = oscuro() ? 'light' : 'dark'; rotular(); });
+    rotular();
+})();
+/* =======================================================
+   FIN LOGOS
+   ======================================================= */
+</script>
+</body>
+</html>
