@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body>
+<title>Firma del footer · marcas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: tres maquetas del footer a todo el ancho, una bajo otra, cada una con su ficha y su porqué */
+:root {
+    --negro: #0B0B0B; --blanco: #F5F5F3; --gris-medio: #8E8E8B; --tenue: #4A4A47; --linea: #262625; --soft: #A3A3A0;
+    --sans: 'Geist', ui-sans-serif, system-ui, sans-serif; --mono: 'Geist Mono', ui-monospace, Menlo, monospace;
+    --margen: clamp(16px, 2.2vw, 32px); --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--negro); color: var(--blanco); font-family: var(--sans); font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+[hidden] { display: none !important; }
+.rot { font: 400 12px var(--mono); letter-spacing: 0.02em; color: var(--gris-medio); }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; border-radius: 2px; }
+
+/* --- CABECERA --- */
+.cab { padding: 40px max(var(--margen), env(safe-area-inset-left, 0px)) 24px; border-bottom: 1px solid var(--linea); }
+.cab h1 { margin: 8px 0 0; font-weight: 500; font-size: clamp(36px, 5vw, 64px); letter-spacing: -0.05em; line-height: 1; }
+.cab p { margin: 14px 0 0; max-width: 64ch; color: var(--soft); font-size: 16px; text-wrap: pretty; }
+
+/* --- FICHA DE CADA OPCIÓN --- */
+.op { border-bottom: 1px solid var(--linea); }
+.op-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 18px var(--margen); }
+.op-top .num { font: 500 12px var(--mono); }
+.op-top .nom { font-weight: 500; font-size: 20px; letter-spacing: -0.03em; flex: 1; min-width: 0; }
+.op-top .rec { font: 400 11px var(--mono); color: var(--gris-medio); }
+.chip { font: 400 12px var(--mono); color: var(--soft); border: 1px solid var(--linea); border-radius: 999px; padding: 5px 11px; display: inline-flex; gap: 6px; align-items: center; transition: background 160ms linear, color 160ms linear, border-color 160ms linear; }
+.mg::before { content: '☆'; font-size: 13px; }
+.elegida .mg { background: var(--blanco); color: var(--negro); border-color: var(--blanco); }
+.elegida .mg::before { content: '★'; }
+@media (hover: hover) { .chip:hover { border-color: var(--blanco); color: var(--blanco); } .elegida .mg:hover { color: var(--negro); } }
+.porque { margin: 0; padding: 16px var(--margen) 28px; max-width: calc(72ch + 2 * var(--margen)); color: var(--soft); text-wrap: pretty; }
+
+
+/* =======================================================
+   MAQUETA DEL FOOTER
+   ======================================================= */
+/* La firma, los links y la línea legal con las medidas del home. La luz y el punto viajero siguen igual en las tres y aquí no se muestran */
+.pie { position: relative; overflow: clip; background: var(--negro); border-top: 1px solid var(--linea); font-size: 16px; }
+.pie-fila { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; padding-inline: var(--margen); }
+.pie-marca-caja { overflow: hidden; padding: calc(48px + 0.06em) var(--margen) 0.18em; }
+.pie-marca { position: relative; display: flex; justify-content: center; white-space: nowrap; font-weight: 500; letter-spacing: -0.07em; line-height: 1.04; user-select: none; }
+.pie-marca .l { display: inline-block; translate: 0 110%; transition: translate 900ms var(--ease) calc(var(--k) * 28ms); }
+.pie-marca .punto { color: var(--tenue); }
+.entra .pie-marca .l { translate: 0 0; }
+.pie-links { margin-top: 32px; padding-block: 20px; border-block: 1px solid var(--linea); }
+.pie-links span { padding: 4px 0; letter-spacing: -0.01em; }
+.pie-links .red { color: var(--gris-medio); }
+.pie-links .arriba { margin-left: auto; font: 400 12px var(--mono); color: var(--gris-medio); border-radius: 999px; box-shadow: inset 0 0 0 1px var(--linea); padding: 8px 14px; }
+.pie-legal { justify-content: space-between; padding-block: 18px 24px; color: var(--gris-medio); font: 400 12px var(--mono); }
+.pie-legal b { color: var(--blanco); font-weight: 400; }
+@media (max-width: 768px) { .pie-links { gap: 4px 20px; } .pie-links .arriba { margin-left: 0; } .pie-legal { flex-direction: column; align-items: flex-start; gap: 6px; } }
+
+/* --- 1. LAS MARCAS --- */
+/* Cuatro esquinas en un pseudo-elemento, del gris tenue del punto: el mismo componente de la barra */
+.pie-marca::before {
+    content: ''; position: absolute; pointer-events: none; color: var(--tenue);
+    --c: linear-gradient(currentColor, currentColor);
+    background: var(--c) left top / var(--b) var(--t), var(--c) left top / var(--t) var(--b),
+                var(--c) right top / var(--b) var(--t), var(--c) right top / var(--t) var(--b),
+                var(--c) left bottom / var(--b) var(--t), var(--c) left bottom / var(--t) var(--b),
+                var(--c) right bottom / var(--b) var(--t), var(--c) right bottom / var(--t) var(--b);
+    background-repeat: no-repeat;
+}
+
+/* --- 2. A · EN EL MARGEN --- */
+/* La firma no cambia de tamaño; las marcas, finas y de medida fija, viven en el margen como en un pliego */
+.a .pie-marca::before { inset: -14px calc(var(--margen) * -0.62) -0.16em; --t: 1.5px; --b: 14px; }
+.a .pie-marca-caja { padding-bottom: 0.28em; }
+
+/* --- 3. B · EL LOGO A TODO EL ANCHO --- */
+/* Las marcas guardan las proporciones del logo; la firma se achica lo justo para que quepan dentro del margen */
+.b .pie-marca::before, .c .pie-marca::before { inset: -0.21em -0.31em -0.39em; --t: max(1px, 0.018em); --b: max(4px, 0.09em); }
+.b .pie-marca-caja, .c .pie-marca-caja { padding: calc(48px + 0.27em) calc(var(--margen) + 0.31em) 0.45em; }
+
+/* --- 4. C · LAS MARCAS ENTRAN CON LA FIRMA --- */
+/* Parten abiertas en las esquinas de la caja y llegan a su lugar cuando sube la última letra. Al encenderse la luz se
+   cierran sobre el nombre y se aclaran al gris medio, como el logo de la barra al pasar el mouse */
+.c .pie-marca::before { inset: -0.42em calc(var(--margen) * -1 - 0.31em + 4px) -0.6em; opacity: 0; transition: inset 1100ms var(--ease) 120ms, opacity 400ms linear, color 400ms linear; }
+.c.entra .pie-marca::before { inset: -0.21em -0.31em -0.39em; opacity: 1; }
+.c.entra .pie-marca.alumbrada::before { inset: -0.13em -0.23em -0.31em; color: var(--gris-medio); transition-duration: 460ms, 400ms, 400ms; transition-delay: 0s; }
+.repetir { margin-left: auto; }
+/* Para repetir la entrada, todo vuelve a su punto de partida sin transición */
+.pie.reinicio .l, .pie.reinicio .pie-marca::before { transition: none; }
+
+@media (prefers-reduced-motion: reduce) { .pie-marca .l { translate: 0 0; transition: none; } .c .pie-marca::before { transition: none; } }
+
+
+/* --- BARRA DE ELEGIDAS --- */
+.barra { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; z-index: 9; display: flex; gap: 12px; align-items: center; background: var(--blanco); color: var(--negro); border-radius: 999px; padding: 8px 8px 8px 18px; font: 400 13px var(--mono); max-width: calc(100% - 32px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
+.barra span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.copiar { font: 500 12px var(--mono); background: var(--negro); color: var(--blanco); border-radius: 999px; padding: 8px 14px; flex: none; }
+</style>
+
+<header class="cab">
+    <span class="rot">Marca · Logo · Firma del footer · 3 nov 2026</span>
+    <h1>La firma entre marcas</h1>
+    <p>La firma ya va de margen a margen, así que hay que sacar espacio para las marcas de algún lado. Hay tres caminos: dejarlas en el margen, achicar la firma para que quepan las marcas del logo, o hacer eso mismo y que las marcas entren junto con las letras. En las tres siguen igual la luz y el punto que viaja; acá no se muestran para que se vean bien las marcas.</p>
+</header>
+<main id="opciones"></main>
+<div class="barra" id="barra" hidden><span id="lista"></span><button class="copiar" id="copiar" type="button">Copiar</button></div>
+
+<script>
+/* =======================================================
+   FIRMA DEL FOOTER · OPCIONES
+   ======================================================= */
+(function () {
+    /* --- 1. LAS TRES OPCIONES --- */
+    const opciones = [
+        { n: '01', c: 'a', nom: 'En el margen', p: 'La firma conserva su tamaño y las marcas, finas y siempre de 14 px, van en el margen, como las de un pliego que se corta al borde. Es la que menos cambia el footer, pero las marcas quedan chicas al lado de letras de 250 px y se leen como marco de la página más que como el logo.' },
+        { n: '02', c: 'b', nom: 'El logo a todo el ancho', rec: true, p: 'El logo tal cual, solo que más grande: las marcas mantienen las proporciones de la barra y la firma se achica cerca de un 10 % para que entren en el margen. La firma del footer pasa a ser el logo, sin una versión aparte. Mi recomendación.' },
+        { n: '03', c: 'c', nom: 'Las marcas entran con la firma', repetir: true, p: 'Es la 02 con movimiento. Las marcas parten abiertas en las esquinas y se cierran a su lugar mientras suben las letras. Cuando se enciende la luz se cierran sobre el nombre y se aclaran, igual que el logo de la barra al pasar el mouse. Pasa el mouse por la firma o repite la entrada.' }
+    ];
+    const letras = 'agustín.design'.split('').map((x, k) => `<span class="l${x === '.' ? ' punto' : ''}" style="--k:${k}">${x}</span>`).join('');
+    const raiz = document.getElementById('opciones');
+    opciones.forEach(o => {
+        const s = document.createElement('section');
+        s.className = 'op'; s.dataset.n = o.n;
+        s.innerHTML = `
+            <div class="op-top"><span class="num">${o.n}</span><span class="nom">${o.nom}</span>${o.rec ? '<span class="rec">Recomendada</span>' : ''}${o.repetir ? '<button class="chip repetir" type="button">Repetir la entrada</button>' : ''}<button class="chip mg" type="button" aria-pressed="false">Me gusta</button></div>
+            <footer class="pie ${o.c}">
+                <div class="pie-marca-caja"><div class="pie-marca" aria-hidden="true">${letras}</div></div>
+                <div class="pie-fila pie-links"><span>Trabajo</span><span>Sobre mí</span><span>Contacto</span><span class="red">LinkedIn ↗</span><span class="red">Instagram ↗</span><span class="red">Behance ↗</span><span class="arriba">Arriba</span></div>
+                <div class="pie-fila pie-legal"><span>© 2026 Agustín Avendaño</span><span>Hecho a mano · HTML, CSS y JS</span><span>Santiago <b>16:30</b></span></div>
+            </footer>
+            <p class="porque">${o.p}</p>`;
+        raiz.append(s);
+    });
+
+    /* --- 2. CALCE --- */
+    /* Como en el home: la firma se mide a 100 px y se escala al ancho útil. En la 02 y la 03 el ancho útil descuenta
+       las marcas (0,31 em por lado), así que se resuelve en una sola cuenta */
+    const pies = [...document.querySelectorAll('.pie')];
+    const calzar = () => pies.forEach(p => {
+        const caja = p.querySelector('.pie-marca-caja'), l = caja.querySelectorAll('.l');
+        const m = parseFloat(getComputedStyle(p.querySelector('.pie-fila')).paddingLeft);
+        caja.style.fontSize = '100px';
+        const total = l[l.length - 1].getBoundingClientRect().right - l[0].getBoundingClientRect().left;
+        const extra = p.classList.contains('a') ? 0 : 62;
+        caja.style.fontSize = (100 * (caja.clientWidth - 2 * m) / (total + extra)) + 'px';
+    });
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(calzar);
+    window.addEventListener('load', calzar);
+    let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(calzar, 80); });
+
+    /* --- 3. ENTRADA Y LUZ --- */
+    /* Cada footer entra al aparecer en pantalla; en la 03 la luz se simula al pasar el mouse o el dedo por la firma */
+    const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('entra', e.isIntersecting)), { threshold: 0.3 });
+    pies.forEach(p => io.observe(p));
+    document.querySelectorAll('.c .pie-marca').forEach(m => {
+        m.parentElement.addEventListener('pointerenter', () => m.classList.add('alumbrada'));
+        m.parentElement.addEventListener('pointerleave', () => m.classList.remove('alumbrada'));
+    });
+    document.querySelector('.repetir').addEventListener('click', e => {
+        const p = e.currentTarget.closest('.op').querySelector('.pie');
+        p.classList.add('reinicio'); p.classList.remove('entra'); void p.offsetWidth;
+        p.classList.remove('reinicio');
+        requestAnimationFrame(() => requestAnimationFrame(() => p.classList.add('entra')));
+    });
+
+    /* --- 4. ELEGIDAS --- */
+    const CLAVE = 'firma-pie-elegidas';
+    let elegidas = [];
+    try { elegidas = JSON.parse(localStorage.getItem(CLAVE)) || []; } catch (e) { elegidas = []; }
+    const barra = document.getElementById('barra'), lista = document.getElementById('lista');
+    const pintar = () => {
+        document.querySelectorAll('.op').forEach(s => {
+            const si = elegidas.includes(s.dataset.n);
+            s.classList.toggle('elegida', si);
+            s.querySelector('.mg').setAttribute('aria-pressed', si);
+        });
+        elegidas.sort();
+        barra.hidden = !elegidas.length;
+        lista.textContent = `Me gusta: ${elegidas.join(', ')}`;
+        try { localStorage.setItem(CLAVE, JSON.stringify(elegidas)); } catch (e) {}
+    };
+    raiz.addEventListener('click', e => {
+        const b = e.target.closest('.mg');
+        if (!b) return;
+        const n = b.closest('.op').dataset.n;
+        elegidas = elegidas.includes(n) ? elegidas.filter(x => x !== n) : [...elegidas, n];
+        pintar();
+    });
+    document.getElementById('copiar').addEventListener('click', e => {
+        const btn = e.currentTarget, ok = () => { btn.textContent = 'Copiado'; setTimeout(() => { btn.textContent = 'Copiar'; }, 1400); };
+        const texto = `Firma del footer, me gusta: ${elegidas.join(', ')}`;
+        try { navigator.clipboard.writeText(texto).then(ok, () => getSelection().selectAllChildren(lista)); } catch (err) { getSelection().selectAllChildren(lista); }
+    });
+    pintar();
+})();
+/* =======================================================
+   FIN FIRMA DEL FOOTER
+   ======================================================= */
+</script>
+</body>
+</html>
