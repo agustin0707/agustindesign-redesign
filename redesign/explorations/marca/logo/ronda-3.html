@@ -1,0 +1,365 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body><title>Logo agustín.design · Ronda 3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&family=Inter:ital,wght@1,200&display=swap" rel="stylesheet">
+<style>
+/* Layout: hoja de exploración con fichas numeradas por familia; cada ficha muestra el logo grande, en la barra, invertido y como favicon */
+:root {
+    --bg: #F5F5F3; --fg: #0B0B0B; --mute: #8E8E8B; --line: #D9D9D6; --stage: #ECECE9; --soft: #5C5C59;
+    --op-bg: #0B0B0B; --op-fg: #F5F5F3; --op-stage: #151514;
+    --sel: #D9D9D6; --grilla: rgba(245, 245, 243, 0.22); --op-sel: #3A3A38; --op-grilla: rgba(11, 11, 11, 0.16);
+    --sans: 'Geist', ui-sans-serif, system-ui, sans-serif; --mono: 'Geist Mono', ui-monospace, Menlo, monospace; --firma: 'Inter', 'Helvetica Neue', sans-serif;
+    --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0B0B0B; --fg: #F5F5F3; --mute: #8E8E8B; --line: #262625; --stage: #151514; --soft: #A3A3A0; --op-bg: #F5F5F3; --op-fg: #0B0B0B; --op-stage: #ECECE9; --sel: #3A3A38; --grilla: rgba(11, 11, 11, 0.16); --op-sel: #D9D9D6; --op-grilla: rgba(245, 245, 243, 0.22); color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0B0B0B; --fg: #F5F5F3; --mute: #8E8E8B; --line: #262625; --stage: #151514; --soft: #A3A3A0; --op-bg: #F5F5F3; --op-fg: #0B0B0B; --op-stage: #ECECE9; --sel: #3A3A38; --grilla: rgba(11, 11, 11, 0.16); --op-sel: #D9D9D6; --op-grilla: rgba(245, 245, 243, 0.22); color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+.hoja { max-width: 1440px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 140px; }
+@media (min-width: 769px) { .hoja { padding-left: max(5vw, env(safe-area-inset-left, 0px)); padding-right: max(5vw, env(safe-area-inset-right, 0px)); } }
+[hidden] { display: none !important; }
+.rot { font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em; color: var(--mute); }
+
+/* --- CABECERA --- */
+.cab { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.cab h1 { margin: 8px 0 0; font-weight: 500; font-size: clamp(36px, 5vw, 64px); letter-spacing: -0.05em; line-height: 1; text-wrap: balance; }
+.cab p { margin: 14px 0 0; max-width: 58ch; color: var(--soft); font-size: 16px; }
+@media (max-width: 600px) { .cab { grid-template-columns: 1fr; } .tema { justify-self: start; } }
+.tema { font: 400 12px var(--mono); color: var(--fg); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+.tema:focus-visible, .mg:focus-visible, .copiar:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+
+/* --- FAMILIAS --- */
+.fam { margin-top: 56px; }
+.fam-cab { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; padding-bottom: 14px; }
+.fam-cab h2 { margin: 0; font-weight: 500; font-size: 24px; letter-spacing: -0.04em; }
+.fam-cab p { margin: 0; color: var(--soft); max-width: 70ch; }
+.grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 16px; }
+
+/* --- FICHA --- */
+.ficha { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; transition: border-color 160ms var(--ease); }
+.ficha.elegida { border-color: var(--fg); }
+.ficha-top { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+.ficha-top .num { font: 500 12px var(--mono); }
+.ficha-top .nom { font-weight: 500; letter-spacing: -0.02em; flex: 1; min-width: 0; }
+.mg { font: 400 12px var(--mono); color: var(--soft); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; transition: background 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease); }
+.mg::before { content: '☆'; font-size: 13px; }
+.elegida .mg { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.elegida .mg::before { content: '★'; }
+@media (hover: hover) { .mg:hover { border-color: var(--fg); color: var(--fg); } .elegida .mg:hover { color: var(--bg); } .tema:hover { border-color: var(--fg); } }
+
+.escena { position: relative; aspect-ratio: 16 / 8; background: var(--stage); display: grid; place-items: center; overflow: hidden; }
+[data-fit] { min-width: 0; min-height: 0; }
+.escena .caja { width: 72%; height: 46%; display: grid; place-items: center; }
+
+/* Fila de usos: la barra de navegación a todo el ancho; abajo, la versión invertida y el favicon a 32 y 16 px */
+.usos { display: grid; grid-template-columns: 1fr auto; border-top: 1px solid var(--line); }
+.usos > div { min-width: 0; padding: 12px 14px; display: flex; align-items: center; }
+.nav { grid-column: 1 / -1; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); }
+.nav .caja { flex: 1 1 auto; max-width: 240px; height: 19px; display: flex; align-items: center; }
+.nav .links { font: 400 11px var(--mono); color: var(--mute); white-space: nowrap; }
+.inv { background: var(--op-stage); justify-content: center; --fg: var(--op-fg); --bg: var(--op-bg); --stage: var(--op-stage); --sel: var(--op-sel); --grilla: var(--op-grilla); color: var(--fg); }
+.inv .caja { width: 160px; max-width: 100%; height: 30px; display: grid; place-items: center; }
+.favs { gap: 10px; border-left: 1px solid var(--line); }
+.fav { background: #0B0B0B; --fg: #F5F5F3; --bg: #0B0B0B; --sel: #3A3A38; --grilla: rgba(11, 11, 11, 0.16); color: var(--fg); display: grid; place-items: center; overflow: hidden; }
+.fav.f32 { width: 32px; height: 32px; border-radius: 7px; }
+.fav.f16 { width: 16px; height: 16px; border-radius: 4px; }
+.fav .caja { width: 74%; height: 74%; display: grid; place-items: center; }
+.porque { margin: 0; padding: 12px 14px 14px; border-top: 1px solid var(--line); color: var(--soft); font-size: 14px; text-wrap: pretty; }
+@media (max-width: 480px) { .nav .links { display: none; } }
+
+
+/* =======================================================
+   LOGOS
+   ======================================================= */
+/* Todos se escriben en em: la misma pieza sirve a cualquier tamaño y JS solo ajusta el font-size para calzar la caja */
+.m { position: relative; font-family: var(--sans); font-weight: 500; letter-spacing: -0.055em; line-height: 1; white-space: nowrap; color: var(--fg); display: inline-flex; align-items: baseline; }
+.m .g { color: var(--mute); }
+.m .sq { display: inline-block; width: 0.16em; height: 0.16em; background: var(--mute); margin: 0 0.025em 0 0.035em; }
+.m svg { height: 1em; width: auto; display: block; fill: var(--fg); overflow: visible; }
+.m svg .gr { fill: var(--mute); }
+
+/* --- 1. SELECCIÓN --- */
+/* "design" queda seleccionado como texto en un editor, con el cursor al final */
+.m .sel { background: var(--sel); color: var(--fg); padding: 0.06em 0.03em 0.12em; margin: -0.06em 0 -0.12em 0.2em; }
+.m .caret { display: inline-block; align-self: center; width: 0.045em; height: 1.04em; background: var(--fg); margin-left: 0.03em; animation: parpadeo 1.1s steps(1) infinite; }
+@keyframes parpadeo { 50% { opacity: 0; } }
+
+/* --- 2. ENLACE --- */
+/* Un solo subrayado de enlace corre bajo todo el nombre; se corta en la g (skip-ink) y termina en la flecha */
+.m .ln { text-decoration: underline; text-decoration-color: var(--mute); text-decoration-thickness: 0.045em; text-underline-offset: 0.13em; text-decoration-skip-ink: auto; }
+.m .fl { font-weight: 400; font-size: 0.42em; color: var(--mute); align-self: flex-start; margin-left: 0.12em; letter-spacing: 0; }
+
+/* --- 3. PUNTERO --- */
+/* El acento de la í es la flecha del mouse */
+.m .ii { position: relative; }
+.m .ii svg { position: absolute; left: 50%; top: 0.01em; height: 0.24em; translate: -30% 0; fill: var(--mute); }
+
+/* --- 4. PLANO Y CONSTRUIDO --- */
+/* "design" en contorno, como plano; "agustín" lleno, como lo construido */
+.m .hueco { color: transparent; -webkit-text-stroke: 0.016em var(--fg); }
+
+/* --- 5. CAPAS --- */
+/* Una copia en contorno corrida detrás, como las capas del hero */
+.m .capa { position: relative; isolation: isolate; }
+.m .capa::before { content: attr(data-t); position: absolute; left: 0.045em; top: 0.045em; z-index: -1; color: transparent; -webkit-text-stroke: 0.014em var(--mute); }
+
+/* --- 7. FRACCIÓN --- */
+.m .fr { display: inline-flex; height: 1em; align-items: flex-start; letter-spacing: -0.04em; }
+.m .fr .num1 { font-size: 0.6em; line-height: 0.95; }
+.m .fr .num2 { font-size: 0.6em; line-height: 0.95; align-self: flex-end; }
+.m .fr .bar { width: 0.05em; height: 1em; background: var(--mute); rotate: 24deg; margin: 0 0.1em; }
+
+/* --- 8. SELLO --- */
+.m .tile { display: inline-flex; align-items: flex-end; box-sizing: border-box; width: 1em; height: 1em; padding: 0.09em 0.1em; background: var(--fg); color: var(--bg); }
+.m .tile span { font-size: 0.5em; letter-spacing: -0.12em; line-height: 0.8; }
+
+/* --- 9. CAJA DE SELECCIÓN --- */
+/* El nombre seleccionado en un editor de diseño: marco, cuatro tiradores y la medida debajo */
+.m .bbox { position: relative; padding: 0.07em 0.12em 0.2em; outline: 0.014em solid var(--mute); }
+.m .bbox > i { position: absolute; width: 0.08em; height: 0.08em; background: var(--bg); border: 0.014em solid var(--mute); box-sizing: border-box; }
+.m .bbox > i:nth-child(1) { top: -0.04em; left: -0.04em; }
+.m .bbox > i:nth-child(2) { top: -0.04em; right: -0.04em; }
+.m .bbox > i:nth-child(3) { bottom: -0.04em; left: -0.04em; }
+.m .bbox > i:nth-child(4) { bottom: -0.04em; right: -0.04em; }
+.m .bbox .dim { position: absolute; left: 50%; top: calc(100% + 0.12em); translate: -50% 0; font: 400 0.13em/1 var(--mono); letter-spacing: 0; padding: 0.3em 0.6em; border-radius: 0.3em; background: var(--mute); color: var(--bg); }
+
+/* --- 10. REGISTRO --- */
+/* La marca de registro de imprenta en lugar del punto */
+.m .reg { position: relative; display: inline-block; width: 0.3em; height: 0.3em; margin: 0 0.04em 0 0.07em; align-self: center; translate: 0 0.12em; background: linear-gradient(var(--mute), var(--mute)) center / 0.018em 100% no-repeat, linear-gradient(var(--mute), var(--mute)) center / 100% 0.018em no-repeat; }
+.m .reg::before { content: ''; position: absolute; inset: 0.06em; border: 0.018em solid var(--mute); border-radius: 50%; }
+.m .reg.solo { width: 1em; height: 1em; margin: 0; translate: none; background-size: 0.06em 100%, 100% 0.06em; }
+.m .reg.solo::before { inset: 0.2em; border-width: 0.06em; }
+
+/* --- 11. MARCAS DE CORTE --- */
+.m .crop { position: relative; padding: 0.12em 0.22em 0.3em; }
+.m .crop i { position: absolute; width: 0.12em; height: 0.12em; border: 0 solid var(--mute); }
+.m .crop i:nth-child(1) { top: 0; left: 0; border-width: 0.018em 0 0 0.018em; }
+.m .crop i:nth-child(2) { top: 0; right: 0; border-width: 0.018em 0.018em 0 0; }
+.m .crop i:nth-child(3) { bottom: 0; left: 0; border-width: 0 0 0.018em 0.018em; }
+.m .crop i:nth-child(4) { bottom: 0; right: 0; border-width: 0 0.018em 0.018em 0; }
+.m .crop.mono-a { padding: 0.06em 0.3em 0.22em; }
+.m .crop.mono-a i { width: 0.2em; height: 0.2em; border-width: 0; }
+.m .crop.mono-a i:nth-child(1) { border-width: 0.04em 0 0 0.04em; } .m .crop.mono-a i:nth-child(2) { border-width: 0.04em 0.04em 0 0; }
+.m .crop.mono-a i:nth-child(3) { border-width: 0 0 0.04em 0.04em; } .m .crop.mono-a i:nth-child(4) { border-width: 0 0.04em 0.04em 0; }
+
+/* --- 12. MEDIANIL --- */
+/* El espacio entre las dos palabras se acota como en una especificación: 24, el medianil de la grilla */
+.m .gut { position: relative; display: inline-block; width: 0.5em; height: 0.5em; }
+.m .gut::before { content: ''; position: absolute; left: 0.06em; right: 0.06em; top: 0.28em; height: 0.1em; border: 0.014em solid var(--mute); border-top: 0; border-bottom: 0; }
+.m .gut::after { content: ''; position: absolute; left: 0.06em; right: 0.06em; top: 0.325em; border-top: 0.014em solid var(--mute); }
+.m .gut b { position: absolute; left: 50%; top: 0.08em; translate: -50% 0; font: 400 0.13em/1 var(--mono); color: var(--mute); letter-spacing: 0; }
+
+/* --- 13. LÍNEA BASE --- */
+/* El nombre apoyado en su línea base, que sigue más allá y termina en el cuadrado */
+.m .base { text-decoration: underline; text-decoration-color: var(--mute); text-decoration-thickness: 0.012em; text-underline-offset: 0; text-decoration-skip-ink: none; }
+.m .base-fin { display: inline-block; width: 0.55em; height: 0.012em; background: var(--mute); }
+.m .base-fin + .sq { margin-left: 0; }
+
+/* --- 14. FICHA DE COLOR --- */
+.m .chip { display: inline-flex; flex-direction: column; box-sizing: border-box; width: 1.5em; height: 2em; background: var(--fg); color: var(--bg); padding: 0.07em; border-radius: 0.03em; }
+.m .chip .muestra { flex: 1; background: var(--bg); }
+.m .chip .pie { padding: 0.08em 0.02em 0.02em; font-size: 0.13em; letter-spacing: -0.04em; line-height: 1.1; }
+.m .chip .pie small { display: block; font: 400 0.8em var(--mono); letter-spacing: 0; color: var(--mute); margin-top: 0.3em; }
+
+/* --- 15. GRILLA --- */
+/* Un cuadrado con las 12 columnas del sitio; el nombre parte en la primera */
+.m .grid { display: inline-flex; align-items: flex-end; box-sizing: border-box; width: 2em; height: 2em; padding: 0.12em 0.1em; background-color: var(--fg); color: var(--bg); background-image: linear-gradient(90deg, var(--grilla) 1px, transparent 1px); background-size: calc(100% / 12) 100%; }
+.m .grid span { font-size: 0.3em; line-height: 0.92; letter-spacing: -0.05em; white-space: normal; }
+.m .grid.chica { width: 1em; height: 1em; padding: 0.08em; background-size: calc(100% / 6) 100%; }
+.m .grid.chica span { font-size: 0.6em; }
+
+@media (prefers-reduced-motion: reduce) { .m .caret { animation: none; } }
+
+/* =======================================================
+   RONDA 3 · AJUSTES Y CRUCES
+   ======================================================= */
+/* --- 1. ENLACE FINO --- */
+/* Subrayado más delgado y más cerca de la línea base; la flecha se alinea con la altura de la x */
+.m .ln.fino { text-decoration-thickness: 0.032em; text-underline-offset: 0.1em; }
+.m .fl.alta { font-size: 0.36em; align-self: flex-start; margin: 0.42em 0 0 0.1em; }
+
+/* --- 2. ENLACE QUE SE DIBUJA --- */
+/* El subrayado es un fondo que crece desde la izquierda al pasar el mouse por el escenario */
+.m .dib { background: linear-gradient(var(--mute), var(--mute)) 0 calc(100% - 0.02em) / 100% 0.032em no-repeat; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+
+/* --- 3. PUNTERO --- */
+.m .ii.p2 svg { top: 0; height: 0.25em; translate: -26% 0; fill: var(--fg); }
+.m .ii.p3 svg { top: 0.005em; height: 0.24em; translate: -30% 0; fill: var(--mute); }
+
+/* --- 4. CORTE JUSTO --- */
+/* Marcas más cortas y separadas del nombre, como en un pliego real: no tocan la caja */
+.m .crop.justo { padding: 0.16em 0.26em 0.34em; }
+.m .crop.justo i { width: 0.09em; height: 0.09em; }
+.m .crop.justo i:nth-child(1) { top: 0; left: 0; translate: -0.05em -0.05em; }
+.m .crop.justo i:nth-child(2) { top: 0; right: 0; translate: 0.05em -0.05em; }
+.m .crop.justo i:nth-child(3) { bottom: 0; left: 0; translate: -0.05em 0.05em; }
+.m .crop.justo i:nth-child(4) { bottom: 0; right: 0; translate: 0.05em 0.05em; }
+
+/* --- 5. MOVIMIENTO AL PASAR EL MOUSE --- */
+/* Solo en el escenario de cada ficha: el puntero da un salto, las marcas se cierran y el subrayado se dibuja */
+.escena .m .ii svg, .escena .m .crop i { transition: translate 200ms var(--ease); }
+.escena .m .dib { transition: background-size 320ms var(--ease); }
+.escena .rot-mov { position: absolute; left: 14px; bottom: 12px; font: 400 11px var(--mono); color: var(--mute); }
+@media (hover: hover) {
+    .escena:hover .m .ii svg { translate: -14% -0.05em; }
+    .escena:hover .m .crop i:nth-child(1) { translate: 0.03em 0.03em; }
+    .escena:hover .m .crop i:nth-child(2) { translate: -0.03em 0.03em; }
+    .escena:hover .m .crop i:nth-child(3) { translate: 0.03em -0.03em; }
+    .escena:hover .m .crop i:nth-child(4) { translate: -0.03em -0.03em; }
+    .escena .m .dib { background-size: 0 0.032em; }
+    .escena:hover .m .dib { background-size: 100% 0.032em; }
+}
+@media (prefers-reduced-motion: reduce) { .escena .m .ii svg, .escena .m .crop i, .escena .m .dib { transition: none; } }
+
+
+/* --- BARRA DE ELEGIDAS --- */
+.barra { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; display: flex; gap: 12px; align-items: center; background: var(--fg); color: var(--bg); border-radius: 999px; padding: 8px 8px 8px 18px; font: 400 13px var(--mono); max-width: calc(100% - 32px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); }
+.barra span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.copiar { font: 500 12px var(--mono); background: var(--bg); color: var(--fg); border: 0; border-radius: 999px; padding: 8px 14px; cursor: pointer; flex: none; }
+</style>
+
+<main class="hoja">
+    <header class="cab">
+        <div>
+            <span class="rot">Marca · Logo · Ronda 3 · 3 nov 2026</span>
+            <h1>Enlace, puntero y corte</h1>
+            <p>Parte de las tres que marcaste en la ronda 2 (02 Enlace, 03 Puntero y 11 Marcas de corte): primero cada una ajustada en tres pesos, después los cruces. Las que dicen "Pasa el mouse" tienen movimiento en el escenario, como lo tendría el logo en el sitio. El Open Graph A ya quedó en el home.</p>
+        </div>
+        <button class="tema" id="tema" type="button">Ver en oscuro</button>
+    </header>
+    <div id="familias"></div>
+</main>
+<div class="barra" id="barra" hidden><span id="lista"></span><button class="copiar" id="copiar" type="button">Copiar</button></div>
+
+<script>
+/* =======================================================
+   LOGOS · DATOS Y FICHAS
+   ======================================================= */
+(function () {
+    /* --- 1. LAS 12 OPCIONES --- */
+    /* mark: el logo completo · nav: su versión en la barra (si no, el mismo) · iso: lo que cabe en un favicon */
+    const flecha = '<svg viewBox="0 0 13 19" aria-hidden="true"><path d="M0 0v16l4.4-4 3 6.6 2.4-1-3-6.6h6z"/></svg>';
+    const esquinas = '<i></i><i></i><i></i><i></i>';
+    const pun = (c = '') => `agust<span class="ii ${c}">ı${flecha}</span>n`;
+    const isoPun = (c = '') => `<span class="m"><span class="ii ${c}" style="font-size:1.2em">ı${flecha}</span></span>`;
+    const isoCorte = `<span class="m"><span class="crop mono-a">${esquinas}a</span></span>`;
+
+    const familias = [
+        { t: 'Desde la 02 · Enlace', d: 'El logo es un link: subrayado y flecha de salida. Tres grados de presencia.', o: [
+            { n: 'Enlace fino', mark: '<span class="m"><span class="ln fino">agustín.design</span><span class="fl alta">↗</span></span>', iso: '<span class="m"><span class="ln fino">a</span><span class="fl" style="font-size:.5em">↗</span></span>', p: 'La 02 afinada: subrayado más delgado y más cerca de las letras, flecha a la altura de la x. Se lee primero como nombre y después como link.' },
+            { n: 'Enlace en design', mark: '<span class="m">agustín.<span class="ln fino">design</span><span class="fl alta">↗</span></span>', iso: '<span class="m"><span class="ln fino">a</span><span class="fl" style="font-size:.5em">↗</span></span>', p: 'Solo "design" es el enlace: tu nombre queda limpio y el oficio es lo que se cliquea.' },
+            { n: 'Enlace que se dibuja', mark: '<span class="m"><span class="dib">agustín.design</span><span class="fl alta">↗</span></span>', iso: '<span class="m"><span class="dib">a</span><span class="fl" style="font-size:.5em">↗</span></span>', p: 'En reposo, solo el nombre y la flecha; al pasar el mouse, el subrayado se dibuja como los links del sitio. Pasa el mouse por el escenario.', mov: true }
+        ] },
+        { t: 'Desde la 03 · Puntero', d: 'El acento de la í es la flecha del mouse. Tres pesos para el mismo detalle.', o: [
+            { n: 'Puntero gris', mark: `<span class="m">${pun('p3')}<span class="g">.</span>design</span>`, iso: isoPun('p3'), p: 'La 03 corregida: la flecha más chica y sentada donde iría el acento, sin tocar la i. En gris, como el punto.', mov: true },
+            { n: 'Puntero lleno', mark: `<span class="m">${pun('p2')}<span class="g">.</span>design</span>`, iso: isoPun('p2'), p: 'La flecha del color del texto: deja de ser un guiño y pasa a ser parte de la letra. Más visible en la barra y en el favicon.', mov: true },
+            { n: 'Puntero sin punto', mark: `<span class="m">${pun('p3')}&nbsp;design</span>`, iso: isoPun('p3'), p: 'Sale el punto y queda un espacio: la flecha es el único detalle del nombre y se lleva toda la atención.', mov: true }
+        ] },
+        { t: 'Desde la 11 · Marcas de corte', d: 'El nombre como pieza lista para imprimir.', o: [
+            { n: 'Corte justo', mark: `<span class="m"><span class="crop justo">${esquinas}agustín<span class="g">.</span>design</span></span>`, iso: isoCorte, p: 'Marcas más cortas y separadas del nombre, como en un pliego real. Al pasar el mouse se cierran sobre la palabra.', mov: true },
+            { n: 'Corte en la a', mark: `<span class="m"><span class="crop mono-a" style="font-size:1em;padding:.04em .07em .2em;margin:0 0 0 -.07em">${esquinas}a</span>gustín<span class="g">.</span>design</span>`, iso: isoCorte, p: 'Solo la a queda entre marcas, dentro del nombre. El favicon ya viene incluido en el logo.' }
+        ] },
+        { t: 'Cruces', d: 'Las tres que te gustaron, combinadas de a dos y las tres juntas.', o: [
+            { n: 'Puntero y enlace', mark: `<span class="m"><span class="ln fino">${pun('p3')}.design</span><span class="fl alta">↗</span></span>`, iso: isoPun('p3'), p: 'Un link con su puntero encima: el nombre completo describe un clic. El favicon es la í con la flecha.', mov: true },
+            { n: 'Puntero y corte', mark: `<span class="m"><span class="crop justo">${esquinas}${pun('p3')}<span class="g">.</span>design</span></span>`, iso: isoCorte, p: 'Imprenta y pantalla juntas: las marcas del pliego afuera y el mouse adentro. Diseño y construyo, en un logo.', mov: true },
+            { n: 'Corte y enlace', mark: `<span class="m"><span class="crop justo">${esquinas}<span class="ln fino">agustín.design</span><span class="fl alta">↗</span></span></span>`, iso: isoCorte, p: 'La pieza impresa que además es un link. Más cargada; funciona mejor grande que en la barra.', mov: true },
+            { n: 'Los tres', mark: `<span class="m"><span class="crop justo">${esquinas}<span class="ln fino">${pun('p3')}.design</span><span class="fl alta">↗</span></span></span>`, iso: isoPun('p3'), p: 'Marcas, puntero y enlace a la vez, para ver el techo. Sirve como versión extendida (portada de un caso, póster) más que como logo de uso diario.', mov: true }
+        ] }
+    ];
+    const og = [];
+
+    /* --- 2. FICHAS --- */
+    const raiz = document.getElementById('familias');
+    let k = 0;
+    familias.forEach(f => {
+        const s = document.createElement('section');
+        s.className = 'fam';
+        s.innerHTML = `<div class="fam-cab"><h2>${f.t}</h2><p>${f.d}</p></div><div class="grilla"></div>`;
+        f.o.forEach(o => {
+            const n = String(++k).padStart(2, '0');
+            const a = document.createElement('article');
+            a.className = 'ficha'; a.dataset.n = n;
+            a.innerHTML = `
+                <div class="ficha-top"><span class="num">${n}</span><span class="nom">${o.n}</span><button class="mg" type="button" aria-pressed="false">Me gusta</button></div>
+                <div class="escena"><div class="caja" data-fit>${o.mark}</div>${o.mov ? '<span class="rot-mov">Pasa el mouse</span>' : ''}</div>
+                <div class="usos">
+                    <div class="nav"><div class="caja" data-fit="izq">${o.nav || o.mark}</div><span class="links">Works · About · Contact</span></div>
+                    <div class="inv"><div class="caja" data-fit>${o.mark}</div></div>
+                    <div class="favs"><span class="fav f32"><span class="caja" data-fit>${o.iso}</span></span><span class="fav f16"><span class="caja" data-fit>${o.iso}</span></span></div>
+                </div>
+                <p class="porque">${o.p}</p>`;
+            s.querySelector('.grilla').append(a);
+        });
+        raiz.append(s);
+    });
+
+    /* Open Graph: la misma ficha, con la imagen en vez del logo */
+    const ogRaiz = document.getElementById('og');
+    if (ogRaiz) og.forEach(o => {
+        const a = document.createElement('article');
+        a.className = 'ficha og'; a.dataset.n = o.n;
+        a.innerHTML = `<div class="ficha-top"><span class="num">${o.n}</span><span class="nom">${o.nom}</span><button class="mg" type="button" aria-pressed="false">Me gusta</button></div>
+            <div class="escena"><img src="${o.img}" alt="Open Graph ${o.nom}" width="1200" height="630"></div>
+            <p class="porque">${o.p}</p>`;
+        ogRaiz.append(a);
+    });
+
+    /* --- 3. CALCE --- */
+    /* Mide cada logo a 100 px y lo escala para que entre en su caja sin deformarse */
+    const calzar = () => document.querySelectorAll('[data-fit]').forEach(c => {
+        const m = c.firstElementChild;
+        m.style.fontSize = '100px';
+        const r = m.getBoundingClientRect(), w = c.clientWidth, h = c.clientHeight;
+        if (!r.width || !r.height) return;
+        m.style.fontSize = `${Math.min(w / r.width, h / r.height) * 100}px`;
+    });
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(calzar);
+    if (document.fonts) document.fonts.addEventListener('loadingdone', calzar);
+    window.addEventListener('load', calzar);
+    let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(calzar, 80); });
+
+    /* --- 4. ELEGIDAS --- */
+    const CLAVE = 'logo-r3-elegidas';
+    let elegidas = [];
+    try { elegidas = JSON.parse(localStorage.getItem(CLAVE)) || []; } catch (e) { elegidas = []; }
+    const barra = document.getElementById('barra'), lista = document.getElementById('lista');
+    const pintar = () => {
+        document.querySelectorAll('.ficha').forEach(a => {
+            const si = elegidas.includes(a.dataset.n);
+            a.classList.toggle('elegida', si);
+            a.querySelector('.mg').setAttribute('aria-pressed', si);
+        });
+        elegidas.sort();
+        barra.hidden = !elegidas.length;
+        lista.textContent = `Me gustan: ${elegidas.join(', ')}`;
+        try { localStorage.setItem(CLAVE, JSON.stringify(elegidas)); } catch (e) {}
+    };
+    document.querySelector('.hoja').addEventListener('click', e => {
+        const b = e.target.closest('.mg');
+        if (!b) return;
+        const n = b.closest('.ficha').dataset.n;
+        elegidas = elegidas.includes(n) ? elegidas.filter(x => x !== n) : [...elegidas, n];
+        pintar();
+    });
+    document.getElementById('copiar').addEventListener('click', e => {
+        const btn = e.currentTarget, ok = () => { btn.textContent = 'Copiado'; setTimeout(() => { btn.textContent = 'Copiar'; }, 1400); };
+        const texto = `Logo ronda 3, me gustan: ${elegidas.join(', ')}`;
+        try {
+            navigator.clipboard.writeText(texto).then(ok, () => { getSelection().selectAllChildren(lista); });
+        } catch (err) { getSelection().selectAllChildren(lista); }
+    });
+    pintar();
+
+    /* --- 5. TEMA --- */
+    const tema = document.getElementById('tema'), html = document.documentElement;
+    const oscuro = () => html.dataset.theme ? html.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    const rotular = () => { tema.textContent = oscuro() ? 'Ver en claro' : 'Ver en oscuro'; };
+    tema.addEventListener('click', () => { html.dataset.theme = oscuro() ? 'light' : 'dark'; rotular(); });
+    rotular();
+})();
+/* =======================================================
+   FIN LOGOS
+   ======================================================= */
+</script>
+</body></html>
