@@ -193,19 +193,32 @@
     });
 
     /* --- 5. VER CASO --- */
-    /* La pieza viaja y se abre como portada del caso. Solo los casos con página propia (Tap In) viajan: Llegó abre su sitio
-       en otra pestaña y Mend muestra un rótulo hasta que su caso exista */
+    /* La ventana de la portada viaja y se vuelve el hero del caso: View Transitions entre páginas, la pieza se nombra
+       aquí y en el caso (caso-llegada.js). Sin soporte, el home se funde a negro y navega. Mend muestra un rótulo hasta
+       que su caso exista */
+    const viaja = 'onpagereveal' in window;
     covs.forEach(c => {
-        const ver = c.querySelector('a.pt-ver:not([target])'), vistas = c.querySelector('.pt-vistas'), nombre = c.querySelector('h3');
+        const ver = c.querySelector('a.pt-ver:not([target])'), vistas = c.querySelector('.pt-vistas');
         if (!ver) return;
         ver.addEventListener('click', e => {
-            if (!window.abrirCaso) return;
+            if (quieto || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            if (viaja) {
+                document.querySelectorAll('.vt-pieza').forEach(v => v.classList.remove('vt-pieza'));
+                vistas.classList.add('vt-pieza');
+                try { sessionStorage.setItem('caso-desde', c.dataset.id); } catch (err) { /* sin almacenamiento, sin viaje */ }
+                return;
+            }
             e.preventDefault();
-            window.abrirCaso(c.dataset.id, vistas, nombre);
-            if (ver.href) setTimeout(() => { window.location.href = ver.href; }, quieto ? 0 : 950);
+            document.documentElement.classList.add('vt-fundido');
+            setTimeout(() => { window.location.href = ver.href; }, 220);
         });
     });
-    window.addEventListener('pageshow', e => { if (e.persisted && document.querySelector('.caso.abierto')) document.querySelector('.caso-volver').click(); });
+    /* Al volver con atrás, la pieza deja su nombre y el home vuelve a verse */
+    window.addEventListener('pageshow', e => {
+        if (!e.persisted) return;
+        document.querySelectorAll('.vt-pieza').forEach(v => v.classList.remove('vt-pieza'));
+        document.documentElement.classList.remove('vt-fundido');
+    });
 
     /* --- 6. ARCHIVO: HOJA DE CONTACTOS O LISTA --- */
     /* Cada fila con su línea de contexto y su tira de piezas. Con mouse, la tira se recorre siguiendo la posición

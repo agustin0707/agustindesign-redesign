@@ -120,6 +120,39 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 body.bloqueado { position: fixed; left: 0; right: 0; }
 
 /* =======================================================
+   TRANSICIÓN AL CASO (VIEW TRANSITIONS ENTRE PÁGINAS)
+   ======================================================= */
+
+/* --- 1. ACTIVACIÓN --- */
+/* El home y los casos cargan esta hoja: al navegar entre ellos una página se funde en la otra en vez de cortar. Con
+   movimiento reducido se navega sin transición */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+
+/* --- 2. LA PIEZA VIAJA --- */
+/* La ventana de la portada se agranda hasta el hero del caso y se funde en él mientras viaja. Arranca de inmediato y
+   frena largo, sin rebote. Las dos capturas van al ancho de la caja y alineadas arriba (como el sitio que muestran),
+   así el contenido coincide al fundirse; lo que sobra abajo se recorta */
+:root { --vt-viaje: 1000ms; --vt-ease: cubic-bezier(0.4, 0, 0.1, 1); }
+.vt-pieza { view-transition-name: caso-pieza; }
+::view-transition-group(caso-pieza) { animation-duration: var(--vt-viaje); animation-timing-function: var(--vt-ease); }
+::view-transition-image-pair(caso-pieza) { overflow: clip; }
+::view-transition-old(caso-pieza), ::view-transition-new(caso-pieza) { animation-duration: 420ms; animation-delay: 180ms; animation-timing-function: ease-in-out; }
+
+/* --- 3. EL RESTO SE FUNDE --- */
+/* La página de origen se apaga y la de destino aparece debajo de la pieza */
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 420ms; animation-timing-function: ease-in-out; }
+
+/* --- 4. EL HERO ESPERA A LA PIEZA --- */
+/* Mientras la pieza viaja, las entradas del hero del caso quedan en su primer cuadro y parten cuando ya va aterrizando
+   (caso-llegada.js). Es un estado de paso: el !important le gana a cada animación del hero sin tocarlas */
+.vt-espera [data-escena="hero"] * { animation-play-state: paused !important; }
+
+/* --- 5. SIN VIEW TRANSITIONS --- */
+/* Los navegadores sin transición entre páginas funden el home a negro antes de navegar */
+.vt-fundido body > * { opacity: 0; transition: opacity 220ms ease; }
+
+/* =======================================================
    VISTA MÓVIL
    ======================================================= */
 @media (max-width: 768px) {
@@ -135,6 +168,8 @@ body.bloqueado { position: fixed; left: 0; right: 0; }
     .caso-media { height: 62svh; }
     .caso-ficha { grid-template-columns: 1fr 1fr; row-gap: 18px; }
     .caso-intro, .caso-nota { grid-column: 1 / -1; }
+    /* La ventana apaisada de la portada llega a una vertical: las dos capturas llenan la caja, alineadas arriba */
+    ::view-transition-old(caso-pieza), ::view-transition-new(caso-pieza) { height: 100%; object-fit: cover; object-position: 50% 0; }
 }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }

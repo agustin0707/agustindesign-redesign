@@ -127,6 +127,8 @@ html.tp-abajo:has(> body.tp) { background: #6A979D linear-gradient(90deg, #27565
 .tp-hero-pantalla { position: relative; flex: 1; overflow: hidden; background: radial-gradient(70% 60% at 50% 30%, #FFFFFF, #EEEDFE); }
 .tp-hero-pantalla iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; opacity: 0; transition: opacity 400ms; }
 .tp-hero-pantalla.listo iframe { opacity: 1; }
+/* Llegando desde la portada, la ventana trae el sitio: su póster queda debajo hasta que carga el sitio vivo */
+.vt-llega .tp-hero-pantalla { background: url('../works/media/tp-web.jpg') 50% 0 / cover no-repeat; }
 /* Al llenar la pantalla, el pie del sitio se funde con el fondo del resumen: no queda corte horizontal */
 .tp-hero-funde { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; height: 38%; background: linear-gradient(transparent, #FBFAFF 92%); opacity: clamp(0, (var(--h) - 0.55) / 0.4, 1); pointer-events: none; }
 .tp-hero-txt { position: absolute; z-index: 3; left: 50%; top: 13svh; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; translate: -50% 0; opacity: calc(1 - var(--h) * 2.2); transform: translate3d(calc(var(--mx, 0) * -18px), calc(var(--h) * -10svh + var(--my, 0) * -10px), 0); }
@@ -163,6 +165,9 @@ html.tp-abajo:has(> body.tp) { background: #6A979D linear-gradient(90deg, #27565
 .tp-hero.entra .tp-wm-vivo :is([data-letra] > :not(.tp-wm-punto), .tp-wm-punto > rect) { transform-box: fill-box; animation: tpLetra 1000ms var(--ease) both; animation-delay: calc(250ms + var(--l) * 70ms); }
 .tp-hero.entra .tp-hero-mundo { animation: tpDesliza 1700ms cubic-bezier(0.22, 1, 0.36, 1) 700ms both; }
 .tp-hero.entra .tp-hero-pista { animation: tpEntra 900ms var(--ease) 1800ms both; }
+/* Llegando desde la portada del home, la ventana ya viene viajando y el fondo ya está encendido: no se deslizan */
+.vt-llega .tp-hero.entra :is(.tp-hero-mundo, .tp-hero-fondo) { animation: none; }
+.vt-llega .tp-hero.entra .tp-hero-pista { animation-delay: 900ms; }
 @keyframes tpEntra { from { opacity: 0; translate: 0 40px; } }
 @keyframes tpLetra { from { opacity: 0; transform: translateY(70px); } }
 @keyframes tpDesliza { from { opacity: 0; translate: 0 60svh; } 40% { opacity: 1; } }
