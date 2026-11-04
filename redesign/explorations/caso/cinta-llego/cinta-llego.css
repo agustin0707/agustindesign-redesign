@@ -1,0 +1,178 @@
+/* =======================================================
+   CINTA LLEGÓ FARMA · VERSIONES DEL HERO (.ci-)
+   ======================================================= */
+/* Exploración de escritorio sobre el hero elegido: el sitio que programé avanzando como una cinta transportadora.
+   Se apoya en la piel del caso (caso-marco.css y llego.css). Cada versión es una pista de 280svh con su panel fijo;
+   el JS publica --q (la cinta se endereza), --sub (lo secundario se va), --sal (cada línea del título sale) y .entra */
+
+/* --- 1. BASE DE LA EXPLORACIÓN --- */
+.ci { --curva: cubic-bezier(0.65, 0, 0.35, 1); --sale: cubic-bezier(0.16, 1, 0.3, 1); --fy: 112px; --veladura: 11, 52, 57; }
+.ci-h { display: none; position: relative; height: 280svh; color: #FFFFFF; }
+.ci-h.activo { display: block; }
+.ci-fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: var(--lf-oscuro); }
+.ci-fijo > * { position: absolute; }
+.ci .barra { transition: color 300ms; }
+.ci-tibio { position: fixed; inset: 0; z-index: -1; width: 100vw; height: 100vh; border: 0; visibility: hidden; pointer-events: none; }
+
+/* --- 2. LA CINTA: PLANO, COLUMNAS Y CARTAS --- */
+/* El plano se inclina en 3D; cada columna se mueve con un transform y las cartas solo se posicionan */
+.ci-escena { inset: 0; z-index: 1; perspective: 2000px; perspective-origin: 50% 40%; }
+.ci-plano { position: absolute; left: 50%; top: 50%; display: flex; gap: var(--g, 28px); transform-style: preserve-3d; }
+.ci-col { position: relative; flex: none; width: var(--cw, 432px); height: 100%; will-change: transform; }
+.ci-carta { position: absolute; left: 0; width: 100%; aspect-ratio: 16 / 10; background: var(--lf-profundo); outline: 1px solid rgba(255, 255, 255, 0.2); }
+.ci-carta img { display: block; width: 100%; height: 100%; }
+.ci-nodo, .ci-rotulo { display: none; }
+/* Al enderezarse, todo lo que no es la carta de Inicio se retira para que aterrice limpia */
+.ci-col:not(:nth-child(2)), .ci-col:nth-child(2) .ci-carta:not(.blanco) { opacity: calc(1 - var(--q, 0) * 1.6); }
+
+/* --- 3. VELADURAS: TINTE, FUNDIDO LATERAL Y CIELO --- */
+/* El tinte multiplica: deja limpia la zona de foco y vuelve turquesa las capturas claras de los bordes, para que
+   ninguna sección blanca le gane al título. El cielo despeja la barra y la franja */
+.ci-tinte, .ci-funde, .ci-cielo { z-index: 2; pointer-events: none; opacity: calc(1 - var(--q, 0)); }
+.ci-tinte { inset: 0; mix-blend-mode: multiply; background: radial-gradient(58% 70% at 68% 42%, #FFFFFF 0%, #CDE6E5 40%, #6FA5A7 100%); }
+.ci-funde { inset: 0; background: linear-gradient(90deg, rgba(var(--veladura), 0.94) 0%, rgba(var(--veladura), 0.8) 30%, rgba(var(--veladura), 0) 60%), linear-gradient(0deg, rgba(var(--veladura), 0.78), rgba(var(--veladura), 0) 34%); }
+.ci-cielo { left: 0; right: 0; top: 0; height: 210px; background: linear-gradient(rgba(var(--veladura), 0.92), rgba(var(--veladura), 0.6) 48%, rgba(var(--veladura), 0)); }
+
+/* --- 4. FRANJA, TÍTULO Y BAJADA --- */
+/* La entrada anima a los hijos y el scroll al contenedor: así ninguna animación con fill retiene la opacidad */
+.ci-franja { z-index: 4; left: var(--margen); right: var(--margen); top: calc(var(--fy) - 30px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); opacity: calc(1 - var(--sub, 0) * 1.4); }
+.ci-franja > * { padding-left: 14px; color: rgba(255, 255, 255, 0.82); opacity: 0; }
+.ci-franja a { justify-self: end; padding: 0; color: #FFFFFF; }
+.ci-franja a i { display: inline-block; font-style: normal; transition: transform 300ms var(--sale); }
+@media (hover: hover) { .ci-franja a:hover i { transform: translate(2px, -2px); } }
+.entra .ci-franja > * { animation: ci-aparece 900ms var(--sale) calc(var(--e) * 1ms) both; }
+.ci-txt { z-index: 4; left: var(--margen); right: var(--margen); bottom: clamp(56px, 10vh, 110px); pointer-events: none; }
+.ci-titulo { display: flex; flex-direction: column; font: 200 min(11vw, 24svh) / 0.86 var(--cs-f); letter-spacing: -0.055em; margin-left: -0.05em; }
+.ci-titulo b { font-weight: 500; }
+/* La línea es la máscara: entra subiendo (translate) y sale subiendo con el scroll (transform), sin fundirse sobre la cinta */
+.ci-linea { display: block; overflow: hidden; padding-bottom: 0.07em; }
+.ci-linea > * { display: inline-block; translate: 0 105%; transform: translateY(calc(var(--sal, 0) * -112%)); }
+.entra .ci-linea > * { animation: ci-sube 1150ms var(--curva) calc(var(--d, 300) * 1ms) both; }
+.ci-escalon { padding-left: 25%; }
+.ci-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ci-sub { margin: 22px 0 0 25%; padding-left: 14px; opacity: calc(1 - var(--sub, 0)); translate: 0 calc(var(--sub, 0) * -16px); }
+.ci-bajada { max-width: 30ch; font: 300 clamp(19px, 1.55vw, 26px) / 1.25 var(--cs-f); letter-spacing: -0.02em; text-wrap: balance; }
+.ci-bajada b { font-weight: 500; }
+.ci-chip { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 7px 12px 7px 14px; border: 1px solid rgba(255, 255, 255, 0.28); }
+.ci-chip i { width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); }
+[data-e] { opacity: 0; }
+.entra [data-e] { animation: ci-aparece 900ms var(--sale) calc(var(--e) * 1ms) both; }
+
+/* --- 5. EL SITIO EN VIVO --- */
+/* La carta aterriza como una ventana bajo la barra (el JS fija su rectángulo) y el iframe del sitio real la
+   reemplaza: corre su propia entrada y no choca con la barra del portafolio */
+.ci-vivo { z-index: 3; outline: 1px solid rgba(255, 255, 255, 0.2); background: var(--lf-profundo); opacity: 0; visibility: hidden; transition: opacity 450ms var(--sale), visibility 0s 450ms; }
+.ci-vivo.en { opacity: 1; visibility: visible; transition: opacity 450ms var(--sale); }
+.ci-vivo iframe { display: block; width: 100%; height: 100%; border: 0; pointer-events: none; }
+.ci-vivo-cab { position: absolute; left: 0; right: 0; bottom: calc(100% + 9px); display: flex; justify-content: space-between; font-size: 11px; color: rgba(255, 255, 255, 0.72); }
+.ci-vivo-cab > span:last-child { display: flex; align-items: center; gap: 8px; color: #FFFFFF; }
+.ci-vivo-cab i { width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); animation: ci-late 1600ms ease-in-out infinite; }
+
+/* =======================================================
+   02 · EL CONTROL DE CALIDAD
+   ======================================================= */
+/* --- 1. LA LÍNEA DE CONTROL, DENTRO DEL PLANO --- */
+/* Cruza las tres columnas un poco sobre las cartas; el haz claro cae hacia las que todavía no pasan */
+.ci-puerta { position: absolute; left: -5%; right: -5%; height: 3px; background: var(--lf-claro); transform: translateZ(2px); pointer-events: none; }
+.ci-puerta::before { content: ''; position: absolute; left: 0; right: 0; top: 3px; height: 180px; background: linear-gradient(rgba(112, 202, 199, 0.34), rgba(112, 202, 199, 0)); }
+.ci-puerta i { position: absolute; top: -7px; width: 16px; height: 16px; background: var(--lf-claro); }
+.ci-puerta i:first-of-type { left: 0; }
+.ci-puerta i:last-of-type { right: 0; }
+.ci-puerta span { position: absolute; left: 28px; bottom: 12px; font-size: 18px; letter-spacing: 0.04em; color: var(--lf-claro); white-space: nowrap; }
+
+/* --- 2. NODO Y RÓTULO DE CADA CARTA --- */
+/* Los nodos de estado del sistema de Llegó: vacío pendiente, lleno validado */
+.ci-control .ci-nodo { display: block; position: absolute; right: 14px; top: 14px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid #FFFFFF; background: rgba(var(--veladura), 0.5); transition: background-color 300ms, border-color 300ms; }
+.ci-control .ci-rotulo { display: block; position: absolute; left: 12px; bottom: 12px; padding: 5px 8px; background: rgba(var(--veladura), 0.88); font-size: 12px; color: #FFFFFF; }
+.ci-control .visto .ci-nodo { background: var(--lf-claro); border-color: var(--lf-claro); }
+.ci-control .ci-carta { transition: outline-color 600ms; }
+.ci-control .ci-carta.pasa { outline: 2px solid var(--lf-claro); transition: none; }
+
+/* --- 3. EL REGISTRO EN PANTALLA --- */
+.ci-registro { z-index: 4; right: var(--margen); top: calc(var(--fy) + 22px); width: 318px; opacity: calc(1 - var(--sub, 0) * 1.4); font-size: 11px; }
+.ci-reg-in { padding: 12px 14px 4px; background: rgba(var(--veladura), 0.74); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.14); }
+.ci-reg-cab { display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); color: rgba(255, 255, 255, 0.6); }
+.ci-reg-cab span:first-child { display: flex; align-items: center; gap: 8px; color: #FFFFFF; }
+.ci-reg-cab i { width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); animation: ci-late 1600ms ease-in-out infinite; }
+.ci-registro ol { min-height: 165px; }
+.ci-registro li { display: grid; grid-template-columns: 62px 1fr auto; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); animation: ci-fila 520ms var(--sale) both; }
+.ci-registro li:last-child { border-bottom: 0; }
+.ci-registro li:nth-child(2) { opacity: 0.74; }
+.ci-registro li:nth-child(3) { opacity: 0.54; }
+.ci-registro li:nth-child(n+4) { opacity: 0.32; }
+.ci-registro time { color: rgba(255, 255, 255, 0.6); }
+.ci-registro b { display: flex; align-items: center; gap: 6px; font-weight: 400; color: var(--lf-claro); }
+.ci-registro b::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+/* =======================================================
+   03 · LA PIEZA: FRENAR Y TOMAR UNA SECCIÓN
+   ======================================================= */
+/* Las columnas conservan el 3D para que la carta tomada se levante hacia la cámara */
+.ci-pieza .ci-col { transform-style: preserve-3d; }
+.ci-pieza .ci-carta { transition: transform 520ms var(--sale), opacity 320ms, outline-color 320ms; }
+.ci-pieza .ci-carta.toma { transform: translateZ(90px); outline: 2px solid var(--lf-claro); }
+.ci-pieza .frena .ci-carta:not(.toma) { opacity: 0.36; }
+.ci-pista { z-index: 4; right: var(--margen); bottom: clamp(56px, 10vh, 110px); display: flex; align-items: center; gap: 10px; font-size: 11px; color: rgba(255, 255, 255, 0.7); }
+.ci-pista::before { content: ''; width: 18px; height: 18px; border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 50%; }
+.ci-pieza .ci-pista { opacity: calc(1 - var(--sub, 0) * 1.4); }
+.ci-etiqueta { z-index: 6; left: 0; top: 0; display: flex; flex-direction: column; gap: 6px; padding: 11px 13px 10px; background: rgba(var(--veladura), 0.86); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.16); font-size: 11px; pointer-events: none; opacity: 0; transition: opacity 180ms; }
+.ci-etiqueta.en { opacity: 1; }
+.ci-etiqueta > span { display: flex; align-items: baseline; gap: 10px; }
+.ci-etiqueta b { font-weight: 400; color: var(--lf-claro); }
+.ci-etiqueta > span > span { font: 400 22px / 1 var(--cs-f); letter-spacing: -0.025em; text-transform: none; }
+.ci-etiqueta em { font-style: normal; color: rgba(255, 255, 255, 0.6); }
+
+/* =======================================================
+   04 · LA LETRA: LA CINTA DENTRO DE FARMA
+   ======================================================= */
+/* --- 1. LA VENTANA --- */
+/* Una capa blanca en screen con la palabra en negro: fuera de la letra queda blanco y dentro se ve la cinta. Encima,
+   un velo papel en multiply la lleva al #F4F4F4 de la marca */
+.ci-letra .ci-fijo { color: var(--lf-oscuro); }
+.ci-letra .ci-funde, .ci-letra .ci-cielo { display: none; }
+.ci-ventana { inset: 0; z-index: 3; background: #FFFFFF; mix-blend-mode: screen; pointer-events: none; }
+.ci-velo { inset: 0; z-index: 3; background: var(--lf-papel); mix-blend-mode: multiply; pointer-events: none; opacity: calc(1 - var(--z, 0)); }
+.ci-letra.abierta .ci-ventana, .ci-letra.abierta .ci-velo { visibility: hidden; }
+.ci-zoom { position: absolute; inset: 0; }
+.ci-farma { position: absolute; left: var(--margen); bottom: 4.5svh; font: 500 200px / 0.74 var(--cs-f); letter-spacing: -0.06em; color: #000000; white-space: nowrap; }
+.entra .ci-farma { animation: ci-revela 1500ms var(--curva) 450ms both; }
+
+/* --- 2. LA CABECERA SOBRE PAPEL --- */
+.ci-letra .ci-franja { opacity: calc(1 - var(--z, 0) * 3); }
+.ci-letra .ci-franja > * { color: rgba(16, 78, 86, 0.78); }
+.ci-letra .ci-franja a { color: var(--lf-oscuro); }
+.ci-cab { top: auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: end; opacity: calc(1 - var(--z, 0) * 3); }
+.ci-cab .ci-titulo { grid-column: 1 / 3; font-size: min(10vw, 19svh); }
+.ci-cab .ci-sub { grid-column: 3 / 5; margin: 0 0 1.2vw; }
+.ci-letra .ci-chip { border-color: rgba(16, 78, 86, 0.3); }
+.ci-letra .ci-chip i { background: var(--lf-turquesa); }
+
+/* =======================================================
+   LO QUE SIGUE Y SELECTOR DE LA EXPLORACIÓN
+   ======================================================= */
+.ci-sigue { position: relative; z-index: 1; display: grid; align-content: center; gap: 28px; min-height: 100svh; padding: 0 var(--margen); background: var(--lf-papel); color: var(--lf-oscuro); }
+.ci-sigue .mono { color: rgba(16, 78, 86, 0.6); }
+.ci-sigue p { max-width: 26ch; font: 300 clamp(28px, 3vw, 52px) / 1.12 var(--cs-f); letter-spacing: -0.035em; }
+.ci-sigue em { font-style: normal; font-weight: 500; color: var(--lf-turquesa); }
+.ci-dock { position: fixed; z-index: 60; left: 50%; bottom: 10px; translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 10px; width: min(760px, calc(100vw - 32px)); font-family: var(--sans); }
+.ci-dock-idea { position: absolute; bottom: calc(100% + 8px); max-width: 62ch; padding: 9px 14px; background: rgba(10, 10, 10, 0.78); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); color: rgba(255, 255, 255, 0.86); font-size: 12.5px; line-height: 1.45; text-align: center; transition: opacity 200ms; }
+.ci-dock.calla .ci-dock-idea { opacity: 0; pointer-events: none; }
+@media (hover: hover) { .ci-dock:hover .ci-dock-idea { opacity: 1; } }
+.ci-dock-botones { display: flex; gap: 2px; padding: 3px; background: rgba(10, 10, 10, 0.78); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.ci-dock-botones button { display: flex; gap: 7px; align-items: baseline; padding: 8px 12px; color: rgba(255, 255, 255, 0.55); font-size: 12.5px; transition: background-color 200ms, color 200ms; }
+.ci-dock-botones button span { font-family: var(--mono); font-size: 10.5px; }
+.ci-dock-botones button[aria-pressed="true"] { background: #FFFFFF; color: #0A0A0A; }
+@media (hover: hover) { .ci-dock-botones button:hover:not([aria-pressed="true"]) { color: #FFFFFF; } }
+.ci-dock-ayuda { font-family: var(--mono); font-size: 10px; color: rgba(255, 255, 255, 0.5); mix-blend-mode: difference; }
+
+/* =======================================================
+   ANIMACIONES Y MOVIMIENTO REDUCIDO
+   ======================================================= */
+@keyframes ci-sube { from { translate: 0 105%; } to { translate: 0 0; } }
+@keyframes ci-aparece { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
+@keyframes ci-fila { from { opacity: 0; translate: 0 -10px; } }
+@keyframes ci-late { 50% { opacity: 0.3; } }
+@keyframes ci-revela { from { clip-path: inset(100% 0 0 0); translate: 0 6%; } to { clip-path: inset(0 0 0 0); translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .ci *, .ci *::before { animation-duration: 1ms !important; animation-delay: 0ms !important; }
+}
