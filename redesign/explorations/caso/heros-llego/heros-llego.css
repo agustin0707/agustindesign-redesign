@@ -1,0 +1,274 @@
+/* =======================================================
+   HEROS LLEGÓ FARMA · SEIS DIRECCIONES (.hl-)
+   ======================================================= */
+/* Exploración de escritorio. Se apoya en los tokens y la piel del caso (caso-marco.css y llego.css): Manrope, LF Mono,
+   la paleta, el grano y la retícula. Cada hero es una pista de 260svh con su panel fijo; el JS publica --p (scroll),
+   --mx y --my (mouse) y la clase .entra repite la entrada */
+
+/* --- 1. BASE DE LA EXPLORACIÓN --- */
+@property --a { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+@property --b { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+.hl { --curva: cubic-bezier(0.65, 0, 0.35, 1); --sale: cubic-bezier(0.16, 1, 0.3, 1); --fy: 112px; }
+.hl-h { display: none; position: relative; height: 260svh; color: #FFFFFF; }
+.hl-h.activo { display: block; }
+.hl-fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.hl-fijo > * { position: absolute; }
+/* Las marcas en --svg se resuelven desde caso-marco.css (carpeta caso/), por eso van como media/... en el HTML */
+.hl-red-txt, .hl-cen-txt, .hl-ele-txt, .hl-cin-txt, .hl-val-txt { right: var(--margen); }
+.hl .barra { transition: color 300ms; }
+
+/* --- 2. PIEZAS COMUNES: FRANJA, TÍTULO Y BAJADA --- */
+.hl-franja { z-index: 4; left: var(--margen); right: var(--margen); top: calc(var(--fy) - 30px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); opacity: 0; }
+.hl-franja > * { padding-left: 14px; opacity: 0.82; }
+.hl-franja a { justify-self: end; padding: 0; opacity: 1; }
+.hl-franja a i, .hl-port-cab a i { display: inline-block; font-style: normal; transition: transform 300ms var(--sale); }
+@media (hover: hover) { .hl-franja a:hover i, .hl-port-cab a:hover i { transform: translate(2px, -2px); } }
+.entra .hl-franja { animation: hl-aparece 900ms var(--sale) calc(var(--e) * 1ms) both; }
+.hl-titulo { display: flex; flex-direction: column; font: 200 min(11vw, 21svh) / 0.86 var(--cs-f); letter-spacing: -0.055em; margin-left: -0.05em; }
+.hl-titulo b { font-weight: 500; }
+.hl-linea { display: block; overflow: hidden; padding-bottom: 0.07em; }
+.hl-linea > * { display: inline-block; translate: 0 105%; }
+.entra .hl-linea > * { animation: hl-sube 1150ms var(--curva) calc(var(--d, 300) * 1ms) both; }
+.hl-escalon { padding-left: 25%; }
+.hl-bajada { max-width: 30ch; font: 300 clamp(19px, 1.55vw, 26px) / 1.25 var(--cs-f); letter-spacing: -0.02em; text-wrap: balance; }
+.hl-bajada b { font-weight: 500; }
+[data-e] { opacity: 0; }
+.entra [data-e] { animation: hl-aparece 900ms var(--sale) calc(var(--e) * 1ms) both; }
+@keyframes hl-sube { from { translate: 0 105%; } to { translate: 0 0; } }
+@keyframes hl-aparece { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
+@keyframes hl-funde { from { opacity: 0; } to { opacity: 1; } }
+
+/* =======================================================
+   01 · LA RED
+   ======================================================= */
+/* Canvas con la trama, las rutas y los paquetes; el isotipo real (SVG) se funde sobre los cinco nodos dibujados */
+.hl-red .hl-fijo { background: var(--lf-negro); }
+.hl-red-fondo { inset: 0; background: radial-gradient(55% 70% at 70% 50%, rgba(23, 129, 129, 0.5), rgba(23, 129, 129, 0) 70%), radial-gradient(40% 50% at 8% 100%, rgba(73, 194, 191, 0.22), rgba(73, 194, 191, 0) 70%), linear-gradient(160deg, var(--lf-profundo), var(--lf-negro) 70%); }
+.hl-red-lienzo { inset: 0; width: 100%; height: 100%; }
+.hl-red-iso { left: var(--ix); top: var(--iy); width: var(--is); color: #FFFFFF; transform: scale(var(--z, 1)); opacity: 0; transition: opacity 900ms var(--curva); }
+.hl-red.forma .hl-red-iso { opacity: 1; }
+.hl-red-txt { z-index: 3; left: var(--margen); bottom: clamp(56px, 10vh, 110px); translate: 0 calc(var(--p, 0) * -14vh); opacity: calc(1 - var(--p, 0) * 2.2); }
+.hl-red-txt .hl-bajada { margin: 24px 0 0 25%; padding-left: 14px; }
+.hl-red-leyenda { z-index: 3; right: var(--margen); bottom: clamp(56px, 10vh, 110px); display: flex; gap: 22px; color: rgba(255, 255, 255, 0.6); }
+.entra .hl-red-leyenda { animation-name: hl-funde; }
+.hl-red-leyenda span { display: inline-flex; align-items: center; gap: 8px; }
+.hl-red-leyenda i { width: 8px; height: 8px; border-radius: 50%; border: 1px solid currentColor; }
+.hl-red-leyenda i.lleno { background: #FFFFFF; border-color: #FFFFFF; }
+.hl-red-leyenda i.ruta { width: 18px; height: 1px; border: 0; border-radius: 0; background: var(--lf-claro); }
+.hl-red-velo { inset: 0; z-index: 2; background: var(--lf-turquesa); opacity: clamp(0, (var(--p, 0) - 0.62) * 3, 1); pointer-events: none; }
+
+/* =======================================================
+   02 · PORTADA
+   ======================================================= */
+/* Cuatro módulos y tres franjas horizontales (a 15, 64 y 88 % del alto). El SVG dibuja cada tramo con su corte */
+.hl-port { --m: var(--margen); --cw: calc((100vw - var(--m) * 2) / 4); --y1: 15svh; --y2: 64svh; --y3: 88svh; color: var(--lf-oscuro); }
+.hl-port .hl-fijo { background: var(--lf-papel); cursor: crosshair; }
+.hl-port-reticula { inset: 0; width: 100%; height: 100%; }
+.hl-port-reticula line { stroke: rgba(16, 78, 86, 0.2); stroke-width: 1; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.entra .hl-port-reticula line { animation: hl-traza 1300ms var(--curva) calc(var(--r, 0) * 1ms) both; }
+@keyframes hl-traza { to { stroke-dashoffset: 0; } }
+.hl-port-cab { z-index: 2; left: var(--m); right: var(--m); top: calc(var(--y1) - 30px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); color: rgba(16, 78, 86, 0.7); }
+.hl-port-cab > * { padding-left: 14px; }
+.hl-port-cab a { justify-self: end; padding: 0; color: var(--lf-oscuro); }
+.hl-port-titulo { z-index: 2; left: var(--m); right: var(--m); bottom: calc(100svh - var(--y2) + 14px); font-size: min(14.6vw, 33svh); color: var(--lf-oscuro); }
+.hl-port-titulo b { color: var(--lf-turquesa); }
+.hl-port-modulos { z-index: 2; left: var(--m); right: var(--m); top: var(--y2); height: calc(var(--y3) - var(--y2)); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.hl-port-modulos > * { padding: 18px 14px; }
+.hl-port .hl-bajada { font-size: clamp(18px, 1.5vw, 24px); }
+.hl-port-iso { position: relative; display: grid; place-items: center; }
+.hl-port-iso svg { position: absolute; left: 50%; top: 50%; width: min(64%, 17svh); translate: -50% -50%; overflow: visible; }
+.hl-port-iso .guias { fill: none; stroke: var(--lf-turquesa); stroke-width: 0.5; stroke-dasharray: 2 2; opacity: 0.55; }
+.hl-port-iso .cs-marca { width: calc(min(64%, 17svh) * 88.27 / 128.27); color: var(--lf-oscuro); }
+.hl-port-cota { position: absolute; left: 14px; bottom: 14px; color: rgba(16, 78, 86, 0.6); }
+.hl-port-specs { display: grid; align-content: start; gap: 10px; text-transform: none; letter-spacing: 0; }
+.hl-port-specs div { display: grid; grid-template-columns: 7.5em 1fr; gap: 8px; }
+.hl-port-specs dd { font: 400 14px / 1.3 var(--cs-f); letter-spacing: -0.01em; text-transform: none; color: var(--lf-oscuro); }
+.hl-port-specs dt { color: rgba(16, 78, 86, 0.5); text-transform: uppercase; letter-spacing: 0.04em; }
+.hl-port-paleta { display: flex; flex-direction: column; gap: 10px; color: rgba(16, 78, 86, 0.6); }
+.hl-port-paleta ul { list-style: none; display: flex; gap: 6px; }
+.hl-port-tira { display: block; height: 8px; margin: -2px 0 -2px; }
+.hl-port-paleta li { flex: 1; display: flex; align-items: flex-end; height: 7.5svh; padding: 8px; background: var(--c); }
+.hl-port-paleta li b { font-weight: 400; color: #FFFFFF; font-size: 10px; }
+.hl-port-paleta li:nth-child(2) b { color: var(--lf-oscuro); }
+.hl-port-pie { z-index: 2; left: var(--m); right: var(--m); top: calc(var(--y3) + 14px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); color: rgba(16, 78, 86, 0.6); }
+.hl-port-pie > * { padding-left: 14px; }
+.hl-port-pie > :last-child { justify-self: end; color: var(--lf-oscuro); }
+.hl-port-pie i { display: inline-block; font-style: normal; animation: lf-pista 2.4s var(--curva) infinite; }
+/* El degradado de 10 valores vive en la tira de la paleta y crece hasta llenar la pantalla con el scroll */
+.hl-port-deg { z-index: 5; inset: 0; display: grid; place-items: center; background: linear-gradient(90deg, #F4F4F4, #E8E8E8, #B7E5E2, #80E2DF, #70CAC7, #49C2BF, #21B6B6, #1B9C9C, #178181, #104E56); clip-path: inset(var(--ct, 100%) var(--cr, 0) var(--cb, 0) var(--cl, 0)); pointer-events: none; }
+.hl-port-deg::before { content: ''; position: absolute; inset: 0; background: linear-gradient(165deg, transparent 20%, var(--lf-oscuro)); opacity: var(--ex, 0); }
+.hl-port-deg .cs-marca { position: relative; width: 16svh; color: #FFFFFF; opacity: var(--iso, 0); scale: calc(0.8 + var(--iso, 0) * 0.2); }
+.entra .hl-port-deg { animation: hl-funde 600ms linear 1650ms both; }
+/* La mira mide desde el margen de la retícula; el módulo bajo el mouse marca sus esquinas con nodos */
+.hl-mira { z-index: 6; inset: 0; pointer-events: none; opacity: 0; transition: opacity 250ms; }
+.hl-port.mide .hl-mira { opacity: 1; }
+.hl-mira i { position: absolute; background: rgba(23, 129, 129, 0.45); }
+.hl-mira .v { top: 0; bottom: 0; width: 1px; left: 0; transform: translateX(var(--x, 0)); }
+.hl-mira .h { left: 0; right: 0; height: 1px; top: 0; transform: translateY(var(--y, 0)); }
+.hl-mira-tag { position: absolute; left: 0; top: 0; padding: 4px 7px; background: var(--lf-oscuro); color: #FFFFFF; font-size: 10px; white-space: nowrap; transform: translate(calc(var(--x, 0) + 12px), calc(var(--y, 0) + 12px)); }
+.hl-celda { z-index: 1; left: 0; top: 0; width: 0; height: 0; pointer-events: none; background: rgba(23, 129, 129, 0.05); opacity: 0; transition: left 260ms var(--sale), top 260ms var(--sale), width 260ms var(--sale), height 260ms var(--sale), opacity 250ms; }
+.hl-port.mide .hl-celda { opacity: 1; }
+.hl-celda i { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: var(--lf-turquesa); }
+.hl-celda i:nth-child(1) { left: -4px; top: -4px; } .hl-celda i:nth-child(2) { right: -4px; top: -4px; }
+.hl-celda i:nth-child(3) { left: -4px; bottom: -4px; } .hl-celda i:nth-child(4) { right: -4px; bottom: -4px; }
+
+/* =======================================================
+   03 · CENITAL
+   ======================================================= */
+/* La foto se ajusta como cover en un contenedor del mismo tamaño que la imagen (lo calcula el JS), así las marcas van
+   en % de la foto y se acercan con ella */
+.hl-cen .hl-fijo { background: var(--lf-negro); }
+.hl-cen-foto { left: 0; top: 0; width: var(--fw, 100vw); height: var(--fh, 100svh); transform-origin: 82% 37%; transform: translate3d(var(--fx, 0px), var(--fy2, 0px), 0) scale(var(--fz, 1)); will-change: transform; }
+.hl-cen-foto picture, .hl-cen-foto img { width: 100%; height: 100%; }
+.hl-cen-foto img { object-fit: cover; }
+.entra .hl-cen-foto picture { animation: hl-cen-entra 2400ms var(--sale) both; }
+@keyframes hl-cen-entra { from { opacity: 0; scale: 1.1; filter: blur(8px); } to { opacity: 1; scale: 1; filter: none; } }
+.hl-cen-ruta { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.hl-cen-ruta .trazo { fill: none; stroke: #FFFFFF; stroke-width: 2; stroke-dasharray: 6 7; vector-effect: non-scaling-stroke; animation: hl-hormigas 1.2s linear infinite; }
+@keyframes hl-hormigas { to { stroke-dashoffset: -13; } }
+.hl-cen-avance { transform-box: fill-box; transform-origin: left; scale: 0 1; }
+.entra .hl-cen-avance { animation: hl-avanza 2000ms var(--curva) 1000ms both; }
+@keyframes hl-avanza { to { scale: 1 1; } }
+.hl-cen-viaje { fill: var(--lf-claro); opacity: 0; }
+.entra .hl-cen-viaje { animation: hl-funde 400ms 3000ms both; }
+.hl-cen-marca { position: absolute; border: 1px solid rgba(112, 202, 199, 0.9); opacity: 0; }
+.entra .hl-cen-marca { animation: hl-marca 900ms var(--sale) both; }
+@keyframes hl-marca { from { opacity: 0; scale: 1.25; } to { opacity: 1; scale: 1; } }
+.hl-cen-marca > i { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: var(--lf-claro); }
+.hl-cen-marca > i:nth-child(1) { left: -4px; top: -4px; } .hl-cen-marca > i:nth-child(2) { right: -4px; top: -4px; }
+.hl-cen-marca > i:nth-child(3) { left: -4px; bottom: -4px; } .hl-cen-marca > i:nth-child(4) { right: -4px; bottom: -4px; }
+.hl-cen-marca span { position: absolute; left: -1px; bottom: calc(100% + 8px); display: inline-flex; align-items: center; gap: 8px; padding: 5px 9px; background: var(--lf-oscuro); color: #FFFFFF; font-size: 10px; white-space: nowrap; transform-origin: left bottom; scale: calc(1 / var(--fz, 1)); }
+.hl-cen-marca span b { width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); }
+.hl-cen-marca span em { font-style: normal; color: var(--lf-claro); }
+.hl-cen-carga { left: 56.4%; top: 20.4%; width: 20.6%; height: 5%; }
+.entra .hl-cen-carga { animation-delay: 1900ms; }
+.hl-cen-furgon { left: 72.8%; top: 19%; width: 14.2%; height: 36.4%; }
+.entra .hl-cen-furgon { animation-delay: 2300ms; }
+.hl-cen-furgon span b { animation: hl-late 1.6s ease-in-out infinite; }
+@keyframes hl-late { 50% { box-shadow: 0 0 0 4px rgba(112, 202, 199, 0.25); } }
+.hl-cen-sombra { inset: 0; pointer-events: none; background: linear-gradient(20deg, rgba(10, 20, 21, 0.78) 0%, rgba(10, 20, 21, 0.35) 38%, rgba(10, 20, 21, 0) 62%), linear-gradient(180deg, rgba(10, 20, 21, 0.4), rgba(10, 20, 21, 0) 22%); }
+.hl-cen .lf-reticula { z-index: 1; --l: rgba(255, 255, 255, 0.18); opacity: 0; }
+.entra.hl-cen .lf-reticula { animation: hl-funde 1200ms 600ms both; }
+.hl-cen-txt { z-index: 3; left: var(--margen); bottom: clamp(56px, 10vh, 110px); translate: 0 calc(var(--p, 0) * -12vh); opacity: calc(1 - var(--p, 0) * 2.4); }
+.hl-cen-txt .hl-bajada { margin: 24px 0 0 25%; padding-left: 14px; }
+.hl-cen-etapas { z-index: 3; right: var(--margen); bottom: clamp(56px, 10vh, 110px); list-style: none; display: flex; gap: 0; opacity: 0; }
+.hl-cen-etapas li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; width: 92px; color: rgba(255, 255, 255, 0.6); }
+.hl-cen-etapas li + li::before { content: ''; position: absolute; top: 6px; right: calc(50% + 12px); width: calc(100% - 24px); height: 1px; background: rgba(255, 255, 255, 0.3); }
+.hl-cen-etapas li.hecho + li::before, .hl-cen-etapas li.hecho + li.hecho::before { background: var(--lf-claro); }
+.hl-cen-etapas i { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.6); transition: background-color 400ms, border-color 400ms, box-shadow 400ms; }
+.hl-cen-etapas li.hecho { color: #FFFFFF; }
+.hl-cen-etapas li.hecho i { background: var(--lf-claro); border-color: var(--lf-claro); }
+.hl-cen-etapas li.actual { color: #FFFFFF; }
+.hl-cen-etapas li.actual i { background: #FFFFFF; border-color: #FFFFFF; animation: hl-late 1.6s ease-in-out infinite; }
+.hl-cen-velo { inset: 0; z-index: 2; background: var(--lf-turquesa); opacity: clamp(0, (var(--p, 0) - 0.7) * 3.4, 1); pointer-events: none; }
+
+/* =======================================================
+   04 · LA ELECCIÓN
+   ======================================================= */
+.hl-ele .hl-fijo { background: var(--lf-profundo); }
+.hl-ele-trama { inset: 0; z-index: 0; background-image: radial-gradient(circle, rgba(255, 255, 255, 0.5) 1px, transparent 1.5px); background-size: 24px 24px; -webkit-mask: radial-gradient(60% 50% at 50% 44%, transparent 40%, #000 100%); mask: radial-gradient(60% 50% at 50% 44%, transparent 40%, #000 100%); opacity: 0.2; }
+.hl-ele-cruces { z-index: 2; left: var(--margen); right: var(--margen); top: 17svh; height: 42svh; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.hl-ele-cruz { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-left: 1px solid rgba(255, 255, 255, calc(0.12 * (1 - var(--e2, 0) * 3))); transition: opacity 700ms var(--curva); translate: var(--tx, 0) 0; }
+.hl-ele-info { display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: calc(1 - var(--e2, 0) * 2.5); }
+.hl-ele-cruz:first-child { border-left: 0; }
+.hl-ele-cruz > .cs-marca { width: min(9vw, 17svh); margin-bottom: 28px; color: #FFFFFF; transform: scale(var(--s, 1)); }
+.entra .hl-ele-info > :not(small) { animation: hl-aparece 900ms var(--sale) calc(var(--e) * 1ms + 250ms) both; }
+.entra .hl-ele-cruz > .cs-marca { animation: hl-cruz 1100ms var(--sale) calc(var(--e) * 1ms) both; }
+@keyframes hl-cruz { from { opacity: 0; scale: 0.6; filter: blur(10px); } to { opacity: 1; scale: 1; filter: none; } }
+.hl-ele-n { color: rgba(255, 255, 255, 0.6); }
+.hl-ele-cruz b { font: 300 clamp(16px, 1.3vw, 21px) / 1.2 var(--cs-f); letter-spacing: -0.02em; }
+.hl-ele-cruz ul { list-style: none; display: flex; gap: 12px; color: var(--lf-claro); opacity: 0; translate: 0 6px; transition: opacity 400ms, translate 500ms var(--sale); }
+.hl-ele-fav { position: absolute; top: 12%; right: 14%; color: rgba(255, 255, 255, 0.5); }
+.hl-ele-tag { position: absolute; top: 12%; right: 14%; display: inline-flex; align-items: center; gap: 8px; padding: 5px 9px; background: var(--lf-claro); color: var(--lf-negro); opacity: 0; scale: 0.9; transition: opacity 500ms, scale 600ms var(--sale); }
+.hl-ele-tag i { width: 6px; height: 6px; border-radius: 50%; background: var(--lf-negro); }
+.hl-ele-anillo { position: absolute; left: 50%; top: var(--ay, 30%); width: min(15vw, 27svh); aspect-ratio: 1; translate: -50% -50%; border: 1px solid rgba(112, 202, 199, 0.6); border-radius: 50%; transform: scale(var(--s, 1)); scale: 0.7; opacity: 0; transition: scale 900ms var(--sale), opacity 600ms; }
+/* La decisión: las otras dos se apagan y Nodos queda marcada */
+.hl-ele.decide .hl-ele-cruz:not(.hl-ele-nodos) { opacity: 0.24; }
+.hl-ele.decide .hl-ele-nodos ul, .hl-ele.decide.sin-foco .hl-ele-nodos ul { opacity: 1; translate: 0 0; }
+.hl-ele.decide .hl-ele-tag { opacity: 1; scale: 1; }
+.hl-ele.decide .hl-ele-anillo { opacity: 1; scale: 1; }
+@media (hover: hover) {
+    .hl-ele.decide .hl-ele-cruces:hover .hl-ele-cruz { opacity: 0.24; }
+    .hl-ele.decide .hl-ele-cruces:hover .hl-ele-cruz:hover { opacity: 1; }
+    .hl-ele.decide .hl-ele-cruces:hover .hl-ele-cruz:not(:hover) ul { opacity: 0; }
+    .hl-ele-cruz:hover ul { opacity: 1; translate: 0 0; }
+}
+.hl-ele-txt { z-index: 3; left: var(--margen); bottom: clamp(48px, 8vh, 96px); translate: 0 calc(var(--p, 0) * -12vh); opacity: calc(1 - var(--p, 0) * 2.4); }
+.hl-ele-txt .hl-titulo { font-size: min(7.6vw, 15svh); }
+.hl-ele-txt .hl-bajada { margin: 18px 0 0 25%; padding-left: 14px; }
+.hl-ele-nota { z-index: 3; right: var(--margen); bottom: clamp(48px, 8vh, 96px); color: rgba(255, 255, 255, 0.6); }
+.entra .hl-ele-nota { animation-name: hl-funde; }
+
+/* =======================================================
+   05 · LA CINTA
+   ======================================================= */
+/* Un plano en perspectiva con tres columnas de capturas del sitio que avanzan sin fin; el JS mueve cada columna y, al
+   bajar, endereza el plano hasta que una captura llena la pantalla */
+.hl-cin .hl-fijo { background: var(--lf-oscuro); }
+.hl-cin-escena { inset: 0; z-index: 1; perspective: 2000px; perspective-origin: 50% 40%; }
+.hl-cin-plano { position: absolute; left: 50%; top: 50%; display: flex; gap: var(--g, 28px); transform-style: preserve-3d; will-change: transform; opacity: 0; }
+.entra .hl-cin-plano { animation: hl-funde 1400ms var(--sale) 300ms both; }
+.hl-cin-col { position: relative; width: var(--cw2, 520px); height: 300svh; }
+.hl-cin-col img { position: absolute; left: 0; width: 100%; height: auto; aspect-ratio: 16 / 10; outline: 1px solid rgba(255, 255, 255, 0.22); will-change: transform; }
+.hl-cin-funde { inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(90deg, rgba(16, 78, 86, 0.96) 0%, rgba(16, 78, 86, 0.82) 30%, rgba(16, 78, 86, 0) 58%), linear-gradient(0deg, rgba(11, 52, 57, 0.7), rgba(11, 52, 57, 0) 30%); opacity: calc(1 - var(--q, 0)); }
+.hl-cin-txt { z-index: 3; left: var(--margen); bottom: clamp(56px, 10vh, 110px); translate: 0 calc(var(--p, 0) * -12vh); opacity: calc(1 - var(--p, 0) * 2.4); }
+.hl-cin-txt .hl-titulo { font-size: min(11vw, 24svh); }
+.hl-cin-txt .hl-bajada { margin: 22px 0 0 25%; padding-left: 14px; }
+.hl-cin-chip { display: inline-flex; align-items: center; gap: 8px; margin: 18px 0 0 25%; padding: 7px 12px 7px 14px; border: 1px solid rgba(255, 255, 255, 0.28); }
+.hl-cin-chip i { width: 6px; height: 6px; border-radius: 50%; background: var(--verde); }
+.hl-cin .hl-franja { opacity: calc(1 - var(--p, 0) * 3); }
+
+/* =======================================================
+   06 · DIEZ VALORES
+   ======================================================= */
+.hl-val { color: #FFFFFF; }
+.hl-val .hl-fijo { background: var(--lf-papel); }
+.hl-val-capa { inset: 0; transform-origin: bottom; scale: 1 calc(1 - var(--q, 0) * 0.986); }
+.hl-val-bandas { position: absolute; inset: 0; display: flex; }
+.hl-val-bandas i { flex: 1; background: var(--c); transform-origin: top; }
+.entra .hl-val-bandas i { animation: hl-cae 1000ms var(--curva) calc(var(--k) * 60ms) both; }
+@keyframes hl-cae { from { scale: 1 0; } to { scale: 1 1; } }
+/* El degradado liso tapa las bandas; el mouse abre una ventana (--a a --b) que deja ver la banda plana */
+.hl-val-liso { position: absolute; inset: 0; background: linear-gradient(90deg, #104E56 5%, #178181 15%, #1B9C9C 25%, #21B6B6 35%, #49C2BF 45%, #70CAC7 55%, #80E2DF 65%, #B7E5E2 75%, #E8E8E8 85%, #F4F4F4 95%); -webkit-mask: linear-gradient(90deg, #000 var(--a), transparent var(--a), transparent var(--b), #000 var(--b)); mask: linear-gradient(90deg, #000 var(--a), transparent var(--a), transparent var(--b), #000 var(--b)); transition: --a 380ms var(--sale), --b 380ms var(--sale); }
+.entra .hl-val-liso { animation: hl-funde 900ms ease 1500ms both; }
+.hl-val-lineas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hl-val-lineas line { stroke: rgba(255, 255, 255, 0.3); stroke-width: 1; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.hl-val-lineas line.osc { stroke: rgba(16, 78, 86, 0.22); }
+.entra .hl-val-lineas line { animation: hl-traza 1200ms var(--curva) calc(1700ms + var(--r, 0) * 1ms) both; }
+.hl-val-regla { z-index: 2; left: 0; right: 0; top: 82px; display: flex; opacity: calc(1 - var(--q, 0) * 3); }
+.hl-val-regla span { flex: 1; padding-left: 12px; font-size: 10px; color: rgba(255, 255, 255, 0.72); opacity: 0; }
+.hl-val-regla span.osc { color: rgba(16, 78, 86, 0.6); }
+.entra .hl-val-regla span { animation: hl-funde 600ms calc(1900ms + var(--k) * 40ms) both; }
+.hl-val .hl-franja { --fy: 150px; }
+.hl-val .hl-franja > :nth-child(n+3) { color: var(--lf-oscuro); }
+.hl-val-txt { z-index: 3; left: var(--margen); bottom: clamp(56px, 10vh, 110px); color: color-mix(in srgb, var(--lf-oscuro) calc(var(--q, 0) * 100%), #FFFFFF); translate: 0 calc(var(--q, 0) * -8vh); }
+.hl-val-txt .hl-bajada { margin: 24px 0 0 10vw; padding-left: 14px; }
+.hl-val-txt .hl-escalon { padding-left: 10vw; }
+.hl-val-hex { z-index: 3; left: 0; top: 136px; padding-left: 12px; font-size: 11px; opacity: 0; transition: opacity 250ms, left 380ms var(--sale), color 250ms; }
+.hl-val.mide .hl-val-hex { opacity: 1; }
+
+/* =======================================================
+   LO QUE SIGUE Y SELECTOR DE LA EXPLORACIÓN
+   ======================================================= */
+.hl-sigue { position: relative; z-index: 1; display: grid; align-content: center; gap: 28px; min-height: 100svh; padding: 0 var(--margen); background: var(--lf-papel); color: var(--lf-oscuro); }
+.hl-sigue .mono { color: rgba(16, 78, 86, 0.6); }
+.hl-sigue p { max-width: 26ch; font: 300 clamp(28px, 3vw, 52px) / 1.12 var(--cs-f); letter-spacing: -0.035em; }
+.hl-sigue em { font-style: normal; font-weight: 500; color: var(--lf-turquesa); }
+.hl-dock { position: fixed; z-index: 60; left: 50%; bottom: 10px; translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 10px; width: min(760px, calc(100vw - 32px)); font-family: var(--sans); }
+.hl-dock-idea { max-width: 62ch; padding: 9px 14px; background: rgba(10, 10, 10, 0.78); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); color: rgba(255, 255, 255, 0.86); font-size: 12.5px; line-height: 1.45; text-align: center; transition: opacity 200ms; }
+.hl-dock.calla .hl-dock-idea { opacity: 0; pointer-events: none; }
+@media (hover: hover) { .hl-dock:hover .hl-dock-idea { opacity: 1; } }
+.hl-dock-idea { position: absolute; bottom: calc(100% + 8px); }
+.hl-dock-botones { display: flex; gap: 2px; padding: 3px; background: rgba(10, 10, 10, 0.78); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.hl-dock-botones button { display: flex; gap: 7px; align-items: baseline; padding: 8px 12px; color: rgba(255, 255, 255, 0.55); font-size: 12.5px; transition: background-color 200ms, color 200ms; }
+.hl-dock-botones button span { font-family: var(--mono); font-size: 10.5px; }
+.hl-dock-botones button[aria-pressed="true"] { background: #FFFFFF; color: #0A0A0A; }
+@media (hover: hover) { .hl-dock-botones button:hover:not([aria-pressed="true"]) { color: #FFFFFF; } }
+.hl-dock-ayuda { font-family: var(--mono); font-size: 10px; color: rgba(255, 255, 255, 0.5); mix-blend-mode: difference; }
+
+/* =======================================================
+   MOVIMIENTO REDUCIDO
+   ======================================================= */
+@media (prefers-reduced-motion: reduce) {
+    .hl *, .hl *::before { animation-duration: 1ms !important; animation-delay: 0ms !important; }
+}
