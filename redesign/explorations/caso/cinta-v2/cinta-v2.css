@@ -1,0 +1,217 @@
+/* =======================================================
+   CINTA LLEGÓ FARMA · VARIANTES SOBRE LA BASE (.cv-)
+   ======================================================= */
+/* Segunda ronda sobre la cinta elegida (La base de cinta-llego). Tres ejes que se combinan: la cinta (cantidad,
+   profundidad, ángulo, eje), el texto (cuatro propuestas de copia y diagramación en la grilla de 12) y una gráfica
+   aparte (retícula, cotas, trama o guía de despacho). El body lleva data-cinta, data-texto y data-grafica.
+   El JS publica --q (la cinta se endereza), --sub (lo secundario se va), --sal (cada línea sale), --niebla y --foco */
+
+/* --- 1. BASE DE LA EXPLORACIÓN --- */
+.cv { --curva: cubic-bezier(0.65, 0, 0.35, 1); --sale: cubic-bezier(0.16, 1, 0.3, 1); --fy: 112px; --veladura: 11, 52, 57; --col: calc((100% - 11 * var(--medianil)) / 12); }
+.cv-h { position: relative; height: 280svh; color: #FFFFFF; }
+.cv-fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: var(--lf-oscuro); }
+.cv-fijo > * { position: absolute; }
+.cv .barra { transition: color 300ms; }
+.cv-tibio { position: fixed; inset: 0; z-index: -1; width: 100vw; height: 100vh; border: 0; visibility: hidden; pointer-events: none; }
+
+/* --- 2. LA CINTA: ESCENA, PLANO, COLUMNAS Y CARTAS --- */
+/* La niebla es una máscara sobre la escena: lo lejano se funde con el degradado y el plano gana profundidad.
+   --nd es hacia dónde queda lo lejano (arriba en las cintas verticales, a un lado en la tira) */
+.cv-escena { inset: 0; z-index: 1; perspective: 2000px; perspective-origin: 50% 40%;
+    -webkit-mask: linear-gradient(var(--nd, 180deg), rgb(0 0 0 / calc(1 - var(--niebla, 0))) 4%, #000 72%);
+    mask: linear-gradient(var(--nd, 180deg), rgb(0 0 0 / calc(1 - var(--niebla, 0))) 4%, #000 72%); }
+.cv-plano { position: absolute; left: 50%; top: 50%; display: flex; gap: var(--g, 28px); transform-style: preserve-3d; }
+.cv-plano.h { flex-direction: column; }
+.cv-col { position: relative; flex: none; width: var(--cw, 432px); height: 100%; will-change: transform; }
+.cv-plano.h .cv-col { width: 100%; height: var(--chh, 270px); }
+.cv-carta { position: absolute; left: 0; width: 100%; aspect-ratio: 16 / 10; background: var(--lf-profundo); outline: 1px solid rgba(255, 255, 255, 0.2); }
+.cv-plano.h .cv-carta { top: 0; width: var(--cw, 432px); }
+.cv-carta img { display: block; width: 100%; height: 100%; }
+/* Al enderezarse, todo lo que no es la carta de Inicio se retira para que aterrice limpia */
+.cv-col:not(.foco), .cv-col.foco .cv-carta:not(.blanco), .cv-piso { opacity: calc(1 - var(--q, 0) * 1.6); }
+
+/* --- 3. EL PISO DE LA CINTA --- */
+/* La superficie sobre la que avanzan las cartas, con sus dos rieles: lo que hace que se lea cinta y no muro.
+   Lo encienden las cintas con piso (data-piso) y la gráfica Trama, que le pone los puntos de Llegó */
+.cv-piso { position: absolute; display: none; top: calc(var(--g) * -0.5); left: calc(var(--g) * -0.5); right: calc(var(--g) * -0.5); bottom: 0; background: rgba(255, 255, 255, 0.045); border-left: 1px solid rgba(255, 255, 255, 0.22); border-right: 1px solid rgba(255, 255, 255, 0.22); }
+.cv-plano.h .cv-piso { left: 0; right: 0; top: calc(var(--g) * -0.5); bottom: calc(var(--g) * -0.5); border: 0; border-top: 1px solid rgba(255, 255, 255, 0.22); border-bottom: 1px solid rgba(255, 255, 255, 0.22); }
+[data-piso="1"] .cv-piso, [data-grafica="trama"] .cv-piso { display: block; }
+[data-grafica="trama"] .cv-piso { background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 1.4px, transparent 2px) 0 0 / var(--tp, 22px) var(--tp, 22px), rgba(255, 255, 255, 0.03); }
+
+/* --- 4. VELADURAS: TINTE, FUNDIDO Y CIELO --- */
+/* El foco del tinte sigue al desvío de la cinta: queda limpia donde está la cinta, no en un punto fijo */
+.cv-tinte, .cv-funde, .cv-cielo { z-index: 2; pointer-events: none; opacity: calc(1 - var(--q, 0)); }
+.cv-tinte { inset: 0; mix-blend-mode: multiply; background: radial-gradient(58% 70% at var(--foco, 68%) 42%, #FFFFFF 0%, #CDE6E5 40%, #6FA5A7 100%); }
+.cv-funde { inset: 0; background: linear-gradient(90deg, rgba(var(--veladura), 0.94) 0%, rgba(var(--veladura), 0.8) 30%, rgba(var(--veladura), 0) 60%), linear-gradient(0deg, rgba(var(--veladura), 0.78), rgba(var(--veladura), 0) 34%); }
+[data-texto="ficha"] .cv-funde { background: linear-gradient(90deg, rgba(var(--veladura), 0.86) 0%, rgba(var(--veladura), 0.5) 34%, rgba(var(--veladura), 0) 62%), linear-gradient(0deg, rgba(var(--veladura), 0.96) 8%, rgba(var(--veladura), 0) 52%); }
+.cv-cielo { left: 0; right: 0; top: 0; height: 210px; background: linear-gradient(rgba(var(--veladura), 0.92), rgba(var(--veladura), 0.6) 48%, rgba(var(--veladura), 0)); }
+
+/* --- 5. FRANJA --- */
+/* La entrada anima a los hijos y el scroll al contenedor: así ninguna animación con fill retiene la opacidad */
+.cv-franja { z-index: 4; left: var(--margen); right: var(--margen); top: calc(var(--fy) - 30px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); opacity: calc(1 - var(--sub, 0) * 1.4); }
+.cv-franja > * { padding-left: 14px; color: rgba(255, 255, 255, 0.82); opacity: 0; }
+.cv-franja a { justify-self: end; padding: 0; color: #FFFFFF; }
+.cv-franja a i { display: inline-block; font-style: normal; transition: transform 300ms var(--sale); }
+@media (hover: hover) { .cv-franja a:hover i { transform: translate(2px, -2px); } }
+.entra .cv-franja > * { animation: cv-aparece 900ms var(--sale) calc(var(--e) * 1ms) both; }
+
+/* =======================================================
+   TEXTO · CUATRO PROPUESTAS EN LA GRILLA DE 12
+   ======================================================= */
+/* --- 1. COMÚN: BLOQUE, LÍNEAS CON MÁSCARA Y BAJADA --- */
+/* Riel de rótulos en las columnas 1 a 3, texto desde la 4 (la grilla del caso) */
+.cv-txt { z-index: 4; left: var(--margen); right: var(--margen); bottom: clamp(56px, 10vh, 110px); display: none; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); align-items: end; pointer-events: none; }
+[data-texto="nombre"] .cv-t-nombre, [data-texto="decision"] .cv-t-decision, [data-texto="ficha"] .cv-t-ficha, [data-texto="oficio"] .cv-t-oficio { display: grid; }
+.cv-titulo { grid-column: 1 / -1; display: flex; flex-direction: column; margin-left: -0.05em; }
+.cv-titulo b { font-weight: 500; }
+/* La línea es la máscara: entra subiendo (translate) y sale subiendo con el scroll (transform) */
+.cv-linea { display: block; overflow: hidden; padding-bottom: 0.07em; }
+.cv-linea > * { display: inline-block; translate: 0 105%; transform: translateY(calc(var(--sal, 0) * -112%)); }
+.entra .cv-linea > * { animation: cv-sube 1150ms var(--curva) calc(var(--d, 300) * 1ms) both; }
+.cv-sub { grid-column: 4 / span 4; margin-top: 22px; padding-left: 14px; opacity: calc(1 - var(--sub, 0)); translate: 0 calc(var(--sub, 0) * -16px); }
+.cv-bajada { max-width: 30ch; font: 300 clamp(19px, 1.55vw, 26px) / 1.25 var(--cs-f); letter-spacing: -0.02em; text-wrap: balance; }
+.cv-bajada b { font-weight: 500; }
+.cv-chip { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 7px 12px 7px 14px; border: 1px solid rgba(255, 255, 255, 0.28); }
+.cv-chip i { width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); }
+.cv-riel { grid-column: 1 / 4; align-self: start; display: flex; flex-direction: column; gap: 6px; padding-top: 0.9em; color: rgba(255, 255, 255, 0.72); opacity: calc(1 - var(--sub, 0)); }
+.cv-riel span:first-child { color: #FFFFFF; }
+.cv-riel span:first-child::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: var(--lf-claro); vertical-align: 1px; }
+[data-e] { opacity: 0; }
+.entra [data-e] { animation: cv-aparece 900ms var(--sale) calc(var(--e) * 1ms) both; }
+
+/* --- 2. A · EL NOMBRE --- */
+/* Farma parte exacto en la columna 4, como la bajada: el escalón ya no es un 25% suelto */
+.cv-t-nombre .cv-titulo { font: 200 min(11vw, 24svh) / 0.86 var(--cs-f); letter-spacing: -0.055em; }
+.cv-t-nombre .cv-escalon { padding-left: calc(3 * (var(--col) + var(--medianil))); }
+
+/* --- 3. B · LA DECISIÓN COMO TITULAR --- */
+.cv-t-decision .cv-titulo { grid-column: 4 / -1; grid-row: 1; font: 300 min(6.4vw, 12.6svh) / 0.98 var(--cs-f); letter-spacing: -0.045em; }
+.cv-t-decision .cv-riel { grid-row: 1; }
+.cv-t-decision .cv-sub { grid-row: 2; }
+
+/* --- 4. C · EL NOMBRE Y LA FICHA --- */
+.cv-t-ficha .cv-titulo { font: 200 min(8.6vw, 17svh) / 0.9 var(--cs-f); letter-spacing: -0.05em; }
+.cv-ficha { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--medianil); margin-top: 28px; border-top: 1px solid rgba(255, 255, 255, 0.24); opacity: calc(1 - var(--sub, 0)); }
+.cv-ficha > div { display: flex; flex-direction: column; gap: 10px; padding: 16px 14px 0 14px; }
+.cv-ficha > div + div { border-left: 1px solid rgba(255, 255, 255, 0.14); }
+.cv-ficha dt { color: rgba(255, 255, 255, 0.6); }
+.cv-ficha dd { max-width: 24ch; font: 300 clamp(16px, 1.25vw, 20px) / 1.3 var(--cs-f); letter-spacing: -0.015em; }
+
+/* --- 5. D · LOS DOS VERBOS DEL OFICIO --- */
+/* El verbo que distingue (programé) va en el turquesa claro de la marca */
+.cv-t-oficio .cv-titulo { grid-column: 4 / -1; grid-row: 1; font: 300 min(7.4vw, 14.6svh) / 0.96 var(--cs-f); letter-spacing: -0.05em; }
+.cv-t-oficio .cv-titulo b { color: var(--lf-claro); }
+.cv-t-oficio .cv-riel { grid-row: 1; }
+.cv-t-oficio .cv-sub { grid-row: 2; grid-column: 4 / span 5; }
+.cv-t-oficio .cv-bajada { max-width: 40ch; }
+
+/* =======================================================
+   GRÁFICA · LO QUE ACOMPAÑA A LA CINTA
+   ======================================================= */
+/* --- 1. RETÍCULA DEL MANUAL --- */
+/* La de llego.css, con sus cortes de 8 px en el cruce con la franja. Se dibuja al entrar */
+.cv-reticula { z-index: 3; display: none; opacity: calc(1 - var(--q, 0) * 1.4); }
+[data-grafica="reticula"] .cv-reticula { display: block; }
+.cv-reticula i { transform: scaleY(0); }
+.cv-reticula::after { transform: scaleX(0); }
+.entra .cv-reticula i { animation: cv-traza-y 1400ms var(--curva) calc(300ms + var(--n) * 90ms) both; }
+.entra .cv-reticula::after { animation: cv-traza-x 1400ms var(--curva) 600ms both; }
+
+/* --- 2. COTAS EN CADA CAPTURA --- */
+/* Dentro del plano: cada captura dice su medida real (1440 × 900) y se inclina con la cinta */
+.cv-cota { display: none; position: absolute; inset: 0; pointer-events: none; font: 400 max(9px, calc(var(--cw) * 0.032)) / 1 var(--cs-f-mono); letter-spacing: 0.04em; color: var(--lf-claro); }
+[data-grafica="cotas"] .cv-cota { display: block; }
+.cv-cota s { position: absolute; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+.cv-cota s:first-child { left: 0; right: 0; bottom: calc(100% + var(--g) * 0.22); height: 1px; background: var(--lf-claro); }
+.cv-cota s:last-child { top: 0; bottom: 0; right: calc(100% + var(--g) * 0.22); width: 1px; background: var(--lf-claro); }
+.cv-cota s::before, .cv-cota s::after { content: ''; position: absolute; background: inherit; }
+.cv-cota s:first-child::before, .cv-cota s:first-child::after { top: -5px; width: 1px; height: 11px; }
+.cv-cota s:first-child::before { left: 0; }
+.cv-cota s:first-child::after { right: 0; }
+.cv-cota s:last-child::before, .cv-cota s:last-child::after { left: -5px; width: 11px; height: 1px; }
+.cv-cota s:last-child::before { top: 0; }
+.cv-cota s:last-child::after { bottom: 0; }
+.cv-cota b { padding: 0 0.6em; background: var(--lf-profundo); font-weight: 400; }
+.cv-cota s:last-child b { writing-mode: vertical-rl; rotate: 180deg; padding: 0.6em 0; }
+
+/* --- 3. GUÍA DE DESPACHO --- */
+/* Los hitos reales del proyecto como una guía de envío: los seis nodos se llenan en orden al entrar */
+.cv-guia { z-index: 4; display: none; right: var(--margen); top: calc(var(--fy) + 22px); width: 300px; opacity: calc(1 - var(--sub, 0) * 1.4); font-size: 11px; }
+[data-grafica="etiqueta"] .cv-guia { display: block; }
+.cv-guia-in { padding: 12px 14px 12px; background: rgba(var(--veladura), 0.74); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.16); }
+.cv-guia-cab { display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); color: #FFFFFF; }
+.cv-guia-cab span:last-child { color: rgba(255, 255, 255, 0.6); }
+.cv-guia dl { display: grid; grid-template-columns: 82px 1fr; row-gap: 8px; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.16); }
+.cv-guia dt { color: rgba(255, 255, 255, 0.55); }
+.cv-guia dd { color: #FFFFFF; text-transform: none; font-family: var(--cs-f); font-size: 13px; letter-spacing: -0.01em; }
+.cv-guia-hitos { position: relative; display: flex; list-style: none; padding: 0; justify-content: space-between; margin: 14px 2px 10px; }
+.cv-guia-hitos::before { content: ''; position: absolute; left: 6px; right: 6px; top: 50%; height: 1px; background: rgba(112, 202, 199, 0.5); }
+.cv-guia-hitos li { position: relative; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--lf-claro); background: var(--lf-profundo); }
+.entra .cv-guia-hitos li { animation: cv-hito 300ms var(--sale) calc(1900ms + var(--k) * 160ms) both; }
+.cv-guia-hitos li:nth-child(1) { --k: 0; } .cv-guia-hitos li:nth-child(2) { --k: 1; } .cv-guia-hitos li:nth-child(3) { --k: 2; } .cv-guia-hitos li:nth-child(4) { --k: 3; } .cv-guia-hitos li:nth-child(5) { --k: 4; } .cv-guia-hitos li:nth-child(6) { --k: 5; }
+.cv-guia-pie { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.6); }
+.cv-guia-pie b { display: flex; align-items: center; gap: 6px; font-weight: 400; color: var(--lf-claro); }
+.cv-guia-pie b::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+/* =======================================================
+   EL SITIO EN VIVO Y LO QUE SIGUE
+   ======================================================= */
+/* La carta aterriza como una ventana bajo la barra (el JS fija su rectángulo) y el iframe del sitio la reemplaza */
+.cv-vivo { z-index: 3; outline: 1px solid rgba(255, 255, 255, 0.2); background: var(--lf-profundo); opacity: 0; visibility: hidden; transition: opacity 450ms var(--sale), visibility 0s 450ms; }
+.cv-vivo.en { opacity: 1; visibility: visible; transition: opacity 450ms var(--sale); }
+.cv-vivo iframe { display: block; width: 100%; height: 100%; border: 0; pointer-events: none; }
+.cv-vivo-cab { position: absolute; left: 0; right: 0; bottom: calc(100% + 9px); display: flex; justify-content: space-between; font-size: 11px; color: rgba(255, 255, 255, 0.72); }
+.cv-vivo-cab > span:last-child { display: flex; align-items: center; gap: 8px; color: #FFFFFF; }
+.cv-vivo-cab i { width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); animation: cv-late 1600ms ease-in-out infinite; }
+.cv-sigue { position: relative; z-index: 1; display: grid; align-content: center; gap: 28px; min-height: 100svh; padding: 0 var(--margen); background: var(--lf-papel); color: var(--lf-oscuro); }
+.cv-sigue .mono { color: rgba(16, 78, 86, 0.6); }
+.cv-sigue p { max-width: 26ch; font: 300 clamp(28px, 3vw, 52px) / 1.12 var(--cs-f); letter-spacing: -0.035em; }
+.cv-sigue em { font-style: normal; font-weight: 500; color: var(--lf-turquesa); }
+
+/* =======================================================
+   SELECTOR Y AJUSTES DE LA EXPLORACIÓN
+   ======================================================= */
+/* --- 1. DOCK: TRES EJES EN UNA FILA --- */
+/* Se resume a una línea después de unos segundos o al bajar; al pasar el mouse vuelve a abrirse */
+.cv-dock { position: fixed; z-index: 60; left: 50%; bottom: 10px; translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 8px; width: max-content; max-width: calc(100vw - 32px); font-family: var(--sans); }
+.cv-dock-idea { position: absolute; bottom: calc(100% + 8px); width: min(62ch, calc(100vw - 32px)); padding: 9px 14px; background: rgba(10, 10, 10, 0.8); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); color: rgba(255, 255, 255, 0.86); font-size: 12.5px; line-height: 1.45; text-align: center; transition: opacity 200ms; }
+.cv-dock-in { display: flex; align-items: stretch; gap: 3px; padding: 3px; background: rgba(10, 10, 10, 0.8); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.cv-dock-grupo { display: flex; align-items: center; gap: 1px; padding-right: 3px; border-right: 1px solid rgba(255, 255, 255, 0.12); }
+.cv-dock-grupo > .mono { padding: 0 8px 0 9px; font-size: 9.5px; color: rgba(255, 255, 255, 0.42); text-transform: uppercase; letter-spacing: 0.06em; }
+.cv-dock button { padding: 8px 10px; color: rgba(255, 255, 255, 0.55); font-size: 12px; white-space: nowrap; transition: background-color 160ms, color 160ms; }
+.cv-dock button kbd { margin-right: 6px; font-family: var(--mono); font-size: 10px; opacity: 0.7; }
+.cv-dock button[aria-pressed="true"] { background: #FFFFFF; color: #0A0A0A; }
+@media (hover: hover) { .cv-dock button:hover:not([aria-pressed="true"]) { color: #FFFFFF; } }
+.cv-dock-ayuda { font-family: var(--mono); font-size: 10px; color: rgba(255, 255, 255, 0.5); mix-blend-mode: difference; transition: opacity 200ms; }
+.cv-dock.calla .cv-dock-idea, .cv-dock.calla .cv-dock-ayuda { opacity: 0; pointer-events: none; }
+.cv-dock.calla .cv-dock-grupo button:not([aria-pressed="true"]) { display: none; }
+@media (hover: hover) {
+    .cv-dock.calla:hover .cv-dock-idea, .cv-dock.calla:hover .cv-dock-ayuda { opacity: 1; }
+    .cv-dock.calla:hover .cv-dock-grupo button { display: block; }
+}
+
+/* --- 2. AJUSTES EN VIVO --- */
+.cv-ajustes { position: fixed; z-index: 61; right: 16px; top: 76px; width: 268px; padding: 12px 14px; background: rgba(10, 10, 10, 0.84); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); color: rgba(255, 255, 255, 0.8); font-size: 10.5px; opacity: 0; visibility: hidden; translate: 8px 0; transition: opacity 180ms, translate 180ms var(--sale), visibility 0s 180ms; }
+.cv-ajustes.abierto { opacity: 1; visibility: visible; translate: 0 0; transition: opacity 180ms, translate 180ms var(--sale); }
+.cv-ajustes-cab { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; margin-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.cv-ajustes-cab button { width: 22px; height: 22px; color: #FFFFFF; font-size: 15px; }
+.cv-ajustes label { display: grid; grid-template-columns: 1fr auto; row-gap: 4px; padding: 6px 0; }
+.cv-ajustes label output { color: #FFFFFF; }
+.cv-ajustes input[type="range"] { grid-column: 1 / -1; width: 100%; height: 14px; accent-color: var(--lf-claro); }
+.cv-ajustes input[type="checkbox"] { accent-color: var(--lf-claro); }
+.cv-ajustes-pie { display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+.cv-ajustes-pie code { flex: 1; font: inherit; color: rgba(255, 255, 255, 0.6); text-transform: none; word-break: break-word; }
+.cv-ajustes-pie button { padding: 4px 8px; border: 1px solid rgba(255, 255, 255, 0.3); color: #FFFFFF; font-size: 10.5px; }
+
+/* =======================================================
+   ANIMACIONES Y MOVIMIENTO REDUCIDO
+   ======================================================= */
+@keyframes cv-sube { from { translate: 0 105%; } to { translate: 0 0; } }
+@keyframes cv-aparece { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
+@keyframes cv-late { 50% { opacity: 0.3; } }
+@keyframes cv-traza-y { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes cv-traza-x { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes cv-hito { to { background: var(--lf-claro); } }
+@media (prefers-reduced-motion: reduce) {
+    .cv *, .cv *::before, .cv *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; }
+}
