@@ -48,12 +48,14 @@
         etiqueta: { nombre: 'Guía', idea: 'Una guía de despacho con los hitos reales del proyecto: remite agustín.design, seis nodos que se llenan en orden y entrega el 20 de octubre.' }
     };
     const HOVERS = {
-        vuelo: { nombre: 'Vuelo', idea: 'El mensajero sale del nodo derecho en arco por sobre la palabra, deja una estela turquesa y aterriza en la o, que lo recibe. La entrega más directa y la más legible a tamaño chico.' },
-        seguimiento: { nombre: 'Seguimiento', idea: 'La recomendada: la entrega, pero mejor. El nodo despacha por una calle bajo la palabra y sus seis etapas, las del seguimiento de llegofarma.cl, se llenan al pasar; la ruta sube a la o y la entrega se confirma.' },
-        barrido: { nombre: 'Barrido', idea: 'El mensajero cruza por detrás de Llegó, visible entre las letras, y una franja turquesa claro las tiñe a su paso. El barrido de la portada, sin apagar la palabra.' }
+        despacho: { nombre: 'Despacho', idea: 'La recomendada: el segundo acto de la entrada. El nodo derecho sale como mensajero, cruza Llegó abriéndose paso con el mismo borde difuso y se funde en la o; detrás llega un nodo nuevo, como en la entrada.' },
+        rearme: { nombre: 'Rearme', idea: 'El primer acto: los brazos se recogen al centro, los nodos se van, el centro rebota y el isotipo se vuelve a armar con los tiempos de la entrada.' },
+        cierre: { nombre: 'Cierre', idea: 'El tercer acto: la o se cierra y se abre con la onda, la tilde se marca de nuevo, la barra se traza y farma sube.' },
+        eco: { nombre: 'Eco', idea: 'La entrada entera en miniatura: cada pieza hace su gesto en el mismo orden, con un tercio de la amplitud.' },
+        ida: { nombre: 'Ida y vuelta', idea: 'Un estado y no una pasada: mientras el mouse está encima, el nodo derecho viaja a la o y queda adentro, entregado; al salir vuelve a su lugar, desde donde vaya.' }
     };
     const EJES = { cinta: CINTAS, texto: TEXTOS, grafica: GRAFICAS, hover: HOVERS };
-    const TECLAS = { cinta: '12345', texto: 'qwer', grafica: 'asdfg', hover: 'cvb' };
+    const TECLAS = { cinta: '12345', texto: 'qwer', grafica: 'asdfg', hover: 'cvbnm' };
 
     /* --- 3. EL MOTOR DE LA CINTA --- */
     const raiz = document.body, h = $('.cv-h'), fijo = $('.cv-fijo'), escena = $('.cv-escena'), plano = $('.cv-plano');
@@ -192,7 +194,7 @@
 
     /* --- 5. EL DOCK, EL ANCLA Y LA ENTRADA --- */
     const barra = $('[data-barra]'), dock = $('.cv-dock'), idea = $('[data-idea]', dock), sigue = $('.cv-sigue');
-    const estado = { cinta: 'horizonte', texto: 'ficha', grafica: 'sin', hover: 'seguimiento' };
+    const estado = { cinta: 'horizonte', texto: 'ficha', grafica: 'sin', hover: 'despacho' };
     let callar;
     /* El logo se arma en cada entrada (.llega), siempre con la animación de la portada del home, y la clase sale cuando
        terminan sus animaciones. Recién ahí acepta el hover (.nodo), que también dura lo que duren las suyas: una pasada
@@ -201,15 +203,23 @@
     let armadas = 0, pasadas = 0;
     const alTerminar = (clase, vuelta, actual) => Promise.allSettled(logo.getAnimations({ subtree: true }).map(a => a.finished)).then(() => { if (vuelta === actual()) logo.classList.remove(clase); });
     const armarLogo = () => {
-        logo.classList.remove('llega', 'nodo'); void logo.getBoundingClientRect(); logo.classList.add('llega');
+        logo.classList.remove('llega', 'nodo', 'encima', 'vuelve'); void logo.getBoundingClientRect(); logo.classList.add('llega');
         alTerminar('llega', ++armadas, () => armadas);
     };
+    /* Ida y vuelta es un estado: .encima mientras el mouse está encima y .vuelve al salir, hasta que el nodo regresa */
+    const ir = () => { logo.classList.remove('vuelve'); logo.classList.add('encima'); };
+    const volver = () => { if (!logo.classList.contains('encima')) return; logo.classList.replace('encima', 'vuelve'); alTerminar('vuelve', ++pasadas, () => pasadas); };
     const pasar = () => {
         if (quieto || logo.classList.contains('llega')) return;
-        logo.classList.remove('nodo'); void logo.getBoundingClientRect(); logo.classList.add('nodo');
+        if (estado.hover === 'ida') { ir(); setTimeout(() => { if (!logo.matches(':hover')) volver(); }, 1600); return; }
+        logo.classList.remove('nodo', 'encima', 'vuelve'); void logo.getBoundingClientRect(); logo.classList.add('nodo');
         alTerminar('nodo', ++pasadas, () => pasadas);
     };
-    logo.addEventListener('pointerenter', () => { if (!logo.classList.contains('nodo')) pasar(); });
+    logo.addEventListener('pointerenter', () => {
+        if (estado.hover === 'ida') { if (!quieto && !logo.classList.contains('llega')) ir(); }
+        else if (!logo.classList.contains('nodo')) pasar();
+    });
+    logo.addEventListener('pointerleave', volver);
 
     Object.entries(EJES).forEach(([eje, lista]) => {
         $(`[data-eje="${eje}"]`, dock).insertAdjacentHTML('beforeend', Object.entries(lista).map(([id, o], i) => `<button type="button" data-id="${id}" aria-pressed="false"><kbd>${TECLAS[eje][i].toUpperCase()}</kbd>${o.nombre}</button>`).join(''));
@@ -261,7 +271,7 @@
     history.scrollRestoration = 'manual';
     const desdeAncla = () => {
         const [ci, te, gr, ho] = location.hash.slice(1).split('/');
-        elegir('cinta', CINTAS[ci] ? ci : 'horizonte', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false); elegir('hover', HOVERS[ho] ? ho : 'seguimiento', false);
+        elegir('cinta', CINTAS[ci] ? ci : 'horizonte', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false); elegir('hover', HOVERS[ho] ? ho : 'despacho', false);
         idea.textContent = CINTAS[estado.cinta].idea;
         entrar();
     };
