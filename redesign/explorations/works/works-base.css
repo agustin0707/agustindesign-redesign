@@ -63,6 +63,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 :is(.nav, .barra) .logo::before { opacity: 0.45; transition: inset 200ms var(--ease); }
 @media (hover: hover) { :is(.nav, .barra) .logo:hover::before { inset: -0.13em -0.23em -0.31em; } }
 @media (prefers-reduced-motion: reduce) { :is(.nav, .barra) .logo::before { transition: none; } }
+/* En pantallas táctiles el área de toque del logo crece a 44 px de alto sin moverlo */
+@media (hover: none) and (pointer: coarse) { :is(.nav, .barra) .logo::after { content: ''; position: absolute; inset: -14px -10px; } }
 
 /* =======================================================
    CABECERA DE SECCIÓN

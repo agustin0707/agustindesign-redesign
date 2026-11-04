@@ -193,9 +193,11 @@
     });
 
     /* --- 5. VER CASO --- */
-    /* La pieza viaja y se abre como portada del caso. Tap In ya tiene su página: al terminar el viaje se entra a ella */
+    /* La pieza viaja y se abre como portada del caso. Solo los casos con página propia (Tap In) viajan: Llegó abre su sitio
+       en otra pestaña y Mend muestra un rótulo hasta que su caso exista */
     covs.forEach(c => {
-        const ver = c.querySelector('.pt-ver'), vistas = c.querySelector('.pt-vistas'), nombre = c.querySelector('h3');
+        const ver = c.querySelector('a.pt-ver:not([target])'), vistas = c.querySelector('.pt-vistas'), nombre = c.querySelector('h3');
+        if (!ver) return;
         ver.addEventListener('click', e => {
             if (!window.abrirCaso) return;
             e.preventDefault();

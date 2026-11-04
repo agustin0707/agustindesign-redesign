@@ -88,6 +88,16 @@
         .nav .logo, .nav .der { opacity: 0; animation: aparece 1200ms var(--ease) 950ms forwards; }
         .hero a:focus-visible { outline: 1px solid currentColor; outline-offset: 6px; border-radius: 2px; }
 
+        /* --- 4. ÁREAS DE TOQUE --- */
+        /* En pantallas táctiles los links chicos crecen hacia afuera hasta unos 40 px de alto sin mover el diseño: con un
+           pseudo-elemento, o con relleno en los links que ruedan (ahí sobra la copia de abajo, que solo sirve al hover) */
+        @media (hover: none) and (pointer: coarse) {
+            .links-actual a { padding-block: 8px; margin-block: -8px; }
+            .links-actual .c { text-shadow: none; }
+            .pt-tope a, .ab-servicios .ej { position: relative; }
+            .pt-tope a::after, .ab-servicios .ej::after { content: ''; position: absolute; inset: -12px -6px; }
+        }
+
         /* =======================================================
            GRUPO DE ACCIÓN (DERECHA, SOBRE FONDO PLANO)
            ======================================================= */
@@ -273,7 +283,9 @@
         .pt-cifra span { max-width: 22ch; padding-bottom: 0.1em; color: rgba(255, 255, 255, 0.72); font: 400 12px / 1.35 var(--mono); }
         .pt-ver { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px; background: var(--blanco); color: var(--negro); font-size: 14px; font-weight: 500; transition: gap 200ms var(--ease); }
         .pt-ver i { font-style: normal; transition: transform 200ms var(--ease); }
-        @media (hover: hover) { .pt-ver:hover { gap: 14px; } .pt-ver:hover i { transform: translateX(2px); } }
+        /* Mientras el caso no existe, el lugar del botón lo ocupa un rótulo quieto: sin fondo, sin hover y sin clic */
+        .pt-ver.pt-pronto { background: none; color: rgba(255, 255, 255, 0.72); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3); font-weight: 400; cursor: default; }
+        @media (hover: hover) { .pt-ver:not(.pt-pronto):hover { gap: 14px; } .pt-ver:hover i { transform: translateX(2px); } }
 
         /* --- 2. CAPÍTULOS: MARCA, WEB Y EN USO SOBRE LA MISMA PIEZA --- */
         .pt-lado { grid-column: 6 / -1; grid-row: 2 / span 2; display: grid; grid-template-rows: auto minmax(0, 1fr); row-gap: 14px; min-height: 0; }
@@ -922,7 +934,7 @@
         @media (hover: hover) {
             .ab-servicios:has(li:hover) li:not(:hover) { color: rgba(11, 11, 11, 0.4); }
             .ab-servicios .ej:hover { text-decoration: underline; text-underline-offset: 3px; }
-            .ab-servicios .ej:hover span { translate: 2px -2px; }
+            .ab-servicios .ej:hover span { translate: 0 -2px; }
         }
 
         /* --- 4.7 PASOS EN SECUENCIA --- */
@@ -1216,7 +1228,7 @@
            7. NAVEGACIÓN SUAVE
            ======================================================= */
         /* Los saltos largos (volver arriba desde el footer, ir al contacto desde el hero) muestran un índice del home a la
-           derecha mientras la página recorre el camino atenuada. Es una lupa: Hero, Works, Archivo, About y Contact repartidos
+           derecha mientras la página recorre el camino atenuada. Es una lupa: Inicio, Trabajo, Archivo, Sobre mí y Contacto repartidos
            parejo y juntos, y los cercanos a la posición del viaje crecen y se apartan para darle lugar, como el dock de macOS.
            Sin punto ni flecha: la lupa ya dice dónde vas. Lo recorrido queda en gris, lo actual y el destino en blanco y lo
            que falta del camino en tenue. Los rótulos entran en cascada y, al llegar, el índice se apaga quieto, sin pulso. Lo
@@ -1254,7 +1266,7 @@
 </head>
 <body>
 
-    <header class="barra" data-barra-home><a href="#" class="logo" data-arriba>agustín<span>.</span>design</a><ul><li><a href="#works">Works</a></li><li><a href="#about">About</a></li><li><a href="#contacto">Contact</a></li></ul><span class="der mono">Santiago</span></header>
+    <header class="barra" data-barra-home><a href="#" class="logo" data-arriba>agustín<span>.</span>design</a><ul><li><a href="#works">Trabajo</a></li><li><a href="#about">Sobre mí</a></li><li><a href="#contacto">Contacto</a></li></ul><span class="der mono">Santiago</span></header>
 
     <div class="escena-hero">
     <section class="hero" data-parallax>
@@ -1262,7 +1274,7 @@
             <a href="#" class="logo" data-arriba>agustín<span class="punto">.</span>design</a>
             <span class="mono der"><span class="punto-vivo" aria-hidden="true"></span><span class="reloj" data-reloj>Santiago 00:00</span></span>
         </nav>
-        <ul class="links-actual"><li><a href="#works">Works</a></li><li><a href="#about">About</a></li><li><a href="#contacto">Contact</a></li></ul>
+        <ul class="links-actual"><li><a href="#works">Trabajo</a></li><li><a href="#about">Sobre mí</a></li><li><a href="#contacto">Contacto</a></li></ul>
 
         <div class="retrato" data-capa="0.6"><div class="retrato-in"><img src="../../../img/fotodeperfilgus5.webp" alt="" fetchpriority="high" width="3073" height="1750"></div></div>
 
@@ -1278,7 +1290,7 @@
     </section>
 
     <section class="apertura works" id="works">
-        <div class="fila-top mono"><span class="gris">02 · Works</span><span class="gris">Trabajo seleccionado</span><span class="gris">2025–2026</span></div>
+        <div class="fila-top mono"><span class="gris">02 · Trabajo</span><span class="gris">Proyectos seleccionados</span><span class="gris">2025–2026</span></div>
         <h2 class="ap-titulo">Marcas y sitios web, diseñados y construidos por mí. <span class="gris">Cada proyecto, contado desde sus decisiones.</span></h2>
         <ul class="ap-indice">
             <li><a href="#p-llego" data-ir-cov="0"><span class="mono gris">01</span><b>Llegó Farma</b><span class="mono gris ap-d">Marca · Sitio one page</span><span class="mono gris ap-a">2026</span><span class="mono en-linea">llegofarma.cl</span><i aria-hidden="true">↘</i></a></li>
@@ -1308,7 +1320,7 @@
                         <h3>Llegó Farma</h3>
                         <p>La submarca de salud de Llegó, referente de la logística en Chile. Diseñé su identidad, su manual y su sitio, que también programé</p>
                         <div class="pt-cifra"><b>+21 años</b><span>de Llegó en logística, hoy también en México</span></div>
-                        <button type="button" class="pt-ver" data-ver>Ver caso <i aria-hidden="true">→</i></button>
+                        <a class="pt-ver" href="https://llegofarma.cl" target="_blank" rel="noopener">Ver el sitio <i aria-hidden="true">↗</i></a>
                     </div>
                 </div>
             </article>
@@ -1358,7 +1370,7 @@
                         <h3>Mend</h3>
                         <p>Salud articular para Atención Primaria, de la investigación al producto. Marca y web app construidas por mí</p>
                         <div class="pt-cifra"><b>En testeo</b><span>con pacientes de Atención Primaria</span></div>
-                        <button type="button" class="pt-ver" data-ver>Ver caso <i aria-hidden="true">→</i></button>
+                        <span class="pt-ver pt-pronto">Caso en preparación</span>
                     </div>
                 </div>
             </article>
@@ -1402,10 +1414,10 @@
         <div class="ab-filas">
             <div class="ab-fila" id="ab-quien" data-f="quien"><span class="ab-rotulo mono">Quién</span><p class="ab-quien" data-ab-lectura>Trabajo entre <b>la marca,</b> <b>la experiencia</b> y <b>el código,</b> que casi siempre van en manos distintas. Juntarlos es lo que hace que la web se vea y funcione tal como se diseñó.</p></div>
             <div class="ab-fila" id="ab-que" data-f="que"><span class="ab-rotulo mono">Qué hago</span><ul class="ab-servicios">
-                <li><span>Marca y web desde cero</span><span class="mono t">Proyecto completo</span><a class="mono ej" href="#p-llego" data-ir-cov="0">Llegó Farma <span>↗</span></a></li>
+                <li><span>Marca y web desde cero</span><span class="mono t">Proyecto completo</span><a class="mono ej" href="#p-llego" data-ir-cov="0">Llegó Farma <span>↑</span></a></li>
                 <li><span>Web para una marca que ya existe</span><span class="mono t">Sitio</span><span class="mono pronto">Próximamente</span></li>
-                <li><span>Landings de lanzamiento</span><span class="mono t">One page</span><a class="mono ej" href="#p-tapin" data-ir-cov="1">Tap In <span>↗</span></a></li>
-                <li><span>Producto digital con marca</span><span class="mono t">Web app</span><a class="mono ej" href="#p-mend" data-ir-cov="2">Mend <span>↗</span></a></li>
+                <li><span>Landings de lanzamiento</span><span class="mono t">One page</span><a class="mono ej" href="#p-tapin" data-ir-cov="1">Tap In <span>↑</span></a></li>
+                <li><span>Producto digital con marca</span><span class="mono t">Web app</span><a class="mono ej" href="#p-mend" data-ir-cov="2">Mend <span>↑</span></a></li>
             </ul></div>
             <div class="ab-fila" id="ab-como" data-f="como"><span class="ab-rotulo mono">Cómo trabajo</span><ol class="ab-pasos"><li><b>Entender</b><p>Conversamos del negocio, de quién llega al sitio y de qué tiene que lograr.</p></li><li><b>Decidir</b><p>Defino la marca y la estructura, con el porqué de cada decisión.</p></li><li><b>Diseñar</b><p>La web pantalla por pantalla, en escritorio y teléfono.</p></li><li><b>Construir</b><p>La programo a mano, rápida y precisa, y la dejo publicada.</p></li></ol></div>
             <div class="ab-fila" id="ab-formacion" data-f="formacion"><span class="ab-rotulo mono">Formación</span><ul class="ab-creditos"><li><span class="ab-iso"><img src="media/ab-uc.svg" alt="" width="75" height="101" loading="lazy" decoding="async"></span><b>Diseño UC</b><span>Me titulo en diciembre de 2026</span></li><li><span class="ab-iso"><img class="upf" src="media/ab-upf.png" alt="" width="177" height="177" loading="lazy" decoding="async"></span><b>UPF, Barcelona</b><span>Intercambio en Diseño Gráfico</span></li><li><span class="ab-iso"><img class="shifta" src="media/ab-shifta.svg" alt="" width="146" height="32" loading="lazy" decoding="async"></span><b>Shifta</b><span>Curso UX Enterprise</span></li></ul></div>
