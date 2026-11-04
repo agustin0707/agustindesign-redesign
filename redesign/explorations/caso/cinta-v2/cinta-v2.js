@@ -211,7 +211,7 @@
        salen del dibujo (getBBox), que no se mueve con los gestos; se miden la primera vez que el logo tiene tamaño. Solo con mouse */
     const conMouse = window.matchMedia('(hover: hover)').matches;
     const piezas = [...logo.querySelectorAll('.cv-lg-p')], iO = piezas.indexOf($('.cv-lg-o', logo));
-    const VB = { x: -2, w: 440, h: 84 }, TIRON = 4, GOLPE = 11;
+    const VB = { x: -2, w: 440, h: 84 }, TIRON = 3, GOLPE = 15;
     let centros = null;
     const medirPiezas = () => {
         const cajas = piezas.map(p => p.getBBox());
@@ -243,8 +243,9 @@
         piezas.forEach(p => ['--w', '--px', '--py'].forEach(v => p.style.removeProperty(v)));
         enReposo = true;
     };
-    /* Un paso de los resortes: el grado con algo de rebote (ω 11, ζ 0,62) para que la ola se sienta viva, el tirón más
-       amortiguado (ω 9, ζ 0,8). Euler semi implícito, estable con los 50 ms de tope del cuadro */
+    /* Un paso de los resortes, casi críticos para que no se sientan de gelatina: el grado firme (ω 13, ζ 0,85, se
+       asienta en ~350 ms sin rebote visible) y el tirón un poco más lento (ω 10, ζ 0,95). Euler semi implícito, estable
+       con los 50 ms de tope del cuadro */
     const resorte = (r, v, m, w, z, s) => { const dv = 'v' + v; r[dv] += (w * w * (r[m] - r[v]) - 2 * z * w * r[dv]) * s; r[v] += r[dv] * s; };
     let antes = 0;
     const mover = ahora => {
@@ -253,7 +254,7 @@
         let quietas = 0;
         resortes.forEach((r, i) => {
             if (r.golpe && ahora >= r.golpe) { r.vw += GOLPE; r.golpe = 0; }
-            resorte(r, 'w', 'mw', 11, 0.62, s); resorte(r, 'px', 'mx', 9, 0.8, s); resorte(r, 'py', 'my', 9, 0.8, s);
+            resorte(r, 'w', 'mw', 13, 0.85, s); resorte(r, 'px', 'mx', 10, 0.95, s); resorte(r, 'py', 'my', 10, 0.95, s);
             const p = piezas[i].style;
             p.setProperty('--w', r.w.toFixed(4)); p.setProperty('--px', r.px.toFixed(3)); p.setProperty('--py', r.py.toFixed(3));
             if (!r.golpe && r.mw < 0.002 && Math.abs(r.w) + Math.abs(r.vw) + Math.abs(r.px) + Math.abs(r.vpx) + Math.abs(r.py) + Math.abs(r.vpy) < 0.002) quietas++;
