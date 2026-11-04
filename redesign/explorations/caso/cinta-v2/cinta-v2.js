@@ -31,7 +31,7 @@
         base: { nombre: 'La base', idea: 'La base aprobada, sin cambios de composición: tres columnas, el plano inclinado a la derecha y el título libre a la izquierda.', n: 3, ancho: 0.3, rx: 50, ry: 0, rz: -26, persp: 2000, dx: 0.17, dy: 0, vel: 1, niebla: 0, piso: 0, eje: 'v' },
         linea: { nombre: 'La línea', idea: 'Una sola columna grande sobre su piso y sus rieles, como una cinta transportadora de verdad: cada sección pasa de a una y se lee entera.', n: 1, ancho: 0.42, rx: 52, ry: 0, rz: -30, persp: 1500, dx: 0.13, dy: 0, vel: 0.85, niebla: 0.55, piso: 1, eje: 'v' },
         campo: { nombre: 'El campo', idea: 'Siete columnas de cartas chicas que corren a distintas velocidades: el sitio completo de un vistazo, la escala del trabajo.', n: 7, ancho: 0.15, rx: 42, ry: 0, rz: -24, persp: 2600, dx: 0.1, dy: 0, vel: 1.1, niebla: 0.4, piso: 0, eje: 'v' },
-        horizonte: { nombre: 'El horizonte', idea: 'La cámara baja casi al ras: la cinta se pierde en la distancia y la niebla le da la profundidad que a la base le falta.', n: 3, ancho: 0.24, rx: 70, ry: 0, rz: -14, persp: 1100, dx: 0.17, dy: -0.04, vel: 1.3, niebla: 0.92, piso: 1, eje: 'v' },
+        horizonte: { nombre: 'El horizonte', idea: 'La elegida: la cámara baja casi al ras y cinco columnas se pierden en la distancia; la niebla le da la profundidad que a la base le falta.', n: 5, ancho: 0.23, rx: 71, ry: 0, rz: -19, persp: 1050, dx: 0.19, dy: -0.04, vel: 1.25, niebla: 0.8, piso: 1, eje: 'v' },
         tira: { nombre: 'La tira', idea: 'La cinta corre en horizontal, de derecha a izquierda y en escorzo: una tira que cruza la pantalla por encima del título.', n: 3, ancho: 0.19, rx: 10, ry: -28, rz: -3, persp: 1600, dx: 0.06, dy: -0.16, vel: 1, niebla: 0.5, piso: 1, eje: 'h' }
     };
     const TEXTOS = {
@@ -181,10 +181,10 @@
 
     /* --- 5. EL DOCK, EL ANCLA Y LA ENTRADA --- */
     const barra = $('[data-barra]'), dock = $('.cv-dock'), idea = $('[data-idea]', dock), sigue = $('.cv-sigue');
-    const estado = { cinta: 'tira', texto: 'ficha', grafica: 'sin' };
+    const estado = { cinta: 'horizonte', texto: 'ficha', grafica: 'sin' };
     let callar;
-    /* El logo se arma en cada entrada (.llega) y recién después acepta el hover (.nodo): el isotipo late, los nodos
-       chicos rebotan, sale una onda, la tilde salta y las letras hacen una ola. Una pasada por entrada del mouse */
+    /* El logo se arma en cada entrada (.llega) y recién después acepta el hover (.nodo): una entrega por la ruta de
+       nodos, del chico de arriba al grande, que se llena al llegar. Una pasada por entrada del mouse */
     const logo = $('.cv-logo');
     let armando;
     const armarLogo = () => {
@@ -238,7 +238,7 @@
     history.scrollRestoration = 'manual';
     const desdeAncla = () => {
         const [ci, te, gr] = location.hash.slice(1).split('/');
-        elegir('cinta', CINTAS[ci] ? ci : 'tira', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false);
+        elegir('cinta', CINTAS[ci] ? ci : 'horizonte', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false);
         idea.textContent = CINTAS[estado.cinta].idea;
         entrar();
     };
