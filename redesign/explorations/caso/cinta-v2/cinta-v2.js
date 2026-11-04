@@ -37,7 +37,7 @@
     const TEXTOS = {
         nombre: { nombre: 'El nombre', idea: 'La versión actual: el cliente manda y la decisión va de bajada. Ahora en la grilla de 12: Farma y la bajada parten exacto en la columna 4.' },
         decision: { nombre: 'La decisión', idea: 'La decisión es el titular y el cliente pasa al riel: quien llega lee primero lo que logré, no para quién.' },
-        ficha: { nombre: 'La ficha', idea: 'El nombre más contenido y una ficha con datos verificables: el encargo, lo que hice, lo que entregué y en cuánto (8 semanas, del 25 ago al 20 oct).' },
+        ficha: { nombre: 'La ficha', idea: 'La elegida: el logo horizontal, que se arma al entrar y responde al mouse, y tres datos cortos en la grilla, tan limpio como el hero de Tap In.' },
         oficio: { nombre: 'El oficio', idea: 'Los dos verbos del posicionamiento como titular: diseñé y programé. El verbo que me distingue va en el turquesa claro de la marca.' }
     };
     const GRAFICAS = {
@@ -181,8 +181,18 @@
 
     /* --- 5. EL DOCK, EL ANCLA Y LA ENTRADA --- */
     const barra = $('[data-barra]'), dock = $('.cv-dock'), idea = $('[data-idea]', dock), sigue = $('.cv-sigue');
-    const estado = { cinta: 'base', texto: 'nombre', grafica: 'sin' };
+    const estado = { cinta: 'tira', texto: 'ficha', grafica: 'sin' };
     let callar;
+    /* El logo se arma en cada entrada (.llega) y recién después acepta el hover (.nodo): el isotipo late, los nodos
+       chicos rebotan, sale una onda, la tilde salta y las letras hacen una ola. Una pasada por entrada del mouse */
+    const logo = $('.cv-logo');
+    let armando;
+    const armarLogo = () => {
+        logo.classList.remove('llega', 'nodo'); void logo.getBoundingClientRect(); logo.classList.add('llega');
+        clearTimeout(armando); armando = setTimeout(() => logo.classList.remove('llega'), quieto ? 0 : 2400);
+    };
+    logo.addEventListener('pointerenter', () => { if (!logo.classList.contains('llega')) logo.classList.add('nodo'); });
+    logo.addEventListener('animationend', e => { if (e.target.classList.contains('cv-lg-onda')) logo.classList.remove('nodo'); });
     Object.entries(EJES).forEach(([eje, lista]) => {
         $(`[data-eje="${eje}"]`, dock).insertAdjacentHTML('beforeend', Object.entries(lista).map(([id, o], i) => `<button type="button" data-id="${id}" aria-pressed="false"><kbd>${TECLAS[eje][i].toUpperCase()}</kbd>${o.nombre}</button>`).join(''));
     });
@@ -207,6 +217,7 @@
         c.iniciar(); alScroll();
         dock.classList.remove('calla'); clearTimeout(callar); callar = setTimeout(() => dock.classList.add('calla'), 6000);
         setTimeout(entibiar, 2600);
+        armarLogo();
     };
     dock.addEventListener('click', e => { const b = e.target.closest('[data-eje] button'); if (b) elegir(b.closest('[data-eje]').dataset.eje, b.dataset.id); });
     window.addEventListener('keydown', e => {
@@ -227,7 +238,7 @@
     history.scrollRestoration = 'manual';
     const desdeAncla = () => {
         const [ci, te, gr] = location.hash.slice(1).split('/');
-        elegir('cinta', CINTAS[ci] ? ci : 'base', false); elegir('texto', TEXTOS[te] ? te : 'nombre', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false);
+        elegir('cinta', CINTAS[ci] ? ci : 'tira', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false);
         idea.textContent = CINTAS[estado.cinta].idea;
         entrar();
     };
