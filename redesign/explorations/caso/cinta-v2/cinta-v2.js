@@ -2,8 +2,8 @@
    INICIO JS · CINTA LLEGÓ FARMA, VARIANTES (.cv-)
    ======================================================= */
 /* Un solo motor de cinta con sus ajustes a la vista (cantidad, ancho, ángulos, perspectiva, desvío, velocidad, niebla,
-   piso y eje) y tres ejes que se combinan desde el dock: la cinta, el texto y la gráfica. El estado vive en el ancla
-   (#cinta/texto/grafica) para poder compartir cada combinación */
+   piso y eje) y cuatro ejes que se combinan desde el dock: la cinta, el texto, la gráfica y el hover del logo. El
+   estado vive en el ancla (#cinta/texto/grafica/hover) para poder compartir cada combinación */
 (function () {
     const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
@@ -24,7 +24,7 @@
         f.src = SITIO; document.body.appendChild(f);
     };
 
-    /* --- 2. LOS TRES EJES --- */
+    /* --- 2. LOS CUATRO EJES --- */
     /* Cada cinta es un juego de ajustes del mismo motor: n columnas (impares, la del centro aterriza), ancho de carta
        sobre el ancho de pantalla, ángulos en grados, perspectiva en px, desvío como fracción de la pantalla */
     const CINTAS = {
@@ -47,8 +47,16 @@
         trama: { nombre: 'Trama', idea: 'La trama de puntos de Llegó, la que se volvió el sistema de nodos, es la superficie de la cinta y avanza con ella.' },
         etiqueta: { nombre: 'Guía', idea: 'Una guía de despacho con los hitos reales del proyecto: remite agustín.design, seis nodos que se llenan en orden y entrega el 20 de octubre.' }
     };
-    const EJES = { cinta: CINTAS, texto: TEXTOS, grafica: GRAFICAS };
-    const TECLAS = { cinta: '12345', texto: 'qwer', grafica: 'asdfg' };
+    const HOVERS = {
+        mensajero: { nombre: 'Mensajero', idea: 'La recomendada, en la línea del home: el nodo de la derecha suelta un mensajero que barre Llegó, la o lo recibe y la tilde se marca al llegar. La animación de la portada, en corto.' },
+        entrega: { nombre: 'Entrega', idea: 'Los nodos de estado del manual: el de arriba despacha, el de la derecha espera en contorno y la ruta los llena uno a uno hasta el centro de la cruz.' },
+        cruz: { nombre: 'Cruz', idea: 'Los nodos sueltos se conectan al centro con los mismos brazos del isotipo y por un momento se ve la cruz completa, hecha con la gramática del nodo.' },
+        reticula: { nombre: 'Retícula', idea: 'La retícula de precisión del manual se traza sobre el logo, con sus cortes en cada cruce: el logo medido, como en una lámina técnica.' },
+        trama: { nombre: 'Trama', idea: 'La trama de puntos de Llegó aparece alrededor y se recoge en la cruz: los puntos que eran decoración se vuelven nodos.' },
+        red: { nombre: 'Red', idea: 'Continuo: los nodos sueltos siguen al cursor con un resorte y un hilo los une al centro, como una red que responde. Al salir vuelven a su lugar.' }
+    };
+    const EJES = { cinta: CINTAS, texto: TEXTOS, grafica: GRAFICAS, hover: HOVERS };
+    const TECLAS = { cinta: '12345', texto: 'qwer', grafica: 'asdfg', hover: 'cvbnm,' };
 
     /* --- 3. EL MOTOR DE LA CINTA --- */
     const raiz = document.body, h = $('.cv-h'), fijo = $('.cv-fijo'), escena = $('.cv-escena'), plano = $('.cv-plano');
@@ -56,7 +64,7 @@
     const P = { ...CINTAS.base };
     const c = { W: 0, H: 0, cw: 0, ch: 0, g: 28, paso: 0, ciclo: 0, largo: 0, off: 0, p: 0, e: 0, t: 0 };
     let cols = [], foco = 0, armado = '', lineas = [];
-    let mx = 0, my = 0, ox = 0, oy = 0, ult = 0, t0 = 0, hd = false, abierto = false, vez = 0, blanco = -1;
+    let mx = 0, my = 0, sx = 0, sy = 0, ox = 0, oy = 0, vx = 0, vy = 0, ult = 0, t0 = 0, hd = false, abierto = false, vez = 0, blanco = -1;
 
     const carta = (col, k) => {
         const img = TOMAS[(col.ini + k) % 8], n = document.createElement('i');
@@ -115,7 +123,14 @@
     };
     c.cuadro = ahora => {
         const dt = Math.min(ahora - (ult || ahora), 50); ult = ahora; c.t = ahora - t0;
-        ox += (mx - ox) * 0.06; oy += (my - oy) * 0.06;
+        /* El mouse pasa por dos filtros medidos en tiempo y no en cuadros: el objetivo se suaviza (120 ms) y la cinta lo
+           sigue con un resorte críticamente amortiguado. La velocidad y la aceleración nunca saltan, ni al entrar ni al
+           salir de la ventana, y se siente igual a 60 o a 120 Hz */
+        const s = dt / 1000, k = 1 - Math.exp(-dt / 120), w = 4.2;
+        sx += (mx - sx) * k; sy += (my - sy) * k;
+        vx += (w * w * (sx - ox) - 2 * w * vx) * s; vy += (w * w * (sy - oy) - 2 * w * vy) * s;
+        ox += vx * s; oy += vy * s;
+        red(s);
         const e = c.e = curva(fijar(c.p / 0.85));
         const a = quieto ? 1 : suave(fijar(c.t / 1600));
         const v = P.eje === 'v';
@@ -181,18 +196,50 @@
 
     /* --- 5. EL DOCK, EL ANCLA Y LA ENTRADA --- */
     const barra = $('[data-barra]'), dock = $('.cv-dock'), idea = $('[data-idea]', dock), sigue = $('.cv-sigue');
-    const estado = { cinta: 'horizonte', texto: 'ficha', grafica: 'sin' };
+    const estado = { cinta: 'horizonte', texto: 'ficha', grafica: 'sin', hover: 'mensajero' };
     let callar;
-    /* El logo se arma en cada entrada (.llega) y recién después acepta el hover (.nodo): una entrega por la ruta de
-       nodos, del chico de arriba al grande, que se llena al llegar. Una pasada por entrada del mouse */
+    /* El logo se arma en cada entrada (.llega) y recién después acepta el hover (.nodo), que dura lo que duren sus
+       animaciones: una pasada por entrada del mouse. La Red no usa la clase: la mueve el resorte de cada cuadro */
     const logo = $('.cv-logo');
-    let armando;
+    let armando, pasadas = 0;
     const armarLogo = () => {
         logo.classList.remove('llega', 'nodo'); void logo.getBoundingClientRect(); logo.classList.add('llega');
         clearTimeout(armando); armando = setTimeout(() => logo.classList.remove('llega'), quieto ? 0 : 2400);
     };
-    logo.addEventListener('pointerenter', () => { if (!logo.classList.contains('llega')) logo.classList.add('nodo'); });
-    logo.addEventListener('animationend', e => { if (e.target.classList.contains('cv-lg-onda')) logo.classList.remove('nodo'); });
+    const pasar = () => {
+        if (quieto || estado.hover === 'red' || logo.classList.contains('llega')) return;
+        logo.classList.remove('nodo'); void logo.getBoundingClientRect(); logo.classList.add('nodo');
+        const vuelta = ++pasadas;
+        Promise.allSettled(logo.getAnimations({ subtree: true }).map(a => a.finished)).then(() => { if (vuelta === pasadas) logo.classList.remove('nodo'); });
+    };
+    logo.addEventListener('pointerenter', () => { if (!logo.classList.contains('nodo')) pasar(); });
+
+    /* --- 5.1 LA RED: NODOS CON RESORTE --- */
+    /* Cada nodo suelto busca un punto entre su lugar y el cursor (hasta 9 unidades, menos mientras más lejos esté) con un
+       resorte subamortiguado, que al volver se pasa apenas. El hilo va del centro de la cruz al nodo y se enciende según
+       cuánto se estiró */
+    const sueltos = [['.cv-lg-n1', 32.1, 17.1], ['.cv-lg-n2', 56.1, 41.1]].map(([sel, x, y], i) => ({ el: $(sel, logo), hilo: logo.querySelectorAll('.cv-lg-hilo')[i], x, y, px: 0, py: 0, vx: 0, vy: 0 }));
+    let cursor = null;
+    const red = s => {
+        const activa = estado.hover === 'red' && !logo.classList.contains('llega') && !quieto;
+        sueltos.forEach(n => {
+            let tx = 0, ty = 0;
+            if (activa && cursor) {
+                const dx = cursor.x - n.x, dy = cursor.y - n.y, d = Math.hypot(dx, dy) || 1, f = fijar(1 - d / 260) * Math.min(d * 0.2, 9);
+                tx = dx / d * f; ty = dy / d * f;
+            }
+            if (!activa && !n.px && !n.py && !n.vx && !n.vy) return;
+            const w = 16, z = 0.42;
+            n.vx += (w * w * (tx - n.px) - 2 * z * w * n.vx) * s; n.vy += (w * w * (ty - n.py) - 2 * z * w * n.vy) * s;
+            n.px += n.vx * s; n.py += n.vy * s;
+            if (!activa && Math.abs(n.px) + Math.abs(n.py) + Math.abs(n.vx) + Math.abs(n.vy) < 0.02) n.px = n.py = n.vx = n.vy = 0;
+            n.el.style.translate = n.px || n.py ? `${n.px.toFixed(2)}px ${n.py.toFixed(2)}px` : '';
+            n.hilo.setAttribute('x2', (n.x + n.px).toFixed(2)); n.hilo.setAttribute('y2', (n.y + n.py).toFixed(2));
+            n.hilo.style.opacity = fijar(Math.hypot(n.px, n.py) / 5).toFixed(3);
+        });
+    };
+    const aLogo = e => { const m = logo.getScreenCTM(); if (!m) return null; const q = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse()); return { x: q.x, y: q.y }; };
+
     Object.entries(EJES).forEach(([eje, lista]) => {
         $(`[data-eje="${eje}"]`, dock).insertAdjacentHTML('beforeend', Object.entries(lista).map(([id, o], i) => `<button type="button" data-id="${id}" aria-pressed="false"><kbd>${TECLAS[eje][i].toUpperCase()}</kbd>${o.nombre}</button>`).join(''));
     });
@@ -208,8 +255,9 @@
         if (eje === 'cinta') { Object.assign(P, CINTAS[id]); pintarAjustes(); }
         dock.querySelectorAll(`[data-eje="${eje}"] button`).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === id)));
         idea.textContent = EJES[eje][id].idea;
-        history.replaceState(null, '', `#${estado.cinta}/${estado.texto}/${estado.grafica}`);
-        if (repetir) entrar();
+        history.replaceState(null, '', `#${estado.cinta}/${estado.texto}/${estado.grafica}/${estado.hover}`);
+        /* Elegir un hover lo muestra una vez sin repetir la entrada */
+        if (repetir) eje === 'hover' ? pasar() : entrar();
     };
     const entrar = () => {
         window.scrollTo({ top: 0, behavior: 'instant' });
@@ -228,21 +276,26 @@
         else if (k === 'x') alternarAjustes();
     });
     window.addEventListener('scroll', alScroll, { passive: true });
+    /* Sobre el dock y los ajustes la cinta se queda donde estaba; al salir de la ventana o perder el foco vuelve al
+       centro por el mismo resorte */
     window.addEventListener('pointermove', e => {
-        if (e.target.closest('.cv-dock, .cv-ajustes')) { mx = my = 0; return; }
+        cursor = aLogo(e);
+        if (e.target.closest('.cv-dock, .cv-ajustes')) return;
         mx = e.clientX / c.W - 0.5; my = e.clientY / c.H - 0.5;
     }, { passive: true });
-    document.documentElement.addEventListener('pointerleave', () => { mx = my = 0; });
+    const soltar = () => { mx = my = 0; cursor = null; };
+    document.addEventListener('mouseout', e => { if (!e.relatedTarget) soltar(); });
+    window.addEventListener('blur', soltar);
     window.addEventListener('resize', () => { c.medir(); alScroll(); });
     const bucle = ahora => { c.cuadro(ahora); requestAnimationFrame(bucle); };
     history.scrollRestoration = 'manual';
     const desdeAncla = () => {
-        const [ci, te, gr] = location.hash.slice(1).split('/');
-        elegir('cinta', CINTAS[ci] ? ci : 'horizonte', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false);
+        const [ci, te, gr, ho] = location.hash.slice(1).split('/');
+        elegir('cinta', CINTAS[ci] ? ci : 'horizonte', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false); elegir('hover', HOVERS[ho] ? ho : 'mensajero', false);
         idea.textContent = CINTAS[estado.cinta].idea;
         entrar();
     };
-    window.addEventListener('hashchange', () => { if (location.hash.slice(1) !== `${estado.cinta}/${estado.texto}/${estado.grafica}`) desdeAncla(); });
+    window.addEventListener('hashchange', () => { if (location.hash.slice(1) !== `${estado.cinta}/${estado.texto}/${estado.grafica}/${estado.hover}`) desdeAncla(); });
     (document.fonts ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 900))]) : Promise.resolve()).then(() => { desdeAncla(); requestAnimationFrame(bucle); });
 })();
 /* =======================================================
