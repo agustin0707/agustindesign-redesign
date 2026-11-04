@@ -1,0 +1,217 @@
+/* =======================================================
+   MARCO DE LOS CASOS (.cs-)
+   ======================================================= */
+/* Lo que es de Agustín Design en cada caso, sacado del caso de Tap In: barra, grilla de 12, escenas fijas que avanzan
+   con el scroll, el bloque de decisión, las aperturas de capítulo, la evidencia del sitio real, los pliegos a sangre y
+   el resultado. Cada caso pone su voz redefiniendo el contrato de variables (--cs-*) y los fondos de módulo (--fondo,
+   --texto, --texto-2, --texto-3, --linea, --acento). Requiere works-base.css; la lógica está en caso-motor.js */
+
+/* --- 1. CONTRATO DE VARIABLES (VALORES NEUTROS) --- */
+/* Grilla: 12 columnas, medianil de 24 px, margen de 5vw y 1600 px de contenido como máximo. Columnas 1 a 3: riel de
+   rótulos y números; el texto parte en la 4 */
+.cs {
+    --margen: max(clamp(24px, 5vw, 96px), calc((100vw - 1600px) / 2));
+    --medianil: 24px;
+    --cs-f: var(--sans);
+    --cs-f-mono: var(--mono);
+    --cs-mono-caja: none;
+    --cs-mono-track: 0;
+    --cs-peso: 500;
+    --cs-peso-clave: 600;
+    --cs-peso-num: 500;
+    --cs-t2: clamp(44px, 5.4vw, 92px);
+    --cs-t3: clamp(26px, 2.4vw, 40px);
+    --cs-t4: clamp(15px, 1.12vw, 17px);
+    --cs-track: -0.04em;
+    --cs-curva: var(--ease);
+    --cs-radio: 0px;
+    --cs-noche: #0A0A0A;
+    --cs-vidrio-oscuro: rgba(10, 10, 10, 0.5);
+    --cs-vidrio-claro: rgba(250, 250, 250, 0.8);
+    --cs-tinta: #111111;
+    background: var(--cs-noche);
+}
+.cs .mono { font-family: var(--cs-f-mono); text-transform: var(--cs-mono-caja); letter-spacing: var(--cs-mono-track); }
+html:has(> body.cs), body.cs { overflow-x: clip; }
+
+/* --- 2. BARRA: SE ESCONDE AL BAJAR Y TOMA EL COLOR DEL MÓDULO DE ABAJO --- */
+/* Sin mezcla por diferencia: blanco sobre lo oscuro, tinta sobre lo claro (.sobre-claro, lo pone el motor) */
+.cs .barra { mix-blend-mode: normal; color: #FFFFFF; isolation: isolate; transition: transform 450ms var(--ease), color 250ms linear; }
+.cs .barra.sobre-claro { color: var(--cs-tinta); }
+/* Cuando vuelve a mitad de página lleva un vidrio del tono de lo que hay debajo */
+.cs .barra::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--cs-vidrio-oscuro); -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3); opacity: 0; transition: opacity 300ms, background-color 250ms; }
+.cs .barra.sobre-claro::before { background: var(--cs-vidrio-claro); }
+.cs .barra.flota::before { opacity: 1; }
+.cs .barra.oculta { transform: translateY(-110%); }
+/* Hover como en el home: las letras ruedan y su copia toma el lugar */
+.cs .barra ul a { display: inline-flex; overflow: hidden; padding: 0 0.12em; margin: 0 -0.12em; }
+.cs .barra .c { display: inline-block; white-space: pre; text-shadow: 0 1.3em currentColor; transition: translate 800ms var(--hover-lento); transition-delay: calc(var(--i) * 35ms); }
+.cs .barra .der i { display: inline-block; font-style: normal; transition: transform 400ms var(--ease); }
+@media (hover: hover) {
+    .cs .barra ul a:hover .c { translate: 0 -1.3em; }
+    .cs .barra .der:hover i { transform: translateX(-4px); }
+}
+
+/* --- 3. ESTRUCTURA COMÚN --- */
+/* Módulo con aire, grilla y escenas: una pista alta (--pista, en pantallas) con un panel fijo adentro */
+.cs-mod { padding: clamp(96px, 11vw, 176px) var(--margen); }
+.cs-grilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); }
+[data-escena] { position: relative; height: calc(var(--pista, 300) * 1lvh); }
+.cs-fijo { position: sticky; top: 0; height: 100svh; height: 100lvh; overflow: clip; }
+.cs-fijo.cs-grilla { align-items: center; padding: 0 var(--margen); }
+/* Alto de pantalla estable para el JS: no cambia cuando la barra de Safari aparece o se esconde */
+.cs-sonda { position: fixed; top: 0; left: 0; width: 0; height: 100svh; height: 100lvh; visibility: hidden; pointer-events: none; }
+.cs-etq { grid-column: 1 / span 3; color: var(--texto-2); }
+.cs-marca { display: block; width: 100%; aspect-ratio: 1; background: currentColor; -webkit-mask: var(--svg) center / contain no-repeat; mask: var(--svg) center / contain no-repeat; }
+.cs-enunciado { grid-column: 4 / -1; font: var(--cs-peso) clamp(30px, 3.5vw, 58px) / 1.08 var(--cs-f); letter-spacing: var(--cs-track); text-wrap: pretty; }
+.cs-enunciado em { font-style: normal; font-weight: var(--cs-peso-clave); color: var(--acento); }
+/* Texto que se enciende palabra por palabra (las palabras las arma el motor) */
+.cs-pal { opacity: 0.16; transition: opacity 260ms linear; }
+.cs-pal.on { opacity: 1; }
+/* Apariciones: [data-revela] entra al verse una vez */
+[data-revela] { opacity: 0; translate: 0 24px; transition: opacity 700ms var(--ease), translate 900ms var(--ease); }
+[data-revela].visto { opacity: 1; translate: 0 0; }
+
+/* --- 4. DECISIÓN --- */
+/* Número, rótulo, título, qué se hizo y por qué; "Más contexto" se despliega solo donde aporta */
+.cs-dec { display: flex; flex-direction: column; gap: 16px; max-width: 40ch; }
+.cs-dec-num { font: var(--cs-peso-num) clamp(64px, 6.6vw, 116px) / 0.8 var(--cs-f); letter-spacing: -0.06em; margin: 0 0 4px -0.04em; color: var(--num, var(--texto-3)); font-variant-numeric: tabular-nums; }
+.cs-dec-n { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); }
+.cs-dec-n::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.cs-dec h3 { font: var(--cs-peso) var(--cs-t3) / 1.04 var(--cs-f); letter-spacing: var(--cs-track); text-wrap: balance; }
+.cs-dec p { font: 400 var(--cs-t4) / 1.5 var(--cs-f); color: var(--texto-2); text-wrap: pretty; }
+.cs-dec .cs-porque { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--linea); color: var(--texto); }
+.cs-porque .mono { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); }
+.cs-porque .mono::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.cs-mas summary { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; color: var(--texto-2); cursor: pointer; list-style: none; }
+.cs-mas summary::-webkit-details-marker { display: none; }
+.cs-mas summary::before { content: '+'; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--linea); transition: transform 300ms var(--ease); }
+.cs-mas[open] summary::before { transform: rotate(45deg); }
+.cs-mas p { margin-top: 10px; font-size: 15px; }
+@media (hover: hover) { .cs-mas summary:hover { color: var(--texto); } }
+
+/* --- 5. RÓTULO DE PASOS DE UNA PIEZA --- */
+/* Contador, nombre del paso en curso y un segmento por paso (el motor marca .on y .ya en los [data-paso]) */
+.cs-rotulo { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 14px; row-gap: 10px; color: var(--texto-2); }
+.cs-rotulo-t { position: relative; display: grid; font: 400 14px / 1.3 var(--cs-f); color: var(--texto); }
+.cs-rotulo-t > span { grid-area: 1 / 1; opacity: 0; translate: 0 6px; transition: opacity 260ms, translate 400ms var(--ease); }
+.cs-rotulo-t > span.on { opacity: 1; translate: 0 0; }
+.cs-segmentos { grid-column: 1 / -1; display: flex; gap: 4px; }
+.cs-segmentos i { flex: 1; height: 2px; background: var(--linea); transition: background-color 300ms; }
+.cs-segmentos i:is(.on, .ya) { background: var(--acento); }
+
+/* --- 6. APERTURA DE CAPÍTULO --- */
+/* Rótulo en el riel, título desde la 4 y bajada; el número grande lo dibuja cada caso */
+.cs-cap-txt { grid-column: 4 / span 7; display: flex; flex-direction: column; gap: 20px; }
+.cs-cap-n { grid-column: 1 / span 3; align-self: start; color: var(--texto-2); }
+.cs-cap-txt h2 { font: var(--cs-peso) var(--cs-t2) / 0.95 var(--cs-f); letter-spacing: var(--cs-track); }
+.cs-cap-txt p { max-width: 34ch; font: 400 clamp(17px, 1.4vw, 22px) / 1.4 var(--cs-f); color: var(--texto-2); text-wrap: pretty; }
+
+/* --- 7. EVIDENCIA: EL SITIO REAL, MARCADO --- */
+/* Un navegador fijo con el sitio de verdad adentro (iframe a 1440 o a 390 px, escalado). Cada parada del índice lleva
+   el sitio a su parte y un foco la marca: fuera del foco el sitio se apaga. El motor escribe --e (escala) y la caja */
+.cs-ev-nav { position: relative; grid-column: 1 / span 8; display: flex; flex-direction: column; height: min(78svh, calc((100vw - 2 * var(--margen)) * 0.66 * 0.625 + 40px)); border: 1px solid var(--linea); border-radius: var(--cs-radio); background: var(--fondo); overflow: hidden; }
+.cs-ev-cromo { display: flex; align-items: center; gap: 14px; height: 40px; padding: 0 14px; border-bottom: 1px solid var(--linea); color: var(--texto-2); }
+.cs-ev-luces { display: flex; gap: 6px; }
+.cs-ev-luces i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--texto-3); }
+.cs-ev-url { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.cs-ev-pant { position: relative; flex: 1; overflow: hidden; background: var(--cs-noche); }
+.cs-ev-pant iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; transform: scale(var(--e, 0.5)); pointer-events: none; opacity: 0; transition: opacity 600ms; }
+.cs-ev-pant.listo iframe { opacity: 1; }
+.cs-ev-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: opacity 600ms; }
+.cs-ev-pant.listo .cs-ev-poster { opacity: 0; }
+/* Foco: un recuadro con sombra enorme que apaga el resto, y su etiqueta pegada por fuera */
+.cs-ev-caja { position: absolute; z-index: 2; left: 0; top: 0; width: var(--w, 0px); height: var(--h, 0px); transform: translate3d(var(--x, 0px), var(--y, 0px), 0); box-shadow: 0 0 0 1px var(--foco, #FFFFFF), 0 0 0 200vmax rgba(0, 0, 0, var(--velo-ev, 0.46)); opacity: 0; transition: opacity 400ms; pointer-events: none; }
+.cs-ev-caja.on { opacity: 1; }
+.cs-ev-caja span { position: absolute; left: -1px; bottom: 100%; padding: 4px 8px; background: var(--foco, #FFFFFF); color: var(--foco-txt, #000000); white-space: nowrap; }
+.cs-ev-caja.abajo span { bottom: auto; top: 100%; }
+.cs-ev-indice { grid-column: 9 / -1; list-style: none; display: flex; flex-direction: column; }
+.cs-ev-cab { display: flex; justify-content: space-between; padding-bottom: 14px; color: var(--texto-2); }
+.cs-ev-indice li[data-parada] { border-top: 1px solid var(--linea); }
+.cs-ev-indice button { display: grid; grid-template-columns: 2.6em 1fr; align-items: baseline; width: 100%; min-height: 48px; padding: 14px 0; border: 0; background: none; color: var(--texto-3); font: var(--cs-peso) clamp(17px, 1.35vw, 21px) / 1.2 var(--cs-f); letter-spacing: -0.02em; text-align: left; cursor: pointer; transition: color 300ms; }
+.cs-ev-indice button .mono { font-size: 12px; }
+.cs-ev-indice .actual button { color: var(--texto); }
+.cs-ev-cuerpo { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 500ms var(--ease); }
+.cs-ev-cuerpo > div { overflow: hidden; padding-left: 2.6em; }
+.cs-ev-indice .actual .cs-ev-cuerpo { grid-template-rows: 1fr; }
+.cs-ev-cuerpo p { padding-bottom: 12px; font: 400 15px / 1.5 var(--cs-f); color: var(--texto-2); }
+.cs-ev-cuerpo .cs-porque { display: flex; flex-direction: column; gap: 6px; padding: 12px 0 18px; border-top: 1px solid var(--linea); color: var(--texto); }
+@media (hover: hover) { .cs-ev-indice button:hover { color: var(--texto); } }
+
+/* --- 8. PLIEGO A SANGRE --- */
+/* Foto a todo el ancho con su título encima y, debajo, una tira de fotos con snap y su pie */
+.cs-pliego-sangre { position: relative; height: 100svh; min-height: 560px; overflow: hidden; margin: 0; color: #FFFFFF; }
+.cs-pliego-sangre img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; transform: translate3d(0, calc(var(--v, 0) * -6%), 0); }
+.cs-pliego-sangre::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, 0.32), transparent 30%, transparent 50%, rgba(0, 0, 0, 0.62)); }
+.cs-pliego-arriba, .cs-pliego-sobre { position: absolute; left: var(--margen); right: var(--margen); z-index: 1; }
+.cs-pliego-arriba { top: 88px; display: flex; justify-content: space-between; }
+.cs-pliego-sobre { bottom: clamp(40px, 7vw, 96px); align-items: end; row-gap: 14px; }
+.cs-pliego-sobre .mono { grid-column: 1 / span 3; }
+.cs-pliego-sobre h3 { grid-column: 4 / span 6; font: var(--cs-peso) var(--cs-t2) / 0.95 var(--cs-f); letter-spacing: var(--cs-track); }
+.cs-pliego-sobre p { grid-column: 4 / span 5; max-width: 42ch; font: 400 var(--cs-t4) / 1.5 var(--cs-f); opacity: 0.86; }
+.cs-tira { padding: 28px var(--margen) clamp(72px, 8vw, 120px); }
+.cs-tira-pista { display: flex; gap: var(--medianil); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.cs-tira-pista::-webkit-scrollbar { display: none; }
+.cs-tira figure { flex: 0 0 auto; width: clamp(260px, 30vw, 520px); scroll-snap-align: start; margin: 0; }
+.cs-tira img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--cs-radio); background: var(--linea); }
+.cs-tira figcaption { display: flex; gap: 12px; padding-top: 12px; font: 400 14px / 1.4 var(--cs-f); color: var(--texto-2); }
+.cs-tira figcaption .mono { color: var(--texto-3); }
+.cs-tira-cab { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; color: var(--texto-2); }
+.cs-tira-botones { display: flex; gap: 8px; }
+.cs-tira-botones button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--linea); border-radius: 50%; background: none; color: var(--texto); cursor: pointer; transition: background-color 250ms, color 250ms; }
+@media (hover: hover) { .cs-tira-botones button:hover { background: var(--texto); color: var(--fondo); } }
+
+/* --- 9. RESULTADO Y CRÉDITOS --- */
+.cs-res { row-gap: clamp(48px, 6vw, 88px); }
+.cs-res-cita { grid-column: 4 / span 8; display: flex; flex-direction: column; gap: 28px; margin: 0; }
+.cs-res-cita p { font: var(--cs-peso) clamp(28px, 3.2vw, 52px) / 1.12 var(--cs-f); letter-spacing: var(--cs-track); text-wrap: pretty; }
+.cs-res-cita footer { display: flex; align-items: center; gap: 14px; color: var(--texto-2); }
+.cs-res-cita cite { display: flex; flex-direction: column; gap: 2px; font-style: normal; }
+.cs-res-cita cite b { font: 500 16px / 1.3 var(--cs-f); color: var(--texto); }
+.cs-por-aprobar { padding: 3px 8px; border: 1px dashed var(--texto-3); color: var(--texto-3); }
+.cs-cifras { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--medianil); list-style: none; }
+.cs-cifras li { display: flex; flex-direction: column; gap: 12px; padding-top: 18px; border-top: 1px solid var(--linea); }
+.cs-cifras b { font: var(--cs-peso-num) clamp(52px, 5.4vw, 96px) / 0.9 var(--cs-f); letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+.cs-cifras small { font-size: 0.55em; }
+.cs-cifras span { max-width: 26ch; font: 400 15px / 1.45 var(--cs-f); color: var(--texto-2); }
+.cs-vivo-link { grid-column: 4 / span 6; justify-self: start; display: inline-flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 22px; border: 1px solid var(--linea); border-radius: 999px; font: 500 16px var(--cs-f); transition: background-color 300ms, color 300ms; }
+.cs-vivo-link .cs-punto { width: 8px; height: 8px; border-radius: 50%; background: var(--verde, #3DDC84); box-shadow: 0 0 0 4px color-mix(in srgb, var(--verde, #3DDC84) 22%, transparent); }
+@media (hover: hover) { .cs-vivo-link:hover { background: var(--texto); color: var(--fondo); } }
+.cs-creditos { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--medianil); padding-top: 24px; border-top: 1px solid var(--linea); }
+.cs-creditos dt { color: var(--texto-3); padding-bottom: 6px; }
+.cs-creditos dd { font: 400 15px / 1.45 var(--cs-f); color: var(--texto-2); }
+
+/* =======================================================
+   VISTA MÓVIL (TELÉFONOS Y TABLETS EN VERTICAL)
+   ======================================================= */
+@media (max-width: 768px), (orientation: portrait) and (max-width: 1100px) {
+    .cs { --medianil: 12px; --margen: 20px; }
+    .cs-grilla > * { grid-column: 1 / -1; }
+    .cs-mod { padding: 88px var(--margen); }
+    .cs-dec { gap: 10px; max-width: none; }
+    .cs-dec-num { font-size: 52px; }
+    .cs-dec p { font-size: 15px; }
+    .cs-cap-txt { gap: 14px; }
+    /* Evidencia: el índice arriba (solo la decisión en curso) y el sitio, en su versión de teléfono, abajo */
+    .cs-ev .cs-fijo.cs-grilla { align-content: start; padding-top: 72px; row-gap: 12px; }
+    .cs-ev-indice { grid-row: 1; }
+    .cs-ev-indice li[data-parada]:not(.actual) { display: none; }
+    .cs-ev-indice button { min-height: 0; padding: 10px 0 6px; }
+    .cs-ev-cuerpo .cs-porque { display: none; }
+    .cs-ev-nav { grid-row: 2; justify-self: center; width: min(100%, 300px); height: auto; aspect-ratio: 390 / 760; border-radius: 28px; }
+    .cs-ev-cromo { display: none; }
+    .cs-pliego-sangre { height: 86svh; min-height: 0; }
+    .cs-pliego-arriba { top: 72px; }
+    .cs-tira figure { width: 78vw; }
+    .cs-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; }
+    .cs-creditos { grid-template-columns: 1fr; }
+}
+
+/* =======================================================
+   MOVIMIENTO REDUCIDO
+   ======================================================= */
+@media (prefers-reduced-motion: reduce) {
+    [data-revela] { opacity: 1; translate: none; transition: none; }
+    .cs-pal { opacity: 1; }
+    .cs-pliego-sangre img { transform: none; }
+}

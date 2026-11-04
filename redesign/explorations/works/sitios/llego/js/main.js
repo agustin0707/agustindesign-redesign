@@ -1,4 +1,3 @@
-/* Header, scroll a secciones, ruta de tecnología, cifras y formulario */
 (function () {
   'use strict';
 
@@ -6,7 +5,6 @@
   var hdr = document.getElementById('hdr');
   var altoHeader = function () { return hdr ? hdr.offsetHeight : 0; };
 
-  /* ---------- Scroll animado a una sección; al llegar, destella el nodo de su franja ---------- */
   function curva(t) { return t < .5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2; }
   function destellar(seccion) {
     var franja = seccion.querySelector('.franja');
@@ -40,9 +38,6 @@
     });
   });
 
-  /* ---------- Transición entre páginas (onepage ↔ privacidad.html; estilos en css/transicion.css) ----------
-     Un enlace a la otra página cubre la pantalla con el telón y navega al terminar.
-     La página nueva se descubre solo si se llegó así (marca en sessionStorage, ver el script del <head>). */
   var raizDoc = document.documentElement;
   if (raizDoc.classList.contains('llega')) setTimeout(function () { raizDoc.classList.remove('llega'); }, 1500);
   document.addEventListener('click', function (e) {
@@ -57,10 +52,9 @@
     var espera = parseInt(getComputedStyle(raizDoc).getPropertyValue('--tr-salida'), 10) || 560;
     setTimeout(function () { location.href = url.href; }, espera);
   });
-  /* al volver con el botón Atrás la página sale de la caché tal como quedó: se destapa */
+
   window.addEventListener('pageshow', function (e) { if (e.persisted) raizDoc.classList.remove('sale', 'llega'); });
 
-  /* ---------- Header: cambia según el tono de la sección que tiene debajo ---------- */
   var secciones = Array.prototype.slice.call(document.querySelectorAll('[data-tono]'));
   var pendiente = false;
   function tono() {
@@ -78,10 +72,6 @@
   window.addEventListener('scroll', function () { if (!pendiente) { pendiente = true; requestAnimationFrame(tono); } }, { passive: true });
   tono();
 
-
-  /* ---------- Tecnología: seguimiento ilustrativo de un envío (gráfica C, decidido 11.10) ----------
-     El paso activo cambia con el cursor y, al recorrer la lista con el scroll, solo (también en celular).
-     Pasos anteriores: hechos (turquesa); el actual: blanco; los tramos se llenan y el registro se completa hasta el paso actual. */
   var pasos = Array.prototype.slice.call(document.querySelectorAll('.s-tecno .paso'));
   var panelRuta = document.querySelector('.s-tecno .ruta');
   if (pasos.length && panelRuta) {
@@ -104,7 +94,6 @@
     activar(0);
   }
 
-  /* ---------- Qué es: cuánto baja el texto de cada módulo del bento para esconder la descripción (sube en hover) ---------- */
   var modulos = document.querySelectorAll('.s-quees .modulo');
   function medirModulos() {
     modulos.forEach(function (m) {
@@ -116,7 +105,7 @@
     medirModulos();
     window.addEventListener('load', medirModulos);
     window.addEventListener('resize', medirModulos);
-    /* Tablet táctil (12.10): tocar un módulo muestra su descripción; tocar otro la cambia (css/secciones.css) */
+
     var tactil = window.matchMedia('(hover: none) and (min-width: 768px)');
     Array.prototype.forEach.call(modulos, function (m) {
       m.addEventListener('click', function () {
@@ -128,7 +117,6 @@
     });
   }
 
-  /* ---------- Qué es, sin cursor (celular y tablet): el destacador de cada párrafo se dibuja al llegar al centro de la pantalla ---------- */
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches && 'IntersectionObserver' in window) {
     var obsDestacador = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('en-vista'); obsDestacador.unobserve(e.target); } });
@@ -136,7 +124,6 @@
     Array.prototype.forEach.call(document.querySelectorAll('.s-quees .intro p'), function (p) { obsDestacador.observe(p); });
   }
 
-  /* ---------- Propuesta de valor en celular: cada pilar se marca al llegar al centro de la pantalla (css/celular.css) ---------- */
   if ('IntersectionObserver' in window) {
     var obsPilares = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('llego'); obsPilares.unobserve(e.target); } });
@@ -144,7 +131,6 @@
     Array.prototype.forEach.call(document.querySelectorAll('.s-valor .pilar'), function (p) { obsPilares.observe(p); });
   }
 
-  /* ---------- Celular: el botón fijo "Conversemos" aparece después del hero y se esconde al llegar al formulario ---------- */
   var barraCta = document.querySelector('.barra-cta');
   var heroSec = document.querySelector('.s-hero'), ctaSec = document.getElementById('contacto');
   if (barraCta && heroSec && ctaSec) {
@@ -158,8 +144,6 @@
     revisarBarra();
   }
 
-  /* ---------- Celular: la barra de la hora y la del buscador toman el color de la sección que está detrás (decidido 11.10) ----------
-     Safari nuevo lee el fondo de la página; Chrome y Safari anteriores leen la etiqueta theme-color: se actualizan las dos. */
   var metaTema = document.querySelector('meta[name="theme-color"]');
   var celular = window.matchMedia('(max-width: 767px)');
   var COLORES = [['.s-hero', '#0B3439'], ['.s-quees', '#F4F4F4'], ['.s-valor', '#178181'], ['.s-calidad', '#104E56'], ['.s-tecno', '#F4F4F4'],
@@ -183,13 +167,11 @@
   if (celular.addEventListener) celular.addEventListener('change', tonoBarras);
   tonoBarras();
 
-  /* ---------- Tecnología: el gráfico se centra en su panel en escritorio y se recorta al estado y los hitos en celular ---------- */
   var grafico = document.querySelector('.s-tecno .seguimiento');
   var ajustarGrafico = function () { if (grafico) grafico.setAttribute('preserveAspectRatio', celular.matches ? 'xMidYMin slice' : 'xMidYMid meet'); };
   if (celular.addEventListener) celular.addEventListener('change', ajustarGrafico);
   ajustarGrafico();
 
-  /* ---------- Carrusel de clientes: con el cursor encima no se detiene, baja suavemente la velocidad ---------- */
   Array.prototype.forEach.call(document.querySelectorAll('.carrusel'), function (c) {
     var pista = c.querySelector('.pista');
     if (!pista || !pista.getAnimations) return;
@@ -200,9 +182,8 @@
     c.addEventListener('mouseleave', function () { velocidad(1); });
   });
 
-  /* ---------- Cifras: conteo al entrar en pantalla ---------- */
   var formato = function (n) { return n.toLocaleString('es-CL'); };
-  /* Deja cada carácter en su propia caja (para el hover "rodillo" del +21 del hero y de las cifras de Experiencia) */
+
   function digitos(el) {
     var texto = el.textContent;
     el.setAttribute('aria-label', texto);
@@ -235,7 +216,7 @@
   } else if (cifraHero) {
     digitos(cifraHero);
   }
-  /* ---------- Página de privacidad: el índice marca la parte que se está leyendo ---------- */
+
   var indice = document.querySelector('.priv-indice');
   if (indice && 'IntersectionObserver' in window) {
     var enlaces = {};
@@ -250,14 +231,11 @@
     document.querySelectorAll('.priv-sec').forEach(function (sec) { obsIndice.observe(sec); });
   }
 
-  /* ---------- Formulario: envío a Formspree sin recargar la página ----------
-     Valida al enviar (no mientras se escribe), marca los campos que faltan y muestra
-     la confirmación dentro del panel. El honeypot es el campo _gotcha (Formspree lo descarta). */
   var form = document.getElementById('formulario');
   if (form) {
-    /* índice de cada campo para la entrada escalonada (css/movimiento.css 2d) */
+
     Array.prototype.forEach.call(form.querySelectorAll('.campos > *'), function (c, k) { c.style.setProperty('--k', k); });
-    /* el mensaje crece con el texto */
+
     var mensaje = document.getElementById('f-msg');
     if (mensaje) mensaje.addEventListener('input', function () { mensaje.style.height = 'auto'; mensaje.style.height = mensaje.scrollHeight + 'px'; });
 
@@ -282,7 +260,6 @@
     var exito = document.getElementById('f-exito');
     var intentado = false;
 
-    /* línea de error bajo cada campo obligatorio, asociada con aria-describedby */
     var obligatorios = Array.prototype.slice.call(form.querySelectorAll('[required]'));
     obligatorios.forEach(function (el) {
       var p = document.createElement('p');
@@ -307,7 +284,7 @@
       obligatorios.forEach(function (el) { if (!marcar(el) && !primero) primero = el; });
       return primero;
     }
-    /* después del primer intento, cada campo se corrige solo al escribir */
+
     form.addEventListener('input', function (e) { if (intentado && e.target.required) { marcar(e.target); if (!form.querySelector('.con-error')) msg.textContent = ''; } });
     form.addEventListener('change', function (e) { if (intentado && e.target.type === 'checkbox') { marcar(e.target); if (!form.querySelector('.con-error')) msg.textContent = ''; } });
 
@@ -318,7 +295,7 @@
     }
     function mostrarExito(nombre) {
       var primer = (nombre || '').trim().split(/\s+/)[0];
-      /* {nombre} se cambia por el primer nombre; si no hay, se quita junto con su coma */
+
       function poner(t) { return primer ? t.replace('{nombre}', primer) : t.replace(/,?\s*\{nombre\}/, ''); }
       exito.querySelector('.exito-titulo').textContent = poner(TEXTOS.exitoTitulo);
       exito.querySelector('.exito-texto').textContent = poner(TEXTOS.exitoTexto);
@@ -327,7 +304,7 @@
       form.reset();
       if (mensaje) mensaje.style.height = '';
       exito.querySelector('.exito-titulo').focus({ preventScroll: true });
-      /* en celular el panel es alto: si la confirmación no está a la vista, se lleva al centro */
+
       var r = exito.getBoundingClientRect(), h = window.innerHeight;
       if (r.top + r.height / 2 < 0 || r.top + r.height / 2 > h) exito.scrollIntoView({ block: 'center', behavior: reducir ? 'auto' : 'smooth' });
     }

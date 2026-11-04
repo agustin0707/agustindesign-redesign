@@ -1,8 +1,3 @@
-/* Página de Política de Privacidad (privacidad.html). Fase 3, 12.10.
-   Texto de llego.cl con la gráfica del onepage: retícula de 4 columnas, Manrope y LF Mono.
-   Composición C (decidida 12.10): portada oscura con el degradado profundo del cierre e índice fijo en la columna 1. */
-
-/* ---------- Base común ---------- */
 .s-priv-portada{ padding-top: var(--header); }
 .s-priv-portada .franja .volver{ grid-column: 1 / span 2; display: inline-flex; align-items: center; gap: 8px; opacity: 1; color: inherit; text-decoration: none; }
 .s-priv-portada .franja .volver span{ transition: transform var(--dur-2) var(--curva); }
@@ -11,7 +6,6 @@
 .priv-cabeza h1{ grid-column: 1 / span 3; padding-inline: var(--celda); font-size: clamp(44px, 5vw, 80px); }
 .priv-intro{ grid-column: 2 / span 2; padding-inline: var(--celda); display: grid; gap: 14px; font-size: var(--t-cuerpo); line-height: 1.6; max-width: 62ch; }
 
-/* Los bloques de lectura tapan la retícula (como las listas del sitio): ninguna línea cruza el texto */
 .priv-texto, .priv-indice{ position: relative; z-index: 6; background: var(--papel); }
 .priv-intro{ position: relative; z-index: 6; }
 .s-priv:focus{ outline: none; }
@@ -37,15 +31,13 @@
 .priv-indice-titulo{ opacity: .6; padding-bottom: 10px; }
 .s-pie .legal a[aria-current="page"]{ color: var(--turquesa); }
 
-/* ---------- Portada oscura + índice fijo en la columna 1, texto en la 2 y la 3 ---------- */
 .s-priv-portada .priv-intro a{ color: var(--g05); }
 .s-priv-portada .priv-cabeza{ position: relative; z-index: 2; }
-.s-priv-portada .fila + .fila::before{ display: none; }   /* sin verticales detrás de la bajada sobre el degradado */
+.s-priv-portada .fila + .fila::before{ display: none; }
 .priv-indice{ grid-column: 1; padding-inline: var(--celda); position: sticky; top: calc(var(--header) + 24px); align-self: start; padding-top: 40px; max-height: calc(100svh - var(--header) - 48px); overflow: auto; }
 .priv-texto{ grid-column: 2 / span 2; padding-inline: var(--celda); }
 .priv-sec h2{ margin-bottom: 18px; }
 
-/* ---------- Tablet: índice arriba en dos columnas ---------- */
 @media (min-width: 768px) and (max-width: 1194px){
   .priv-cabeza h1{ grid-column: 1 / -1; }
   .priv-intro{ grid-column: 1 / span 3; }
@@ -53,7 +45,7 @@
   .priv-indice ol{ grid-template-columns: 1fr 1fr; column-gap: 32px; }
   .priv-texto{ grid-column: 1 / span 3; }
 }
-/* ---------- Celular: una columna; el índice queda arriba ---------- */
+
 @media (max-width: 767px){
   .priv-cabeza h1{ font-size: clamp(36px, 10vw, 48px); }
   .priv-intro{ font-size: 16px; }

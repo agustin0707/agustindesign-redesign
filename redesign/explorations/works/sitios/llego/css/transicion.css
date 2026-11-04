@@ -1,11 +1,5 @@
-/* Transición entre páginas: onepage ↔ privacidad.html (Fase 3, decidida 12.10: "cortina").
-   Salida: al hacer clic en un enlace a la otra página, js/main.js pone .sale en <html>, el telón sube desde abajo
-   y navega al terminar (--tr-salida, en ms). Entrada: el script del <head> pone .llega si se viene de una salida animada
-   (no al llegar por el QR o un enlace externo) y el telón se recoge hacia abajo, como las fotos del sitio.
-   Solo transform. Con prefers-reduced-motion no hay transición. */
 :root{ --tr-salida: 560; }
 
-/* Telón: cuatro franjas alineadas con la retícula (bordes + 4 columnas) */
 .telon{
   --b: max(var(--gut), calc((100vw - var(--wrap)) / 2 + var(--gut)));
   --c: calc((100vw - 2 * var(--b)) / 4);

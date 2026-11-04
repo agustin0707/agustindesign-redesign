@@ -1,44 +1,31 @@
-/* Tokens, reset, tipografía y retícula de precisión */
-
-/* ==========================================================
-   1. Tokens
-   ========================================================== */
 :root{
   color-scheme: light;
 
-  /* Paleta de marca (manual, p. 11) */
-  --turquesa: #178181;          /* principal */
-  --turquesa-claro: #70CAC7;    /* fondos y apoyo */
-  --turquesa-oscuro: #104E56;   /* texto y contraste */
+  --turquesa: #178181;
+  --turquesa-claro: #70CAC7;
+  --turquesa-oscuro: #104E56;
 
-  /* Secuencia oficial del degradado (manual, p. 13), en orden */
   --g01: #F4F4F4; --g02: #E8E8E8; --g03: #B7E5E2; --g04: #80E2DF; --g05: #70CAC7;
   --g06: #49C2BF; --g07: #21B6B6; --g08: #1B9C9C; --g09: #178181; --g10: #104E56;
 
-  /* Más oscuro que #104E56: solo para el cierre (autorizado por Agustín 10.10) */
   --profundo: #0B3439;
 
-  /* Neutros */
   --blanco: #FFFFFF;
   --papel: var(--g01);
 
-  /* Texto sobre claro: #104E56 del manual (decidido 10.10) */
   --tinta: #104E56;
   --tinta-suave: color-mix(in srgb, var(--tinta) 74%, var(--papel));
 
-  /* Negro de la sección 05. A probar */
   --negro: #0A1415;
 
-  /* Retícula: hueco 8 px y 18 % sobre claro decididos 10.10; sobre oscuro, a probar */
-  --corte: 8px;                                  /* cada línea se detiene esto antes de un cruce */
+  --corte: 8px;
   --linea-sobre-claro: rgba(16, 78, 86, .18);
   --linea-sobre-oscuro: rgba(255, 255, 255, .16);
 
-  /* Tipografía */
   --f-texto: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "LF Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --peso-display: 300;                           /* decidido 10.10 (sección 01): 300, como el hero */
-  --peso-clave: 500;                             /* palabra destacada del título de sección: Medium 500 (decidido 10.10). El hero usa 600 */
+  --peso-display: 300;
+  --peso-clave: 500;
   --t-display: clamp(56px, 6.3vw, 100px);
   --t-h2: clamp(40px, 4.3vw, 66px);
   --t-h3: clamp(22px, 1.8vw, 28px);
@@ -46,17 +33,15 @@
   --t-chico: 15px;
   --t-etiqueta: 11px;
 
-  /* Medidas */
   --wrap: 1440px;
-  --gut: 48px;                                   /* margen lateral */
-  --celda: 16px;                                 /* aire entre una línea y su contenido */
-  --franja: 46px;                                /* alto de la franja de sección */
+  --gut: 48px;
+  --celda: 16px;
+  --franja: 46px;
   --header: 72px;
-  --esp-seccion: 112px;                          /* aire vertical dentro de cada sección */
+  --esp-seccion: 112px;
   --radio: 0px;
   --radio-pildora: 999px;
 
-  /* Movimiento */
   --dur-1: .3s;
   --dur-2: .6s;
   --dur-3: .9s;
@@ -66,13 +51,10 @@
   --escalonado: 80ms;
 }
 
-/* ==========================================================
-   2. Reset y base
-   ========================================================== */
 *, *::before, *::after{ box-sizing: border-box; }
 html{
   -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
-  /* Sin rebote al pasarse del scroll (Chrome solo pinta un color plano en esa zona): la página se detiene en su borde */
+
   overscroll-behavior-y: none;
   background-color: var(--profundo);
 }
@@ -92,16 +74,13 @@ img, svg, video{ display: block; max-width: 100%; }
 a{ color: inherit; }
 button, input, textarea, select{ font: inherit; color: inherit; }
 :focus-visible{ outline: 2px solid var(--g07); outline-offset: 3px; }
-/* Fotos en AVIF con respaldo JPG (Fase 4): <picture> no genera caja, así la <img> se ordena como antes */
+
 picture{ display: contents; }
 .visualmente-oculto{
   position: absolute !important; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
 }
 
-/* ==========================================================
-   3. Tipografía
-   ========================================================== */
 .t-display, .t-h2{ font-weight: var(--peso-display); text-wrap: balance; }
 .t-display{ font-size: var(--t-display); line-height: .98; letter-spacing: -.035em; }
 .t-h2{ font-size: var(--t-h2); line-height: 1.02; letter-spacing: -.03em; }
@@ -114,16 +93,10 @@ picture{ display: contents; }
   letter-spacing: .08em; text-transform: uppercase; line-height: 1.4;
 }
 
-/* Títulos en escalón: cada .linea es un renglón; .corre-1 / .corre-2 corren una o dos columnas */
 .escalon .linea{ display: block; }
 .escalon .corre-1{ padding-left: 25%; }
 .escalon .corre-2{ padding-left: 50%; }
 
-/* ==========================================================
-   4. Fondos
-   Los degradados usan solo la secuencia oficial, combinada en capas suaves
-   como las tres tonalidades de la página "Fondos" del manual.
-   ========================================================== */
 .sec{ position: relative; isolation: isolate; --linea: var(--linea-sobre-claro); color: var(--tinta); }
 .sec.es-oscuro{ --linea: var(--linea-sobre-oscuro); color: var(--blanco); }
 
@@ -159,24 +132,12 @@ picture{ display: contents; }
     linear-gradient(172deg, var(--g10) 0%, var(--profundo) 70%);
 }
 
-/* Grano de profundidad (manual, p. 21). Va sobre los degradados */
 .grano::after{
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   opacity: var(--grano, .22); mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-/* ==========================================================
-   5. Retícula de precisión
-   Cada sección se arma con filas (.fila). La fila ocupa todo el ancho
-   de la ventana y su contenido se ordena en 4 columnas medidas dentro de --wrap.
-   Como en el manual, las líneas no se tocan: cada una se detiene --corte
-   antes de un cruce y deja la intersección vacía.
-   - Verticales: ::before de cada fila.
-   - Horizontal: ::after de cada fila, en su borde superior. La primera fila
-     de una sección no la lleva (el cambio de fondo hace de borde) salvo .con-linea.
-   - .sin-verticales: fila sin líneas verticales (retícula por módulos).
-   ========================================================== */
 .fila{
   --borde: max(var(--gut), calc((100% - var(--wrap)) / 2 + var(--gut)));
   --ancho: calc(100% - 2 * var(--borde));
@@ -186,7 +147,6 @@ picture{ display: contents; }
 .fila::before,
 .fila::after{ content: ""; position: absolute; pointer-events: none; z-index: 5; }
 
-/* Verticales: 5 líneas (bordes + 3 interiores) */
 .fila::before{
   top: 0; bottom: 0;
   left: var(--borde); right: var(--borde);
@@ -197,12 +157,11 @@ picture{ display: contents; }
     linear-gradient(var(--linea), var(--linea)) 75% 0 / 1px 100% no-repeat,
     linear-gradient(var(--linea), var(--linea)) 100% 0 / 1px 100% no-repeat;
 }
-/* hueco arriba si hay una horizontal encima; hueco abajo si viene otra fila */
+
 .fila + .fila::before, .fila.con-linea::before{ top: var(--corte); }
 .fila:has(+ .fila)::before{ bottom: var(--corte); }
 .fila.sin-verticales::before{ display: none; }
 
-/* Horizontal con huecos en cada vertical */
 .fila + .fila::after,
 .fila.con-linea::after{
   top: 0; left: 0; right: 0; height: 1px;
@@ -228,10 +187,9 @@ picture{ display: contents; }
     #000 0 calc(var(--p4) - var(--h)), transparent 0 calc(var(--p4) + var(--h) + 1px),
     #000 0);
 }
-/* Si la fila de arriba no tiene verticales, la horizontal no necesita huecos */
+
 .fila.sin-verticales + .fila::after{ -webkit-mask-image: none; mask-image: none; }
 
-/* Grilla de 4 columnas para el contenido (base de 12 para ubicar con más precisión) */
 .g4{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .g12{ display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); }
 .celda{ padding-inline: var(--celda); }

@@ -1,0 +1,453 @@
+/* =======================================================
+   CASO LLEGÓ FARMA (.lf-)
+   ======================================================= */
+/* El marco es de Agustín Design (caso-marco.css); la voz y las piezas son de Llegó Farma, sacadas de su manual y de
+   llegofarma.cl: Manrope liviana con escalón, LF Mono con el cero sin punto, la retícula de precisión con cortes de
+   8 px, los nodos de estado, el degradado de 10 valores con grano, radios en cero y sin sombras */
+
+/* --- 1. TIPOGRAFÍAS DEL SITIO DE LLEGÓ FARMA --- */
+@font-face { font-family: "Manrope"; src: url("../works/sitios/llego/fonts/manrope-200.woff2") format("woff2"); font-weight: 200; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("../works/sitios/llego/fonts/manrope-300.woff2") format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("../works/sitios/llego/fonts/manrope-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("../works/sitios/llego/fonts/manrope-500.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "LF Mono"; src: url("../works/sitios/llego/fonts/lf-mono-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+
+/* --- 2. TOKENS --- */
+.lf {
+    --lf-turquesa: #178181; --lf-claro: #70CAC7; --lf-oscuro: #104E56; --lf-profundo: #0B3439; --lf-negro: #0A1415; --lf-papel: #F4F4F4;
+    --lf-g03: #B7E5E2; --lf-g04: #80E2DF; --lf-g06: #49C2BF; --lf-g07: #21B6B6; --lf-g08: #1B9C9C;
+    --corte: 8px;
+    --cs-f: "Manrope", system-ui, sans-serif;
+    --cs-f-mono: "LF Mono", ui-monospace, monospace;
+    --cs-mono-caja: uppercase;
+    --cs-mono-track: 0.04em;
+    --cs-peso: 300;
+    --cs-peso-clave: 500;
+    --cs-peso-num: 200;
+    --cs-track: -0.035em;
+    --cs-curva: cubic-bezier(0.65, 0, 0.35, 1);
+    --cs-noche: var(--lf-negro);
+    --cs-tinta: var(--lf-oscuro);
+    --cs-vidrio-oscuro: rgba(10, 20, 21, 0.5);
+    --cs-vidrio-claro: rgba(244, 244, 244, 0.82);
+    --verde: #3DDC84;
+    --lf-grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+.lf .mono { font-size: 11px; }
+.lf .barra .logo span { transition: opacity 300ms, color 300ms; }
+@media (hover: hover) { .lf .barra .logo:hover span { opacity: 1; color: var(--lf-claro); } }
+/* Estirón del scroll: el turquesa del hero arriba y el morado de Tap In abajo (el JS cambia a mitad de página) */
+html:has(> body.lf) { background: var(--lf-oscuro); }
+html.lf-abajo:has(> body.lf) { background: #2D2560; }
+.visualmente-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* --- 3. FONDOS DE CADA MÓDULO --- */
+.lf .cs-claro { --fondo: var(--lf-papel); --texto: var(--lf-oscuro); --texto-2: rgba(16, 78, 86, 0.74); --texto-3: rgba(16, 78, 86, 0.46); --linea: rgba(16, 78, 86, 0.16); --acento: var(--lf-turquesa); --num: rgba(16, 78, 86, 0.22); background: var(--fondo); color: var(--texto); }
+.lf .cs-oscuro { --fondo: var(--lf-negro); --texto: #FFFFFF; --texto-2: rgba(255, 255, 255, 0.68); --texto-3: rgba(255, 255, 255, 0.42); --linea: rgba(255, 255, 255, 0.16); --acento: var(--lf-claro); --num: rgba(255, 255, 255, 0.26); background: var(--fondo); color: var(--texto); }
+/* El degradado de la marca, armado solo con los HEX oficiales, y su grano (estático, sin costo de pintura) */
+.lf-degradado { position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(70% 80% at 12% 100%, var(--lf-g03) 0%, rgba(183, 229, 226, 0) 62%), radial-gradient(60% 70% at 88% 8%, var(--lf-g08) 0%, rgba(27, 156, 156, 0) 70%), linear-gradient(165deg, var(--lf-turquesa) 0%, var(--lf-oscuro) 58%, var(--lf-profundo) 100%); }
+.lf-degradado-hondo { background: radial-gradient(60% 60% at 82% 18%, rgba(23, 129, 129, 0.7) 0%, rgba(23, 129, 129, 0) 70%), radial-gradient(50% 60% at 10% 100%, rgba(73, 194, 191, 0.32) 0%, rgba(73, 194, 191, 0) 70%), linear-gradient(170deg, var(--lf-oscuro) 0%, var(--lf-profundo) 55%, var(--lf-negro) 100%); }
+.lf-degradado-noche { background: radial-gradient(70% 60% at 50% 110%, rgba(23, 129, 129, 0.45) 0%, rgba(16, 78, 86, 0) 70%), var(--lf-negro); }
+.lf-grano::after { content: ''; position: absolute; inset: 0; pointer-events: none; background-image: var(--lf-grano); background-size: 200px; mix-blend-mode: overlay; opacity: 0.4; }
+:where(.lf .cs-fijo > *, .lf-cap > *, .lf-resultado > *) { position: relative; z-index: 1; }
+.lf .cs-fijo > .lf-degradado, .lf-cap > .lf-degradado, .lf-resultado > .lf-degradado { position: absolute; z-index: 0; }
+
+/* --- 4. RETÍCULA DE PRECISIÓN CON CORTES --- */
+/* Cinco verticales (cuatro módulos) y la línea de la franja. Ninguna línea toca a otra: cada tramo se detiene 8 px
+   antes del cruce, como en la portada del manual. --fy es la altura de la franja */
+.lf-reticula { --fy: 112px; --l: rgba(255, 255, 255, 0.16); position: absolute; inset: 0 var(--margen); z-index: 0; pointer-events: none; }
+.cs-claro .lf-reticula { --l: rgba(16, 78, 86, 0.14); }
+.lf-reticula i { position: absolute; top: 0; bottom: 0; width: 1px; left: calc(var(--n) * 25%); background: linear-gradient(var(--l), var(--l)) 0 0 / 1px calc(var(--fy) - var(--corte)) no-repeat, linear-gradient(var(--l), var(--l)) 0 calc(var(--fy) + var(--corte)) / 1px 100% no-repeat; transform-origin: top; }
+.lf-reticula i:nth-child(1) { --n: 0; } .lf-reticula i:nth-child(2) { --n: 1; } .lf-reticula i:nth-child(3) { --n: 2; } .lf-reticula i:nth-child(4) { --n: 3; } .lf-reticula i:nth-child(5) { --n: 4; left: calc(100% - 1px); }
+.lf-reticula::after { content: ''; position: absolute; left: 0; right: 0; top: var(--fy); height: 1px; background: linear-gradient(90deg, transparent var(--corte), var(--l) var(--corte), var(--l) calc(100% - var(--corte)), transparent calc(100% - var(--corte))) 0 0 / 25% 1px repeat-x; transform-origin: left; }
+/* Al cargar, las líneas se dibujan y después entra el resto (como la secuencia de carga de llegofarma.cl) */
+.lf-hero .lf-reticula i { transform: scaleY(0); transition: transform 1400ms var(--cs-curva); transition-delay: calc(var(--n) * 90ms); }
+.lf-hero .lf-reticula::after { transform: scaleX(0); transition: transform 1400ms var(--cs-curva) 300ms; }
+.lf-listo .lf-hero .lf-reticula i { transform: none; }
+.lf-listo .lf-hero .lf-reticula::after { transform: none; }
+
+/* --- 5. HERO --- */
+.lf-hero .cs-fijo { color: #FFFFFF; }
+.lf-trama { position: absolute; z-index: 0; pointer-events: none; background-image: radial-gradient(circle, rgba(255, 255, 255, 0.85) 1.1px, transparent 1.6px); background-size: 20px 20px; opacity: 0; transition: opacity 1200ms 600ms; }
+.lf-listo .lf-trama { opacity: 1; }
+.lf-trama-a { left: var(--margen); top: calc(112px + 28px); width: clamp(160px, 22vw, 360px); height: 140px; -webkit-mask: linear-gradient(90deg, #000 40%, transparent); mask: linear-gradient(90deg, #000 40%, transparent); }
+.lf-trama-b { right: var(--margen); bottom: 0; width: clamp(120px, 12vw, 200px); height: 42vh; -webkit-mask: linear-gradient(0deg, #000 30%, transparent); mask: linear-gradient(0deg, #000 30%, transparent); }
+/* La cruz: una grilla de puntos de Llegó donde cinco se encienden, crecen y se conectan; al final queda el isotipo
+   oficial. La arma llego.js al cargar; --p (scroll) la acerca y la apaga al salir */
+.lf-cruz { position: absolute; z-index: 1; right: calc(var(--margen) + 4%); top: 50%; width: min(34vw, 52vh); aspect-ratio: 1; translate: 0 calc(-50% - var(--p, 0) * 12vh); scale: calc(1 + var(--p, 0) * 0.12); opacity: calc(1 - var(--p, 0) * 1.4); }
+.lf-cruz-puntos { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.lf-cruz-puntos circle { fill: #FFFFFF; transform-box: fill-box; transform-origin: center; scale: 0; transition: scale 700ms var(--cs-curva), opacity 700ms var(--cs-curva), fill 500ms; transition-delay: var(--d, 0ms); }
+.lf-listo .lf-cruz-puntos circle { scale: 1; }
+.lf-cruz.forma .lf-cruz-puntos circle:not(.clave) { opacity: 0.18; scale: 0.6; transition-delay: calc(var(--d, 0ms) * 0.3); }
+.lf-cruz.forma .lf-cruz-puntos circle.clave { scale: 6.9; transition-duration: 900ms; transition-delay: var(--k, 0ms); }
+.lf-cruz-puntos rect { fill: #FFFFFF; transform-box: fill-box; transform-origin: var(--o, center); scale: var(--sx, 0) var(--sy, 0); transition: scale 700ms var(--cs-curva) 1100ms; }
+.lf-cruz.forma .lf-cruz-puntos rect { --sx: 1; --sy: 1; }
+.lf-cruz-iso { position: absolute; inset: 0; color: #FFFFFF; opacity: 0; transition: opacity 900ms var(--cs-curva); }
+.lf-cruz.final .lf-cruz-iso { opacity: 1; }
+.lf-cruz.final .lf-cruz-puntos :is(circle.clave, rect) { opacity: 0; transition-delay: 0ms; }
+.lf-hero-franja { position: absolute; z-index: 2; left: var(--margen); right: var(--margen); top: calc(112px - 30px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); opacity: 0; transition: opacity 800ms 900ms; }
+.lf-hero-franja > * { padding-left: 14px; }
+.lf-hero-franja a { justify-self: end; padding: 0; }
+.lf-hero-franja a i { display: inline-block; font-style: normal; transition: transform 300ms var(--ease); }
+@media (hover: hover) { .lf-hero-franja a:hover i { transform: translate(2px, -2px); } }
+.lf-listo .lf-hero-franja { opacity: 0.82; }
+.lf-hero-txt { position: absolute; z-index: 2; left: var(--margen); right: var(--margen); bottom: clamp(48px, 9vh, 104px); translate: 0 calc(var(--p, 0) * -10vh); opacity: calc(1 - var(--p, 0) * 1.6); }
+.lf-titulo { display: flex; flex-direction: column; font: 200 clamp(84px, 13.6vw, 246px) / 0.86 var(--cs-f); letter-spacing: -0.055em; margin-left: -0.05em; }
+.lf-titulo b { font-weight: 500; }
+.lf-linea { display: block; overflow: hidden; padding-bottom: 0.06em; }
+.lf-linea > * { display: inline-block; translate: 0 105%; transition: translate 1100ms var(--cs-curva); }
+.lf-linea + .lf-linea > * { transition-delay: 120ms; }
+.lf-listo .lf-linea > * { translate: 0 0; }
+.lf-escalon { padding-left: 25%; }
+.lf-hero-txt p { margin: 22px 0 0 25%; padding-left: 14px; max-width: 30ch; font: 300 clamp(18px, 1.6vw, 26px) / 1.3 var(--cs-f); letter-spacing: -0.02em; opacity: 0; transition: opacity 900ms 700ms; }
+.lf-hero-txt p b { font-weight: 500; }
+.lf-listo .lf-hero-txt p { opacity: 1; }
+.lf-hero-pista { position: absolute; z-index: 2; right: var(--margen); bottom: clamp(48px, 9vh, 104px); opacity: calc(0.7 - var(--p, 0) * 2); animation: lf-pista 2.4s var(--cs-curva) infinite; }
+@keyframes lf-pista { 0%, 100% { translate: 0 0; } 50% { translate: 0 6px; } }
+
+/* --- 6. RESUMEN: EL PROYECTO, RASTREADO --- */
+.lf-res .cs-fijo { align-content: center; row-gap: 32px; }
+.lf-res-txt { grid-column: 1 / span 7; display: flex; flex-direction: column; gap: 28px; }
+.lf-etq { color: var(--texto-2); }
+.lf-enunciado { font-size: clamp(26px, 2.7vw, 46px); line-height: 1.12; }
+.lf-encargo { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: start; padding-top: 22px; border-top: 1px solid var(--linea); }
+.lf-encargo .mono { color: var(--texto-3); }
+.lf-encargo p { margin-top: 8px; font: 400 16px / 1.45 var(--cs-f); }
+.lf-encargo-flecha { padding-top: 22px; color: var(--acento); }
+/* Tarjeta de seguimiento, como el de la sección Tecnología del sitio: estado grande, seis hitos y un registro */
+.lf-envio { grid-column: 9 / -1; display: flex; flex-direction: column; gap: 22px; padding: 22px; border: 1px solid var(--linea); background: #FFFFFF; }
+.lf-envio-cab { display: flex; justify-content: space-between; color: var(--texto-3); }
+.lf-envio-estado { display: flex; flex-direction: column; gap: 6px; }
+.lf-envio-estado .mono { color: var(--texto-3); }
+.lf-envio-estado b { font: 300 clamp(28px, 2.4vw, 40px) / 1 var(--cs-f); letter-spacing: -0.035em; }
+.lf-hitos { position: relative; list-style: none; height: 46px; margin: 0 6px; }
+.lf-hitos::before, .lf-hitos::after { content: ''; position: absolute; left: 0; right: 0; top: 6px; height: 1px; background: var(--linea); }
+.lf-hitos::after { background: var(--acento); right: auto; width: calc(var(--avance, 0) * 100%); transition: width 500ms var(--cs-curva); }
+.lf-hitos li { position: absolute; top: 0; left: calc(var(--x) * 20%); translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.lf-hitos i { position: relative; z-index: 1; width: 13px; height: 13px; border-radius: 50%; border: 1px solid var(--texto-3); background: #FFFFFF; transition: background-color 300ms, border-color 300ms, box-shadow 300ms; }
+.lf-hitos li.hecho i { background: var(--acento); border-color: var(--acento); }
+.lf-hitos li.actual i { background: var(--acento); border-color: var(--acento); box-shadow: 0 0 0 5px color-mix(in srgb, var(--acento) 22%, transparent); }
+.lf-hitos .mono { color: var(--texto-3); white-space: nowrap; font-size: 10px; }
+.lf-hitos li.actual .mono { color: var(--texto); }
+.lf-hitos b { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.lf-registro { list-style: none; display: flex; flex-direction: column; gap: 8px; min-height: 9.5em; padding-top: 16px; border-top: 1px solid var(--linea); text-transform: none; letter-spacing: 0; }
+.lf-registro li { display: grid; grid-template-columns: 4.2em 1fr; gap: 10px; font-size: 11px; line-height: 1.45; color: var(--texto-3); }
+.lf-registro li:not(.visto) { display: none; }
+.lf-registro li.actual { color: var(--texto); }
+.lf-registro span { color: var(--acento); }
+.lf-etapas { display: flex; gap: 6px; }
+.lf-etapas a { flex: 1; display: flex; flex-direction: column; gap: 4px; min-height: 44px; padding: 10px 12px; border: 1px solid var(--linea); font: 400 14px var(--cs-f); transition: background-color 250ms, color 250ms; }
+.lf-etapas a .mono { color: var(--texto-3); }
+@media (hover: hover) { .lf-etapas a:hover { background: var(--texto); color: var(--fondo); } }
+
+/* --- 7. APERTURAS DE CAPÍTULO --- */
+/* El número gigante en contorno, como los separadores del manual */
+.lf-cap { position: relative; display: flex; align-items: end; min-height: 100svh; padding: 0 var(--margen) clamp(56px, 10vh, 120px); overflow: clip; }
+.lf-cap-in { width: 100%; align-items: end; }
+.lf-cap .cs-cap-n { align-self: end; padding-bottom: 0.6em; }
+.lf-cap-num, .lf-dom .lf-cap-num { position: absolute; right: calc(var(--margen) - 0.06em); top: clamp(80px, 12vh, 140px); z-index: 0; font: 200 clamp(220px, 40vw, 680px) / 0.8 var(--cs-f); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3); pointer-events: none; }
+.lf .cs-cap-txt h2 { font-weight: 200; font-size: clamp(64px, 9vw, 160px); letter-spacing: -0.05em; }
+
+/* --- 8. ESCENAS DE DECISIÓN --- */
+.lf-dsec .cs-fijo { padding-top: 64px; }
+.lf-dsec .cs-dec { grid-column: 1 / span 4; }
+.lf-pieza { grid-column: 6 / -1; display: flex; flex-direction: column; gap: 22px; }
+.lf-pieza [data-paso] { transition: opacity 500ms var(--cs-curva), translate 600ms var(--cs-curva); }
+
+/* --- 8.1 DIAGNÓSTICO --- */
+.lf-diag-tabla { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--linea); }
+.lf-diag-col { padding: 20px 20px 24px 0; }
+.lf-diag-col + .lf-diag-col { padding-left: 20px; border-left: 1px solid var(--linea); }
+.lf-diag-col .mono { display: flex; align-items: center; gap: 8px; color: var(--texto-3); }
+.lf-diag-col .mono::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--texto-3); }
+.lf-libre .mono::before { background: none; border: 1px solid var(--acento); }
+.lf-diag-col ul { list-style: none; margin-top: 18px; }
+.lf-diag-col li { padding: 12px 0; border-top: 1px solid var(--linea); font: 300 clamp(18px, 1.5vw, 24px) / 1.2 var(--cs-f); letter-spacing: -0.02em; }
+.lf-diag-col li:first-child { border-top: 0; }
+.lf-diag-col:not(.on, .ya), .lf-hallazgo:not(.on, .ya) { opacity: 0.12; }
+.lf-diag-col.ya { opacity: 0.5; }
+.lf-hallazgo { display: flex; flex-direction: column; gap: 10px; padding: 20px; background: var(--lf-oscuro); color: #FFFFFF; font: 300 clamp(18px, 1.5vw, 24px) / 1.3 var(--cs-f); letter-spacing: -0.02em; }
+.lf-hallazgo .mono { color: var(--lf-claro); }
+.lf-hallazgo:not(.on, .ya) { translate: 0 12px; }
+
+/* --- 8.2 UN SISTEMA, NO UN LOGO --- */
+.lf-sis-lienzo { position: relative; aspect-ratio: 3 / 2; border: 1px solid var(--linea); }
+.lf-sis-red { position: absolute; inset: 0; width: 100%; height: 100%; }
+.lf-sis-red circle { fill: #FFFFFF; transform-box: fill-box; transform-origin: center; transition: scale 600ms var(--cs-curva), opacity 600ms var(--cs-curva); }
+.lf-sis-red line { stroke: #FFFFFF; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 700ms var(--cs-curva), opacity 500ms; }
+.lf-sis-red .unido { stroke-dashoffset: 0; }
+.lf-sis-red circle.nodo { scale: 3.4; }
+.lf-sis-red .apagado { opacity: 0.16; }
+.lf-sis-lecturas { position: absolute; left: 18px; bottom: 18px; display: flex; gap: 18px; font: 400 14px var(--cs-f); }
+.lf-sis-lecturas span { display: inline-flex; align-items: center; gap: 8px; }
+.lf-sis-lecturas i { display: inline-block; width: 22px; color: var(--lf-claro); }
+.lf-sis-lecturas:not(.on) { opacity: 0; translate: 0 8px; }
+.lf-verticales { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: rgba(10, 20, 21, 0.72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.lf-verticales:not(.on) { opacity: 0; pointer-events: none; }
+.lf-vert { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 16px; padding: 24px; border-left: 1px solid var(--linea); }
+.lf-vert:first-child { border-left: 0; }
+.lf-vert .cs-marca, .lf-vert-hueco { width: clamp(44px, 5vw, 72px); }
+.lf-vert-hueco { aspect-ratio: 1; border: 1px dashed rgba(255, 255, 255, 0.4); border-radius: 50%; }
+.lf-vert b { font: 500 clamp(18px, 1.6vw, 26px) / 1 var(--cs-f); letter-spacing: -0.03em; }
+.lf-vert b span { display: block; font-weight: 300; color: var(--texto-2); }
+.lf-vert:not(.lf-vert-on) b span { color: var(--texto-3); }
+.lf-vert small { color: var(--texto-3); }
+.lf-vert-on small { color: var(--lf-claro); }
+.lf-verticales.on .lf-vert { animation: lf-sube 700ms var(--cs-curva) both; }
+.lf-verticales.on .lf-vert:nth-child(2) { animation-delay: 120ms; }
+.lf-verticales.on .lf-vert:nth-child(3) { animation-delay: 240ms; }
+@keyframes lf-sube { from { opacity: 0; translate: 0 16px; } }
+
+/* --- 8.3 PALETA --- */
+.lf-tonos { display: flex; height: clamp(200px, 34vh, 340px); }
+.lf-tono { flex: var(--w) 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding: 16px; background: var(--c); color: #FFFFFF; transition: flex-grow 600ms var(--cs-curva); }
+.lf-tono-claro { color: var(--lf-oscuro); }
+.lf-tono > .mono:first-child { margin-bottom: auto; opacity: 0.8; }
+.lf-tono b { font: 400 clamp(16px, 1.3vw, 20px) / 1.1 var(--cs-f); }
+.lf-tono small { font: 400 13px / 1.35 var(--cs-f); opacity: 0.8; }
+@media (hover: hover) { .lf-tonos:hover .lf-tono:hover { flex-grow: calc(var(--w) * 1.6); } }
+.lf-madre { display: flex; align-items: center; gap: 10px; color: var(--texto-2); text-transform: none; letter-spacing: 0; }
+.lf-madre-chip { width: 34px; height: 14px; background: linear-gradient(90deg, #84187C 0 50%, var(--lf-turquesa) 50% 100%); }
+.lf-deg { display: flex; flex-direction: column; gap: 10px; }
+.lf-deg:not(.on) { opacity: 0.12; translate: 0 10px; }
+.lf-deg-tira { position: relative; display: flex; height: 56px; }
+.lf-deg-tira i { position: relative; flex: 1; background: var(--c); transition: flex-grow 400ms var(--cs-curva); }
+.lf-deg-tira i::after { content: attr(data-hex); position: absolute; left: 6px; bottom: -22px; font: 10px var(--cs-f-mono); color: var(--texto-2); opacity: 0; transition: opacity 250ms; }
+@media (hover: hover) { .lf-deg-tira i:hover { flex-grow: 2.2; } .lf-deg-tira i:hover::after { opacity: 1; } }
+.lf-deg p { margin-top: 14px; color: var(--texto-3); text-transform: none; letter-spacing: 0; }
+
+/* --- 8.4 LA MADRE NO SE TOCA --- */
+.lf-lock-lienzo { position: relative; aspect-ratio: 16 / 10; border: 1px solid var(--linea); background-image: linear-gradient(var(--linea) 1px, transparent 1px), linear-gradient(90deg, var(--linea) 1px, transparent 1px); background-size: 25% 25%; background-position: -1px -1px; background-color: #FFFFFF; }
+.lf-lock-v, .lf-lock-h { position: absolute; inset: 0; display: grid; place-items: center; transition: opacity 500ms var(--cs-curva), scale 700ms var(--cs-curva); }
+.lf-lock-v:not(.on), .lf-lock-h:not(.on) { opacity: 0; scale: 0.96; }
+.lf-lock-v img { width: 56%; height: auto; }
+.lf-lock-h { align-content: center; gap: 24px; }
+.lf-lock-h img { width: 64%; height: auto; }
+.lf-lock-h .mono { color: var(--texto-3); }
+.lf-cota { position: absolute; display: flex; align-items: center; gap: 8px; color: var(--texto); transition: opacity 400ms; }
+.lf-cota i { width: 7px; height: 7px; border-radius: 50%; background: var(--acento); }
+.lf-cota:not(.on) { opacity: 0; }
+.lf-cota-iso { left: 22%; top: 24%; }
+.lf-cota-llego { left: 52%; top: 18%; }
+.lf-cota-farma { left: 40%; bottom: 22%; }
+.lf-cota::after { content: ''; position: absolute; left: 3px; width: 1px; background: var(--acento); }
+.lf-cota-iso::after, .lf-cota-llego::after { top: 14px; height: 36px; }
+.lf-cota-farma::after { bottom: 14px; height: 30px; }
+.lf-resguardo { position: absolute; inset: 26% 16%; border: 1px dashed var(--acento); transition: opacity 400ms, inset 700ms var(--cs-curva); }
+.lf-resguardo:not(.on) { opacity: 0; inset: 34% 22%; }
+.lf-resguardo i { position: absolute; display: grid; place-items: center; width: 22px; height: 22px; border: 1px solid var(--acento); font: 10px var(--cs-f-mono); font-style: normal; color: var(--acento); background: #FFFFFF; }
+.lf-resguardo i:nth-child(1) { left: -11px; top: 50%; translate: 0 -50%; } .lf-resguardo i:nth-child(2) { right: -11px; top: 50%; translate: 0 -50%; }
+.lf-resguardo i:nth-child(3) { top: -11px; left: 50%; translate: -50% 0; } .lf-resguardo i:nth-child(4) { bottom: -11px; left: 50%; translate: -50% 0; }
+.lf-minimos { display: flex; flex-wrap: wrap; gap: 8px 28px; color: var(--texto-3); }
+.lf-minimos span { display: flex; align-items: baseline; gap: 8px; }
+.lf-minimos b { font: 300 22px var(--cs-f); letter-spacing: -0.02em; color: var(--texto); text-transform: none; }
+.lf-minimos-nota { margin-left: auto; }
+
+/* --- 8.5 TRES CAMINOS --- */
+.lf-cam-lienzo { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #FFFFFF; border: 1px solid var(--linea); }
+.lf-cam-ap { position: absolute; inset: 0; margin: 0; transition: opacity 600ms var(--cs-curva), clip-path 800ms var(--cs-curva); clip-path: inset(0 0 0 0); }
+.lf-cam-ap:not(.on) { opacity: 0; clip-path: inset(0 0 0 12%); }
+.lf-cam-ap img { width: 100%; height: 100%; object-fit: cover; }
+.lf-cam-ap figcaption { position: absolute; left: 16px; bottom: 16px; display: flex; align-items: center; gap: 10px; padding: 10px 14px 10px 10px; background: var(--lf-oscuro); color: #FFFFFF; font: 400 13px var(--cs-f); }
+.lf-cam-ap figcaption .cs-marca { width: 22px; color: var(--lf-claro); }
+.lf-cam-ap figcaption b { font-weight: 500; }
+.lf-cam-ap figcaption span:last-child { color: rgba(255, 255, 255, 0.72); }
+.lf-tabla { position: absolute; inset: 0; display: grid; place-items: center; padding: 3% 5%; background: var(--lf-papel); transition: opacity 600ms var(--cs-curva); }
+.lf-tabla:not(.on) { opacity: 0; pointer-events: none; }
+.lf-tabla table { width: 100%; border-collapse: collapse; font: 400 clamp(12px, 1vw, 15px) / 1.3 var(--cs-f); }
+.lf-tabla caption { caption-side: top; padding-bottom: 8px; text-align: left; color: var(--texto-3); }
+.lf-tabla th, .lf-tabla td { padding: clamp(5px, 0.75vw, 12px) 10px; border-bottom: 1px solid var(--linea); text-align: left; }
+.lf-tabla thead th { vertical-align: bottom; font-weight: 500; }
+.lf-tabla thead .cs-marca { width: 22px; margin-bottom: 6px; color: var(--lf-oscuro); }
+.lf-tabla thead small { display: block; margin-top: 4px; color: var(--texto-3); font-size: 10px; }
+.lf-tabla tbody th { font-weight: 400; color: var(--texto-2); width: 34%; }
+.lf-tabla td { color: var(--texto-2); }
+.lf-tabla .lf-elegida { background: rgba(23, 129, 129, 0.08); color: var(--texto); }
+.lf-tabla thead .lf-elegida small { color: var(--acento); }
+.lf-tabla thead .lf-elegida .cs-marca { color: var(--acento); }
+
+/* --- 8.6 FOTOS DE LA OPERACIÓN --- */
+.lf-fotos .cs-pliego-sobre h3 { font-weight: 200; }
+.lf-fotos-porque { padding: clamp(40px, 5vw, 72px) var(--margen) 0; }
+.lf-porque-ancho { grid-column: 4 / span 6; display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px solid var(--linea); font: 300 clamp(20px, 1.8vw, 28px) / 1.3 var(--cs-f); letter-spacing: -0.02em; }
+.lf-porque-ancho .mono { display: inline-flex; align-items: center; gap: 8px; color: var(--texto-2); }
+.lf-porque-ancho .mono::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
+.lf-fotos .cs-tira figure { width: auto; display: grid; grid-template-columns: min-content; }
+.lf-fotos .cs-tira img { width: auto; height: clamp(240px, 40vh, 440px); aspect-ratio: auto; max-width: 84vw; }
+
+/* --- 8.7 EL MANUAL, EN VIVO --- */
+.lf-man-lamina { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--lf-papel); color: var(--lf-oscuro); --linea: rgba(16, 78, 86, 0.16); }
+.lf-man-cab { position: absolute; z-index: 2; inset: 0 0 auto; display: flex; justify-content: space-between; padding: 14px 18px; color: rgba(16, 78, 86, 0.6); }
+.lf-man-regla { position: absolute; inset: 0; display: grid; place-items: center; transition: opacity 500ms var(--cs-curva); }
+.lf-man-regla:not(.on) { opacity: 0; pointer-events: none; }
+/* Retícula: las mismas líneas con y sin cortes, alternando solas */
+.lf-r-lineas { --fy: 38%; --l: rgba(16, 78, 86, 0.5); position: absolute; inset: 12% 8% 18%; }
+.lf-r-lineas i { position: absolute; top: 0; bottom: 0; width: 1px; left: calc(var(--n) * 33.333%); background: linear-gradient(var(--l), var(--l)) 0 0 / 1px calc(var(--fy) - var(--c, 8px)) no-repeat, linear-gradient(var(--l), var(--l)) 0 calc(var(--fy) + var(--c, 8px)) / 1px 100% no-repeat; transition: background-size 400ms; }
+.lf-r-lineas i:nth-child(1) { --n: 0; } .lf-r-lineas i:nth-child(2) { --n: 1; } .lf-r-lineas i:nth-child(3) { --n: 2; } .lf-r-lineas i:nth-child(4) { --n: 3; left: calc(100% - 1px); }
+.lf-r-lineas b { position: absolute; left: 0; right: 0; top: var(--fy); height: 1px; background: linear-gradient(90deg, transparent var(--c, 8px), var(--l) var(--c, 8px), var(--l) calc(100% - var(--c, 8px)), transparent calc(100% - var(--c, 8px))) 0 0 / 33.333% 1px repeat-x; }
+.lf-r-reticula.sin .lf-r-lineas { --c: 0px; }
+.lf-r-par { position: absolute; left: 8%; bottom: 7%; display: flex; gap: 18px; font: 400 13px var(--cs-f); }
+.lf-r-par span { display: inline-flex; align-items: center; gap: 8px; opacity: 0.45; transition: opacity 300ms; }
+.lf-r-par i { width: 8px; height: 8px; border-radius: 50%; border: 1px solid currentColor; }
+.lf-r-par span.on { opacity: 1; }
+.lf-r-par span.on i { background: currentColor; }
+/* Grano: la misma mitad del degradado, lisa y con grano */
+.lf-r-grano { grid-template-columns: 1fr 1fr; place-items: stretch; }
+.lf-r-mitad { position: relative; display: flex; align-items: flex-end; padding: 18px; background: linear-gradient(180deg, var(--lf-g03), var(--lf-g06) 40%, var(--lf-turquesa) 70%, var(--lf-oscuro)); color: #FFFFFF; }
+.lf-r-mitad.lf-grano::after { opacity: 0.6; }
+.lf-r-mitad + .lf-r-mitad { border-left: 1px solid rgba(255, 255, 255, 0.4); }
+/* Cero: con punto (fuente de sistema) y el cero de LF Mono */
+.lf-r-cero { grid-template-columns: 1fr 1fr; align-content: center; gap: 4% 0; }
+.lf-r-cero > div { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.lf-r-cero b { font: 400 clamp(90px, 11vw, 190px) / 1 var(--cs-f-mono); }
+.lf-cero-otro { font-family: ui-monospace, Menlo, monospace !important; opacity: 0.32; }
+.lf-r-cero .mono { color: rgba(16, 78, 86, 0.6); }
+.lf-r-cifras { grid-column: 1 / -1; font: 400 clamp(20px, 2vw, 32px) var(--cs-f-mono); color: var(--lf-turquesa); }
+.lf-r-cifras span { opacity: 0.4; }
+/* Nodos: relleno = hecho, contorno = pendiente */
+.lf-r-nodos { align-content: center; gap: 24px; }
+.lf-r-nodos ul { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 40px; }
+.lf-r-nodos li { display: flex; align-items: center; gap: 12px; font: 400 clamp(14px, 1.2vw, 18px) var(--cs-f); }
+.lf-r-nodos li i { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--lf-turquesa); }
+.lf-r-nodos li.hecho i { background: var(--lf-turquesa); }
+.lf-r-nodos .mono { color: rgba(16, 78, 86, 0.6); }
+
+/* --- 9. CAPÍTULO 03 Y DECISIÓN 08 · EL DOMINIO --- */
+.lf-dom .cs-fijo { align-content: center; row-gap: 32px; color: #FFFFFF; }
+.lf-dom .cs-cap-n { grid-row: 1; }
+.lf-dom .cs-cap-txt { grid-row: 1; grid-column: 4 / span 4; translate: 0 calc(var(--p, 0) * -4vh); }
+.lf-dom .lf-cap-num { -webkit-text-stroke-color: rgba(255, 255, 255, 0.14); }
+.lf-dom-dec { grid-row: 2; grid-column: 4 / span 4; transition: opacity 600ms var(--cs-curva), translate 700ms var(--cs-curva); }
+.lf-dom-dec:not(.on) { opacity: 0; translate: 0 18px; }
+.lf-dom-nav { grid-row: 1 / span 2; grid-column: 8 / -1; display: flex; flex-direction: column; aspect-ratio: 16 / 10.6; border: 1px solid rgba(255, 255, 255, 0.24); background: rgba(10, 20, 21, 0.4); }
+.lf-dom-cromo { display: flex; align-items: center; gap: 14px; height: 40px; padding: 0 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); }
+.lf-dom-url { flex: 1; display: flex; align-items: center; gap: 8px; height: 26px; padding: 0 12px; background: rgba(255, 255, 255, 0.08); font: 400 13px var(--cs-f-mono); }
+.lf-dom-url s { opacity: 0.5; }
+.lf-dom-candado { display: inline-block; width: 8px; height: 9px; border: 1px solid currentColor; border-radius: 1px; position: relative; opacity: 0.7; }
+.lf-dom-candado::before { content: ''; position: absolute; left: 1px; right: 1px; bottom: 100%; height: 4px; border: 1px solid currentColor; border-bottom: 0; border-radius: 3px 3px 0 0; }
+.lf-dom-cursor { width: 1px; height: 14px; background: currentColor; animation: lf-cursor 1s steps(1) infinite; }
+@keyframes lf-cursor { 50% { opacity: 0; } }
+.lf-dom-carga { height: 2px; background: var(--lf-claro); transform-origin: left; scale: var(--carga, 0) 1; }
+.lf-dom-pant { position: relative; flex: 1; overflow: hidden; }
+.lf-dom-pant img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0 0 calc((1 - var(--dibuja, 0)) * 100%) 0); }
+.lf-dom-pant .lf-dom-logo { inset: 8% auto auto 6%; width: 18%; height: auto; object-fit: contain; }
+
+/* --- 10. EVIDENCIA: LLEGOFARMA.CL, MARCADO --- */
+.lf-ev { --foco: var(--lf-claro); --foco-txt: var(--lf-negro); }
+.lf-ev .cs-fijo { padding-top: 56px; }
+.lf-ev-vivo { display: inline-flex; align-items: center; gap: 6px; }
+.lf-ev-vivo i { width: 6px; height: 6px; border-radius: 50%; background: var(--verde); }
+.lf-ev .cs-ev-caja { box-shadow: 0 0 0 1px var(--foco), 0 0 0 200vmax rgba(10, 20, 21, 0.5); }
+/* Las esquinas del foco son nodos, como la retícula del manual */
+.lf-ev .cs-ev-caja::before, .lf-ev .cs-ev-caja::after { content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; background: var(--foco); }
+.lf-ev .cs-ev-caja::before { left: -4px; top: -4px; }
+.lf-ev .cs-ev-caja::after { right: -4px; bottom: -4px; }
+.lf-ev .cs-ev-indice li[data-parada] button .mono { color: var(--acento); }
+
+/* --- 11. DECISIÓN 13 · EL TELÉFONO --- */
+.lf-tel-sec .cs-fijo { color: #FFFFFF; }
+.lf-tel { grid-column: 8 / span 4; justify-self: center; width: min(100%, 340px, 37vh); aspect-ratio: 390 / 844; padding: 10px; border-radius: 48px; background: #050A0B; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); }
+.lf-tel-pant { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 38px; background: var(--lf-negro); }
+.lf-tel-pant iframe { position: absolute; top: 0; left: 0; width: 390px; height: 844px; border: 0; transform-origin: 0 0; transform: scale(var(--e, 0.8)); pointer-events: none; opacity: 0; transition: opacity 500ms; }
+.lf-tel.listo iframe { opacity: 1; }
+.lf-tel-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.lf-tel-isla { position: absolute; z-index: 2; top: 10px; left: 50%; translate: -50% 0; width: 30%; height: 22px; border-radius: 20px; background: #050A0B; }
+.lf-datos { list-style: none; display: flex; gap: 28px; padding-top: 6px; text-transform: none; letter-spacing: 0; color: var(--texto-2); }
+.lf-datos li { display: flex; flex-direction: column; gap: 6px; max-width: 18ch; }
+.lf-datos b { font: 200 48px / 0.9 var(--cs-f); letter-spacing: -0.04em; color: #FFFFFF; }
+
+/* --- 12. RESULTADO --- */
+.lf-resultado { position: relative; overflow: clip; }
+.lf .cs-cifras b { color: #FFFFFF; }
+.lf .cs-res-cita p { font-weight: 200; }
+
+/* =======================================================
+   VISTA MÓVIL (TELÉFONOS Y TABLETS EN VERTICAL)
+   ======================================================= */
+@media (max-width: 768px), (orientation: portrait) and (max-width: 1100px) {
+    /* Todo a lo ancho: las ubicaciones de escritorio del caso pesan más que la regla común del marco */
+    /* El degradado queda fuera: un hijo absoluto con columna asignada toma su área como contenedor y deja franjas */
+    .lf .cs-grilla > :not(.lf-degradado) { grid-column: 1 / -1; }
+    .lf .cs-grilla > .lf-degradado { grid-column: auto; }
+    .lf-reticula i:nth-child(2), .lf-reticula i:nth-child(4) { display: none; }
+    .lf-reticula::after { background-size: 50% 1px; }
+    /* Hero: la cruz arriba, el nombre abajo */
+    .lf-cruz { right: auto; left: 50%; top: 40%; width: min(64vw, 38vh); translate: -50% calc(-50% - var(--p, 0) * 10vh); }
+    .lf-hero-franja { grid-template-columns: 1fr 1fr; row-gap: 8px; top: 72px; }
+    .lf-hero-franja > *:nth-child(2) { text-align: right; }
+    .lf-hero-franja a { justify-self: start; padding-left: 14px; }
+    .lf-trama { display: none; }
+    .lf-titulo { font-size: 23vw; }
+    .lf-hero-txt p { margin-left: 0; padding-left: 0; font-size: 18px; }
+    .lf-hero-pista { display: none; }
+    /* Resumen: el enunciado y la tarjeta de seguimiento, apilados */
+    .lf-res .cs-fijo { align-content: start; padding-top: 72px; row-gap: 18px; }
+    .lf-res-txt { gap: 16px; }
+    .lf-enunciado { font-size: clamp(22px, 6vw, 30px); }
+    .lf-encargo { display: none; }
+    .lf-envio { padding: 16px; gap: 14px; }
+    .lf-envio-estado b { font-size: 26px; }
+    .lf-registro { min-height: 0; }
+    .lf-hitos li:not(.actual) .mono { opacity: 0; }
+    .lf-registro li:not(.actual) { display: none; }
+    /* Capítulos */
+    .lf-cap .cs-cap-n { padding-bottom: 0; }
+    .lf .cs-cap-txt h2 { font-size: 18vw; }
+    .lf-cap-num { font-size: 70vw; top: 96px; }
+    /* Decisiones: el texto arriba y la pieza abajo, en el mismo panel */
+    .lf-dsec .cs-fijo { align-content: start; padding-top: 72px; row-gap: 18px; }
+    .lf-dsec .cs-dec h3 { font-size: 26px; }
+    .lf-dsec .cs-dec .cs-dec-num, .lf-dsec .cs-mas { display: none; }
+    .lf-dsec .cs-dec p:not(.cs-porque) { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .lf-pieza { gap: 12px; }
+    .lf-diag-col { padding: 12px 10px 12px 0; }
+    .lf-diag-col + .lf-diag-col { padding-left: 10px; }
+    .lf-diag-col li { padding: 7px 0; font-size: 15px; }
+    .lf-diag-col ul { margin-top: 8px; }
+    .lf-hallazgo { padding: 14px; font-size: 15px; }
+    .lf-sis-lienzo { aspect-ratio: 4 / 3; }
+    .lf-vert { padding: 12px; gap: 10px; }
+    .lf-vert b { font-size: 15px; }
+    .lf-sis-lecturas { left: 10px; bottom: 10px; font-size: 12px; gap: 10px; }
+    .lf-tonos { height: 150px; }
+    .lf-tono { min-width: 76px; padding: 10px; }
+    .lf-tono b { font-size: 14px; }
+    .lf-tono small { display: none; }
+    .lf-deg-tira { height: 36px; }
+    .lf-minimos-nota { display: none; }
+    .lf-cam-lienzo { aspect-ratio: 4 / 3; }
+    .lf-tabla { padding: 2%; }
+    .lf-tabla thead .cs-marca { width: 18px; margin-bottom: 4px; }
+    .lf-tabla th, .lf-tabla td { padding: 4px; font-size: 10.5px; }
+    .lf-tabla caption { padding-bottom: 4px; }
+    .lf-cam-ap figcaption { left: 8px; bottom: 8px; padding: 6px 10px 6px 6px; font-size: 11px; }
+    .lf-cam-ap figcaption span:last-child { display: none; }
+    .lf-man-lamina { aspect-ratio: 4 / 3; }
+    .lf-r-par { font-size: 11px; }
+    .lf-porque-ancho { grid-column: 1 / -1; font-size: 19px; }
+    /* Dominio: el navegador arriba, el capítulo y la decisión abajo */
+    .lf-dom .cs-fijo { align-content: start; padding-top: 80px; row-gap: 18px; }
+    .lf-dom-nav { grid-row: 1; aspect-ratio: 16 / 11; }
+    .lf-dom .cs-cap-n { display: none; }
+    .lf-dom .cs-cap-txt { grid-row: 2; translate: none; }
+    .lf-dom .cs-cap-txt h2 { font-size: 16vw; }
+    .lf-dom .cs-cap-txt p { font-size: 16px; }
+    .lf-dom-dec { grid-row: 3; }
+    .lf-dom .lf-cap-num { display: none; }
+    /* Teléfono */
+    .lf-tel-sec .cs-dec { grid-row: 1; }
+    .lf-tel { grid-row: 2; width: min(50vw, 25vh); padding: 6px; border-radius: 30px; }
+    .lf-tel-pant { border-radius: 25px; }
+    .lf-tel-sec .cs-dec p:not(.cs-porque) { -webkit-line-clamp: 2; }
+    .lf-datos { display: none; }
+}
+
+/* =======================================================
+   MOVIMIENTO REDUCIDO
+   ======================================================= */
+@media (prefers-reduced-motion: reduce) {
+    .lf-hero .lf-reticula i, .lf-hero .lf-reticula::after, .lf-linea > *, .lf-cruz-puntos :is(circle, rect) { transition: none; }
+    .lf-hero-pista, .lf-dom-cursor { animation: none; }
+    .lf-verticales.on .lf-vert { animation: none; }
+}
