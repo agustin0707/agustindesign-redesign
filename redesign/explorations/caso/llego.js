@@ -1,7 +1,7 @@
 /* =======================================================
    INICIO JS · CASO LLEGÓ FARMA (.lf-)
    ======================================================= */
-/* Lo propio del caso, antes del motor común (caso-motor.js): el siguiente proyecto, la carga del hero y las escenas
+/* Lo propio del caso, antes del motor común (caso-motor.js): el siguiente proyecto, la cinta del hero y las escenas
    que dibujan sus piezas con el scroll. Cada escena recibe su sección y devuelve una función de --p (0 a 1) */
 (function () {
     const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -15,37 +15,249 @@
         siguiente: { id: 'tapin', nombre: 'Tap In', numero: '02', bajada: 'De la cafetería del campus a la plataforma del colegio.', tinte: '#110E22', url: 'tapin.html' }
     };
 
-    /* --- 2. HERO: LA TRAMA DE PUNTOS SE VUELVE EL ISOTIPO --- */
-    /* Una grilla de 9 x 9 puntos con el paso del isotipo Nodos (11 unidades). Al cargar se encienden desde el centro;
-       después los cinco de la cruz crecen hasta el tamaño de sus nodos, dos conectores los unen y queda el isotipo */
-    const cruz = document.querySelector('[data-cruz]');
-    if (cruz) {
-        const lienzo = cruz.querySelector('svg');
-        lienzo.setAttribute('viewBox', '0 0 88 88');
-        const claves = ['44,11', '77,44', '11,44', '44,77', '44,44'];
-        for (let f = 0; f < 9; f++) for (let c = 0; c < 9; c++) {
-            const x = c * 11, y = f * 11, k = claves.indexOf(`${x},${y}`);
-            const punto = svg('circle', { cx: x, cy: y, r: 1.6 });
-            punto.style.setProperty('--d', Math.round(Math.hypot(x - 44, y - 44) * 9) + 'ms');
-            if (k >= 0) { punto.classList.add('clave'); punto.style.setProperty('--k', k * 110 + 'ms'); }
-            lienzo.appendChild(punto);
-        }
-        /* Los conectores del isotipo: del nodo izquierdo al centro y del centro al inferior */
-        lienzo.appendChild(svg('rect', { x: 11, y: 39, width: 33, height: 10, style: '--o:right center' }));
-        lienzo.appendChild(svg('rect', { x: 39, y: 44, width: 10, height: 33, style: '--o:center top' }));
+    /* --- 2. HERO: LA CINTA DE LLEGOFARMA.CL --- */
+    /* El sitio real avanza en columnas de capturas sobre un plano inclinado (el horizonte de cinta-v2, con sus ajustes
+       aprobados) y al bajar la columna del centro deja una carta de Inicio que crece hasta ser una ventana con el sitio
+       en vivo. La escena del motor solo entrega el avance (--p); el cuadro corre en su propio bucle mientras el hero
+       está en pantalla, porque la cinta avanza aunque no haya scroll */
+    const cinta = (() => {
+        const h = document.querySelector('.lf-h');
+        if (!h) return null;
+        const $ = (sel, raiz = h) => raiz.querySelector(sel);
+        const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+        const suave = t => 1 - Math.pow(1 - t, 3);
+        const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
+        const TOMAS = ['hero', 's-capacidades', 's-propuesta', 's-calidad', 's-tecnologia', 's-experiencia', 's-categorias', 's-contacto'];
+        const SITIO = '../works/sitios/llego/index.html';
+        /* n columnas (impares, la del centro aterriza), ancho de carta sobre el ancho de pantalla, ángulos en grados,
+           perspectiva en px, desvío como fracción de la pantalla. En la vista móvil, tres columnas más anchas */
+        const HORIZONTE = { n: 5, ancho: 0.23, rx: 71, rz: -19, persp: 1050, dx: 0.19, dy: -0.04, vel: 1.25, niebla: 0.8 };
+        const MOVIL = { n: 3, ancho: 0.5, dx: 0.06, dy: -0.12 };
+        const fijo = $('.lf-h-fijo'), escena = $('.lf-h-escena'), plano = $('.lf-h-plano');
+        const vivo = $('.lf-h-vivo'), marco = $('iframe', vivo), ancho = $('[data-ancho]'), linea = $('.lf-h-linea');
+        const c = { W: 0, H: 0, cw: 0, ch: 0, g: 28, paso: 0, ciclo: 0, largo: 0, off: 0, p: 0, t: 0 };
+        let P = HORIZONTE, cols = [], foco = 0, armado = 0;
+        let mx = 0, my = 0, sx = 0, sy = 0, ox = 0, oy = 0, vx = 0, vy = 0, ult = 0, t0 = 0, hd = false, abierto = false, vez = 0, blanco = -1;
+
+        /* --- 2.1 PRECARGA DEL SITIO --- */
+        /* Un iframe invisible baja el sitio mientras se mira el hero, así la ventana en vivo abre al instante */
+        let tibio = false;
+        const entibiar = () => {
+            if (tibio) return; tibio = true;
+            const f = document.createElement('iframe');
+            f.className = 'lf-h-tibio'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+            f.onload = () => setTimeout(() => f.remove(), 500);
+            f.src = SITIO; document.body.appendChild(f);
+        };
+
+        /* --- 2.2 COLUMNAS Y MEDIDAS --- */
+        const carta = (col, k) => {
+            const img = TOMAS[(col.ini + k) % 8], n = document.createElement('i');
+            n.className = 'lf-h-carta';
+            n.innerHTML = `<img src="media/lf-cinta-${img}.jpg" alt="" decoding="async">`;
+            col.el.appendChild(n);
+            return { el: n, img: n.firstChild, hero: img === 'hero' };
+        };
+        /* Rehace las columnas solo si cambia la cantidad: la del centro parte en Inicio, el resto desfasadas de a tres
+           secciones y más lentas o más rápidas según su distancia al centro */
+        const armar = () => {
+            if (P.n === armado) return;
+            armado = P.n; plano.innerHTML = ''; hd = false; blanco = -1;
+            foco = (P.n - 1) / 2;
+            const paso = Math.min(0.22, 0.6 / Math.max(P.n - 1, 1));
+            cols = Array.from({ length: P.n }, (_, i) => {
+                const n = document.createElement('div'); n.className = 'lf-h-col' + (i === foco ? ' foco' : '');
+                n.innerHTML = '<b class="lf-h-piso"></b>'; plano.appendChild(n);
+                return { el: n, piso: n.firstChild, ini: (((i - foco) * 3) % 8 + 8) % 8, v: 1 + (i - foco) * paso, cartas: [] };
+            });
+        };
+        c.medir = () => {
+            P = movil.matches ? { ...HORIZONTE, ...MOVIL } : HORIZONTE;
+            armar();
+            c.W = fijo.clientWidth; c.H = fijo.clientHeight;
+            c.cw = Math.round(c.W * P.ancho); c.ch = c.cw * 10 / 16; c.g = Math.round(fijar(c.cw * 0.067, 10, 36));
+            c.paso = c.ch + c.g; c.ciclo = 8 * c.paso; c.largo = Math.max(c.W, c.H) * 3.4;
+            const n = Math.ceil((c.largo + c.ciclo) / c.paso) + 1;
+            cols.forEach(col => {
+                while (col.cartas.length < n) col.cartas.push(carta(col, col.cartas.length));
+                col.cartas.forEach((x, k) => { x.el.style.top = (k * c.paso).toFixed(1) + 'px'; });
+                col.piso.style.height = (col.cartas.length * c.paso).toFixed(1) + 'px';
+            });
+            plano.style.setProperty('--cw', c.cw + 'px'); plano.style.setProperty('--g', c.g + 'px');
+            plano.style.width = (P.n * c.cw + (P.n - 1) * c.g) + 'px'; plano.style.height = c.largo + 'px';
+            escena.style.perspective = P.persp + 'px';
+            fijo.style.setProperty('--foco', (50 + P.dx * 100).toFixed(1) + '%');
+            /* La ventana final: la carta aterriza bajo la barra, en 16:10, y ahí se monta el sitio real. Si la ventana
+               es angosta, el sitio se dibuja a 1440 y se escala, como la captura que reemplaza */
+            const arriba = 96, abajo = 28, alto = c.H - arriba - abajo;
+            c.fw = Math.min(alto * 1.6, c.W * 0.92); c.fh = c.fw / 1.6; c.fy = arriba + alto / 2;
+            Object.assign(vivo.style, { left: ((c.W - c.fw) / 2).toFixed(1) + 'px', top: (c.fy - c.fh / 2).toFixed(1) + 'px', width: c.fw.toFixed(1) + 'px', height: c.fh.toFixed(1) + 'px' });
+            const lw = c.fw < 1024 ? 1440 : c.fw, ie = c.fw / lw;
+            vivo.style.setProperty('--iw', lw.toFixed(1) + 'px'); vivo.style.setProperty('--ih', (c.fh / ie).toFixed(1) + 'px'); vivo.style.setProperty('--ie', ie.toFixed(4));
+            ancho.textContent = Math.round(lw) + ' px';
+        };
+
+        /* --- 2.3 EL CUADRO --- */
+        c.cuadro = ahora => {
+            const dt = Math.min(ahora - (ult || ahora), 50); ult = ahora; c.t = ahora - t0;
+            /* El mouse pasa por dos filtros medidos en tiempo y no en cuadros: el objetivo se suaviza (120 ms) y la cinta lo
+               sigue con un resorte críticamente amortiguado. Se siente igual a 60 o a 120 Hz */
+            const s = dt / 1000, k = 1 - Math.exp(-dt / 120), w = 4.2;
+            sx += (mx - sx) * k; sy += (my - sy) * k;
+            vx += (w * w * (sx - ox) - 2 * w * vx) * s; vy += (w * w * (sy - oy) - 2 * w * vy) * s;
+            ox += vx * s; oy += vy * s;
+            const e = curva(fijar(c.p / 0.85));
+            const a = quieto ? 1 : suave(fijar(c.t / 1600));
+            /* Llega rápido y frena hasta su velocidad de crucero; las cartas chicas van más lento para pasar al mismo ritmo */
+            const vel = 0.045 * (1 + 7 * Math.exp(-c.t / 380)) * P.vel * (P.ancho / 0.3);
+            if (!quieto) c.off += dt * vel * (1 - e);
+            cols.forEach((col, i) => {
+                let pos = -((c.off * col.v) % c.ciclo);
+                /* Al bajar, la columna del centro deja una carta de Inicio justo al centro */
+                if (i === foco && e > 0) {
+                    const base = c.largo / 2 - c.ch / 2, n = Math.round((base - pos) / c.ciclo);
+                    pos += (base - n * c.ciclo - pos) * e;
+                    if (n * 8 !== blanco) { col.cartas.forEach((x, k) => x.el.classList.toggle('blanco', k === n * 8)); blanco = n * 8; }
+                }
+                col.el.style.transform = `translate3d(0, ${pos.toFixed(1)}px, 0)`;
+            });
+            const esc = 1 + (c.fw / c.cw - 1) * e;
+            const tx = (c.W * P.dx + ox * 30) * (1 - e), ty = (1 - a) * c.H * 0.4 + c.H * P.dy * (1 - e) + (c.fy - c.H / 2) * e;
+            const rx = (P.rx - oy * 6) * (1 - e), rz = (P.rz + ox * 6) * (1 - e);
+            plano.style.transform = `translate(-50%, -50%) translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0) rotateX(${rx.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${esc.toFixed(4)})`;
+            plano.style.opacity = a >= 1 ? '' : fijar(c.t / 500).toFixed(3);
+            /* La carta que va a llenar la pantalla cambia a la captura de 2880 px antes de crecer */
+            if (!hd && e > 0.08) { hd = true; cols[foco].cartas.forEach(x => { if (x.hero) x.img.src = 'media/lf-hero.jpg'; }); }
+            fijo.style.setProperty('--q', e.toFixed(3));
+            fijo.style.setProperty('--niebla', (P.niebla * (1 - e)).toFixed(3));
+            fijo.style.setProperty('--sub', fijar(c.p / 0.12).toFixed(3));
+            linea.style.setProperty('--sal', fijar((c.p - 0.02) / 0.2).toFixed(3));
+            /* Al aterrizar, la captura se vuelve el sitio real; cada vez se recarga para que corra su entrada */
+            if (e > 0.985 && !abierto) {
+                abierto = true;
+                marco.onload = () => { if (abierto) vivo.classList.add('en'); };
+                marco.src = `${SITIO}?v=${++vez}`;
+            } else if (e < 0.95 && abierto) { abierto = false; vivo.classList.remove('en'); }
+        };
+
+        /* --- 2.4 EL LOGO: ENTRADA DEL HOME --- */
+        /* El logo se arma al cargar (.llega), con la animación de la portada de Llegó en el home, y la clase sale cuando
+           terminan sus animaciones. Recién ahí acepta el hover (.nodo), que también dura lo que duren las suyas */
+        const logo = $('.lf-logo');
+        let armadas = 0, pasadas = 0;
+        const alTerminar = (clase, vuelta, actual) => Promise.allSettled(logo.getAnimations({ subtree: true }).map(x => x.finished)).then(() => { if (vuelta === actual()) logo.classList.remove(clase); });
+        const armarLogo = () => {
+            logo.classList.remove('llega', 'nodo'); void logo.getBoundingClientRect(); logo.classList.add('llega');
+            alTerminar('llega', ++armadas, () => armadas);
+        };
+
+        /* --- 2.5 EL LOGO: ECO CON EL MOUSE --- */
+        /* Como las letras del hero de Tap In, pero con resortes. Cada pieza mide su distancia al cursor y saca dos metas de
+           una campana ancha (σ igual al 20 % del ancho del logo): el grado --w (la campana) y un tirón hacia el cursor (la
+           campana por la distancia, que crece, toca techo a un σ y se apaga, así nunca salta al cruzar la pieza). Tres
+           resortes por pieza persiguen esas metas en el cuadro de la cinta. Los centros salen del dibujo (getBBox), que no
+           se mueve con los gestos; se miden la primera vez que el logo tiene tamaño. Solo con mouse */
+        const conMouse = window.matchMedia('(hover: hover)').matches;
+        const piezas = [...logo.querySelectorAll('.lf-lg-p')], iO = piezas.indexOf($('.lf-lg-o', logo));
+        const VB = { x: -2, w: 440, h: 84 }, TIRON = 3, GOLPE = 15;
+        let centros = null;
+        const medirPiezas = () => {
+            const cajas = piezas.map(p => p.getBBox());
+            if (cajas.every(b => b.width)) centros = cajas.map(b => ({ x: b.x + b.width / 2, y: b.y + b.height / 2 }));
+        };
+        const resortes = piezas.map(() => ({ w: 0, vw: 0, px: 0, vpx: 0, py: 0, vpy: 0, mw: 0, mx: 0, my: 0, golpe: 0 }));
+        let cursor = null, enReposo = true;
+        const activo = () => conMouse && !quieto && !logo.classList.contains('llega') && window.scrollY < window.innerHeight * 0.3;
+        /* Pasa los centros del dibujo a la pantalla con la caja actual del logo */
+        const enPantalla = () => {
+            const r = logo.getBoundingClientRect(), k = r.width / VB.w, y0 = r.top + (r.height - VB.h * k) / 2;
+            return { k, puntos: centros.map(q => ({ x: r.left + (q.x - VB.x) * k, y: y0 + q.y * k })) };
+        };
+        const lejos = () => resortes.forEach(r => { r.mw = r.mx = r.my = 0; });
+        const cerca = (x, y) => {
+            cursor = { x, y };
+            if (!activo() || !centros && (medirPiezas(), !centros)) return lejos();
+            const { k, puntos } = enPantalla(), s = VB.w * k * 0.2;
+            resortes.forEach((r, i) => {
+                const dx = (x - puntos[i].x) / s, dy = (y - puntos[i].y) / s, g = Math.exp(-(dx * dx + dy * dy) / 2);
+                r.mw = g; r.mx = TIRON * g * dx; r.my = TIRON * g * dy;
+                if (g > 0.002) enReposo = false;
+            });
+        };
+        const apagar = () => {
+            resortes.forEach(r => Object.assign(r, { w: 0, vw: 0, px: 0, vpx: 0, py: 0, vpy: 0, mw: 0, mx: 0, my: 0, golpe: 0 }));
+            piezas.forEach(p => ['--w', '--px', '--py'].forEach(v => p.style.removeProperty(v)));
+            enReposo = true;
+        };
+        /* Un paso de los resortes, casi críticos para que no se sientan de gelatina: el grado firme (ω 13, ζ 0,85, se
+           asienta en ~350 ms sin rebote visible) y el tirón un poco más lento (ω 10, ζ 0,95). Euler semi implícito,
+           estable con los 50 ms de tope del cuadro */
+        const resorte = (r, v, m, w, z, s) => { const dv = 'v' + v; r[dv] += (w * w * (r[m] - r[v]) - 2 * z * w * r[dv]) * s; r[v] += r[dv] * s; };
+        let antes = 0;
+        const mover = ahora => {
+            const s = Math.min(ahora - (antes || ahora), 50) / 1000; antes = ahora;
+            if (enReposo) return;
+            let quietas = 0;
+            resortes.forEach((r, i) => {
+                if (r.golpe && ahora >= r.golpe) { r.vw += GOLPE; r.golpe = 0; }
+                resorte(r, 'w', 'mw', 13, 0.85, s); resorte(r, 'px', 'mx', 10, 0.95, s); resorte(r, 'py', 'my', 10, 0.95, s);
+                const p = piezas[i].style;
+                p.setProperty('--w', r.w.toFixed(4)); p.setProperty('--px', r.px.toFixed(3)); p.setProperty('--py', r.py.toFixed(3));
+                if (!r.golpe && r.mw < 0.002 && Math.abs(r.w) + Math.abs(r.vw) + Math.abs(r.px) + Math.abs(r.vpx) + Math.abs(r.py) + Math.abs(r.vpy) < 0.002) quietas++;
+            });
+            if (quietas === piezas.length) apagar();
+        };
+        /* Una pasada por entrada del mouse: una ola de empujones a los resortes que parte del punto de entrada. Cada pieza
+           lo recibe 0,8 ms por píxel de distancia después (hasta 460 ms) y se suma a lo que marque el cursor, sin pisarlo.
+           La onda sale de la o cuando la ola llega a ella */
+        logo.addEventListener('pointerenter', e => {
+            if (quieto || !conMouse || logo.classList.contains('llega') || logo.classList.contains('nodo') || !centros && (medirPiezas(), !centros)) return;
+            const { puntos } = enPantalla(), ahora = performance.now();
+            const dl = puntos.map(q => Math.min(Math.hypot(e.clientX - q.x, e.clientY - q.y) * 0.8, 460));
+            resortes.forEach((r, i) => { r.golpe = ahora + dl[i]; });
+            logo.style.setProperty('--dl-o', Math.round(dl[iO] + 120) + 'ms');
+            enReposo = false;
+            logo.classList.add('nodo');
+            alTerminar('nodo', ++pasadas, () => pasadas);
+        });
+
+        /* --- 2.6 ENTRADA, MOUSE Y BUCLE --- */
+        /* El bucle corre solo con el hero en pantalla; al salir de la ventana o perder el foco la cinta vuelve al centro
+           por el mismo resorte y el logo se rearma */
+        let enVista = true, corriendo = false, listo = false;
+        const bucle = ahora => {
+            if (!enVista) { corriendo = false; ult = antes = 0; return; }
+            c.cuadro(ahora); mover(ahora); requestAnimationFrame(bucle);
+        };
+        const correr = () => { if (listo && !corriendo && enVista) { corriendo = true; requestAnimationFrame(bucle); } };
+        new IntersectionObserver(es => { enVista = es[0].isIntersecting; correr(); }).observe(h);
+        window.addEventListener('pointermove', e => {
+            cerca(e.clientX, e.clientY);
+            mx = e.clientX / c.W - 0.5; my = e.clientY / c.H - 0.5;
+        }, { passive: true });
+        window.addEventListener('scroll', () => { if (cursor) cerca(cursor.x, cursor.y); }, { passive: true });
+        const soltar = () => { mx = my = 0; lejos(); };
+        document.addEventListener('mouseout', e => { if (!e.relatedTarget) soltar(); });
+        window.addEventListener('blur', soltar);
+        window.addEventListener('resize', () => c.medir());
+        c.entrar = () => {
+            h.classList.add('entra'); listo = true;
+            c.medir(); t0 = performance.now(); ult = 0; c.off = 0;
+            plano.style.opacity = quieto ? '' : '0';
+            setTimeout(entibiar, 2600);
+            armarLogo(); correr();
+        };
+        return c;
+    })();
+    if (cinta) {
+        if (document.fonts && document.fonts.ready) Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 900))]).then(() => requestAnimationFrame(cinta.entrar));
+        else requestAnimationFrame(cinta.entrar);
     }
-    const arrancar = () => {
-        document.body.classList.add('lf-listo');
-        if (!cruz) return;
-        if (quieto) { cruz.classList.add('forma', 'final'); return; }
-        setTimeout(() => cruz.classList.add('forma'), 1500);
-        setTimeout(() => cruz.classList.add('final'), 3000);
-    };
-    if (document.fonts && document.fonts.ready) Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 900))]).then(() => requestAnimationFrame(arrancar));
-    else requestAnimationFrame(arrancar);
 
     /* --- 3. ESCENAS PROPIAS --- */
     window.CASO_ESCENAS = {
+        /* Hero: el avance de su pista endereza la cinta y la hace aterrizar */
+        hero: () => p => { if (cinta) cinta.p = p; },
         /* Resumen: el proyecto avanza hito a hito como un envío rastreado */
         resumen: el => {
             const hitos = [...el.querySelectorAll('.lf-hitos li')], registro = [...el.querySelectorAll('.lf-registro li')];

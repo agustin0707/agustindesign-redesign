@@ -61,50 +61,133 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-reticula i { position: absolute; top: 0; bottom: 0; width: 1px; left: calc(var(--n) * 25%); background: linear-gradient(var(--l), var(--l)) 0 0 / 1px calc(var(--fy) - var(--corte)) no-repeat, linear-gradient(var(--l), var(--l)) 0 calc(var(--fy) + var(--corte)) / 1px 100% no-repeat; transform-origin: top; }
 .lf-reticula i:nth-child(1) { --n: 0; } .lf-reticula i:nth-child(2) { --n: 1; } .lf-reticula i:nth-child(3) { --n: 2; } .lf-reticula i:nth-child(4) { --n: 3; } .lf-reticula i:nth-child(5) { --n: 4; left: calc(100% - 1px); }
 .lf-reticula::after { content: ''; position: absolute; left: 0; right: 0; top: var(--fy); height: 1px; background: linear-gradient(90deg, transparent var(--corte), var(--l) var(--corte), var(--l) calc(100% - var(--corte)), transparent calc(100% - var(--corte))) 0 0 / 25% 1px repeat-x; transform-origin: left; }
-/* Al cargar, las líneas se dibujan y después entra el resto (como la secuencia de carga de llegofarma.cl) */
-.lf-hero .lf-reticula i { transform: scaleY(0); transition: transform 1400ms var(--cs-curva); transition-delay: calc(var(--n) * 90ms); }
-.lf-hero .lf-reticula::after { transform: scaleX(0); transition: transform 1400ms var(--cs-curva) 300ms; }
-.lf-listo .lf-hero .lf-reticula i { transform: none; }
-.lf-listo .lf-hero .lf-reticula::after { transform: none; }
 
-/* --- 5. HERO --- */
-.lf-hero .cs-fijo { color: #FFFFFF; }
-.lf-trama { position: absolute; z-index: 0; pointer-events: none; background-image: radial-gradient(circle, rgba(255, 255, 255, 0.85) 1.1px, transparent 1.6px); background-size: 20px 20px; opacity: 0; transition: opacity 1200ms 600ms; }
-.lf-listo .lf-trama { opacity: 1; }
-.lf-trama-a { left: var(--margen); top: calc(112px + 28px); width: clamp(160px, 22vw, 360px); height: 140px; -webkit-mask: linear-gradient(90deg, #000 40%, transparent); mask: linear-gradient(90deg, #000 40%, transparent); }
-.lf-trama-b { right: var(--margen); bottom: 0; width: clamp(120px, 12vw, 200px); height: 42vh; -webkit-mask: linear-gradient(0deg, #000 30%, transparent); mask: linear-gradient(0deg, #000 30%, transparent); }
-/* La cruz: una grilla de puntos de Llegó donde cinco se encienden, crecen y se conectan; al final queda el isotipo
-   oficial. La arma llego.js al cargar; --p (scroll) la acerca y la apaga al salir */
-.lf-cruz { position: absolute; z-index: 1; right: calc(var(--margen) + 4%); top: 50%; width: min(34vw, 52vh); aspect-ratio: 1; translate: 0 calc(-50% - var(--p, 0) * 12vh); scale: calc(1 + var(--p, 0) * 0.12); opacity: calc(1 - var(--p, 0) * 1.4); }
-.lf-cruz-puntos { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.lf-cruz-puntos circle { fill: #FFFFFF; transform-box: fill-box; transform-origin: center; scale: 0; transition: scale 700ms var(--cs-curva), opacity 700ms var(--cs-curva), fill 500ms; transition-delay: var(--d, 0ms); }
-.lf-listo .lf-cruz-puntos circle { scale: 1; }
-.lf-cruz.forma .lf-cruz-puntos circle:not(.clave) { opacity: 0.18; scale: 0.6; transition-delay: calc(var(--d, 0ms) * 0.3); }
-.lf-cruz.forma .lf-cruz-puntos circle.clave { scale: 6.9; transition-duration: 900ms; transition-delay: var(--k, 0ms); }
-.lf-cruz-puntos rect { fill: #FFFFFF; transform-box: fill-box; transform-origin: var(--o, center); scale: var(--sx, 0) var(--sy, 0); transition: scale 700ms var(--cs-curva) 1100ms; }
-.lf-cruz.forma .lf-cruz-puntos rect { --sx: 1; --sy: 1; }
-.lf-cruz-iso { position: absolute; inset: 0; color: #FFFFFF; opacity: 0; transition: opacity 900ms var(--cs-curva); }
-.lf-cruz.final .lf-cruz-iso { opacity: 1; }
-.lf-cruz.final .lf-cruz-puntos :is(circle.clave, rect) { opacity: 0; transition-delay: 0ms; }
-.lf-hero-franja { position: absolute; z-index: 2; left: var(--margen); right: var(--margen); top: calc(112px - 30px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); opacity: 0; transition: opacity 800ms 900ms; }
-.lf-hero-franja > * { padding-left: 14px; }
-.lf-hero-franja a { justify-self: end; padding: 0; }
-.lf-hero-franja a i { display: inline-block; font-style: normal; transition: transform 300ms var(--ease); }
-@media (hover: hover) { .lf-hero-franja a:hover i { transform: translate(2px, -2px); } }
-.lf-listo .lf-hero-franja { opacity: 0.82; }
-.lf-hero-txt { position: absolute; z-index: 2; left: var(--margen); right: var(--margen); bottom: clamp(48px, 9vh, 104px); translate: 0 calc(var(--p, 0) * -10vh); opacity: calc(1 - var(--p, 0) * 1.6); }
-.lf-titulo { display: flex; flex-direction: column; font: 200 clamp(84px, 13.6vw, 246px) / 0.86 var(--cs-f); letter-spacing: -0.055em; margin-left: -0.05em; }
-.lf-titulo b { font-weight: 500; }
-.lf-linea { display: block; overflow: hidden; padding-bottom: 0.06em; }
-.lf-linea > * { display: inline-block; translate: 0 105%; transition: translate 1100ms var(--cs-curva); }
-.lf-linea + .lf-linea > * { transition-delay: 120ms; }
-.lf-listo .lf-linea > * { translate: 0 0; }
-.lf-escalon { padding-left: 25%; }
-.lf-hero-txt p { margin: 22px 0 0 25%; padding-left: 14px; max-width: 30ch; font: 300 clamp(18px, 1.6vw, 26px) / 1.3 var(--cs-f); letter-spacing: -0.02em; opacity: 0; transition: opacity 900ms 700ms; }
-.lf-hero-txt p b { font-weight: 500; }
-.lf-listo .lf-hero-txt p { opacity: 1; }
-.lf-hero-pista { position: absolute; z-index: 2; right: var(--margen); bottom: clamp(48px, 9vh, 104px); opacity: calc(0.7 - var(--p, 0) * 2); animation: lf-pista 2.4s var(--cs-curva) infinite; }
-@keyframes lf-pista { 0%, 100% { translate: 0 0; } 50% { translate: 0 6px; } }
+/* --- 5. HERO: LA CINTA DE LLEGOFARMA.CL --- */
+/* El sitio real avanza en un plano inclinado, como una cinta transportadora que se pierde en el horizonte, y al bajar
+   se endereza hasta aterrizar como una ventana con el sitio en vivo. Encima, el logo horizontal que se arma con la
+   entrada del home y responde al mouse, y una ficha de tres datos. El JS (llego.js) publica --q (la cinta se endereza),
+   --sub (lo secundario se va), --sal (el logo sale), --niebla y --foco. Exploración en cinta-v2 */
+.lf-h { --curva: cubic-bezier(0.65, 0, 0.35, 1); --sale: cubic-bezier(0.16, 1, 0.3, 1); --rebote: cubic-bezier(0.34, 1.56, 0.64, 1); --fy: 112px; --veladura: 11, 52, 57; color: #FFFFFF; }
+.lf-h-fijo { isolation: isolate; background: var(--lf-oscuro); }
+.lf-h-fijo > * { position: absolute; }
+.lf-h-tibio { position: fixed; inset: 0; z-index: -1; width: 100vw; height: 100vh; border: 0; visibility: hidden; pointer-events: none; }
+
+/* --- 5.1 ESCENA, PLANO, COLUMNAS Y CARTAS --- */
+/* La niebla es una máscara sobre la escena: lo lejano se funde con el degradado y el plano gana profundidad */
+.lf-h-escena { inset: 0; z-index: 1; perspective: 1050px; perspective-origin: 50% 40%;
+    -webkit-mask: linear-gradient(180deg, rgb(0 0 0 / calc(1 - var(--niebla, 0))) 4%, #000 72%);
+    mask: linear-gradient(180deg, rgb(0 0 0 / calc(1 - var(--niebla, 0))) 4%, #000 72%); }
+.lf-h-plano { position: absolute; left: 50%; top: 50%; display: flex; gap: var(--g, 28px); transform-style: preserve-3d; }
+.lf-h-col { position: relative; flex: none; width: var(--cw, 432px); height: 100%; will-change: transform; }
+.lf-h-carta { position: absolute; left: 0; width: 100%; aspect-ratio: 16 / 10; background: var(--lf-profundo); outline: 1px solid rgba(255, 255, 255, 0.2); }
+.lf-h-carta img { display: block; width: 100%; height: 100%; }
+/* El piso con sus dos rieles: lo que hace que se lea cinta y no muro */
+.lf-h-piso { position: absolute; top: calc(var(--g) * -0.5); left: calc(var(--g) * -0.5); right: calc(var(--g) * -0.5); bottom: 0; background: rgba(255, 255, 255, 0.045); border-left: 1px solid rgba(255, 255, 255, 0.22); border-right: 1px solid rgba(255, 255, 255, 0.22); }
+/* Al enderezarse, todo lo que no es la carta de Inicio se retira para que aterrice limpia */
+.lf-h-col:not(.foco), .lf-h-col.foco .lf-h-carta:not(.blanco), .lf-h-piso { opacity: calc(1 - var(--q, 0) * 1.6); }
+
+/* --- 5.2 VELADURAS: TINTE, FUNDIDO Y CIELO --- */
+/* El foco del tinte sigue al desvío de la cinta; el fundido deja legible el logo y la ficha abajo a la izquierda */
+.lf-h-tinte, .lf-h-funde, .lf-h-cielo { z-index: 2; pointer-events: none; opacity: calc(1 - var(--q, 0)); }
+.lf-h-tinte { inset: 0; mix-blend-mode: multiply; background: radial-gradient(58% 70% at var(--foco, 68%) 42%, #FFFFFF 0%, #CDE6E5 40%, #6FA5A7 100%); }
+.lf-h-funde { inset: 0; background: linear-gradient(90deg, rgba(var(--veladura), 0.86) 0%, rgba(var(--veladura), 0.5) 34%, rgba(var(--veladura), 0) 62%), linear-gradient(0deg, rgba(var(--veladura), 0.96) 8%, rgba(var(--veladura), 0) 52%); }
+.lf-h-cielo { left: 0; right: 0; top: 0; height: 210px; background: linear-gradient(rgba(var(--veladura), 0.92), rgba(var(--veladura), 0.6) 48%, rgba(var(--veladura), 0)); }
+
+/* --- 5.3 FRANJA --- */
+/* La entrada anima a los hijos y el scroll al contenedor: así ninguna animación con fill retiene la opacidad */
+.lf-h-franja { z-index: 4; left: var(--margen); right: var(--margen); top: calc(var(--fy) - 30px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); opacity: calc(1 - var(--sub, 0) * 1.4); }
+.lf-h-franja > * { padding-left: 14px; color: rgba(255, 255, 255, 0.82); opacity: 0; }
+.lf-h-franja a { justify-self: end; padding: 0; color: #FFFFFF; }
+.lf-h-franja a i { display: inline-block; font-style: normal; transition: transform 300ms var(--sale); }
+@media (hover: hover) { .lf-h-franja a:hover i { transform: translate(2px, -2px); } }
+.entra .lf-h-franja > * { animation: lf-h-aparece 900ms var(--sale) calc(var(--e) * 1ms) both; }
+
+/* --- 5.4 EL LOGO Y LA FICHA --- */
+/* En la grilla de 12: el logo a lo ancho y tres datos cortos en las columnas 1 a 9, uno por celda de tres columnas */
+.lf-h-txt { z-index: 4; left: var(--margen); right: var(--margen); bottom: clamp(56px, 10vh, 110px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); align-items: end; pointer-events: none; }
+.lf-h-titulo { grid-column: 1 / -1; margin-left: -0.05em; }
+/* Sin máscara (la onda del hover sale del recuadro): al bajar sube y se apaga */
+.lf-h-linea { display: block; }
+.lf-h-linea > * { opacity: calc(1 - var(--sal, 0) * 1.4); transform: translateY(calc(var(--sal, 0) * -112%)); }
+.lf-h-ficha { grid-column: 1 / 10; display: grid; grid-template-columns: subgrid; margin-top: clamp(22px, 3.4svh, 34px); border-top: 1px solid rgba(255, 255, 255, 0.22); list-style: none; padding: 0; opacity: calc(1 - var(--sub, 0)); }
+.lf-h-ficha li { grid-column: span 3; display: flex; align-items: baseline; gap: 10px; padding: 14px 14px 0 0; font: 300 clamp(15px, 1.15vw, 19px) / 1.3 var(--cs-f); letter-spacing: -0.015em; color: rgba(255, 255, 255, 0.86); }
+.lf-h-ficha li::before { content: ''; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); translate: 0 -2px; }
+.lf-h [data-e] { opacity: 0; }
+.lf-h.entra [data-e] { animation: lf-h-aparece 900ms var(--sale) calc(var(--e) * 1ms) both; }
+
+/* --- 5.5 LA ENTRADA DEL LOGO --- */
+/* La misma de la portada de Llegó en el home, siempre igual: el nodo central aparece, los brazos crecen hacia la
+   izquierda y hacia abajo, llegan los dos nodos sueltos, el de la derecha sale como mensajero y destapa Llegó con un
+   borde difuso, se abre en la o, la tilde se marca y entra farma (3,7 s). Cada pieza tiene en reposo su estado final
+   y la entrada parte de su estado inicial (both), así al quitar .llega el logo queda entero */
+.lf-logo { display: block; width: min(40vw, 70svh); overflow: visible; fill: #FFFFFF; filter: drop-shadow(0 10px 30px rgba(4, 30, 33, 0.35)); pointer-events: auto; cursor: default; }
+.lf-logo :is(path, g, circle) { transform-box: fill-box; transform-origin: center; }
+.lf-lg-brazo { fill: none; stroke: #FFFFFF; stroke-width: 22; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.lf-lg-corte { translate: 300px 0; }
+.lf-lg-centro, .lf-lg-mensajero, .lf-lg-piso { opacity: 0; }
+.lf-lg-llegada { fill: none; stroke: #FFFFFF; stroke-width: 1; vector-effect: non-scaling-stroke; opacity: 0; }
+.llega .lf-lg-centro { animation: lf-lg-centro 900ms linear 100ms both; }
+.llega .lf-lg-cuerpo { animation: lf-lg-aparece 1ms linear 300ms both; }
+.llega .lf-lg-brazo { animation: lf-lg-brazo 820ms var(--sale) 300ms both; }
+.llega .lf-lg-brazo + .lf-lg-brazo { animation-delay: 400ms; }
+.llega .lf-lg-n1 { animation: lf-lg-llega-a 860ms var(--sale) 560ms both; }
+.llega .lf-lg-n2 { animation: lf-lg-llega-d 860ms var(--sale) 680ms both; }
+.llega .lf-lg-mensajero { animation: lf-lg-mensajero 1400ms linear 1300ms both; }
+.llega .lf-lg-corte { animation: lf-lg-barre 1100ms var(--ease-morph) 1340ms both; }
+.llega .lf-lg-o { animation: lf-lg-abre 620ms var(--sale) 2340ms both; }
+.llega .lf-lg-llegada { animation: lf-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) 2380ms; }
+.llega .lf-lg-tilde { animation: lf-lg-tilde 460ms var(--sale) 2560ms both; }
+.llega .lf-lg-barra { animation: lf-lg-divisor 620ms var(--sale) 2700ms both; }
+.llega .lf-lg-f { animation: lf-lg-farma 760ms var(--sale) 2820ms both; }
+.llega .lf-lg-f + .lf-lg-f { animation-delay: 2920ms; }
+
+/* --- 5.6 EL HOVER: ECO CON EL MOUSE --- */
+/* En la lógica del hero de Tap In. El JS mueve tres resortes por pieza y escribe sus valores en línea: --w, el grado
+   en que la pieza se rebobina hacia su partida en la entrada (0 a 1), y --px --py, un tirón suave hacia el cursor en
+   unidades del dibujo. Sin transiciones de CSS: el resorte ya trae la suavidad. Cada pieza declara su gesto (--gx --gy
+   desplazamiento, --gs --gsy escala) y nada se apaga ni se recorta. En reposo los tres valores son 0 */
+@property --w { syntax: '<number>'; inherits: false; initial-value: 0; }
+.lf-lg-p {
+    --gx: 0px; --gy: 0px; --gs: 0; --gsy: var(--gs);
+    translate: calc(var(--px, 0) * 1px + var(--w) * var(--gx)) calc(var(--py, 0) * 1px + var(--w) * var(--gy));
+    scale: calc(1 - var(--w) * var(--gs)) calc(1 - var(--w) * var(--gsy));
+}
+.lf-lg-cuerpo { --gs: 0.05; }
+.lf-lg-n1 { --gy: -6px; --gs: 0.1; }
+.lf-lg-n2 { --gx: 6px; --gs: 0.1; }
+.lf-lg-letra { --gy: -2.5px; }
+.lf-lg-o { --gs: 0.1; }
+.lf-lg-tilde { --gx: 2px; --gy: -3px; --gs: 0.12; }
+.lf-lg-barra { --gsy: 0.3; }
+.lf-lg-f { --gy: 3px; }
+/* La onda sale de la o cuando la ola de la entrada del mouse la alcanza (--dl-o lo calcula el JS) */
+.nodo .lf-lg-llegada { animation: lf-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) var(--dl-o, 0ms); }
+
+/* --- 5.7 EL SITIO EN VIVO --- */
+/* La carta aterriza como una ventana bajo la barra (el JS fija su rectángulo) y el iframe del sitio la reemplaza.
+   En pantallas angostas el sitio se dibuja a 1440 y se escala, igual que la captura que reemplaza */
+.lf-h-vivo { z-index: 3; outline: 1px solid rgba(255, 255, 255, 0.2); background: var(--lf-profundo); opacity: 0; visibility: hidden; transition: opacity 450ms var(--sale), visibility 0s 450ms; }
+.lf-h-vivo.en { opacity: 1; visibility: visible; transition: opacity 450ms var(--sale); }
+.lf-h-vivo iframe { display: block; width: var(--iw, 100%); height: var(--ih, 100%); border: 0; pointer-events: none; transform-origin: 0 0; scale: var(--ie, 1); }
+.lf-h-vivo-cab { position: absolute; left: 0; right: 0; bottom: calc(100% + 9px); display: flex; justify-content: space-between; font-size: 11px; color: rgba(255, 255, 255, 0.72); }
+.lf-h-vivo-cab > span:last-child { display: flex; align-items: center; gap: 8px; color: #FFFFFF; }
+.lf-h-vivo-cab i { width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); animation: lf-h-late 1600ms ease-in-out infinite; }
+
+/* --- 5.8 ANIMACIONES DEL HERO --- */
+@keyframes lf-h-aparece { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
+@keyframes lf-h-late { 50% { opacity: 0.3; } }
+@keyframes lf-lg-centro { 0% { opacity: 1; scale: 0; animation-timing-function: var(--rebote); } 62% { opacity: 1; scale: 1; } 99.9% { opacity: 1; } 100% { opacity: 0; scale: 1; } }
+@keyframes lf-lg-aparece { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lf-lg-brazo { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes lf-lg-llega-a { from { opacity: 0; translate: 0 -24px; scale: 0.6; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes lf-lg-llega-d { from { opacity: 0; translate: 24px 0; scale: 0.6; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes lf-lg-mensajero { 0% { opacity: 0; } 1%, 2.9% { opacity: 1; translate: 0 0; scale: 1; animation-timing-function: var(--ease-morph); } 42% { scale: 1.22 0.84; } 81% { opacity: 1; translate: 219.4px 3.8px; scale: 1; animation-timing-function: var(--sale); } 100% { opacity: 0; translate: 219.4px 3.8px; scale: 2.4; } }
+@keyframes lf-lg-barre { from { translate: 56px 0; } to { translate: 300px 0; } }
+@keyframes lf-lg-abre { from { opacity: 0; scale: 0.5; } to { opacity: 1; scale: 1; } }
+@keyframes lf-lg-onda-o { from { opacity: 0.8; scale: 1; } to { opacity: 0; scale: 3.4; } }
+@keyframes lf-lg-tilde { 0% { opacity: 0; clip-path: inset(100% 100% 0 0); } 0.1% { opacity: 1; } 100% { clip-path: inset(0 0 0 0); } }
+@keyframes lf-lg-divisor { from { scale: 1 0; } to { scale: 1 1; } }
+@keyframes lf-lg-farma { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
 
 /* --- 6. RESUMEN: EL PROYECTO, RASTREADO --- */
 .lf-res .cs-fijo { align-content: center; row-gap: 32px; }
@@ -372,15 +455,14 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf .cs-grilla > .lf-degradado { grid-column: auto; }
     .lf-reticula i:nth-child(2), .lf-reticula i:nth-child(4) { display: none; }
     .lf-reticula::after { background-size: 50% 1px; }
-    /* Hero: la cruz arriba, el nombre abajo */
-    .lf-cruz { right: auto; left: 50%; top: 40%; width: min(64vw, 38vh); translate: -50% calc(-50% - var(--p, 0) * 10vh); }
-    .lf-hero-franja { grid-template-columns: 1fr 1fr; row-gap: 8px; top: 72px; }
-    .lf-hero-franja > *:nth-child(2) { text-align: right; }
-    .lf-hero-franja a { justify-self: start; padding-left: 14px; }
-    .lf-trama { display: none; }
-    .lf-titulo { font-size: 23vw; }
-    .lf-hero-txt p { margin-left: 0; padding-left: 0; font-size: 18px; }
-    .lf-hero-pista { display: none; }
+    /* Hero: la cinta de tres columnas más anchas (lo fija el JS), el logo a lo ancho y la ficha en una columna */
+    .lf-h-franja { grid-template-columns: 1fr 1fr; row-gap: 8px; top: 72px; }
+    .lf-h-franja > *:nth-child(2) { text-align: right; }
+    .lf-h-franja a { justify-self: start; padding-left: 14px; }
+    .lf-h-funde { background: linear-gradient(0deg, rgba(var(--veladura), 0.96) 12%, rgba(var(--veladura), 0.62) 40%, rgba(var(--veladura), 0) 64%); }
+    .lf-logo { width: 100%; }
+    .lf-h-ficha { grid-column: 1 / -1; grid-template-columns: 1fr; }
+    .lf-h-ficha li { grid-column: auto; padding-top: 10px; font-size: 15px; }
     /* Resumen: el enunciado y la tarjeta de seguimiento, apilados */
     .lf-res .cs-fijo { align-content: start; padding-top: 72px; row-gap: 18px; }
     .lf-res-txt { gap: 16px; }
@@ -447,7 +529,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
    MOVIMIENTO REDUCIDO
    ======================================================= */
 @media (prefers-reduced-motion: reduce) {
-    .lf-hero .lf-reticula i, .lf-hero .lf-reticula::after, .lf-linea > *, .lf-cruz-puntos :is(circle, rect) { transition: none; }
-    .lf-hero-pista, .lf-dom-cursor { animation: none; }
+    .lf-h *, .lf-h *::before, .lf-h *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; }
+    .lf-dom-cursor { animation: none; }
     .lf-verticales.on .lf-vert { animation: none; }
 }
