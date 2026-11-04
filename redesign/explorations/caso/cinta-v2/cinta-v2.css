@@ -109,7 +109,7 @@
 .cv-logo :is(path, g, circle) { transform-box: fill-box; transform-origin: center; }
 .cv-lg-brazo { fill: none; stroke: #FFFFFF; stroke-width: 22; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
 .cv-lg-corte { translate: 300px 0; }
-.cv-lg-centro, .cv-lg-mensajero, .cv-lg-piso, .cv-lg-hueco { opacity: 0; }
+.cv-lg-centro, .cv-lg-mensajero, .cv-lg-piso { opacity: 0; }
 .cv-lg-llegada { fill: none; stroke: #FFFFFF; stroke-width: 1; vector-effect: non-scaling-stroke; opacity: 0; }
 .llega .cv-lg-centro { animation: cv-lg-centro 900ms linear 100ms both; }
 .llega .cv-lg-cuerpo { animation: cv-lg-aparece 1ms linear 300ms both; }
@@ -126,43 +126,32 @@
 .llega .cv-lg-f { animation: cv-lg-farma 760ms var(--sale) 2820ms both; }
 .llega .cv-lg-f + .cv-lg-f { animation-delay: 2920ms; }
 
-/* --- 5.1 EL HOVER: FRASES DE LA ENTRADA --- */
-/* Cada hover repite una parte de la entrada con sus mismas piezas, gestos y curvas (--sale, --ease-morph, --rebote y
-   --curva para lo que se recoge antes de volver). Nada nuevo: ni líneas, ni colores, ni recorridos que la entrada no
-   tenga. Los de una pasada usan .nodo; Ida y vuelta usa .encima mientras el mouse está encima y .vuelve al salir */
+/* --- 5.1 EL HOVER: ECO --- */
+/* El hover repite la entrada en miniatura: cada pieza vuelve un tercio hacia donde partió y se rearma, con las
+   mismas piezas, gestos y curvas (más --curva para lo que se recoge). Hay dos versiones para comparar */
 
-/* A · Despacho: el segundo acto. El nodo derecho sale como mensajero (misma curva y el mismo aplaste) y se funde en
-   la o con la onda blanca; detrás, un nodo nuevo llega desde la derecha como en la entrada. Las letras se abren a su
-   paso con el mismo borde difuso del barrido, para que el mensajero se vea cruzar */
-[data-hover="despacho"] .nodo :is(.cv-lg-mensajero, .cv-lg-hueco, .cv-lg-n2, .cv-lg-o) { animation: 1300ms linear both; }
-[data-hover="despacho"] .nodo .cv-lg-mensajero { animation-name: cv-lg-despacho; }
-[data-hover="despacho"] .nodo .cv-lg-hueco { animation-name: cv-lg-hueco; }
-[data-hover="despacho"] .nodo .cv-lg-n2 { animation-name: cv-lg-reemplazo; }
-[data-hover="despacho"] .nodo .cv-lg-o { animation-name: cv-lg-recibe-o; }
-[data-hover="despacho"] .nodo .cv-lg-llegada { animation: cv-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) 910ms; }
+/* A · Eco con el mouse (la elegida), en la lógica del hero de Tap In. Cada pieza tiene un grado --w de 0 a 1, una
+   propiedad registrada para que se pueda animar y transicionar. El JS lo fija según la distancia al cursor (campana,
+   como las letras de Tap In): mientras más cerca, más se rebobina esa pieza hacia su estado de partida en la entrada;
+   al alejarse se rearma con la curva de salida. Al entrar al logo, el Eco completo sale desde el punto de entrada:
+   cada pieza llega a 1 con un retraso según su distancia (--dl) y vuelve a lo que marque el cursor, y la onda sale de
+   la o cuando la ola la alcanza. Grados en reposo: 0, así el logo queda igual */
+@property --w { syntax: '<number>'; inherits: false; initial-value: 0; }
+[data-hover="mouse"] .cv-lg-p { transition: --w 450ms var(--sale); }
+[data-hover="mouse"] .cv-lg-cuerpo { scale: calc(1 - var(--w) * 0.08); }
+[data-hover="mouse"] .cv-lg-n1 { translate: 0 calc(var(--w) * -8px); scale: calc(1 - var(--w) * 0.14); }
+[data-hover="mouse"] .cv-lg-n2 { translate: calc(var(--w) * 8px) 0; scale: calc(1 - var(--w) * 0.14); }
+[data-hover="mouse"] .cv-lg-letra { opacity: calc(1 - var(--w) * 0.45); }
+[data-hover="mouse"] .cv-lg-o { scale: calc(1 - var(--w) * 0.14); }
+[data-hover="mouse"] .cv-lg-tilde { clip-path: inset(calc(var(--w) * 80%) calc(var(--w) * 80%) 0 0); }
+[data-hover="mouse"] .cv-lg-barra { scale: 1 calc(1 - var(--w) * 0.4); }
+[data-hover="mouse"] .cv-lg-f { translate: 0 calc(var(--w) * 4px); opacity: calc(1 - var(--w) * 0.6); }
+[data-hover="mouse"] .nodo .cv-lg-p { animation: cv-lg-eco-w 760ms var(--curva) var(--dl, 0ms); }
+[data-hover="mouse"] .nodo .cv-lg-llegada { animation: cv-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) calc(var(--dl-o, 0ms) + 230ms); }
 
-/* B · Rearme: el primer acto. Los brazos se recogen al nodo central y los nodos sueltos se van; el centro rebota y
-   todo vuelve a armarse con los tiempos de la entrada */
-[data-hover="rearme"] .nodo :is(.cv-lg-brazo, .cv-lg-centro, .cv-lg-n1, .cv-lg-n2) { animation: 1500ms linear both; }
-[data-hover="rearme"] .nodo .cv-lg-brazo { animation-name: cv-lg-r-brazo; }
-[data-hover="rearme"] .nodo .cv-lg-brazo + .cv-lg-brazo { animation-delay: 70ms; }
-[data-hover="rearme"] .nodo .cv-lg-centro { animation-name: cv-lg-r-centro; }
-[data-hover="rearme"] .nodo .cv-lg-n1 { animation-name: cv-lg-r-n1; }
-[data-hover="rearme"] .nodo .cv-lg-n2 { animation-name: cv-lg-r-n2; }
-
-/* C · Cierre: el tercer acto. La o se cierra y se vuelve a abrir con la onda, la tilde se marca de nuevo, la barra se
-   traza y farma sube, en el orden de la entrada */
-[data-hover="cierre"] .nodo :is(.cv-lg-o, .cv-lg-tilde, .cv-lg-barra, .cv-lg-f) { animation: 1300ms linear both; }
-[data-hover="cierre"] .nodo .cv-lg-o { animation-name: cv-lg-c-o; }
-[data-hover="cierre"] .nodo .cv-lg-tilde { animation-name: cv-lg-c-tilde; }
-[data-hover="cierre"] .nodo .cv-lg-barra { animation-name: cv-lg-c-barra; }
-[data-hover="cierre"] .nodo .cv-lg-f { animation-name: cv-lg-c-farma; }
-[data-hover="cierre"] .nodo .cv-lg-f + .cv-lg-f { animation-delay: 100ms; }
-[data-hover="cierre"] .nodo .cv-lg-llegada { animation: cv-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) 230ms; }
-
-/* D · Eco: la entrada entera en miniatura. Cada pieza hace su gesto en el mismo orden, con un tercio de la amplitud:
+/* B · Eco: la entrada entera en miniatura. Cada pieza hace su gesto en el mismo orden, con un tercio de la amplitud:
    el isotipo rebota, los nodos llegan de cerca, el barrido pasa con la palabra al 55 %, la o, la tilde, la barra y
-   farma */
+   farma. Es la versión anterior, de izquierda a derecha y sin mouse */
 [data-hover="eco"] .nodo :is(.cv-lg-cuerpo, .cv-lg-n1, .cv-lg-n2, .cv-lg-piso, .cv-lg-corte, .cv-lg-o, .cv-lg-tilde, .cv-lg-barra, .cv-lg-f) { animation: 1400ms linear both; }
 [data-hover="eco"] .nodo .cv-lg-cuerpo { animation-name: cv-lg-e-cuerpo; }
 [data-hover="eco"] .nodo .cv-lg-n1 { animation-name: cv-lg-e-n1; }
@@ -174,16 +163,6 @@
 [data-hover="eco"] .nodo .cv-lg-barra { animation-name: cv-lg-e-barra; }
 [data-hover="eco"] .nodo .cv-lg-f { animation-name: cv-lg-e-farma; }
 [data-hover="eco"] .nodo .cv-lg-llegada { animation: cv-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) 830ms; }
-
-/* E · Ida y vuelta: no es una pasada, es un estado. Mientras el mouse está encima, el nodo derecho viaja a la o (la
-   curva del mensajero) y queda adentro, entregado; al salir vuelve a su lugar. Es una transición, así que si el mouse
-   sale a mitad de camino, el nodo se devuelve desde donde va. El aplaste está dos veces porque una animación con el
-   mismo nombre no se reinicia */
-[data-hover="ida"] .cv-lg-n2 { transition: translate 760ms var(--ease-morph); }
-[data-hover="ida"] .encima .cv-lg-n2 { translate: 219.4px 3.8px; animation: cv-lg-aplasta 760ms var(--ease-morph); }
-[data-hover="ida"] .vuelve .cv-lg-n2 { animation: cv-lg-aplasta-vuelta 760ms var(--ease-morph); }
-[data-hover="ida"] .encima .cv-lg-o { animation: cv-lg-recibe-o 760ms linear 300ms; }
-[data-hover="ida"] .encima .cv-lg-llegada { animation: cv-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) 700ms; }
 
 /* --- 6. D · LOS DOS VERBOS DEL OFICIO --- */
 /* El verbo que distingue (programé) va en el turquesa claro de la marca */
@@ -313,18 +292,7 @@
 @keyframes cv-lg-tilde { 0% { opacity: 0; clip-path: inset(100% 100% 0 0); } 0.1% { opacity: 1; } 100% { clip-path: inset(0 0 0 0); } }
 @keyframes cv-lg-divisor { from { scale: 1 0; } to { scale: 1 1; } }
 @keyframes cv-lg-farma { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
-@keyframes cv-lg-despacho { 0% { opacity: 1; translate: 0 0; scale: 1; } 3% { translate: 0 0; animation-timing-function: var(--ease-morph); } 36% { scale: 1.22 0.84; } 70% { opacity: 1; translate: 219.4px 3.8px; scale: 1; animation-timing-function: var(--sale); } 100% { opacity: 0; translate: 219.4px 3.8px; scale: 2.4; } }
-@keyframes cv-lg-hueco { 0% { opacity: 0; translate: 0 0; } 3% { translate: 0 0; animation-timing-function: var(--ease-morph); } 10% { opacity: 1; } 62% { opacity: 1; } 70% { translate: 219.4px 0; } 78%, 100% { opacity: 0; translate: 219.4px 0; } }
-@keyframes cv-lg-reemplazo { 0%, 40% { opacity: 0; translate: 24px 0; scale: 0.6; animation-timing-function: var(--sale); } 100% { opacity: 1; translate: 0 0; scale: 1; } }
-@keyframes cv-lg-recibe-o { 0%, 70% { scale: 1; animation-timing-function: var(--curva); } 74% { scale: 0.86; animation-timing-function: var(--sale); } 100% { scale: 1; } }
-@keyframes cv-lg-r-brazo { 0% { stroke-dashoffset: 0; animation-timing-function: var(--curva); } 20%, 24% { stroke-dashoffset: 1; animation-timing-function: var(--sale); } 78%, 100% { stroke-dashoffset: 0; } }
-@keyframes cv-lg-r-centro { 0%, 18% { opacity: 1; scale: 1; animation-timing-function: var(--curva); } 24% { scale: 0.8; animation-timing-function: var(--rebote); } 50% { scale: 1; } 80% { opacity: 1; } 80.1%, 100% { opacity: 0; scale: 1; } }
-@keyframes cv-lg-r-n1 { 0% { opacity: 1; translate: 0 0; scale: 1; animation-timing-function: var(--curva); } 20%, 34% { opacity: 0; translate: 0 -24px; scale: 0.6; animation-timing-function: var(--sale); } 92%, 100% { opacity: 1; translate: 0 0; scale: 1; } }
-@keyframes cv-lg-r-n2 { 0% { opacity: 1; translate: 0 0; scale: 1; animation-timing-function: var(--curva); } 20%, 42% { opacity: 0; translate: 24px 0; scale: 0.6; animation-timing-function: var(--sale); } 100% { opacity: 1; translate: 0 0; scale: 1; } }
-@keyframes cv-lg-c-o { 0% { opacity: 1; scale: 1; animation-timing-function: var(--curva); } 10%, 18% { opacity: 0; scale: 0.5; animation-timing-function: var(--sale); } 66%, 100% { opacity: 1; scale: 1; } }
-@keyframes cv-lg-c-tilde { 0% { clip-path: inset(0 0 0 0); animation-timing-function: var(--curva); } 10%, 30% { clip-path: inset(100% 100% 0 0); animation-timing-function: var(--sale); } 58%, 100% { clip-path: inset(0 0 0 0); } }
-@keyframes cv-lg-c-barra { 0% { scale: 1 1; animation-timing-function: var(--curva); } 12%, 36% { scale: 1 0; animation-timing-function: var(--sale); } 84%, 100% { scale: 1 1; } }
-@keyframes cv-lg-c-farma { 0% { opacity: 1; translate: 0 0; animation-timing-function: var(--curva); } 12%, 44% { opacity: 0; translate: 0 10px; animation-timing-function: var(--sale); } 100% { opacity: 1; translate: 0 0; } }
+@keyframes cv-lg-eco-w { 30% { --w: 1; animation-timing-function: var(--sale); } }
 @keyframes cv-lg-e-cuerpo { 0% { scale: 1; animation-timing-function: var(--curva); } 6% { scale: 0.92; animation-timing-function: var(--rebote); } 30%, 100% { scale: 1; } }
 @keyframes cv-lg-e-n1 { 0%, 6% { translate: 0 0; scale: 1; animation-timing-function: var(--curva); } 12% { translate: 0 -8px; scale: 0.86; animation-timing-function: var(--sale); } 42%, 100% { translate: 0 0; scale: 1; } }
 @keyframes cv-lg-e-n2 { 0%, 10% { translate: 0 0; scale: 1; animation-timing-function: var(--curva); } 16% { translate: 8px 0; scale: 0.86; animation-timing-function: var(--sale); } 46%, 100% { translate: 0 0; scale: 1; } }
@@ -334,8 +302,6 @@
 @keyframes cv-lg-e-tilde { 0%, 56% { clip-path: inset(0 0 0 0); animation-timing-function: var(--curva); } 60% { clip-path: inset(100% 100% 0 0); animation-timing-function: var(--sale); } 76%, 100% { clip-path: inset(0 0 0 0); } }
 @keyframes cv-lg-e-barra { 0%, 62% { scale: 1 1; animation-timing-function: var(--curva); } 66% { scale: 1 0.6; animation-timing-function: var(--sale); } 86%, 100% { scale: 1 1; } }
 @keyframes cv-lg-e-farma { 0%, 66% { opacity: 1; translate: 0 0; animation-timing-function: var(--curva); } 70% { opacity: 0.4; translate: 0 4px; animation-timing-function: var(--sale); } 92%, 100% { opacity: 1; translate: 0 0; } }
-@keyframes cv-lg-aplasta { 50% { scale: 1.22 0.84; } }
-@keyframes cv-lg-aplasta-vuelta { 50% { scale: 1.22 0.84; } }
 @media (prefers-reduced-motion: reduce) {
     .cv *, .cv *::before, .cv *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; }
 }

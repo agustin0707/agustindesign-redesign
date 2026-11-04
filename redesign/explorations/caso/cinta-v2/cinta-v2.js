@@ -48,14 +48,11 @@
         etiqueta: { nombre: 'Guía', idea: 'Una guía de despacho con los hitos reales del proyecto: remite agustín.design, seis nodos que se llenan en orden y entrega el 20 de octubre.' }
     };
     const HOVERS = {
-        despacho: { nombre: 'Despacho', idea: 'La recomendada: el segundo acto de la entrada. El nodo derecho sale como mensajero, cruza Llegó abriéndose paso con el mismo borde difuso y se funde en la o; detrás llega un nodo nuevo, como en la entrada.' },
-        rearme: { nombre: 'Rearme', idea: 'El primer acto: los brazos se recogen al centro, los nodos se van, el centro rebota y el isotipo se vuelve a armar con los tiempos de la entrada.' },
-        cierre: { nombre: 'Cierre', idea: 'El tercer acto: la o se cierra y se abre con la onda, la tilde se marca de nuevo, la barra se traza y farma sube.' },
-        eco: { nombre: 'Eco', idea: 'La entrada entera en miniatura: cada pieza hace su gesto en el mismo orden, con un tercio de la amplitud.' },
-        ida: { nombre: 'Ida y vuelta', idea: 'Un estado y no una pasada: mientras el mouse está encima, el nodo derecho viaja a la o y queda adentro, entregado; al salir vuelve a su lugar, desde donde vaya.' }
+        mouse: { nombre: 'Eco con mouse', idea: 'El Eco en la lógica del hero de Tap In: cada pieza del logo se rebobina hacia su estado de partida mientras más cerca está el cursor, y se rearma al alejarse. Al entrar al logo, el Eco sale desde ese punto.' },
+        eco: { nombre: 'Eco', idea: 'La versión anterior: la entrada entera en miniatura, de izquierda a derecha, igual en cada pasada.' }
     };
     const EJES = { cinta: CINTAS, texto: TEXTOS, grafica: GRAFICAS, hover: HOVERS };
-    const TECLAS = { cinta: '12345', texto: 'qwer', grafica: 'asdfg', hover: 'cvbnm' };
+    const TECLAS = { cinta: '12345', texto: 'qwer', grafica: 'asdfg', hover: 'cv' };
 
     /* --- 3. EL MOTOR DE LA CINTA --- */
     const raiz = document.body, h = $('.cv-h'), fijo = $('.cv-fijo'), escena = $('.cv-escena'), plano = $('.cv-plano');
@@ -194,32 +191,52 @@
 
     /* --- 5. EL DOCK, EL ANCLA Y LA ENTRADA --- */
     const barra = $('[data-barra]'), dock = $('.cv-dock'), idea = $('[data-idea]', dock), sigue = $('.cv-sigue');
-    const estado = { cinta: 'horizonte', texto: 'ficha', grafica: 'sin', hover: 'despacho' };
+    const estado = { cinta: 'horizonte', texto: 'ficha', grafica: 'sin', hover: 'mouse' };
     let callar;
     /* El logo se arma en cada entrada (.llega), siempre con la animación de la portada del home, y la clase sale cuando
-       terminan sus animaciones. Recién ahí acepta el hover (.nodo), que también dura lo que duren las suyas: una pasada
-       por entrada del mouse */
+       terminan sus animaciones. Recién ahí acepta el hover (.nodo), que también dura lo que duren las suyas */
     const logo = $('.cv-logo');
     let armadas = 0, pasadas = 0;
     const alTerminar = (clase, vuelta, actual) => Promise.allSettled(logo.getAnimations({ subtree: true }).map(a => a.finished)).then(() => { if (vuelta === actual()) logo.classList.remove(clase); });
     const armarLogo = () => {
-        logo.classList.remove('llega', 'nodo', 'encima', 'vuelve'); void logo.getBoundingClientRect(); logo.classList.add('llega');
+        logo.classList.remove('llega', 'nodo'); void logo.getBoundingClientRect(); logo.classList.add('llega');
         alTerminar('llega', ++armadas, () => armadas);
     };
-    /* Ida y vuelta es un estado: .encima mientras el mouse está encima y .vuelve al salir, hasta que el nodo regresa */
-    const ir = () => { logo.classList.remove('vuelve'); logo.classList.add('encima'); };
-    const volver = () => { if (!logo.classList.contains('encima')) return; logo.classList.replace('encima', 'vuelve'); alTerminar('vuelve', ++pasadas, () => pasadas); };
-    const pasar = () => {
+
+    /* --- 5.1 ECO CON EL MOUSE --- */
+    /* Como las letras del hero de Tap In: cada pieza toma un grado según su distancia al cursor (campana de σ igual al
+       13 % del ancho del logo, con la distancia vertical a 0,6) y el CSS lo convierte en su gesto. Los centros se miden
+       una vez y se vuelven a medir al hacer scroll o cambiar el tamaño. Solo con mouse */
+    const conMouse = window.matchMedia('(hover: hover)').matches;
+    const piezas = [...logo.querySelectorAll('.cv-lg-p')], o = $('.cv-lg-o', logo);
+    let centros = [];
+    const medirPiezas = () => { centros = piezas.map(p => { const r = p.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }); };
+    const activo = () => estado.hover === 'mouse' && conMouse && !quieto && !logo.classList.contains('llega') && window.scrollY < window.innerHeight * 0.3;
+    const cerca = (x, y) => {
+        if (!activo()) return;
+        if (!centros.length) medirPiezas();
+        const s = logo.getBoundingClientRect().width * 0.13;
+        piezas.forEach((p, i) => { const d = Math.hypot(x - centros[i].x, (y - centros[i].y) * 0.6); p.style.setProperty('--w', Math.exp(-(d * d) / (2 * s * s)).toFixed(3)); });
+    };
+    const lejos = () => piezas.forEach(p => p.style.removeProperty('--w'));
+    window.addEventListener('scroll', () => { centros = []; if (window.scrollY >= window.innerHeight * 0.3) lejos(); }, { passive: true });
+    window.addEventListener('resize', () => { centros = []; });
+
+    /* Una pasada por entrada del mouse. En Eco con mouse, la ola parte del punto de entrada: cada pieza se retrasa 0,9 ms
+       por píxel de distancia (hasta 520 ms) y la onda sale de la o cuando la ola llega a ella */
+    const pasar = (x, y) => {
         if (quieto || logo.classList.contains('llega')) return;
-        if (estado.hover === 'ida') { ir(); setTimeout(() => { if (!logo.matches(':hover')) volver(); }, 1600); return; }
-        logo.classList.remove('nodo', 'encima', 'vuelve'); void logo.getBoundingClientRect(); logo.classList.add('nodo');
+        if (estado.hover === 'mouse') {
+            if (!centros.length) medirPiezas();
+            const r = logo.getBoundingClientRect();
+            if (x === undefined) { x = r.left; y = r.top + r.height / 2; }
+            piezas.forEach((p, i) => p.style.setProperty('--dl', Math.round(Math.min(Math.hypot(x - centros[i].x, y - centros[i].y) * 0.9, 520)) + 'ms'));
+            logo.style.setProperty('--dl-o', o.style.getPropertyValue('--dl'));
+        }
+        logo.classList.remove('nodo'); void logo.getBoundingClientRect(); logo.classList.add('nodo');
         alTerminar('nodo', ++pasadas, () => pasadas);
     };
-    logo.addEventListener('pointerenter', () => {
-        if (estado.hover === 'ida') { if (!quieto && !logo.classList.contains('llega')) ir(); }
-        else if (!logo.classList.contains('nodo')) pasar();
-    });
-    logo.addEventListener('pointerleave', volver);
+    logo.addEventListener('pointerenter', e => { if (!logo.classList.contains('nodo')) pasar(e.clientX, e.clientY); });
 
     Object.entries(EJES).forEach(([eje, lista]) => {
         $(`[data-eje="${eje}"]`, dock).insertAdjacentHTML('beforeend', Object.entries(lista).map(([id, o], i) => `<button type="button" data-id="${id}" aria-pressed="false"><kbd>${TECLAS[eje][i].toUpperCase()}</kbd>${o.nombre}</button>`).join(''));
@@ -238,6 +255,7 @@
         idea.textContent = EJES[eje][id].idea;
         history.replaceState(null, '', `#${estado.cinta}/${estado.texto}/${estado.grafica}/${estado.hover}`);
         /* Elegir un hover lo muestra una vez sin repetir la entrada */
+        if (eje === 'hover') { lejos(); centros = []; }
         if (repetir) eje === 'hover' ? pasar() : entrar();
     };
     const entrar = () => {
@@ -260,10 +278,11 @@
     /* Sobre el dock y los ajustes la cinta se queda donde estaba; al salir de la ventana o perder el foco vuelve al
        centro por el mismo resorte */
     window.addEventListener('pointermove', e => {
+        cerca(e.clientX, e.clientY);
         if (e.target.closest('.cv-dock, .cv-ajustes')) return;
         mx = e.clientX / c.W - 0.5; my = e.clientY / c.H - 0.5;
     }, { passive: true });
-    const soltar = () => { mx = my = 0; };
+    const soltar = () => { mx = my = 0; lejos(); };
     document.addEventListener('mouseout', e => { if (!e.relatedTarget) soltar(); });
     window.addEventListener('blur', soltar);
     window.addEventListener('resize', () => { c.medir(); alScroll(); });
@@ -271,7 +290,7 @@
     history.scrollRestoration = 'manual';
     const desdeAncla = () => {
         const [ci, te, gr, ho] = location.hash.slice(1).split('/');
-        elegir('cinta', CINTAS[ci] ? ci : 'horizonte', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false); elegir('hover', HOVERS[ho] ? ho : 'despacho', false);
+        elegir('cinta', CINTAS[ci] ? ci : 'horizonte', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false); elegir('hover', HOVERS[ho] ? ho : 'mouse', false);
         idea.textContent = CINTAS[estado.cinta].idea;
         entrar();
     };
