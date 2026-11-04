@@ -7,7 +7,7 @@
    El JS publica --q (la cinta se endereza), --sub (lo secundario se va), --sal (cada línea sale), --niebla y --foco */
 
 /* --- 1. BASE DE LA EXPLORACIÓN --- */
-.cv { --curva: cubic-bezier(0.65, 0, 0.35, 1); --sale: cubic-bezier(0.16, 1, 0.3, 1); --fy: 112px; --veladura: 11, 52, 57; --col: calc((100% - 11 * var(--medianil)) / 12); }
+.cv { --curva: cubic-bezier(0.65, 0, 0.35, 1); --sale: cubic-bezier(0.16, 1, 0.3, 1); --rebote: cubic-bezier(0.34, 1.56, 0.64, 1); --fy: 112px; --veladura: 11, 52, 57; --col: calc((100% - 11 * var(--medianil)) / 12); }
 .cv-h { position: relative; height: 280svh; color: #FFFFFF; }
 .cv-fijo { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: var(--lf-oscuro); }
 .cv-fijo > * { position: absolute; }
@@ -96,81 +96,73 @@
 .cv-ficha li::before { content: ''; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); translate: 0 -2px; }
 
 /* --- 5. EL LOGO HORIZONTAL --- */
-/* El SVG separado en partes: isotipo (nodo grande y dos chicos), Llegó, la barra y farma. La entrada (.llega) arma
-   el isotipo desde el nodo grande, sube Llegó por su máscara, traza la barra y farma sale desde atrás de ella.
-   El hover (.nodo) se reserva para después de la entrada, así nunca la reinicia. Hay seis, en el eje Hover del dock;
-   cada uno corre en un solo reloj lineal y sus partes se ordenan por porcentaje, para que coincidan siempre */
+/* El SVG con la estructura del logo de la portada de Llegó en el home, y la misma entrada (.llega), siempre igual: el
+   nodo central aparece, los brazos crecen hacia la izquierda y hacia abajo, llegan los dos nodos sueltos, el de la
+   derecha sale como mensajero y destapa Llegó con un borde difuso, se abre en la o, la tilde se marca y entra farma
+   (3,7 s). Cada pieza tiene en reposo su estado final y la entrada parte de su estado inicial (both), así al quitar
+   .llega el logo queda entero. El hover (.nodo) se reserva para después de la entrada, así nunca la reinicia */
 .cv-linea-logo { padding-bottom: 0; overflow: visible; }
 /* Sin máscara (la onda del hover sale del recuadro): al bajar sube y se apaga */
 .cv-linea-logo > * { translate: none; opacity: calc(1 - var(--sal, 0) * 1.4); }
 .entra .cv-linea-logo > * { animation: none; }
 .cv-logo { display: block; width: min(40vw, 70svh); overflow: visible; fill: #FFFFFF; pointer-events: auto; cursor: default; }
 .cv-logo :is(path, g, circle) { transform-box: fill-box; transform-origin: center; }
-.cv-lg-barra { transform-origin: 50% 0; }
-.cv-lg-onda, .cv-lg-llegada { fill: none; stroke: var(--lf-claro); stroke-width: 1.5; opacity: 0; }
-.cv-lg-n1, .cv-lg-n2 { stroke: #FFFFFF; stroke-width: 0; }
-.cv-lg-ruta { fill: none; stroke: var(--lf-claro); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 100; opacity: 0; }
-.cv-lg-hilo { stroke: var(--lf-claro); stroke-width: 1.5; stroke-linecap: round; opacity: 0; }
-.cv-lg-mensajero { opacity: 0; }
-.cv-lg-corte { translate: 340px 0; }
-/* El giro de la cruz es del atributo SVG: sin el origen al centro que llevan las demás piezas */
-.cv-logo .cv-lg-giro { transform-box: view-box; transform-origin: 0 0; }
-.cv-lg-brazo { fill: none; stroke: #FFFFFF; stroke-width: 22; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
-.cv-lg-pto { fill: var(--lf-claro); opacity: 0; }
-.cv-lg-ret { fill: none; stroke: var(--lf-claro); stroke-width: 0.9; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
-.llega .cv-lg-grande { animation: cv-lg-nace 700ms var(--sale) 500ms both; }
-.llega .cv-lg-n1 { --dx: -11.5px; --dy: 36px; animation: cv-lg-brota 650ms var(--sale) 820ms both; }
-.llega .cv-lg-n2 { --dx: -35.5px; --dy: 12px; animation: cv-lg-brota 650ms var(--sale) 900ms both; }
-.llega .cv-lg-l { animation: cv-lg-sube 900ms var(--curva) calc(600ms + var(--l) * 70ms) both; }
-.llega .cv-lg-tilde { animation: cv-lg-tilde 700ms var(--sale) 1080ms both; }
-.llega .cv-lg-barra { animation: cv-lg-traza 600ms var(--curva) 1100ms both; }
-.llega .cv-lg-f { animation: cv-lg-sale 800ms var(--sale) calc(1280ms + var(--l) * 60ms) both; }
+.cv-lg-brazo { fill: none; stroke: #FFFFFF; stroke-width: 22; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.cv-lg-corte { translate: 300px 0; }
+.cv-lg-centro, .cv-lg-mensajero, .cv-lg-vuelo, .cv-lg-tras, .cv-lg-seguimiento { opacity: 0; }
+.cv-lg-llegada { fill: none; stroke: var(--lf-claro); stroke-width: 1.5; opacity: 0; }
+.cv-lg-luz { fill: var(--lf-claro); }
+.cv-lg-faro { opacity: 0; }
+.cv-lg-estela, .cv-lg-calle { fill: none; stroke: var(--lf-claro); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 100; }
+.cv-lg-etapa { fill: var(--lf-claro); fill-opacity: 0; stroke: var(--lf-claro); stroke-width: 1.2; }
+.llega .cv-lg-centro { animation: cv-lg-centro 900ms linear 100ms both; }
+.llega .cv-lg-cuerpo { animation: cv-lg-aparece 1ms linear 300ms both; }
+.llega .cv-lg-brazo { animation: cv-lg-brazo 820ms var(--sale) 300ms both; }
+.llega .cv-lg-brazo + .cv-lg-brazo { animation-delay: 400ms; }
+.llega .cv-lg-n1 { animation: cv-lg-llega-a 860ms var(--sale) 560ms both; }
+.llega .cv-lg-n2 { animation: cv-lg-llega-d 860ms var(--sale) 680ms both; }
+.llega .cv-lg-mensajero { animation: cv-lg-mensajero 1400ms linear 1300ms both; }
+.llega .cv-lg-corte { animation: cv-lg-barre 1100ms var(--ease-morph) 1340ms both; }
+.llega .cv-lg-o { animation: cv-lg-abre 620ms var(--sale) 2340ms both; }
+.llega .cv-lg-llegada { animation: cv-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) 2380ms; }
+.llega .cv-lg-tilde { animation: cv-lg-tilde 460ms var(--sale) 2560ms both; }
+.llega .cv-lg-barra { animation: cv-lg-divisor 620ms var(--sale) 2700ms both; }
+.llega .cv-lg-f { animation: cv-lg-farma 760ms var(--sale) 2820ms both; }
+.llega .cv-lg-f + .cv-lg-f { animation-delay: 2920ms; }
 
-/* --- 5.1 HOVER A · EL MENSAJERO (EN LA LÍNEA DEL HOME) --- */
-/* Como en la portada de Llegó: el nodo de la derecha suelta un mensajero que barre Llegó con un borde difuso (la
-   palabra baja al 22 % y se vuelve a encender detrás de él), llega a la o, la o lo recibe, sale la onda y la tilde se
-   marca. El mensajero y el barrido comparten curva y tramo (8 % a 75 %), así el borde va siempre pegado a él */
-[data-hover="mensajero"] .nodo :is(.cv-lg-mensajero, .cv-lg-corte, .cv-lg-fondo, .cv-lg-n2, .cv-lg-o, .cv-lg-llegada, .cv-lg-tilde) { animation: 1500ms linear; }
-[data-hover="mensajero"] .nodo .cv-lg-mensajero { animation-name: cv-lg-viaje; }
-[data-hover="mensajero"] .nodo .cv-lg-corte { animation-name: cv-lg-corte; }
-[data-hover="mensajero"] .nodo .cv-lg-fondo { animation-name: cv-lg-atenua; }
-[data-hover="mensajero"] .nodo .cv-lg-n2 { animation-name: cv-lg-suelta; }
-[data-hover="mensajero"] .nodo .cv-lg-o { animation-name: cv-lg-recibe-o; }
-[data-hover="mensajero"] .nodo .cv-lg-llegada { animation-name: cv-lg-llegada; }
-[data-hover="mensajero"] .nodo .cv-lg-tilde { animation-name: cv-lg-marca; }
+/* --- 5.1 EL HOVER: TRES ENTREGAS DESDE EL MENSAJERO --- */
+/* Las tres terminan igual, con la confirmación de la entrada en corto: la o recibe, sale la onda y la tilde asiente.
+   Cada una fija --llega, el momento en que el envío toca la o */
+.nodo .cv-lg-o { animation: cv-lg-recibe-o 520ms var(--sale) var(--llega) both; }
+.nodo .cv-lg-llegada { animation: cv-lg-onda-o 800ms cubic-bezier(0.2, 0.7, 0.3, 1) var(--llega); }
+.nodo .cv-lg-tilde { animation: cv-lg-asiente 620ms var(--sale) calc(var(--llega) + 90ms); }
 
-/* --- 5.2 HOVER B · LA ENTREGA --- */
-/* Los nodos de estado del manual: el de arriba despacha, el de la derecha queda en contorno y el cuerpo se apaga; la
-   ruta llega al de la derecha al 38 % y al centro de la cruz al 56 %, y cada uno se llena al llegar */
-[data-hover="entrega"] .nodo :is(.cv-lg-n1, .cv-lg-n2, .cv-lg-grande, .cv-lg-ruta, .cv-lg-onda) { animation: 1400ms linear; }
-[data-hover="entrega"] .nodo .cv-lg-n1 { animation-name: cv-lg-despacha; }
-[data-hover="entrega"] .nodo .cv-lg-n2 { animation-name: cv-lg-espera; }
-[data-hover="entrega"] .nodo .cv-lg-grande { animation-name: cv-lg-recibe; }
-[data-hover="entrega"] .nodo .cv-lg-ruta { animation-name: cv-lg-ruta; }
-[data-hover="entrega"] .nodo .cv-lg-onda { animation-name: cv-lg-onda; }
-[data-hover="entrega"] .nodo .cv-lg-tilde { animation: cv-lg-salta 700ms var(--sale) 800ms; }
+/* A · Vuelo: el mensajero sale del nodo derecho en arco por sobre la palabra, deja una estela que se borra desde el
+   origen y aterriza en la o con un aplaste. Dos ejes separados (x suave, y en parábola), como un objeto que cae */
+[data-hover="vuelo"] .cv-logo { --llega: 750ms; }
+[data-hover="vuelo"] .nodo :is(.cv-lg-n2, .cv-lg-vx, .cv-lg-vuelo, .cv-lg-estela) { animation: 1100ms linear; }
+[data-hover="vuelo"] .nodo .cv-lg-n2 { animation-name: cv-lg-suelta; }
+[data-hover="vuelo"] .nodo .cv-lg-vx { animation-name: cv-lg-vuela-x; }
+[data-hover="vuelo"] .nodo .cv-lg-vuelo { animation-name: cv-lg-vuela-y; }
+[data-hover="vuelo"] .nodo .cv-lg-estela { animation-name: cv-lg-estela; }
 
-/* --- 5.3 HOVER C · LA CRUZ --- */
-/* El cuerpo girado 180° sobre el centro, revelado con la máscara de brazos del home: los nodos sueltos se conectan y
-   por un momento se ve la cruz completa. Después los brazos vuelven al centro */
-[data-hover="cruz"] .nodo :is(.cv-lg-brazo, .cv-lg-n1, .cv-lg-n2) { animation: 1500ms linear; }
-[data-hover="cruz"] .nodo .cv-lg-brazo { animation-name: cv-lg-brazo; }
-[data-hover="cruz"] .nodo .cv-lg-brazo + .cv-lg-brazo { animation-delay: 70ms; }
-[data-hover="cruz"] .nodo :is(.cv-lg-n1, .cv-lg-n2) { animation-name: cv-lg-encaje; }
+/* B · Seguimiento: el nodo derecho despacha hacia una calle bajo la palabra. La ruta avanza a ritmo constante y sus
+   seis etapas (las del seguimiento de llegofarma.cl) pasan de contorno a relleno cuando la ruta las alcanza, como los
+   nodos de estado del manual; la ruta sube a la o y la entrega se confirma */
+[data-hover="seguimiento"] .cv-logo { --llega: 1050ms; }
+[data-hover="seguimiento"] .nodo :is(.cv-lg-seguimiento, .cv-lg-calle, .cv-lg-n2) { animation: 1500ms linear; }
+[data-hover="seguimiento"] .nodo .cv-lg-seguimiento { animation-name: cv-lg-tramo; }
+[data-hover="seguimiento"] .nodo .cv-lg-calle { animation-name: cv-lg-calle; }
+[data-hover="seguimiento"] .nodo .cv-lg-n2 { animation-name: cv-lg-despacha; }
+[data-hover="seguimiento"] .nodo .cv-lg-etapa { animation: cv-lg-etapa 380ms var(--sale) var(--t) both; }
 
-/* --- 5.4 HOVER D · LA RETÍCULA --- */
-/* Altura de mayúscula, de x y línea base, y los ejes de la cruz, de Llegó y de la barra, con los cortes del manual en
-   cada cruce. Se trazan en cascada, se sostienen y se apagan: el logo medido */
-[data-hover="reticula"] .nodo .cv-lg-ret { animation: cv-lg-ret 1700ms linear calc(var(--k) * 28ms); }
-
-/* --- 5.5 HOVER E · LA TRAMA --- */
-/* La trama de puntos aparece desde afuera y se recoge hacia la cruz, que late cuando la recibe */
-[data-hover="trama"] .nodo .cv-lg-pto { animation: cv-lg-pto 900ms var(--sale) var(--d); }
-[data-hover="trama"] .nodo :is(.cv-lg-grande, .cv-lg-n1, .cv-lg-n2) { animation: cv-lg-pulso 560ms var(--sale) 640ms; }
-
-/* --- 5.6 HOVER F · LA RED --- */
-/* Continuo y sin clase: el JS mueve los nodos sueltos con un resorte hacia el cursor y estira un hilo hasta el centro */
-[data-hover="red"] .cv-logo { cursor: crosshair; }
+/* C · Barrido: el mensajero cruza por detrás de la palabra (se ve en los huecos entre letras) y una franja turquesa
+   claro, pegada a él, tiñe las letras a su paso. Sin apagar Llegó; termina dentro de la o */
+[data-hover="barrido"] .cv-logo { --llega: 840ms; }
+[data-hover="barrido"] .nodo :is(.cv-lg-n2, .cv-lg-tras, .cv-lg-faro) { animation: 1200ms linear; }
+[data-hover="barrido"] .nodo .cv-lg-n2 { animation-name: cv-lg-suelta; }
+[data-hover="barrido"] .nodo .cv-lg-tras { animation-name: cv-lg-tras; }
+[data-hover="barrido"] .nodo .cv-lg-faro { animation-name: cv-lg-faro; }
 
 /* --- 6. D · LOS DOS VERBOS DEL OFICIO --- */
 /* El verbo que distingue (programé) va en el turquesa claro de la marca */
@@ -288,30 +280,30 @@
 @keyframes cv-traza-y { from { transform: scaleY(0); } to { transform: none; } }
 @keyframes cv-traza-x { from { transform: scaleX(0); } to { transform: none; } }
 @keyframes cv-hito { to { background: var(--lf-claro); } }
-@keyframes cv-lg-nace { from { opacity: 0; transform: scale(0); } }
-@keyframes cv-lg-brota { from { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); } }
-@keyframes cv-lg-sube { from { transform: translateY(96px); } }
-@keyframes cv-lg-tilde { from { opacity: 0; transform: translate(-6px, -20px) rotate(-28deg); } }
-@keyframes cv-lg-traza { from { transform: scaleY(0); } }
-@keyframes cv-lg-sale { from { opacity: 0; transform: translateX(-56px); } }
-@keyframes cv-lg-viaje { 0% { opacity: 0; } 8% { opacity: 1; translate: 0 0; scale: 1; animation-timing-function: var(--ease-morph); } 42% { scale: 1.22 0.84; } 75% { opacity: 1; translate: 219.4px 3.8px; scale: 1; animation-timing-function: var(--sale); } 100% { opacity: 0; translate: 219.4px 3.8px; scale: 2.2; } }
-@keyframes cv-lg-corte { 0%, 8% { translate: 56px 0; animation-timing-function: var(--ease-morph); } 75% { translate: 275.5px 0; animation-timing-function: var(--sale); } 90%, 100% { translate: 340px 0; } }
-@keyframes cv-lg-atenua { 8%, 85% { opacity: 0.22; } }
-@keyframes cv-lg-suelta { 8% { scale: 1; animation-timing-function: var(--sale); } 13% { scale: 0.8; } 32% { scale: 1; } }
-@keyframes cv-lg-recibe-o { 74% { scale: 1; animation-timing-function: var(--sale); } 79% { scale: 1.07; } 94% { scale: 1; } }
-@keyframes cv-lg-llegada { 0%, 75% { opacity: 0; scale: 0.6; } 77% { opacity: 0.9; animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1); } 100% { opacity: 0; scale: 3; } }
-@keyframes cv-lg-marca { 0%, 5% { clip-path: inset(0 0 0 0); } 9%, 78% { clip-path: inset(100% 100% 0 0); animation-timing-function: var(--sale); } 94%, 100% { clip-path: inset(0 0 0 0); } }
-@keyframes cv-lg-despacha { 9% { transform: scale(1); animation-timing-function: var(--sale); } 13% { transform: scale(1.22); } 24% { transform: scale(1); } }
-@keyframes cv-lg-espera { 8%, 37% { fill-opacity: 0; stroke-width: 1.6; transform: scale(1); } 40% { fill-opacity: 1; stroke-width: 0; transform: scale(1.28); animation-timing-function: var(--sale); } 52% { transform: scale(1); } }
-@keyframes cv-lg-recibe { 8%, 55% { opacity: 0.28; transform: scale(0.92); } 59% { opacity: 1; transform: scale(1.08); animation-timing-function: var(--sale); } 72% { transform: scale(1); } }
-@keyframes cv-lg-ruta { 0%, 12% { opacity: 1; stroke-dashoffset: 100; } 56% { opacity: 1; stroke-dashoffset: 0; } 62% { opacity: 1; } 86%, 100% { opacity: 0; stroke-dashoffset: 0; } }
-@keyframes cv-lg-onda { 0%, 56% { opacity: 0; transform: scale(0.7); } 58% { opacity: 0.9; animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1); } 100% { opacity: 0; transform: scale(3.2); } }
-@keyframes cv-lg-salta { 35% { transform: translate(2px, -8px) rotate(-14deg); } 70% { transform: translate(0, 1px) rotate(3deg); } }
-@keyframes cv-lg-brazo { 0% { stroke-dashoffset: 1; animation-timing-function: var(--sale); } 34%, 64% { stroke-dashoffset: 0; animation-timing-function: var(--curva); } 92%, 100% { stroke-dashoffset: 1; } }
-@keyframes cv-lg-encaje { 20% { scale: 1; animation-timing-function: var(--sale); } 30% { scale: 1.1; } 44%, 100% { scale: 1; } }
-@keyframes cv-lg-ret { 0% { opacity: 1; stroke-dashoffset: 1; animation-timing-function: var(--sale); } 42%, 70% { opacity: 1; stroke-dashoffset: 0; } 100% { opacity: 0; stroke-dashoffset: 0; } }
-@keyframes cv-lg-pto { 0% { opacity: 0; translate: 0 0; } 30% { opacity: 0.9; } 100% { opacity: 0; translate: var(--vx) var(--vy); } }
-@keyframes cv-lg-pulso { 40% { scale: 1.07; } }
+@keyframes cv-lg-centro { 0% { opacity: 1; scale: 0; animation-timing-function: var(--rebote); } 62% { opacity: 1; scale: 1; } 99.9% { opacity: 1; } 100% { opacity: 0; scale: 1; } }
+@keyframes cv-lg-aparece { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cv-lg-brazo { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes cv-lg-llega-a { from { opacity: 0; translate: 0 -24px; scale: 0.6; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes cv-lg-llega-d { from { opacity: 0; translate: 24px 0; scale: 0.6; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes cv-lg-mensajero { 0% { opacity: 0; } 1%, 2.9% { opacity: 1; translate: 0 0; scale: 1; animation-timing-function: var(--ease-morph); } 42% { scale: 1.22 0.84; } 81% { opacity: 1; translate: 219.4px 3.8px; scale: 1; animation-timing-function: var(--sale); } 100% { opacity: 0; translate: 219.4px 3.8px; scale: 2.4; } }
+@keyframes cv-lg-barre { from { translate: 56px 0; } to { translate: 300px 0; } }
+@keyframes cv-lg-abre { from { opacity: 0; scale: 0.5; } to { opacity: 1; scale: 1; } }
+@keyframes cv-lg-onda-o { from { opacity: 0.8; scale: 1; } to { opacity: 0; scale: 3.4; } }
+@keyframes cv-lg-tilde { 0% { opacity: 0; clip-path: inset(100% 100% 0 0); } 0.1% { opacity: 1; } 100% { clip-path: inset(0 0 0 0); } }
+@keyframes cv-lg-divisor { from { scale: 1 0; } to { scale: 1 1; } }
+@keyframes cv-lg-farma { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
+@keyframes cv-lg-recibe-o { from { scale: 1; } 30% { scale: 1.08 0.93; } to { scale: 1; } }
+@keyframes cv-lg-asiente { 35% { translate: 2px -6px; rotate: -14deg; } 70% { translate: 0 1px; rotate: 3deg; } }
+@keyframes cv-lg-suelta { 0% { scale: 1; animation-timing-function: var(--sale); } 8% { scale: 0.8; } 30% { scale: 1; } }
+@keyframes cv-lg-despacha { 0% { scale: 1; animation-timing-function: var(--sale); } 6% { scale: 1.16; } 22% { scale: 1; } }
+@keyframes cv-lg-vuela-x { 0%, 6% { translate: 0 0; animation-timing-function: cubic-bezier(0.45, 0, 0.3, 1); } 68%, 100% { translate: 219.4px 0; } }
+@keyframes cv-lg-vuela-y { 0% { opacity: 0; translate: 0 0; } 6% { opacity: 1; translate: 0 0; animation-timing-function: cubic-bezier(0.25, 0.6, 0.4, 1); } 37% { translate: 0 -46px; animation-timing-function: cubic-bezier(0.6, 0, 0.75, 0.4); } 68% { opacity: 1; translate: 0 3.8px; scale: 1; animation-timing-function: var(--sale); } 74% { scale: 1.24 0.8; } 100% { opacity: 0; translate: 0 3.8px; scale: 1.5; } }
+@keyframes cv-lg-estela { 0%, 9% { stroke-dashoffset: 100; animation-timing-function: cubic-bezier(0.45, 0, 0.3, 1); } 70% { stroke-dashoffset: 0; animation-timing-function: var(--curva); } 100% { stroke-dashoffset: -100; } }
+@keyframes cv-lg-tramo { 0% { opacity: 0; } 6%, 82% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes cv-lg-calle { 0%, 6% { stroke-dashoffset: 100; } 70%, 100% { stroke-dashoffset: 0; } }
+@keyframes cv-lg-etapa { from { fill-opacity: 0; scale: 1; } 40% { fill-opacity: 1; scale: 1.6; } to { fill-opacity: 1; scale: 1; } }
+@keyframes cv-lg-tras { 0% { opacity: 0; translate: 0 0; } 6% { opacity: 1; translate: 0 0; animation-timing-function: var(--ease-morph); } 70% { opacity: 1; translate: 219.4px 3.8px; animation-timing-function: var(--sale); } 88%, 100% { opacity: 0; translate: 219.4px 3.8px; } }
+@keyframes cv-lg-faro { 0% { opacity: 0; translate: 0 0; } 6% { translate: 0 0; animation-timing-function: var(--ease-morph); } 14% { opacity: 1; } 62% { opacity: 1; } 70% { translate: 219.4px 0; } 78%, 100% { opacity: 0; translate: 219.4px 0; } }
 @media (prefers-reduced-motion: reduce) {
     .cv *, .cv *::before, .cv *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; }
 }

@@ -48,15 +48,12 @@
         etiqueta: { nombre: 'Guía', idea: 'Una guía de despacho con los hitos reales del proyecto: remite agustín.design, seis nodos que se llenan en orden y entrega el 20 de octubre.' }
     };
     const HOVERS = {
-        mensajero: { nombre: 'Mensajero', idea: 'La recomendada, en la línea del home: el nodo de la derecha suelta un mensajero que barre Llegó, la o lo recibe y la tilde se marca al llegar. La animación de la portada, en corto.' },
-        entrega: { nombre: 'Entrega', idea: 'Los nodos de estado del manual: el de arriba despacha, el de la derecha espera en contorno y la ruta los llena uno a uno hasta el centro de la cruz.' },
-        cruz: { nombre: 'Cruz', idea: 'Los nodos sueltos se conectan al centro con los mismos brazos del isotipo y por un momento se ve la cruz completa, hecha con la gramática del nodo.' },
-        reticula: { nombre: 'Retícula', idea: 'La retícula de precisión del manual se traza sobre el logo, con sus cortes en cada cruce: el logo medido, como en una lámina técnica.' },
-        trama: { nombre: 'Trama', idea: 'La trama de puntos de Llegó aparece alrededor y se recoge en la cruz: los puntos que eran decoración se vuelven nodos.' },
-        red: { nombre: 'Red', idea: 'Continuo: los nodos sueltos siguen al cursor con un resorte y un hilo los une al centro, como una red que responde. Al salir vuelven a su lugar.' }
+        vuelo: { nombre: 'Vuelo', idea: 'El mensajero sale del nodo derecho en arco por sobre la palabra, deja una estela turquesa y aterriza en la o, que lo recibe. La entrega más directa y la más legible a tamaño chico.' },
+        seguimiento: { nombre: 'Seguimiento', idea: 'La recomendada: la entrega, pero mejor. El nodo despacha por una calle bajo la palabra y sus seis etapas, las del seguimiento de llegofarma.cl, se llenan al pasar; la ruta sube a la o y la entrega se confirma.' },
+        barrido: { nombre: 'Barrido', idea: 'El mensajero cruza por detrás de Llegó, visible entre las letras, y una franja turquesa claro las tiñe a su paso. El barrido de la portada, sin apagar la palabra.' }
     };
     const EJES = { cinta: CINTAS, texto: TEXTOS, grafica: GRAFICAS, hover: HOVERS };
-    const TECLAS = { cinta: '12345', texto: 'qwer', grafica: 'asdfg', hover: 'cvbnm,' };
+    const TECLAS = { cinta: '12345', texto: 'qwer', grafica: 'asdfg', hover: 'cvb' };
 
     /* --- 3. EL MOTOR DE LA CINTA --- */
     const raiz = document.body, h = $('.cv-h'), fijo = $('.cv-fijo'), escena = $('.cv-escena'), plano = $('.cv-plano');
@@ -130,7 +127,6 @@
         sx += (mx - sx) * k; sy += (my - sy) * k;
         vx += (w * w * (sx - ox) - 2 * w * vx) * s; vy += (w * w * (sy - oy) - 2 * w * vy) * s;
         ox += vx * s; oy += vy * s;
-        red(s);
         const e = c.e = curva(fijar(c.p / 0.85));
         const a = quieto ? 1 : suave(fijar(c.t / 1600));
         const v = P.eje === 'v';
@@ -196,49 +192,24 @@
 
     /* --- 5. EL DOCK, EL ANCLA Y LA ENTRADA --- */
     const barra = $('[data-barra]'), dock = $('.cv-dock'), idea = $('[data-idea]', dock), sigue = $('.cv-sigue');
-    const estado = { cinta: 'horizonte', texto: 'ficha', grafica: 'sin', hover: 'mensajero' };
+    const estado = { cinta: 'horizonte', texto: 'ficha', grafica: 'sin', hover: 'seguimiento' };
     let callar;
-    /* El logo se arma en cada entrada (.llega) y recién después acepta el hover (.nodo), que dura lo que duren sus
-       animaciones: una pasada por entrada del mouse. La Red no usa la clase: la mueve el resorte de cada cuadro */
+    /* El logo se arma en cada entrada (.llega), siempre con la animación de la portada del home, y la clase sale cuando
+       terminan sus animaciones. Recién ahí acepta el hover (.nodo), que también dura lo que duren las suyas: una pasada
+       por entrada del mouse */
     const logo = $('.cv-logo');
-    let armando, pasadas = 0;
+    let armadas = 0, pasadas = 0;
+    const alTerminar = (clase, vuelta, actual) => Promise.allSettled(logo.getAnimations({ subtree: true }).map(a => a.finished)).then(() => { if (vuelta === actual()) logo.classList.remove(clase); });
     const armarLogo = () => {
         logo.classList.remove('llega', 'nodo'); void logo.getBoundingClientRect(); logo.classList.add('llega');
-        clearTimeout(armando); armando = setTimeout(() => logo.classList.remove('llega'), quieto ? 0 : 2400);
+        alTerminar('llega', ++armadas, () => armadas);
     };
     const pasar = () => {
-        if (quieto || estado.hover === 'red' || logo.classList.contains('llega')) return;
+        if (quieto || logo.classList.contains('llega')) return;
         logo.classList.remove('nodo'); void logo.getBoundingClientRect(); logo.classList.add('nodo');
-        const vuelta = ++pasadas;
-        Promise.allSettled(logo.getAnimations({ subtree: true }).map(a => a.finished)).then(() => { if (vuelta === pasadas) logo.classList.remove('nodo'); });
+        alTerminar('nodo', ++pasadas, () => pasadas);
     };
     logo.addEventListener('pointerenter', () => { if (!logo.classList.contains('nodo')) pasar(); });
-
-    /* --- 5.1 LA RED: NODOS CON RESORTE --- */
-    /* Cada nodo suelto busca un punto entre su lugar y el cursor (hasta 9 unidades, menos mientras más lejos esté) con un
-       resorte subamortiguado, que al volver se pasa apenas. El hilo va del centro de la cruz al nodo y se enciende según
-       cuánto se estiró */
-    const sueltos = [['.cv-lg-n1', 32.1, 17.1], ['.cv-lg-n2', 56.1, 41.1]].map(([sel, x, y], i) => ({ el: $(sel, logo), hilo: logo.querySelectorAll('.cv-lg-hilo')[i], x, y, px: 0, py: 0, vx: 0, vy: 0 }));
-    let cursor = null;
-    const red = s => {
-        const activa = estado.hover === 'red' && !logo.classList.contains('llega') && !quieto;
-        sueltos.forEach(n => {
-            let tx = 0, ty = 0;
-            if (activa && cursor) {
-                const dx = cursor.x - n.x, dy = cursor.y - n.y, d = Math.hypot(dx, dy) || 1, f = fijar(1 - d / 260) * Math.min(d * 0.2, 9);
-                tx = dx / d * f; ty = dy / d * f;
-            }
-            if (!activa && !n.px && !n.py && !n.vx && !n.vy) return;
-            const w = 16, z = 0.42;
-            n.vx += (w * w * (tx - n.px) - 2 * z * w * n.vx) * s; n.vy += (w * w * (ty - n.py) - 2 * z * w * n.vy) * s;
-            n.px += n.vx * s; n.py += n.vy * s;
-            if (!activa && Math.abs(n.px) + Math.abs(n.py) + Math.abs(n.vx) + Math.abs(n.vy) < 0.02) n.px = n.py = n.vx = n.vy = 0;
-            n.el.style.translate = n.px || n.py ? `${n.px.toFixed(2)}px ${n.py.toFixed(2)}px` : '';
-            n.hilo.setAttribute('x2', (n.x + n.px).toFixed(2)); n.hilo.setAttribute('y2', (n.y + n.py).toFixed(2));
-            n.hilo.style.opacity = fijar(Math.hypot(n.px, n.py) / 5).toFixed(3);
-        });
-    };
-    const aLogo = e => { const m = logo.getScreenCTM(); if (!m) return null; const q = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse()); return { x: q.x, y: q.y }; };
 
     Object.entries(EJES).forEach(([eje, lista]) => {
         $(`[data-eje="${eje}"]`, dock).insertAdjacentHTML('beforeend', Object.entries(lista).map(([id, o], i) => `<button type="button" data-id="${id}" aria-pressed="false"><kbd>${TECLAS[eje][i].toUpperCase()}</kbd>${o.nombre}</button>`).join(''));
@@ -279,11 +250,10 @@
     /* Sobre el dock y los ajustes la cinta se queda donde estaba; al salir de la ventana o perder el foco vuelve al
        centro por el mismo resorte */
     window.addEventListener('pointermove', e => {
-        cursor = aLogo(e);
         if (e.target.closest('.cv-dock, .cv-ajustes')) return;
         mx = e.clientX / c.W - 0.5; my = e.clientY / c.H - 0.5;
     }, { passive: true });
-    const soltar = () => { mx = my = 0; cursor = null; };
+    const soltar = () => { mx = my = 0; };
     document.addEventListener('mouseout', e => { if (!e.relatedTarget) soltar(); });
     window.addEventListener('blur', soltar);
     window.addEventListener('resize', () => { c.medir(); alScroll(); });
@@ -291,7 +261,7 @@
     history.scrollRestoration = 'manual';
     const desdeAncla = () => {
         const [ci, te, gr, ho] = location.hash.slice(1).split('/');
-        elegir('cinta', CINTAS[ci] ? ci : 'horizonte', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false); elegir('hover', HOVERS[ho] ? ho : 'mensajero', false);
+        elegir('cinta', CINTAS[ci] ? ci : 'horizonte', false); elegir('texto', TEXTOS[te] ? te : 'ficha', false); elegir('grafica', GRAFICAS[gr] ? gr : 'sin', false); elegir('hover', HOVERS[ho] ? ho : 'seguimiento', false);
         idea.textContent = CINTAS[estado.cinta].idea;
         entrar();
     };
