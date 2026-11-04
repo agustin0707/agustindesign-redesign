@@ -204,34 +204,76 @@
     };
 
     /* --- 5.1 ECO CON EL MOUSE --- */
-    /* Como las letras del hero de Tap In: cada pieza toma un grado según su distancia al cursor (campana de σ igual al
-       13 % del ancho del logo, con la distancia vertical a 0,6) y el CSS lo convierte en su gesto. Los centros se miden
-       una vez y se vuelven a medir al hacer scroll o cambiar el tamaño. Solo con mouse */
+    /* Como las letras del hero de Tap In, pero con resortes. Cada pieza mide su distancia al cursor y saca dos metas de
+       una campana ancha (σ igual al 20 % del ancho del logo): el grado --w (la campana) y un tirón hacia el cursor (la
+       campana por la distancia, que crece, toca techo a un σ y se apaga, así nunca salta al cruzar la pieza). Tres
+       resortes por pieza persiguen esas metas en el cuadro de la cinta, en tiempo real y no en cuadros. Los centros
+       salen del dibujo (getBBox), que no se mueve con los gestos; se miden la primera vez que el logo tiene tamaño. Solo con mouse */
     const conMouse = window.matchMedia('(hover: hover)').matches;
-    const piezas = [...logo.querySelectorAll('.cv-lg-p')], o = $('.cv-lg-o', logo);
-    let centros = [];
-    const medirPiezas = () => { centros = piezas.map(p => { const r = p.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }); };
-    const activo = () => estado.hover === 'mouse' && conMouse && !quieto && !logo.classList.contains('llega') && window.scrollY < window.innerHeight * 0.3;
-    const cerca = (x, y) => {
-        if (!activo()) return;
-        if (!centros.length) medirPiezas();
-        const s = logo.getBoundingClientRect().width * 0.13;
-        piezas.forEach((p, i) => { const d = Math.hypot(x - centros[i].x, (y - centros[i].y) * 0.6); p.style.setProperty('--w', Math.exp(-(d * d) / (2 * s * s)).toFixed(3)); });
+    const piezas = [...logo.querySelectorAll('.cv-lg-p')], iO = piezas.indexOf($('.cv-lg-o', logo));
+    const VB = { x: -2, w: 440, h: 84 }, TIRON = 4, GOLPE = 11;
+    let centros = null;
+    const medirPiezas = () => {
+        const cajas = piezas.map(p => p.getBBox());
+        if (cajas.every(b => b.width)) centros = cajas.map(b => ({ x: b.x + b.width / 2, y: b.y + b.height / 2 }));
     };
-    const lejos = () => piezas.forEach(p => p.style.removeProperty('--w'));
-    window.addEventListener('scroll', () => { centros = []; if (window.scrollY >= window.innerHeight * 0.3) lejos(); }, { passive: true });
-    window.addEventListener('resize', () => { centros = []; });
+    const resortes = piezas.map(() => ({ w: 0, vw: 0, px: 0, vpx: 0, py: 0, vpy: 0, mw: 0, mx: 0, my: 0, golpe: 0 }));
+    let cursor = null, enReposo = true;
+    const activo = () => estado.hover === 'mouse' && conMouse && !quieto && !logo.classList.contains('llega') && window.scrollY < window.innerHeight * 0.3;
+    /* Pasa los centros del dibujo a la pantalla con la caja actual del logo */
+    const enPantalla = () => {
+        if (!centros) medirPiezas();
+        const r = logo.getBoundingClientRect(), k = r.width / VB.w, y0 = r.top + (r.height - VB.h * k) / 2;
+        return { k, puntos: centros.map(c => ({ x: r.left + (c.x - VB.x) * k, y: y0 + c.y * k })) };
+    };
+    const lejos = () => resortes.forEach(r => { r.mw = r.mx = r.my = 0; });
+    const cerca = (x, y) => {
+        cursor = { x, y };
+        if (!activo() || !centros && (medirPiezas(), !centros)) return lejos();
+        const { k, puntos } = enPantalla(), s = VB.w * k * 0.2;
+        resortes.forEach((r, i) => {
+            const dx = (x - puntos[i].x) / s, dy = (y - puntos[i].y) / s, g = Math.exp(-(dx * dx + dy * dy) / 2);
+            r.mw = g; r.mx = TIRON * g * dx; r.my = TIRON * g * dy;
+            if (g > 0.002) enReposo = false;
+        });
+    };
+    /* Apaga todo de golpe: al cambiar de hover o al repetir la entrada */
+    const apagar = () => {
+        resortes.forEach(r => Object.assign(r, { w: 0, vw: 0, px: 0, vpx: 0, py: 0, vpy: 0, mw: 0, mx: 0, my: 0, golpe: 0 }));
+        piezas.forEach(p => ['--w', '--px', '--py'].forEach(v => p.style.removeProperty(v)));
+        enReposo = true;
+    };
+    /* Un paso de los resortes: el grado con algo de rebote (ω 11, ζ 0,62) para que la ola se sienta viva, el tirón más
+       amortiguado (ω 9, ζ 0,8). Euler semi implícito, estable con los 50 ms de tope del cuadro */
+    const resorte = (r, v, m, w, z, s) => { const dv = 'v' + v; r[dv] += (w * w * (r[m] - r[v]) - 2 * z * w * r[dv]) * s; r[v] += r[dv] * s; };
+    let antes = 0;
+    const mover = ahora => {
+        const s = Math.min(ahora - (antes || ahora), 50) / 1000; antes = ahora;
+        if (enReposo || estado.hover !== 'mouse') return;
+        let quietas = 0;
+        resortes.forEach((r, i) => {
+            if (r.golpe && ahora >= r.golpe) { r.vw += GOLPE; r.golpe = 0; }
+            resorte(r, 'w', 'mw', 11, 0.62, s); resorte(r, 'px', 'mx', 9, 0.8, s); resorte(r, 'py', 'my', 9, 0.8, s);
+            const p = piezas[i].style;
+            p.setProperty('--w', r.w.toFixed(4)); p.setProperty('--px', r.px.toFixed(3)); p.setProperty('--py', r.py.toFixed(3));
+            if (!r.golpe && r.mw < 0.002 && Math.abs(r.w) + Math.abs(r.vw) + Math.abs(r.px) + Math.abs(r.vpx) + Math.abs(r.py) + Math.abs(r.vpy) < 0.002) quietas++;
+        });
+        if (quietas === piezas.length) apagar();
+    };
+    window.addEventListener('scroll', () => { if (cursor) cerca(cursor.x, cursor.y); }, { passive: true });
 
-    /* Una pasada por entrada del mouse. En Eco con mouse, la ola parte del punto de entrada: cada pieza se retrasa 0,9 ms
-       por píxel de distancia (hasta 520 ms) y la onda sale de la o cuando la ola llega a ella */
+    /* Una pasada por entrada del mouse. En Eco con mouse es una ola de empujones a los resortes que parte del punto de
+       entrada: cada pieza lo recibe 0,8 ms por píxel de distancia después (hasta 460 ms) y se suma a lo que marque el
+       cursor, sin pisarlo. La onda sale de la o cuando la ola llega a ella */
     const pasar = (x, y) => {
         if (quieto || logo.classList.contains('llega')) return;
-        if (estado.hover === 'mouse') {
-            if (!centros.length) medirPiezas();
-            const r = logo.getBoundingClientRect();
+        if (estado.hover === 'mouse' && (centros || (medirPiezas(), centros))) {
+            const { puntos } = enPantalla(), r = logo.getBoundingClientRect(), ahora = performance.now();
             if (x === undefined) { x = r.left; y = r.top + r.height / 2; }
-            piezas.forEach((p, i) => p.style.setProperty('--dl', Math.round(Math.min(Math.hypot(x - centros[i].x, y - centros[i].y) * 0.9, 520)) + 'ms'));
-            logo.style.setProperty('--dl-o', o.style.getPropertyValue('--dl'));
+            const dl = puntos.map(c => Math.min(Math.hypot(x - c.x, y - c.y) * 0.8, 460));
+            resortes.forEach((r, i) => { r.golpe = ahora + dl[i]; });
+            logo.style.setProperty('--dl-o', Math.round(dl[iO] + 120) + 'ms');
+            enReposo = false;
         }
         logo.classList.remove('nodo'); void logo.getBoundingClientRect(); logo.classList.add('nodo');
         alTerminar('nodo', ++pasadas, () => pasadas);
@@ -255,7 +297,7 @@
         idea.textContent = EJES[eje][id].idea;
         history.replaceState(null, '', `#${estado.cinta}/${estado.texto}/${estado.grafica}/${estado.hover}`);
         /* Elegir un hover lo muestra una vez sin repetir la entrada */
-        if (eje === 'hover') { lejos(); centros = []; }
+        if (eje === 'hover') apagar();
         if (repetir) eje === 'hover' ? pasar() : entrar();
     };
     const entrar = () => {
@@ -264,7 +306,7 @@
         c.iniciar(); alScroll();
         dock.classList.remove('calla'); clearTimeout(callar); callar = setTimeout(() => dock.classList.add('calla'), 6000);
         setTimeout(entibiar, 2600);
-        armarLogo();
+        apagar(); armarLogo();
     };
     dock.addEventListener('click', e => { const b = e.target.closest('[data-eje] button'); if (b) elegir(b.closest('[data-eje]').dataset.eje, b.dataset.id); });
     window.addEventListener('keydown', e => {
@@ -286,7 +328,7 @@
     document.addEventListener('mouseout', e => { if (!e.relatedTarget) soltar(); });
     window.addEventListener('blur', soltar);
     window.addEventListener('resize', () => { c.medir(); alScroll(); });
-    const bucle = ahora => { c.cuadro(ahora); requestAnimationFrame(bucle); };
+    const bucle = ahora => { c.cuadro(ahora); mover(ahora); requestAnimationFrame(bucle); };
     history.scrollRestoration = 'manual';
     const desdeAncla = () => {
         const [ci, te, gr, ho] = location.hash.slice(1).split('/');

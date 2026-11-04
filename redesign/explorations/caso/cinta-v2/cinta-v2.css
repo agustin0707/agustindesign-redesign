@@ -130,24 +130,28 @@
 /* El hover repite la entrada en miniatura: cada pieza vuelve un tercio hacia donde partió y se rearma, con las
    mismas piezas, gestos y curvas (más --curva para lo que se recoge). Hay dos versiones para comparar */
 
-/* A · Eco con el mouse (la elegida), en la lógica del hero de Tap In. Cada pieza tiene un grado --w de 0 a 1, una
-   propiedad registrada para que se pueda animar y transicionar. El JS lo fija según la distancia al cursor (campana,
-   como las letras de Tap In): mientras más cerca, más se rebobina esa pieza hacia su estado de partida en la entrada;
-   al alejarse se rearma con la curva de salida. Al entrar al logo, el Eco completo sale desde el punto de entrada:
-   cada pieza llega a 1 con un retraso según su distancia (--dl) y vuelve a lo que marque el cursor, y la onda sale de
-   la o cuando la ola la alcanza. Grados en reposo: 0, así el logo queda igual */
+/* A · Eco con el mouse (la elegida), en la lógica del hero de Tap In. El JS mueve tres resortes por pieza en el mismo
+   cuadro que la cinta y escribe sus valores en línea: --w, el grado en que la pieza se rebobina hacia su partida en la
+   entrada (0 a 1), y --px --py, un tirón suave hacia el cursor en unidades del dibujo. Sin transiciones de CSS: el
+   resorte ya trae la suavidad, conserva la velocidad entre un movimiento y otro y nunca se reinicia a mitad de camino.
+   Cada pieza declara su gesto (--gx --gy desplazamiento, --gs --gsy escala) y nada se apaga ni se recorta: el logo
+   siempre se lee entero. En reposo los tres valores son 0 y el logo queda igual */
 @property --w { syntax: '<number>'; inherits: false; initial-value: 0; }
-[data-hover="mouse"] .cv-lg-p { transition: --w 450ms var(--sale); }
-[data-hover="mouse"] .cv-lg-cuerpo { scale: calc(1 - var(--w) * 0.08); }
-[data-hover="mouse"] .cv-lg-n1 { translate: 0 calc(var(--w) * -8px); scale: calc(1 - var(--w) * 0.14); }
-[data-hover="mouse"] .cv-lg-n2 { translate: calc(var(--w) * 8px) 0; scale: calc(1 - var(--w) * 0.14); }
-[data-hover="mouse"] .cv-lg-letra { opacity: calc(1 - var(--w) * 0.45); }
-[data-hover="mouse"] .cv-lg-o { scale: calc(1 - var(--w) * 0.14); }
-[data-hover="mouse"] .cv-lg-tilde { clip-path: inset(calc(var(--w) * 80%) calc(var(--w) * 80%) 0 0); }
-[data-hover="mouse"] .cv-lg-barra { scale: 1 calc(1 - var(--w) * 0.4); }
-[data-hover="mouse"] .cv-lg-f { translate: 0 calc(var(--w) * 4px); opacity: calc(1 - var(--w) * 0.6); }
-[data-hover="mouse"] .nodo .cv-lg-p { animation: cv-lg-eco-w 760ms var(--curva) var(--dl, 0ms); }
-[data-hover="mouse"] .nodo .cv-lg-llegada { animation: cv-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) calc(var(--dl-o, 0ms) + 230ms); }
+[data-hover="mouse"] .cv-lg-p {
+    --gx: 0px; --gy: 0px; --gs: 0; --gsy: var(--gs);
+    translate: calc(var(--px, 0) * 1px + var(--w) * var(--gx)) calc(var(--py, 0) * 1px + var(--w) * var(--gy));
+    scale: calc(1 - var(--w) * var(--gs)) calc(1 - var(--w) * var(--gsy));
+}
+[data-hover="mouse"] .cv-lg-cuerpo { --gs: 0.05; }
+[data-hover="mouse"] .cv-lg-n1 { --gy: -6px; --gs: 0.1; }
+[data-hover="mouse"] .cv-lg-n2 { --gx: 6px; --gs: 0.1; }
+[data-hover="mouse"] .cv-lg-letra { --gy: -2.5px; }
+[data-hover="mouse"] .cv-lg-o { --gs: 0.1; }
+[data-hover="mouse"] .cv-lg-tilde { --gx: 2px; --gy: -3px; --gs: 0.12; }
+[data-hover="mouse"] .cv-lg-barra { --gsy: 0.3; }
+[data-hover="mouse"] .cv-lg-f { --gy: 3px; }
+/* La onda sale de la o cuando la ola de la entrada del mouse la alcanza (--dl-o lo calcula el JS) */
+[data-hover="mouse"] .nodo .cv-lg-llegada { animation: cv-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) var(--dl-o, 0ms); }
 
 /* B · Eco: la entrada entera en miniatura. Cada pieza hace su gesto en el mismo orden, con un tercio de la amplitud:
    el isotipo rebota, los nodos llegan de cerca, el barrido pasa con la palabra al 55 %, la o, la tilde, la barra y
@@ -292,7 +296,6 @@
 @keyframes cv-lg-tilde { 0% { opacity: 0; clip-path: inset(100% 100% 0 0); } 0.1% { opacity: 1; } 100% { clip-path: inset(0 0 0 0); } }
 @keyframes cv-lg-divisor { from { scale: 1 0; } to { scale: 1 1; } }
 @keyframes cv-lg-farma { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
-@keyframes cv-lg-eco-w { 30% { --w: 1; animation-timing-function: var(--sale); } }
 @keyframes cv-lg-e-cuerpo { 0% { scale: 1; animation-timing-function: var(--curva); } 6% { scale: 0.92; animation-timing-function: var(--rebote); } 30%, 100% { scale: 1; } }
 @keyframes cv-lg-e-n1 { 0%, 6% { translate: 0 0; scale: 1; animation-timing-function: var(--curva); } 12% { translate: 0 -8px; scale: 0.86; animation-timing-function: var(--sale); } 42%, 100% { translate: 0 0; scale: 1; } }
 @keyframes cv-lg-e-n2 { 0%, 10% { translate: 0 0; scale: 1; animation-timing-function: var(--curva); } 16% { translate: 8px 0; scale: 0.86; animation-timing-function: var(--sale); } 46%, 100% { translate: 0 0; scale: 1; } }
