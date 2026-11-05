@@ -193,31 +193,82 @@
     });
 
     /* --- 5. VER CASO --- */
-    /* La ventana de la portada viaja y se vuelve el hero del caso: View Transitions entre páginas, la pieza se nombra
-       aquí y en el caso (caso-llegada.js). Sin soporte, el home se funde a negro y navega. Mend muestra un rótulo hasta
+    /* El paso al caso empieza aquí y termina en el caso (caso-llegada.js): la portada se calla, la pieza queda quieta en
+       su lugar y el home anota dónde quedó, con una captura del cuadro exacto del video. El caso abre desde ese mismo
+       cuadro y sigue el movimiento, así que no depende de View Transitions. Llegó pliega la barra de la ventana hasta la
+       carta de su cinta; Tap In deja la ventana entera y el título, que viajan en el caso. Mend muestra un rótulo hasta
        que su caso exista */
-    const viaja = 'onpagereveal' in window;
+    const PASO = { llego: { espera: 520, carta: true }, tapin: { espera: 440, carta: false } };
+    const CURVA = 'cubic-bezier(0.4, 0, 0.1, 1)', SE_VA = 'cubic-bezier(0.4, 0, 1, 1)';
+    let saliendo = false, pasoVivas = [];
+    const mover = (el, kf, o) => { if (!el) return; pasoVivas.push(el.animate(kf, { fill: 'forwards', easing: CURVA, ...o })); };
+    const caja = el => { const r = el.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; };
+    /* El cuadro visible del video (cover, alineado arriba) a una imagen; con carta, solo su parte de arriba en 16:10 */
+    const capturar = (vid, pant, carta) => {
+        if (!vid || vid.readyState < 2 || vid.currentTime < 0.05 || !vid.videoWidth) return vid ? vid.poster : '';
+        try {
+            const vw = vid.videoWidth, vh = vid.videoHeight, k = Math.max(pant.w / vw, pant.h / vh);
+            const alto = carta ? Math.min(pant.h, pant.w / 1.6) : pant.h, dpr = Math.min(window.devicePixelRatio || 1, 2);
+            const lienzo = document.createElement('canvas');
+            lienzo.width = Math.round(pant.w * dpr); lienzo.height = Math.round(alto * dpr);
+            lienzo.getContext('2d').drawImage(vid, (vw * k - pant.w) / 2 / k, 0, pant.w / k, alto / k, 0, 0, lienzo.width, lienzo.height);
+            return lienzo.toDataURL('image/jpeg', 0.86);
+        } catch (err) { return vid.poster; }
+    };
+    /* La caja de tinta del título (sin interlineado), medida con la fuente ya cargada en el home */
+    const tintaTitulo = h3 => {
+        const cs = getComputedStyle(h3), b = caja(h3), ctx = document.createElement('canvas').getContext('2d');
+        ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`; ctx.letterSpacing = cs.letterSpacing;
+        const m = ctx.measureText(h3.textContent), fs = parseFloat(cs.fontSize), lh = parseFloat(cs.lineHeight) || fs;
+        const base = b.y + (lh - (m.fontBoundingBoxAscent + m.fontBoundingBoxDescent)) / 2 + m.fontBoundingBoxAscent;
+        return { caja: b, fs, ls: cs.letterSpacing, lh, peso: cs.fontWeight, x: b.x - m.actualBoundingBoxLeft, y: base - m.actualBoundingBoxAscent, w: m.actualBoundingBoxLeft + m.actualBoundingBoxRight, h: m.actualBoundingBoxAscent + m.actualBoundingBoxDescent };
+    };
+    const salir = (c, href) => {
+        const paso = PASO[c.dataset.id], tabs = [...c.querySelectorAll('[data-cap]')], vistas = [...c.querySelectorAll('.pt-vista')];
+        const k = vistas.findIndex(v => v.querySelector('.pt-nav video')), web = vistas[k];
+        /* Si estaba abierto otro capítulo, primero vuelve a Web (su cambio dura 200 ms) */
+        const antes = web.classList.contains('on') ? 0 : 230;
+        if (antes) tabs[k].click();
+        const vid = web.querySelector('video');
+        if (vid) vid.pause();
+        setTimeout(() => {
+            const nav = web.querySelector('.pt-nav'), pant = caja(web.querySelector('.pt-pant')), ventana = caja(nav), h3 = c.querySelector('.pt-txt h3');
+            const datos = { caso: c.dataset.id, w: window.innerWidth, h: window.innerHeight, img: capturar(vid, pant, paso.carta) };
+            if (paso.carta) datos.ventana = { x: pant.x, y: pant.y, w: pant.w, h: Math.min(pant.h, pant.w / 1.6) };
+            else { datos.ventana = ventana; datos.titulo = tintaTitulo(h3); }
+            /* Todo lo que no viaja se apaga hacia arriba, en cascada */
+            const textos = [c.querySelector('.pt-tope'), c.querySelector('.pt-caps'), ...c.querySelectorAll('.pt-txt > *'), pista.querySelector('.pt-regla')].filter(el => el && (paso.carta || el !== h3));
+            textos.forEach((el, i) => mover(el, [{ opacity: 1, translate: '0 0' }, { opacity: 0, translate: '0 -8px' }], { duration: 380, delay: i * 30, easing: SE_VA }));
+            mover(c.querySelector('.pt-ver'), [{ scale: 1 }, { scale: 0.95, offset: 0.4 }, { scale: 1 }], { duration: 240, easing: 'ease-out', fill: 'none' });
+            if (paso.carta) {
+                /* Llegó: la ventana pliega su barra y su borde de abajo hasta calzar con la carta que la recibe */
+                const resto = ventana.h - (datos.ventana.y - ventana.y) - datos.ventana.h;
+                mover(nav, [{ clipPath: 'inset(0px 0px 0px 0px round 12px)', boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 50px 90px -40px rgba(0,0,0,0.8)' }, { clipPath: `inset(${(datos.ventana.y - ventana.y).toFixed(1)}px 0px ${resto.toFixed(1)}px 0px round 0px)`, boxShadow: '0 0 0 1px rgba(255,255,255,0), 0 50px 90px -40px rgba(0,0,0,0)' }], { duration: 480 });
+                mover(c.querySelector('.pt-reticula'), [{ opacity: 1 }, { opacity: 0 }], { duration: 360, easing: 'linear' });
+            } else {
+                /* Tap In: la cinta de la portada se va hacia arriba antes de que el título cruce por su altura */
+                mover(c.querySelector('.pt-cinta'), [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-90px)' }], { duration: 420, easing: 'cubic-bezier(0.4, 0, 0.6, 1)' });
+            }
+            try { sessionStorage.setItem('caso-llegada', JSON.stringify(datos)); } catch (err) { /* sin almacenamiento, el caso entra como siempre */ }
+            setTimeout(() => { window.location.href = href; }, paso.espera);
+        }, antes);
+    };
     covs.forEach(c => {
-        const ver = c.querySelector('a.pt-ver:not([target])'), vistas = c.querySelector('.pt-vistas');
+        const ver = c.querySelector('a.pt-ver:not([target])');
         if (!ver) return;
         ver.addEventListener('click', e => {
-            if (quieto || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-            if (viaja) {
-                document.querySelectorAll('.vt-pieza').forEach(v => v.classList.remove('vt-pieza'));
-                vistas.classList.add('vt-pieza');
-                try { sessionStorage.setItem('caso-desde', c.dataset.id); } catch (err) { /* sin almacenamiento, sin viaje */ }
-                return;
-            }
+            if (quieto || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !PASO[c.dataset.id]) return;
             e.preventDefault();
-            document.documentElement.classList.add('vt-fundido');
-            setTimeout(() => { window.location.href = ver.href; }, 220);
+            if (saliendo) return;
+            saliendo = true;
+            salir(c, ver.href);
         });
     });
-    /* Al volver con atrás, la pieza deja su nombre y el home vuelve a verse */
+    /* Al volver con atrás, la portada vuelve a como estaba */
     window.addEventListener('pageshow', e => {
         if (!e.persisted) return;
-        document.querySelectorAll('.vt-pieza').forEach(v => v.classList.remove('vt-pieza'));
-        document.documentElement.classList.remove('vt-fundido');
+        pasoVivas.forEach(a => a.cancel()); pasoVivas = []; saliendo = false;
+        covs.forEach(c => { if (c.classList.contains('en-vista')) alCambiarVista.forEach(f => f(c, true)); });
     });
 
     /* --- 6. ARCHIVO: HOJA DE CONTACTOS O LISTA --- */

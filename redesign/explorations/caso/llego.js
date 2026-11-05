@@ -8,6 +8,18 @@
     const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
     const svg = (tag, attrs) => { const n = document.createElementNS('http://www.w3.org/2000/svg', tag); Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, v)); return n; };
     const pad = n => String(n).padStart(2, '0');
+    /* Una curva de Bézier evaluada en JS, para la llegada desde el home, que avanza dentro del cuadro de la cinta */
+    const bezier = (x1, y1, x2, y2) => t => {
+        if (t <= 0) return 0; if (t >= 1) return 1;
+        let x = t;
+        for (let i = 0; i < 10; i++) {
+            const bx = 3 * x1 * x * (1 - x) ** 2 + 3 * x2 * x * x * (1 - x) + x ** 3 - t;
+            const d = 3 * x1 * (1 - x) ** 2 + 6 * (x2 - x1) * x * (1 - x) + 3 * (1 - x2) * x * x;
+            if (Math.abs(bx) < 1e-5 || !d) break;
+            x = fijar(x - bx / d);
+        }
+        return 3 * y1 * x * (1 - x) ** 2 + 3 * y2 * x * x * (1 - x) + x ** 3;
+    };
 
     /* --- 1. SIGUIENTE PROYECTO --- */
     window.CASO = {
@@ -107,29 +119,35 @@
             vx += (w * w * (sx - ox) - 2 * w * vx) * s; vy += (w * w * (sy - oy) - 2 * w * vy) * s;
             ox += vx * s; oy += vy * s;
             const e = curva(fijar(c.p / 0.85));
-            const a = quieto ? 1 : suave(fijar(c.t / 1600));
-            /* Llega rápido y frena hasta su velocidad de crucero; las cartas chicas van más lento para pasar al mismo ritmo */
-            const vel = 0.045 * (1 + 7 * Math.exp(-c.t / 380)) * P.vel * (P.ancho / 0.3);
-            if (!quieto) c.off += dt * vel * (1 - e);
+            /* Llegando del home, la carta parte aterrizada sobre la ventana de la portada (L = 1) y se suelta; E es el
+               aterrizaje que se ve, el del scroll o el de la llegada, y r la caja donde aterriza */
+            const ll = c.llega, L = ll ? 1 - ll.curva(fijar((ahora - ll.t0) / ll.dur)) : 0, E = Math.max(e, L);
+            const r = L > e ? ll.r : { cx: c.W / 2, cy: c.fy, w: c.fw };
+            const a = quieto || ll ? 1 : suave(fijar(c.t / 1600));
+            /* Llega rápido y frena hasta su velocidad de crucero; las cartas chicas van más lento para pasar al mismo ritmo.
+               En la llegada no hay empujón: la cinta acelera a medida que la carta se acuesta, así no se escapa del foco */
+            const vel = 0.045 * (ll ? 1 : 1 + 7 * Math.exp(-c.t / 380)) * P.vel * (P.ancho / 0.3);
+            if (!quieto) c.off += dt * vel * (ll ? (1 - E) ** 2 : 1 - e);
             cols.forEach((col, i) => {
                 let pos = -((c.off * col.v) % c.ciclo);
                 /* Al bajar, la columna del centro deja una carta de Inicio justo al centro */
-                if (i === foco && e > 0) {
+                if (i === foco && E > 0) {
                     const base = c.largo / 2 - c.ch / 2, n = Math.round((base - pos) / c.ciclo);
-                    pos += (base - n * c.ciclo - pos) * e;
+                    pos += (base - n * c.ciclo - pos) * E;
                     if (n * 8 !== blanco) { col.cartas.forEach((x, k) => x.el.classList.toggle('blanco', k === n * 8)); blanco = n * 8; }
                 }
                 col.el.style.transform = `translate3d(0, ${pos.toFixed(1)}px, 0)`;
             });
-            const esc = 1 + (c.fw / c.cw - 1) * e;
-            const tx = (c.W * P.dx + ox * 30) * (1 - e), ty = (1 - a) * c.H * 0.4 + c.H * P.dy * (1 - e) + (c.fy - c.H / 2) * e;
-            const rx = (P.rx - oy * 6) * (1 - e), rz = (P.rz + ox * 6) * (1 - e);
+            const esc = 1 + (r.w / c.cw - 1) * E;
+            const tx = (c.W * P.dx + ox * 30) * (1 - E) + (r.cx - c.W / 2) * E, ty = (1 - a) * c.H * 0.4 + c.H * P.dy * (1 - E) + (r.cy - c.H / 2) * E;
+            const rx = (P.rx - oy * 6) * (1 - E), rz = (P.rz + ox * 6) * (1 - E);
             plano.style.transform = `translate(-50%, -50%) translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0) rotateX(${rx.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${esc.toFixed(4)})`;
             plano.style.opacity = a >= 1 ? '' : fijar(c.t / 500).toFixed(3);
             /* La carta que va a llenar la pantalla cambia a la captura de 2880 px antes de crecer */
             if (!hd && e > 0.08) { hd = true; cols[foco].cartas.forEach(x => { if (x.hero) x.img.src = 'media/lf-hero.jpg'; }); }
-            fijo.style.setProperty('--q', e.toFixed(3));
-            fijo.style.setProperty('--niebla', (P.niebla * (1 - e)).toFixed(3));
+            fijo.style.setProperty('--q', E.toFixed(3));
+            fijo.style.setProperty('--niebla', (P.niebla * (1 - E)).toFixed(3));
+            if (ll && ahora >= ll.t0 + ll.dur) { c.llega = null; ll.d.terminar(); }
             fijo.style.setProperty('--sub', fijar(c.p / 0.12).toFixed(3));
             linea.style.setProperty('--sal', fijar((c.p - 0.02) / 0.2).toFixed(3));
             /* Al aterrizar, la captura se vuelve el sitio real; cada vez se recarga para que corra su entrada */
@@ -247,9 +265,29 @@
             setTimeout(entibiar, 2600);
             armarLogo(); correr();
         };
+        /* --- 2.7 LLEGADA DESDE EL HOME --- */
+        /* La cinta arranca aterrizada en la caja de la ventana de la portada, con la captura del cuadro que se veía, y en
+           ese mismo cuadro toma el relevo de la copia quieta (caso-llegada.js). El degradado del caso se enciende sobre el
+           mundo de la portada, la carta se suelta en 2 s y el logo se arma cuando la cinta ya va tomando su ritmo */
+        c.llegar = d => {
+            h.classList.add('entra'); listo = true;
+            c.medir(); t0 = performance.now(); ult = 0; c.off = 0;
+            const v = d.ventana;
+            c.llega = { d, r: { cx: v.x + v.w / 2, cy: v.y + v.h / 2, w: v.w }, t0: t0 + 120, dur: 2000, curva: bezier(0.45, 0, 0.2, 1) };
+            c.cuadro(t0);
+            const img = $('.lf-h-col.foco .blanco img');
+            if (img && d.img) { Object.assign(img.style, { objectFit: 'cover', objectPosition: '50% 0' }); img.src = d.img; }
+            d.tomar(800);
+            $('.lf-degradado').animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1100, easing: 'ease-in-out', fill: 'backwards' });
+            $('.lf-h-ficha').animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 2500, easing: 'linear', fill: 'backwards' });
+            setTimeout(armarLogo, 1100);
+            setTimeout(entibiar, 2600);
+            correr();
+        };
         return c;
     })();
-    if (cinta) {
+    if (cinta && window.CASO_LLEGADA) cinta.llegar(window.CASO_LLEGADA);
+    else if (cinta) {
         if (document.fonts && document.fonts.ready) Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 900))]).then(() => requestAnimationFrame(cinta.entrar));
         else requestAnimationFrame(cinta.entrar);
     }

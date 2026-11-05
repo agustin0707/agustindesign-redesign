@@ -693,7 +693,9 @@
     /* Como el home, pero en clave Tap In: el sitio recostado se inclina hacia el cursor con inercia, la luz del
        fondo lo sigue, las letras del wordmark cercanas suben y el punto de la i hace "tap" al pasar sobre él */
     const heroEl = document.querySelector('.tp-hero');
-    requestAnimationFrame(() => heroEl.classList.add('entra'));
+    const llegada = window.CASO_LLEGADA;
+    if (llegada) heroEl.classList.add('llego', 'entra');
+    else requestAnimationFrame(() => heroEl.classList.add('entra'));
     /* El navegador del hero carga tapin.cl de verdad, sin scroll; deja de pintarse cuando el hero sale */
     /* En la vista móvil va la captura del sitio de teléfono en vez del sitio vivo; si la ventana cruza de una vista a la
        otra, se cambia una por la otra */
@@ -729,6 +731,39 @@
     vistaMovil.addEventListener('change', montarPantalla);
     const wm = heroEl.querySelector('.tp-wm-vivo');
     wm.querySelectorAll('[data-letra]').forEach((l, i) => l.style.setProperty('--l', i));
+
+    /* --- 9.1 LLEGADA DESDE EL HOME --- */
+    /* La ventana parte plana en la caja de la portada, con la captura del cuadro que se veía, y viaja 1,5 s a su pose:
+       abajo, al centro y recostada. El título del home viaja al lugar del wordmark y al llegar se desenfoca justo cuando
+       el wordmark se enfoca encima: los dos pasan borrosos por el mismo punto, así se lee como un nombre que cambia de
+       letra y no como dos que se cruzan */
+    if (llegada) {
+        const VIAJE = 'cubic-bezier(0.45, 0, 0.2, 1)', SALE = 'cubic-bezier(0.16, 1, 0.3, 1)', px = n => n.toFixed(1) + 'px';
+        const nav = heroEl.querySelector('.tp-hero-nav'), fijo = heroEl.querySelector('.tp-fijo'), v = llegada.ventana, t = llegada.titulo;
+        if (pantalla && llegada.img) Object.assign(pantalla.style, { backgroundImage: `url("${llegada.img}")`, backgroundSize: 'cover', backgroundPosition: '50% 0' });
+        if (pantalla) { pantalla.classList.add('tp-sin-sitio'); setTimeout(() => pantalla.classList.remove('tp-sin-sitio'), 700); }
+        nav.animate([{ left: px(v.x), top: px(v.y), width: px(v.w), height: px(v.h), transform: 'translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg) scale(1)', borderRadius: '12px', boxShadow: '0 50px 90px -40px rgba(0, 0, 0, 0.8)' }, { left: '0px', top: '0px', width: '100%', height: '100%' }], { duration: 1500, delay: 60, easing: VIAJE, fill: 'backwards' });
+        nav.querySelector('.tp-nav-barra').animate([{ height: '30px' }, { height: '40px' }], { duration: 1500, delay: 60, easing: VIAJE, fill: 'backwards' });
+        heroEl.querySelector('.tp-hero-fondo').animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1000, delay: 100, easing: 'ease-in-out', fill: 'backwards' });
+        /* Del título (tinta medida en el home) a la tinta del wordmark, alineando centros y alto */
+        const tit = document.createElement('span');
+        tit.className = 'tp-llega-titulo'; tit.textContent = 'Tap In'; tit.setAttribute('aria-hidden', 'true');
+        Object.assign(tit.style, { left: px(t.caja.x), top: px(t.caja.y), font: `${t.peso} ${px(t.fs)} / ${px(t.lh)} var(--sans)`, letterSpacing: t.ls });
+        fijo.appendChild(tit);
+        const letras = [...wm.querySelectorAll('[data-letra]')], cajas = letras.map(l => l.getBoundingClientRect());
+        const a = { x: Math.min(...cajas.map(c => c.left)), y: Math.min(...cajas.map(c => c.top)) };
+        a.w = Math.max(...cajas.map(c => c.right)) - a.x; a.h = Math.max(...cajas.map(c => c.bottom)) - a.y;
+        const s = a.h / t.h, b = t.caja;
+        const dx = (a.x + a.w / 2) - (b.x + (t.x - b.x + t.w / 2) * s), dy = a.y - (b.y + (t.y - b.y) * s);
+        tit.animate([{ transform: 'translate(0px, 0px) scale(1)' }, { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${s.toFixed(4)})` }], { duration: 1100, delay: 80, easing: VIAJE, fill: 'forwards' });
+        tit.animate([{ opacity: 1, filter: 'blur(0px)' }, { opacity: 0, filter: 'blur(10px)' }], { duration: 380, delay: 760, easing: 'ease-in', fill: 'forwards' });
+        /* El wordmark se enfoca entero mientras sus letras suben apenas, de izquierda a derecha */
+        wm.closest('h1').animate([{ filter: 'blur(10px)' }, { filter: 'blur(0px)' }], { duration: 480, delay: 800, easing: 'cubic-bezier(0.3, 0, 0.2, 1)', fill: 'backwards' });
+        letras.forEach((l, i) => l.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 560, delay: 800 + i * 40, easing: SALE, fill: 'backwards' }));
+        llegada.tomar(1000);
+        setTimeout(() => tit.remove(), 1300);
+        setTimeout(() => llegada.terminar(), 1700);
+    }
     if (!quieto && window.matchMedia('(hover: hover)').matches) {
         const letras = [...wm.querySelectorAll('[data-letra]')];
         let tx = 0, ty = 0, x = 0, y = 0, cx = -9999, cy = -9999, corre = false, centros = [];

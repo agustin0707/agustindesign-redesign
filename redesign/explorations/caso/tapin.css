@@ -127,8 +127,6 @@ html.tp-abajo:has(> body.tp) { background: #6A979D linear-gradient(90deg, #27565
 .tp-hero-pantalla { position: relative; flex: 1; overflow: hidden; background: radial-gradient(70% 60% at 50% 30%, #FFFFFF, #EEEDFE); }
 .tp-hero-pantalla iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; opacity: 0; transition: opacity 400ms; }
 .tp-hero-pantalla.listo iframe { opacity: 1; }
-/* Llegando desde la portada, la ventana trae el sitio: su póster queda debajo hasta que carga el sitio vivo */
-.vt-llega .tp-hero-pantalla { background: url('../works/media/tp-web.jpg') 50% 0 / cover no-repeat; }
 /* Al llenar la pantalla, el pie del sitio se funde con el fondo del resumen: no queda corte horizontal */
 .tp-hero-funde { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; height: 38%; background: linear-gradient(transparent, #FBFAFF 92%); opacity: clamp(0, (var(--h) - 0.55) / 0.4, 1); pointer-events: none; }
 .tp-hero-txt { position: absolute; z-index: 3; left: 50%; top: 13svh; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; translate: -50% 0; opacity: calc(1 - var(--h) * 2.2); transform: translate3d(calc(var(--mx, 0) * -18px), calc(var(--h) * -10svh + var(--my, 0) * -10px), 0); }
@@ -166,8 +164,24 @@ html.tp-abajo:has(> body.tp) { background: #6A979D linear-gradient(90deg, #27565
 .tp-hero.entra .tp-hero-mundo { animation: tpDesliza 1700ms cubic-bezier(0.22, 1, 0.36, 1) 700ms both; }
 .tp-hero.entra .tp-hero-pista { animation: tpEntra 900ms var(--ease) 1800ms both; }
 /* Llegando desde la portada del home, la ventana ya viene viajando y el fondo ya está encendido: no se deslizan */
-.vt-llega .tp-hero.entra :is(.tp-hero-mundo, .tp-hero-fondo) { animation: none; }
-.vt-llega .tp-hero.entra .tp-hero-pista { animation-delay: 900ms; }
+/* --- LLEGADA DESDE EL HOME --- */
+/* Llegando desde la portada (caso-llegada.js), la ventana y el título del home viajan en tapin.js: el mundo de la
+   portada queda bajo el hero mientras su fondo se enciende, la pantalla muestra la captura del cuadro que se veía hasta
+   hasta que carga el sitio, y el texto entra cuando el wordmark ya está nítido. Mientras el script no toma la pieza,
+   una copia quieta de la ventana (con su barra) y del título ocupa su lugar */
+.llega-tapin .tp-hero .tp-fijo::before { content: ''; position: absolute; inset: 0; z-index: -1; background: radial-gradient(90% 110% at 25% 15%, #4E40C2, #2D2560 55%, #17123A); }
+.llega-espera .tp-hero .tp-fijo > * { visibility: hidden; }
+.llega-espera.llega-tapin::after { border-radius: 12px; background: linear-gradient(#EDEDEA, #EDEDEA) 0 0 / 100% 30px no-repeat, var(--ll-img) 0 30px / 100% calc(100% - 30px) no-repeat; }
+.llega-espera.llega-tapin::before { content: 'Tap In'; position: fixed; z-index: 60; left: var(--ll-tx); top: var(--ll-ty); font: var(--ll-tpeso) var(--ll-tfs) / var(--ll-tlh) var(--sans); letter-spacing: var(--ll-tls); white-space: nowrap; color: #FFFFFF; pointer-events: none; }
+/* El sitio vivo (o la captura del teléfono) entra a mitad del viaje, cuando el movimiento disimula el cambio */
+.tp-hero-pantalla.tp-sin-sitio > :is(iframe, img) { opacity: 0; }
+.tp-llega-titulo { position: absolute; z-index: 4; margin: 0; white-space: nowrap; transform-origin: 0 0; color: #FFFFFF; pointer-events: none; }
+.tp-hero.llego.entra :is(.tp-hero-mundo, .tp-hero-fondo) { animation: none; }
+.tp-hero.llego.entra .tp-wm-vivo :is([data-letra] > :not(.tp-wm-punto), .tp-wm-punto > rect) { animation: none; }
+.tp-hero.llego.entra .tp-hero-txt > :nth-child(1) { animation-delay: 900ms; }
+.tp-hero.llego.entra .tp-hero-txt > :nth-child(3) { animation-delay: 1000ms; }
+.tp-hero.llego.entra .tp-hero-txt > :nth-child(4) { animation-delay: 1100ms; }
+.tp-hero.llego.entra .tp-hero-pista { animation-delay: 1700ms; }
 @keyframes tpEntra { from { opacity: 0; translate: 0 40px; } }
 @keyframes tpLetra { from { opacity: 0; transform: translateY(70px); } }
 @keyframes tpDesliza { from { opacity: 0; translate: 0 60svh; } 40% { opacity: 1; } }
@@ -1341,7 +1355,7 @@ html.tp-abajo:has(> body.tp) { background: #6A979D linear-gradient(90deg, #27565
     /* En el teléfono el navegador del hero lleva una captura (no el sitio en vivo) y una sombra fija: recalcular una sombra
        de 140 px y un sitio dentro de un plano en 3D en cada cuadro hacía tiritar el scroll */
     .tp-hero-nav { box-shadow: 0 40px 70px -36px rgba(14, 9, 50, 0.6); }
-    .tp-hero-pantalla img { position: absolute; left: 0; top: 0; width: 100%; }
+    .tp-hero-pantalla img { position: absolute; left: 0; top: 0; width: 100%; transition: opacity 400ms; }
     .tp-hero-txt .mono { flex-wrap: wrap; font-size: 11px; }
     .tp-hero-txt h1 { width: 46vw; }
     .tp-hero-txt p { font-size: 18px; }
