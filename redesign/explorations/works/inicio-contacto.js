@@ -187,7 +187,7 @@
         const k = e.key.toLowerCase();
         if (k === 'c') aContacto();
         if (k === 'h') ir(0);
-        if (k === 'w') { const w = document.getElementById('works'); if (w) ir(w.getBoundingClientRect().top + window.scrollY); }
+        if (k === 'p') { const w = document.getElementById('works'); if (w) ir(w.getBoundingClientRect().top + window.scrollY); }
     });
 
     /* --- 7. COLOFÓN VIVO --- */

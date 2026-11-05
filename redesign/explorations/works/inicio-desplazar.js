@@ -3,7 +3,7 @@
    ======================================================= */
 /* Un solo desplazamiento para todo el home: volver arriba, works, contacto, archivo, cada portada y los atajos. Acelera
    decidido y llega largo y suave, dura según la distancia y se detiene si la persona toma el control (rueda, toque o
-   tecla). En los saltos largos muestra el índice del home (Inicio, Trabajo, Archivo, Sobre mí y Contacto) mientras recorre el camino */
+   tecla). En los saltos largos muestra el índice del home (Inicio, Proyectos, Archivo, Sobre mí y Contacto) mientras recorre el camino */
 (function () {
     const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -105,7 +105,7 @@
     window.desplazar.seccion = (nombre, y) => secciones.push({ nombre, y });
     const arriba = sel => () => { const el = document.querySelector(sel); return el ? el.getBoundingClientRect().top + window.scrollY : 0; };
     window.desplazar.seccion('Inicio', () => 0);
-    window.desplazar.seccion('Trabajo', arriba('#works'));
+    window.desplazar.seccion('Proyectos', arriba('#works'));
     window.desplazar.seccion('Archivo', arriba('#archivo'));
     window.desplazar.seccion('Sobre mí', arriba('#about'));
     window.desplazar.seccion('Contacto', arriba('#contacto'));
