@@ -1,0 +1,302 @@
+/* =======================================================
+   PASOS DE LA PORTADA AL CASO · EXPLORACIÓN
+   ======================================================= */
+/* Ocho transiciones entre la portada del home y el hero de cada caso destacado, cuatro para Llegó Farma y cuatro
+   para Tap In. La portada y el hero se calcan a 1440 × 900 en un lienzo que se escala a la pantalla; cada paso es
+   una coreografía en pasos-caso.js */
+
+@font-face { font-family: "Manrope"; src: url("../../works/sitios/llego/fonts/manrope-300.woff2") format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("../../works/sitios/llego/fonts/manrope-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "LF Mono"; src: url("../../works/sitios/llego/fonts/lf-mono-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+
+/* --- 1. TOKENS --- */
+:root {
+    --negro: #0B0B0B; --tinta: #F2F2F0; --gris: #8A8A86; --linea: rgba(255, 255, 255, 0.12);
+    --sans: 'Geist', system-ui, sans-serif; --mono: 'Geist Mono', ui-monospace, monospace;
+    --rapido: 160ms; --ease: cubic-bezier(0.4, 0, 0.1, 1);
+    --lf-turquesa: #178181; --lf-claro: #70CAC7; --lf-oscuro: #104E56; --lf-profundo: #0B3439; --lf-g03: #B7E5E2; --lf-g08: #1B9C9C;
+    --tp-empresa: #2D2560; --tp-campus: #4A3CAE; --tp-connect: #6B5CE7; --tp-health: #9B8EF0;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--negro); color: var(--tinta); font: 400 15px / 1.45 var(--sans); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.mono { font-family: var(--mono); font-size: 12px; letter-spacing: 0; }
+.gris { color: var(--gris); }
+kbd { display: inline-block; min-width: 18px; padding: 1px 5px; border: 1px solid var(--linea); border-radius: 4px; font: 400 11px var(--mono); text-align: center; color: var(--gris); }
+
+/* =======================================================
+   MARCO DE LA EXPLORACIÓN
+   ======================================================= */
+
+/* --- 2. CABECERA Y PESTAÑAS DE CASO --- */
+.cab { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 28px 32px 20px; }
+.cab h1 { margin: 6px 0 0; font: 500 26px / 1.1 var(--sans); letter-spacing: -0.03em; }
+.casos { display: flex; padding: 3px; border: 1px solid var(--linea); border-radius: 999px; }
+.casos button { padding: 7px 16px; border-radius: 999px; color: var(--gris); transition: background-color var(--rapido), color var(--rapido); }
+.casos button[aria-selected="true"] { background: var(--tinta); color: var(--negro); }
+@media (hover: hover) { .casos button:not([aria-selected="true"]):hover { color: var(--tinta); } }
+
+/* --- 3. SALA: ESCENARIO Y PANEL --- */
+.sala { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; padding: 0 32px 32px; align-items: start; }
+.escenario { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 14px; }
+.pantalla { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 10px; background: #000; box-shadow: 0 0 0 1px var(--linea); }
+.mandos { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.mandos button { display: inline-flex; align-items: center; gap: 10px; padding: 9px 14px; border: 1px solid var(--linea); border-radius: 999px; transition: background-color var(--rapido), color var(--rapido), border-color var(--rapido); }
+.mandos .btn-claro { background: var(--tinta); color: var(--negro); border-color: var(--tinta); }
+.mandos .btn-claro kbd { border-color: rgba(0, 0, 0, 0.18); color: #555; }
+.mandos [aria-pressed="true"] { border-color: var(--tinta); }
+.mandos-ayuda { margin-left: auto; }
+@media (hover: hover) { .mandos button:not(.btn-claro):hover { border-color: rgba(255, 255, 255, 0.4); } }
+
+/* --- 4. PANEL DE PROPUESTAS --- */
+/* Cada propuesta se lee cerrada (número, nombre y una línea) y se abre al elegirla con la relación y la construcción */
+.pasos { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--linea); }
+.paso { border-bottom: 1px solid var(--linea); }
+.paso > button { display: grid; grid-template-columns: 34px 1fr auto; gap: 4px 0; width: 100%; padding: 16px 0; text-align: left; }
+.paso-num { font: 400 12px / 26px var(--mono); color: var(--gris); }
+.paso-nom { font: 500 19px / 26px var(--sans); letter-spacing: -0.025em; color: var(--gris); transition: color var(--rapido); }
+.paso-dur { font: 400 12px / 26px var(--mono); color: var(--gris); }
+.paso-uno { grid-column: 2 / -1; color: var(--gris); font-size: 14px; }
+.paso-tag { display: inline-block; margin-left: 10px; padding: 2px 8px; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 999px; font: 400 10px / 1.6 var(--mono); vertical-align: 3px; color: var(--tinta); }
+.paso-mas { display: none; padding: 0 0 20px 34px; }
+.paso-mas dl { display: grid; gap: 14px; margin: 0; }
+.paso-mas dt { margin-bottom: 3px; font: 400 11px var(--mono); color: var(--gris); text-transform: uppercase; letter-spacing: 0.04em; }
+.paso-mas dd { margin: 0; font-size: 14px; color: rgba(242, 242, 240, 0.86); }
+.paso.on .paso-nom { color: var(--tinta); }
+.paso.on .paso-uno { color: var(--tinta); font-size: 15px; }
+.paso.on .paso-mas { display: block; }
+@media (hover: hover) { .paso:not(.on) > button:hover .paso-nom { color: var(--tinta); } }
+
+/* =======================================================
+   LIENZO A 1440 × 900
+   ======================================================= */
+
+/* --- 5. LIENZO Y CAPAS --- */
+/* El lienzo se dibuja a tamaño real y se escala (--k lo escribe el JS). La perspectiva es la del plano de Llegó, para
+   que la portada pueda acostarse sobre la cinta. Por defecto la portada va arriba; algunos pasos suben el hero */
+.lienzo { --k: 1; position: absolute; left: 0; top: 0; width: 1440px; height: 900px; overflow: hidden; transform-origin: 0 0; scale: var(--k); perspective: 1050px; perspective-origin: 50% 40%; background: #000; color: #FFFFFF; font-family: var(--sans); }
+.lienzo > section { position: absolute; inset: 0; }
+.lienzo .h { z-index: 1; }
+.lienzo .cov { z-index: 2; }
+.lienzo.hero-arriba .h { z-index: 2; }
+.lienzo.hero-arriba .cov { z-index: 1; }
+.lienzo[data-caso="lf"] :is([data-hero="tp"], [data-cov="tp"]), .lienzo[data-caso="tp"] :is([data-hero="lf"], [data-cov="lf"]) { display: none; }
+.fx { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+
+/* --- 6. BARRA DEL SITIO (EN LOS HEROS) --- */
+.h-barra { position: absolute; left: 0; right: 0; top: 0; z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 16px 72px; }
+.h-logo { position: relative; justify-self: start; font: 500 16px var(--sans); letter-spacing: -0.035em; }
+.h-logo > span { opacity: 0.45; }
+.h-logo::before { content: ''; position: absolute; inset: -4px -6px; --c: rgba(255, 255, 255, 0.6); background: linear-gradient(var(--c), var(--c)) 0 0 / 5px 1px, linear-gradient(var(--c), var(--c)) 0 0 / 1px 5px, linear-gradient(var(--c), var(--c)) 100% 0 / 5px 1px, linear-gradient(var(--c), var(--c)) 100% 0 / 1px 5px, linear-gradient(var(--c), var(--c)) 0 100% / 5px 1px, linear-gradient(var(--c), var(--c)) 0 100% / 1px 5px, linear-gradient(var(--c), var(--c)) 100% 100% / 5px 1px, linear-gradient(var(--c), var(--c)) 100% 100% / 1px 5px; background-repeat: no-repeat; }
+.h-barra ul { display: flex; gap: 48px; margin: 0; padding: 0; list-style: none; font: italic 270 16.8px 'Inter', sans-serif; letter-spacing: -0.045em; }
+.h-der { justify-self: end; font: 400 12px var(--mono); }
+.h-lf .h-der { font: 400 11px 'LF Mono', var(--mono); text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* =======================================================
+   PORTADAS DEL HOME
+   ======================================================= */
+
+/* --- 7. MUNDO, TOPE Y CAPÍTULOS --- */
+.cov { overflow: hidden; }
+.cov-mundo { position: absolute; inset: 0; overflow: hidden; }
+.cov-lf .cov-mundo { background: radial-gradient(90% 110% at 88% 0%, #B7E5E2 0%, #70CAC7 24%, #21B6B6 44%, #178181 62%, #104E56 84%, #0B3439); }
+.cov-tp .cov-mundo { background: radial-gradient(90% 110% at 25% 15%, #4E40C2, #2D2560 55%, #17123A); }
+.cov-mundo::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(6, 26, 30, 0.5), rgba(6, 26, 30, 0) 55%), linear-gradient(0deg, rgba(4, 10, 12, 0.72), rgba(4, 10, 12, 0) 32%); }
+.cov-tp .cov-mundo::after { background: linear-gradient(0deg, rgba(12, 8, 34, 0.7), rgba(12, 8, 34, 0) 32%); }
+.cov-tope { position: absolute; left: 32px; right: 32px; top: 72px; display: grid; grid-template-columns: 348px 1fr auto; padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); color: rgba(255, 255, 255, 0.85); }
+.cov-tope u { text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
+.cov-tope .vivo { display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: #3DDC84; vertical-align: 1px; }
+.cov-caps { position: absolute; right: 32px; top: 127px; display: flex; padding: 3px; border-radius: 22px; background: rgba(255, 255, 255, 0.14); }
+.cov-tp .cov-caps { background: rgba(0, 0, 0, 0.3); }
+.cov-caps span { padding: 9px 14px; border-radius: 18px; color: rgba(255, 255, 255, 0.8); }
+.cov-caps .on { background: #FFFFFF; color: #111111; }
+
+/* --- 8. LA VENTANA CON EL SITIO --- */
+.cov-ventana { position: absolute; left: 612px; top: 180px; width: 796px; height: 619px; display: flex; flex-direction: column; overflow: hidden; border-radius: 12px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 50px 90px -40px rgba(0, 0, 0, 0.8); }
+.cov-barra { flex: none; display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; background: #EDEDEA; }
+.cov-barra i { width: 9px; height: 9px; border-radius: 50%; background: #CFCFCB; }
+.cov-barra span { margin: 0 auto; padding: 3px 28px; border-radius: 6px; background: #FFFFFF; color: #6A6A66; font: 400 11px var(--mono); }
+.cov-pant { flex: 1; background: 50% 0 / cover no-repeat; }
+.cov-lf .cov-pant { background-image: url('../../works/media/lf-web.jpg'); }
+.cov-tp .cov-pant { background-image: url('../../works/media/tp-web.jpg'); }
+
+/* --- 9. TEXTO, CIFRA, BOTÓN Y REGLA --- */
+.cov-txt { position: absolute; left: 32px; top: 486px; width: 480px; }
+.cov-titulo { margin: 0 0 16px; font: 500 86px / 1 var(--sans); letter-spacing: -0.055em; white-space: nowrap; color: #FFFFFF; }
+.cov-titulo span { display: inline-block; }
+.cov-txt p { width: 380px; margin: 0 0 20px; font-size: 18px; line-height: 1.4; color: rgba(255, 255, 255, 0.88); }
+.cov-cifra { display: flex; align-items: center; gap: 14px; width: 400px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.22); }
+.cov-cifra b { font: 500 44px / 1 var(--sans); letter-spacing: -0.05em; white-space: nowrap; }
+.cov-cifra span { color: rgba(255, 255, 255, 0.82); line-height: 1.45; }
+.cov-ver { display: inline-flex; align-items: center; gap: 14px; margin-top: 18px; padding: 12px 20px; border-radius: 22px; background: #EDEDEA; color: #111111; font: 500 15px var(--sans); }
+.cov-ver i { font-style: normal; }
+@media (hover: hover) { .cov-ver:hover { background: #FFFFFF; } }
+.cov-regla { position: absolute; left: 32px; right: 32px; top: 840px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.cov-regla span { position: relative; display: flex; align-items: baseline; gap: 8px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.2); font-size: 15px; color: rgba(255, 255, 255, 0.55); }
+.cov-regla em { font-style: normal; font-size: 11px; }
+.cov-regla small { margin-left: auto; font-size: 11px; }
+.cov-regla .on { color: #FFFFFF; }
+.cov-regla .on::before { content: ''; position: absolute; left: 0; top: -1px; width: 38%; height: 1px; background: #FFFFFF; }
+.cov-regla .pasado { border-top-color: #FFFFFF; }
+
+/* --- 10. LA CINTA DE TAP IN --- */
+.pt-cinta { position: absolute; inset: 0; width: 100%; height: 100%; transform-origin: 0 0; }
+.pt-cinta .sombra-c { fill: none; stroke: rgba(6, 3, 24, 0.55); stroke-width: 10; }
+.pt-cinta .cuerpo { fill: none; stroke: #4A3CAE; stroke-width: 8.6; }
+.pt-cinta .volumen { fill: none; stroke: #6B5CE7; stroke-width: 5.6; opacity: 0.75; }
+.pt-cinta .brillo { fill: none; stroke: #A99DF6; stroke-width: 1.6; opacity: 0.35; }
+.pt-cinta .impreso { fill: #FFFFFF; font: 700 4.1px 'Poppins', var(--sans); letter-spacing: -0.12px; }
+.pt-cinta .lejos { filter: blur(0.5px); opacity: 0.55; }
+.pt-cinta .cuerpo-l { fill: none; stroke: #241C66; stroke-width: 6.5; }
+.pt-cinta .impreso-l { fill: #8E81F5; font: 600 2.6px 'Poppins', var(--sans); letter-spacing: 0.2px; }
+
+/* =======================================================
+   HERO DE LLEGÓ FARMA (CALCADO DE CASO/LLEGO.CSS)
+   ======================================================= */
+
+/* --- 11. DEGRADADO, ESCENA Y CINTA --- */
+.h-lf { --veladura: 11, 52, 57; --sale: cubic-bezier(0.16, 1, 0.3, 1); --rebote: cubic-bezier(0.34, 1.56, 0.64, 1); --ease-morph: cubic-bezier(0.76, 0, 0.24, 1); isolation: isolate; overflow: hidden; background: var(--lf-oscuro); }
+.h-lf > * { position: absolute; }
+.lf-degradado { inset: 0; z-index: 0; background: radial-gradient(70% 80% at 12% 100%, var(--lf-g03) 0%, rgba(183, 229, 226, 0) 62%), radial-gradient(60% 70% at 88% 8%, var(--lf-g08) 0%, rgba(27, 156, 156, 0) 70%), linear-gradient(165deg, var(--lf-turquesa) 0%, var(--lf-oscuro) 58%, var(--lf-profundo) 100%); }
+.lf-grano::after { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); background-size: 200px; mix-blend-mode: overlay; opacity: 0.4; }
+.lf-h-escena { inset: 0; z-index: 1; perspective: 1050px; perspective-origin: 50% 40%; -webkit-mask: linear-gradient(180deg, rgb(0 0 0 / calc(1 - var(--niebla, 0))) 4%, #000 72%); mask: linear-gradient(180deg, rgb(0 0 0 / calc(1 - var(--niebla, 0))) 4%, #000 72%); }
+.lf-h-plano { position: absolute; left: 50%; top: 50%; display: flex; gap: var(--g, 28px); transform-style: preserve-3d; }
+.lf-h-col { position: relative; flex: none; width: var(--cw, 432px); height: 100%; will-change: transform; }
+.lf-h-carta { position: absolute; left: 0; width: 100%; aspect-ratio: 16 / 10; background: var(--lf-profundo); outline: 1px solid rgba(255, 255, 255, 0.2); }
+.lf-h-carta img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+.lf-h-piso { position: absolute; top: calc(var(--g) * -0.5); left: calc(var(--g) * -0.5); right: calc(var(--g) * -0.5); bottom: 0; background: rgba(255, 255, 255, 0.045); border-left: 1px solid rgba(255, 255, 255, 0.22); border-right: 1px solid rgba(255, 255, 255, 0.22); }
+.lf-h-col:not(.foco), .lf-h-col.foco .lf-h-carta:not(.blanco), .lf-h-piso { opacity: calc(1 - var(--q, 0) * 1.6); }
+
+/* --- 12. VELADURAS --- */
+.lf-h-tinte, .lf-h-funde, .lf-h-cielo { z-index: 2; pointer-events: none; opacity: calc(1 - var(--q, 0)); }
+.lf-h-tinte { inset: 0; mix-blend-mode: multiply; background: radial-gradient(58% 70% at var(--foco, 68%) 42%, #FFFFFF 0%, #CDE6E5 40%, #6FA5A7 100%); }
+.lf-h-funde { inset: 0; background: linear-gradient(90deg, rgba(var(--veladura), 0.86) 0%, rgba(var(--veladura), 0.5) 34%, rgba(var(--veladura), 0) 62%), linear-gradient(0deg, rgba(var(--veladura), 0.96) 8%, rgba(var(--veladura), 0) 52%); }
+.lf-h-cielo { left: 0; right: 0; top: 0; height: 210px; background: linear-gradient(rgba(var(--veladura), 0.92), rgba(var(--veladura), 0.6) 48%, rgba(var(--veladura), 0)); }
+
+/* --- 13. FRANJA, LOGO Y FICHA --- */
+.lf-h-franja { z-index: 4; left: 72px; right: 72px; top: 82px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); font: 400 11px 'LF Mono', var(--mono); text-transform: uppercase; letter-spacing: 0.04em; }
+.lf-h-franja > * { padding-left: 14px; color: rgba(255, 255, 255, 0.82); }
+.lf-h-franja > :last-child { justify-self: end; padding: 0; color: #FFFFFF; }
+.lf-h-txt { z-index: 4; left: 72px; right: 72px; bottom: 90px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; align-items: end; }
+.lf-h-titulo { grid-column: 1 / -1; margin: 0 0 0 -0.05em; font-size: 86px; line-height: 1; }
+.lf-h-ficha { grid-column: 1 / 10; display: grid; grid-template-columns: subgrid; margin: 30px 0 0; padding: 0; border-top: 1px solid rgba(255, 255, 255, 0.22); list-style: none; }
+.lf-h-ficha li { grid-column: span 3; display: flex; align-items: baseline; gap: 10px; padding: 14px 14px 0 0; font: 300 16.5px / 1.3 'Manrope', var(--sans); letter-spacing: -0.015em; color: rgba(255, 255, 255, 0.86); }
+.lf-h-ficha li::before { content: ''; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); translate: 0 -2px; }
+
+/* --- 14. LA ENTRADA DEL LOGO (LA MISMA DEL CASO) --- */
+.lf-logo { display: block; width: 576px; overflow: visible; fill: #FFFFFF; filter: drop-shadow(0 10px 30px rgba(4, 30, 33, 0.35)); }
+.lf-logo :is(path, g, circle) { transform-box: fill-box; transform-origin: center; }
+.lf-lg-brazo { fill: none; stroke: #FFFFFF; stroke-width: 22; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.lf-lg-corte { translate: 300px 0; }
+.lf-lg-centro, .lf-lg-mensajero, .lf-lg-piso { opacity: 0; }
+.lf-lg-llegada { fill: none; stroke: #FFFFFF; stroke-width: 1; vector-effect: non-scaling-stroke; opacity: 0; }
+.llega .lf-lg-centro { animation: lf-lg-centro 900ms linear 100ms both; }
+.llega .lf-lg-cuerpo { animation: lf-lg-aparece 1ms linear 300ms both; }
+.llega .lf-lg-brazo { animation: lf-lg-brazo 820ms var(--sale) 300ms both; }
+.llega .lf-lg-brazo + .lf-lg-brazo { animation-delay: 400ms; }
+.llega .lf-lg-n1 { animation: lf-lg-llega-a 860ms var(--sale) 560ms both; }
+.llega .lf-lg-n2 { animation: lf-lg-llega-d 860ms var(--sale) 680ms both; }
+.llega .lf-lg-mensajero { animation: lf-lg-mensajero 1400ms linear 1300ms both; }
+.llega .lf-lg-corte { animation: lf-lg-barre 1100ms var(--ease-morph) 1340ms both; }
+.llega .lf-lg-o { animation: lf-lg-abre 620ms var(--sale) 2340ms both; }
+.llega .lf-lg-llegada { animation: lf-lg-onda-o 900ms cubic-bezier(0.2, 0.7, 0.3, 1) 2380ms; }
+.llega .lf-lg-tilde { animation: lf-lg-tilde 460ms var(--sale) 2560ms both; }
+.llega .lf-lg-barra { animation: lf-lg-divisor 620ms var(--sale) 2700ms both; }
+.llega .lf-lg-f { animation: lf-lg-farma 760ms var(--sale) 2820ms both; }
+.llega .lf-lg-f + .lf-lg-f { animation-delay: 2920ms; }
+/* En "El nombre se vuelve marca", farma llega antes: el título ya trae el nombre y solo falta la marca */
+.llega.farma-antes .lf-lg-barra { animation-delay: 900ms; }
+.llega.farma-antes .lf-lg-f { animation-delay: 1000ms; }
+.llega.farma-antes .lf-lg-f + .lf-lg-f { animation-delay: 1100ms; }
+@keyframes lf-lg-centro { 0% { opacity: 1; scale: 0; animation-timing-function: var(--rebote); } 62% { opacity: 1; scale: 1; } 99.9% { opacity: 1; } 100% { opacity: 0; scale: 1; } }
+@keyframes lf-lg-aparece { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lf-lg-brazo { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes lf-lg-llega-a { from { opacity: 0; translate: 0 -24px; scale: 0.6; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes lf-lg-llega-d { from { opacity: 0; translate: 24px 0; scale: 0.6; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes lf-lg-mensajero { 0% { opacity: 0; } 1%, 2.9% { opacity: 1; translate: 0 0; scale: 1; animation-timing-function: var(--ease-morph); } 42% { scale: 1.22 0.84; } 81% { opacity: 1; translate: 219.4px 3.8px; scale: 1; animation-timing-function: var(--sale); } 100% { opacity: 0; translate: 219.4px 3.8px; scale: 2.4; } }
+@keyframes lf-lg-barre { from { translate: 56px 0; } to { translate: 300px 0; } }
+@keyframes lf-lg-abre { from { opacity: 0; scale: 0.5; } to { opacity: 1; scale: 1; } }
+@keyframes lf-lg-onda-o { from { opacity: 0.8; scale: 1; } to { opacity: 0; scale: 3.4; } }
+@keyframes lf-lg-tilde { 0% { opacity: 0; clip-path: inset(100% 100% 0 0); } 0.1% { opacity: 1; } 100% { clip-path: inset(0 0 0 0); } }
+@keyframes lf-lg-divisor { from { scale: 1 0; } to { scale: 1 1; } }
+@keyframes lf-lg-farma { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
+
+/* --- 15. ANTES DE ENTRAR --- */
+/* .prep deja el hero en su punto de partida; cada paso decide cuándo entra cada pieza */
+.h-lf.prep :is(.h-barra, .lf-h-franja > *, .lf-h-ficha, .lf-h-ficha li), .h-lf.prep .lf-logo:not(.llega) { opacity: 0; }
+
+/* =======================================================
+   HERO DE TAP IN (CALCADO DE CASO/TAPIN.CSS)
+   ======================================================= */
+
+/* --- 16. FONDO, LUZ Y VENTANA RECOSTADA --- */
+.h-tp { --tp-curva: cubic-bezier(0.34, 1.56, 0.64, 1); overflow: hidden; }
+.tp-fondo { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(60% 55% at 78% 22%, #8E81F5, transparent 70%), radial-gradient(120% 100% at 50% 0%, var(--tp-connect), var(--tp-campus) 52%, var(--tp-empresa)); }
+.tp-luz { position: absolute; left: 50%; top: 40%; width: 1008px; aspect-ratio: 1; margin: -504px 0 0 -504px; border-radius: 50%; background: radial-gradient(closest-side, rgba(200, 192, 248, 0.5), transparent); mix-blend-mode: soft-light; }
+.tp-mundo { position: absolute; inset: 0; z-index: 1; perspective: 1400px; perspective-origin: 50% 40%; }
+.tp-ventana { position: absolute; left: 0; top: 0; width: 1440px; height: 900px; display: flex; flex-direction: column; overflow: hidden; border-radius: 21.6px; background: #FFFFFF; transform: translateY(324px) rotateX(38deg) scale(0.74); box-shadow: 0 80px 140px -40px rgba(14, 9, 50, 0.75); }
+.tp-ventana::after { content: ''; position: absolute; inset: -20%; pointer-events: none; background: linear-gradient(115deg, rgba(255, 255, 255, 0.24), transparent 30%); }
+.tp-barra { flex: none; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; background: #F2F1F8; border-bottom: 1px solid rgba(45, 37, 96, 0.08); }
+.tp-barra i { width: 12px; height: 12px; border-radius: 50%; background: #D9D6EA; }
+.tp-barra span { margin: 0 auto; padding: 5px 56px; border-radius: 8px; background: #FFFFFF; font: 13px var(--mono); color: #5E5C72; }
+.tp-pant { flex: 1; background: url('../../works/media/tp-web.jpg') 50% 0 / cover no-repeat; }
+
+/* --- 17. TEXTO Y WORDMARK --- */
+.tp-txt { position: absolute; z-index: 3; left: 50%; top: 117px; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; translate: -50% 0; }
+.tp-txt .mono { display: flex; gap: 10px; font-size: 13px; color: rgba(255, 255, 255, 0.78); }
+.tp-txt .mono i { font-style: normal; opacity: 0.5; }
+.tp-txt h2 { width: 317px; margin: 0; }
+.tp-txt svg { display: block; width: 100%; overflow: visible; fill: #FFFFFF; }
+.tp-txt [data-letra] { transform-box: fill-box; }
+.tp-wm-punto { transform-box: fill-box; transform-origin: 50% 100%; }
+.tp-wm-onda { fill: none; stroke: #FFFFFF; stroke-width: 2.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.tap .tp-wm-punto { animation: tpTap 650ms var(--tp-curva); }
+.tap .tp-wm-onda { animation: tpOnda 750ms cubic-bezier(0.2, 0.7, 0.3, 1) 120ms; }
+@keyframes tpTap { 0% { transform: translateY(0) scale(1); } 30% { transform: translateY(12px) scale(1.08, 0.82); } 100% { transform: translateY(0) scale(1); } }
+@keyframes tpOnda { 0% { opacity: 0.9; transform: scale(0.6); } 100% { opacity: 0; transform: scale(2.6); } }
+.tp-txt p { max-width: 30ch; margin: 0; font: 300 23.8px / 1.14 'Poppins', var(--sans); letter-spacing: -0.02em; }
+.tp-txt p b { font-weight: 600; }
+.tp-link { padding-bottom: 2px; border-bottom: 1px solid rgba(255, 255, 255, 0.35); }
+.tp-link i { font-style: normal; }
+.tp-pista { position: absolute; z-index: 3; left: 72px; bottom: 40px; }
+.tp-pista i { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.4); font-style: normal; }
+
+/* --- 18. ANTES DE ENTRAR --- */
+.h-tp.prep :is(.h-barra, .tp-txt > :not(h2), [data-letra], .tp-pista) { opacity: 0; }
+
+/* =======================================================
+   PIEZAS DE LOS PASOS (CAPA FX)
+   ======================================================= */
+
+/* --- 19. VOLADORES Y RASTREO --- */
+/* Un volador es la copia de una pieza de la portada que viaja por encima de todo hasta su lugar en el hero */
+.volador { position: absolute; margin: 0; transform-origin: 0 0; white-space: nowrap; }
+.rs-linea { position: absolute; height: 1px; background: rgba(255, 255, 255, 0.5); transform-origin: 0 50%; }
+.rs-boton { position: absolute; display: grid; place-items: center; overflow: hidden; color: #111111; font: 500 15px var(--sans); white-space: nowrap; }
+.rs-hito { position: absolute; width: 13px; height: 13px; margin: -6.5px 0 0 -6.5px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.6); background: var(--lf-profundo); transition: background-color 200ms, border-color 200ms, box-shadow 300ms; }
+.rs-hito.hecho { background: var(--lf-claro); border-color: var(--lf-claro); }
+.rs-hito.actual { box-shadow: 0 0 0 6px rgba(112, 202, 199, 0.25); }
+.rs-etq { position: absolute; font: 400 11px 'LF Mono', var(--mono); text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255, 255, 255, 0.86); white-space: nowrap; }
+.rs-barrido { position: absolute; top: 0; bottom: 0; left: 0; width: 1px; background: var(--lf-claro); box-shadow: 0 0 24px 2px rgba(112, 202, 199, 0.55); }
+
+/* --- 20. ONDAS, BANDA Y CREDENCIALES --- */
+.onda { position: absolute; border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.9); translate: -50% -50%; }
+.banda { position: absolute; inset: 0; z-index: 2; transform-origin: 50% 50%; }
+.cred { position: absolute; left: -40px; top: -40px; width: 1520px; height: 980px; border-radius: 44px; box-shadow: 0 -30px 80px rgba(10, 6, 30, 0.45); transform-origin: 50% 100%; }
+.cred-nom { position: absolute; left: 112px; bottom: 120px; font: 600 64px / 1 'Poppins', var(--sans); letter-spacing: -0.03em; color: #FFFFFF; }
+.cred-num { position: absolute; right: 112px; bottom: 128px; font: 400 13px var(--mono); color: rgba(255, 255, 255, 0.8); }
+.cred-wm { position: absolute; left: 112px; top: 112px; width: 120px; fill: #FFFFFF; }
+.cred-nfc { position: absolute; right: 108px; top: 104px; width: 56px; fill: none; stroke: #FFFFFF; stroke-width: 1.6; stroke-linecap: round; }
+
+/* =======================================================
+   VISTA MÓVIL
+   ======================================================= */
+
+/* --- 21. UNA COLUMNA --- */
+@media (max-width: 1000px) {
+    .cab { flex-direction: column; align-items: start; padding: 20px 16px 16px; }
+    .sala { grid-template-columns: minmax(0, 1fr); padding: 0 16px 24px; }
+    .escenario { position: static; }
+    .mandos-ayuda { display: none; }
+}
