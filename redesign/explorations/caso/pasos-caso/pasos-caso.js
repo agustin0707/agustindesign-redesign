@@ -137,13 +137,15 @@
             raiz.style.setProperty('--q', e.toFixed(3));
             raiz.style.setProperty('--niebla', (P.niebla * (1 - e)).toFixed(3));
         };
-        /* Llega rápido y frena hasta su velocidad de crucero, como en el caso; solo avanza lo que no está aterrizado */
+        /* Al entrar llega rápido y frena hasta su velocidad de crucero, como en el caso. Al aterrizar no hay empujón:
+           la cinta acelera a medida que la carta se acuesta, así la carta no se escapa del foco */
         const cuadro = ahora => {
             const dt = Math.min(ahora - (s.ult || ahora), 50) / F(); s.ult = ahora;
             if (s.modo !== 'quieto') {
                 s.t += dt;
                 if (s.modo === 'entra') { s.a = suave(fijar(s.t / 1600)); s.op = fijar(s.t / 500); }
-                s.off += dt * 0.045 * (1 + 7 * Math.exp(-s.t / 380)) * P.vel * (P.ancho / 0.3) * (1 - s.e);
+                const empuje = s.modo === 'entra' ? 1 + 7 * Math.exp(-s.t / 380) : 1;
+                s.off += dt * 0.045 * empuje * P.vel * (P.ancho / 0.3) * (1 - s.e) ** 2;
             }
             pintar(); requestAnimationFrame(cuadro);
         };
@@ -163,7 +165,7 @@
         const r = $(`[data-cov="${id}"]`);
         return { r, mundo: $('.cov-mundo', r), tope: $('.cov-tope', r), caps: $('.cov-caps', r), ventana: $('.cov-ventana', r), barra: $('.cov-barra', r), pant: $('.cov-pant', r), txt: $('.cov-txt', r), h3: $('h3', r), w1: $('h3 .w1', r), w2: $('h3 .w2', r), p: $('.cov-txt p', r), cifra: $('.cov-cifra', r), ver: $('.cov-ver', r), regla: $('.cov-regla', r), cinta: $('.pt-cinta', r) };
     };
-    const hlf = (() => { const r = $('[data-hero="lf"]'); return { r, barra: $('.h-barra', r), franja: $$('.lf-h-franja > *', r), logo: $('.lf-logo', r), ficha: $('.lf-h-ficha', r), items: $$('.lf-h-ficha li', r) }; })();
+    const hlf = (() => { const r = $('[data-hero="lf"]'); return { r, fondo: $('.lf-degradado', r), barra: $('.h-barra', r), franja: $$('.lf-h-franja > *', r), logo: $('.lf-logo', r), ficha: $('.lf-h-ficha', r), items: $$('.lf-h-ficha li', r) }; })();
     const htp = (() => { const r = $('[data-hero="tp"]'); return { r, fondo: $('.tp-fondo', r), mundo: $('.tp-mundo', r), ventana: $('.tp-ventana', r), vbarra: $('.tp-barra', r), barra: $('.h-barra', r), mono: $('.tp-txt .mono', r), h2: $('.tp-txt h2', r), wm: $('.tp-txt svg', r), letras: $$('[data-letra]', r), p: $('.tp-txt p', r), link: $('.tp-link', r), pista: $('.tp-pista', r) }; })();
 
     const pulsar = (el, hondo = 0.95) => anim(el, [{ transform: 'scale(1)' }, { transform: `scale(${hondo})`, offset: 0.4 }, { transform: 'scale(1)' }], { duration: 240, easing: 'ease-out' });
@@ -201,23 +203,33 @@
     /* La cinta del caso parte aterrizada justo sobre la pantalla de la portada (con la misma captura) y se suelta:
        la ventana se recuesta, se vuelve la carta del centro y la cámara se aleja mientras la cinta arranca */
     PASOS.lf.push({
-        nombre: 'Vuelve a la cinta', dur: '1,5 s', recomendada: true,
+        nombre: 'Vuelve a la cinta', dur: '2,4 s', recomendada: true,
         uno: 'La ventana de la portada se recuesta y se vuelve la carta central de la cinta.',
-        idea: 'Todo lo de la portada se calla menos la ventana. La ventana se inclina, baja al plano y queda como la carta del centro; la cámara se aleja, aparecen las otras columnas y la cinta arranca y frena hasta su ritmo.',
+        idea: 'Todo lo de la portada se calla menos la ventana. La ventana pliega su barra y queda como la carta del centro; la carta se inclina, baja al plano y la cámara se aleja mientras aparecen las otras columnas y la cinta toma su ritmo.',
         relacion: 'El hero hace exactamente esto al revés cuando bajas: una carta crece hasta ser la ventana del sitio en vivo. La llegada usa la gramática del propio hero, por eso se siente una sola pieza.',
         construye: 'El home guarda el rectángulo de la ventana; el caso abre con la cinta aterrizada en ese rectángulo y la suelta. Un solo movimiento continuo, sin capturas que se crucen, y funciona igual sin View Transitions.',
         async correr() {
-            const c = cov('lf'), pant = { x: 612, y: 210, w: 796 };
-            cinta.preparar({ e: 1, a: 1, op: 1, rect: { cx: pant.x + pant.w / 2, cy: pant.y + pant.w / 1.6 / 2, w: pant.w } });
+            const c = cov('lf'), pant = { x: 612, y: 210, w: 796 }, alto = pant.w / 1.6;
+            cinta.preparar({ e: 1, a: 1, op: 1, rect: { cx: pant.x + pant.w / 2, cy: pant.y + alto / 2, w: pant.w } });
             cinta.poster('../../works/media/lf-web.jpg');
+            /* El hero va encima desde el primer cuadro, con su fondo apagado: la carta nunca queda bajo la portada,
+               y el fondo del caso se enciende detrás de ella mientras la portada se calla */
+            lienzo.classList.add('hero-arriba');
+            anim(hlf.r, [{ backgroundColor: 'rgba(0, 0, 0, 0)' }, { backgroundColor: getComputedStyle(hlf.r).backgroundColor }], { duration: 1100, delay: 150, easing: 'ease-in-out' });
+            fundir(hlf.fondo, 0, 1, { duration: 1100, delay: 150, easing: 'ease-in-out' });
             pulsar(c.ver);
-            apagar([c.tope, c.caps, c.txt, c.regla], { duration: 260, delay: 60 });
-            fundir(c.barra, 1, 0, { duration: 200, delay: 80, fill: 'forwards' });
-            fundir(c.mundo, 1, 0, { duration: 520, delay: 120, fill: 'forwards' });
-            anim(c.ventana, [{ opacity: 1, boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 50px 90px -40px rgba(0,0,0,0.8)' }, { opacity: 0, boxShadow: '0 0 0 1px rgba(255,255,255,0), 0 50px 90px -40px rgba(0,0,0,0)' }], { duration: 320, delay: 200, easing: 'linear', fill: 'forwards' });
-            lfEntra({ barra: 700, franja: 950, logo: 1050, ficha: 2100 });
+            apagar([c.tope, c.caps, c.txt, c.regla], { duration: 420, delay: 40, paso: 40 });
+            /* La ventana pliega su barra y su borde inferior hasta calzar con la carta (misma captura, mismo encuadre);
+               recién ahí se cambia por la carta, sin fundido, y la carta se suelta */
+            const resto = c.ventana.offsetHeight - 30 - alto;
+            anim(c.ventana, [
+                { clipPath: 'inset(0px 0px 0px 0px round 12px)', boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 50px 90px -40px rgba(0,0,0,0.8)' },
+                { clipPath: `inset(30px 0px ${resto.toFixed(1)}px 0px round 0px)`, boxShadow: '0 0 0 1px rgba(255,255,255,0), 0 50px 90px -40px rgba(0,0,0,0)' }
+            ], { duration: 480, delay: 60, fill: 'forwards' });
+            fundir(c.ventana, 1, 0, { duration: 1, delay: 560, fill: 'forwards' });
+            lfEntra({ barra: 1300, franja: 1500, logo: 1650, ficha: 2600 });
             cinta.andar('aterriza');
-            await tween(1500, 220, bezier(0.6, 0, 0.12, 1), v => { cinta.s.e = 1 - v; });
+            await tween(2000, 560, bezier(0.45, 0, 0.2, 1), v => { cinta.s.e = 1 - v; });
         }
     });
 
@@ -349,35 +361,39 @@
 
     /* --- 10. TAP IN 1 · LA VENTANA SE RECUESTA --- */
     /* La ventana del hero parte plana sobre la de la portada y viaja a su pose: abajo, al centro y recostada en 3D.
-       El título sube y se vuelve el wordmark mientras las letras entran donde aterriza */
+       El título viaja al lugar del wordmark y se desenfoca justo cuando el wordmark se enfoca encima: los dos pasan
+       borrosos por el mismo punto, así se lee como un solo nombre que cambia de letra y no como dos que se cruzan */
     PASOS.tp.push({
-        nombre: 'La ventana se recuesta', dur: '1,1 s',
+        nombre: 'La ventana se recuesta', dur: '1,8 s', recomendada: true,
         uno: 'La ventana viaja al centro y se recuesta; el título se vuelve el wordmark.',
-        idea: 'La ventana de la portada viaja hacia abajo y al centro y, en el camino, se recuesta hasta la inclinación del hero. El título sube a su lugar y se convierte en el wordmark, que entra letra por letra. La cinta se va hacia arriba y el morado se aclara al del caso.',
+        idea: 'La ventana de la portada viaja hacia abajo y al centro y, en el camino, se recuesta hasta la inclinación del hero. El título sube a su lugar y, al llegar, se desenfoca mientras el wordmark se enfoca encima, letra por letra. La cinta se va hacia arriba y el morado se aclara al del caso.',
         relacion: 'Misma ventana, mismo nombre, mismo mundo: cada pieza de la portada termina en su lugar del hero. Es la versión fluida y continua de lo que tenemos hoy.',
         construye: 'FLIP entre páginas: el home guarda el rectángulo de la ventana y el del título, y el caso parte con ellos y los anima a su pose. El 3D de la ventana no se puede con View Transitions, por eso va así.',
         async correr() {
-            const c = cov('tp');
+            const c = cov('tp'), VIAJE = 'cubic-bezier(0.45, 0, 0.2, 1)';
             lienzo.classList.add('hero-arriba');
-            fundir(htp.fondo, 0, 1, { duration: 620, delay: 120 });
+            fundir(htp.fondo, 0, 1, { duration: 1000, delay: 100, easing: 'ease-in-out' });
             const tit = volador(c.h3);
             pulsar(c.ver);
-            apagar([c.tope, c.caps, c.p, c.cifra, c.ver, c.regla], { duration: 220 });
-            anim(c.cinta, [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-110px)' }], { duration: 700, easing: SE_VA, fill: 'forwards' });
+            apagar([c.tope, c.caps, c.p, c.cifra, c.ver, c.regla], { duration: 380, paso: 30 });
+            /* La cinta de la portada se apaga antes de que el título cruce por su altura */
+            anim(c.cinta, [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-90px)', offset: 0.7 }, { opacity: 0, transform: 'translateY(-120px)' }], { duration: 900, easing: 'cubic-bezier(0.4, 0, 0.6, 1)', fill: 'forwards' });
             fundir(c.ventana, 0, 0, { duration: 1 });
             anim(htp.ventana, [
                 { left: '612px', top: '180px', width: '796px', height: '619px', transform: 'translateY(0px) rotateX(0deg) scale(1)', borderRadius: '12px', boxShadow: '0 50px 90px -40px rgba(0,0,0,0.8)' },
                 { left: '0px', top: '0px', width: '1440px', height: '900px', transform: 'translateY(324px) rotateX(38deg) scale(0.74)', borderRadius: '21.6px', boxShadow: '0 80px 140px -40px rgba(14,9,50,0.75)' }
-            ], { duration: 1150, easing: 'cubic-bezier(0.5, 0, 0.1, 1)' });
-            anim(htp.vbarra, [{ height: '30px' }, { height: '40px' }], { duration: 1150, easing: 'cubic-bezier(0.5, 0, 0.1, 1)' });
+            ], { duration: 1500, delay: 60, easing: VIAJE });
+            anim(htp.vbarra, [{ height: '30px' }, { height: '40px' }], { duration: 1500, delay: 60, easing: VIAJE });
             /* Del título (Geist) a la tinta del wordmark, alineando centros y alto */
             const de = tinta(c.h3), a = union(htp.letras.map(caja));
             const s = a.h / de.h, t0 = caja(tit);
             const dx = (a.x + a.w / 2) - (t0.x + (de.x - t0.x + de.w / 2) * s), dy = a.y - (t0.y + (de.y - t0.y) * s);
-            anim(tit, [{ transform: 'translate(0px, 0px) scale(1)' }, { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${s.toFixed(4)})` }], { duration: 760, delay: 40, easing: 'cubic-bezier(0.6, 0, 0.15, 1)' });
-            fundir(tit, 1, 0, { duration: 260, delay: 540, fill: 'forwards' });
-            htp.letras.forEach((g, i) => anim(g, [{ opacity: 0, transform: 'translateY(16px) scale(0.96)' }, { opacity: 1, transform: 'translateY(0) scale(1)' }], { duration: 620, delay: 480 + i * 45, easing: SALE }));
-            tpEntra({ barra: 650, mono: 650, letras: null, p: 760, link: 860, pista: 1400 });
+            anim(tit, [{ transform: 'translate(0px, 0px) scale(1)' }, { transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${s.toFixed(4)})` }], { duration: 1100, delay: 80, easing: VIAJE });
+            anim(tit, [{ opacity: 1, filter: 'blur(0px)' }, { opacity: 0, filter: 'blur(10px)' }], { duration: 380, delay: 760, easing: 'ease-in', fill: 'forwards' });
+            /* El wordmark se enfoca entero mientras sus letras suben apenas, de izquierda a derecha */
+            anim(htp.h2, [{ filter: 'blur(10px)' }, { filter: 'blur(0px)' }], { duration: 480, delay: 800, easing: 'cubic-bezier(0.3, 0, 0.2, 1)' });
+            htp.letras.forEach((g, i) => anim(g, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 560, delay: 800 + i * 40, easing: SALE }));
+            tpEntra({ barra: 1100, mono: 1000, letras: null, p: 1150, link: 1250, pista: 1900 });
         }
     });
 
@@ -385,7 +401,7 @@
     /* La cámara se lanza hacia un "tap in" impreso: lo centra, lo endereza y se acerca hasta que la cinta llena la
        pantalla. Ahí cambia de página; la banda se cierra en una línea y el impreso, ya wordmark, baja a su tamaño */
     PASOS.tp.push({
-        nombre: 'A través de la cinta', dur: '1,6 s', recomendada: true,
+        nombre: 'A través de la cinta', dur: '1,6 s',
         uno: 'La cámara entra en un "tap in" de la cinta y sale con el wordmark.',
         idea: 'La cámara se lanza hacia uno de los "tap in" impresos en la cinta: lo centra, lo endereza y se acerca hasta que la cinta llena la pantalla. Ahí está el caso: la banda se cierra como una línea y el impreso, ya convertido en wordmark, se asienta en su lugar.',
         relacion: 'La cinta es la firma de la portada y lo que imprime es justo el nombre que el hero pone en grande. El paso une las dos piezas más reconocibles de la marca.',
@@ -529,7 +545,7 @@
     const pintarPanel = () => {
         lista.innerHTML = PASOS[caso].map((p, i) => `
             <li class="paso${i === idx ? ' on' : ''}">
-                <button type="button" data-i="${i}"><span class="paso-num">0${i + 1}</span><span class="paso-nom">${p.nombre}${p.recomendada ? '<span class="paso-tag">Recomendado</span>' : ''}</span><span class="paso-dur">${p.dur}</span><span class="paso-uno">${p.uno}</span></button>
+                <button type="button" data-i="${i}"><span class="paso-num">0${i + 1}</span><span class="paso-nom">${p.nombre}${p.recomendada ? '<span class="paso-tag">Elegido</span>' : ''}</span><span class="paso-dur">${p.dur}</span><span class="paso-uno">${p.uno}</span></button>
                 <div class="paso-mas"><dl>
                     <div><dt>La idea</dt><dd>${p.idea}</dd></div>
                     <div><dt>La relación</dt><dd>${p.relacion}</dd></div>
