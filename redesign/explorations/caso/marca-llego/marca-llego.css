@@ -1,0 +1,132 @@
+/* =======================================================
+   LA MARCA DE LLEGÓ FARMA · PLANTILLA LÁMINA (.cs-lam Y .ml)
+   ======================================================= */
+/* Exploración de escritorio del capítulo 02 con la plantilla nueva de decisión. Se apoya en caso-marco.css, en la piel
+   de llego.css y en caso-motor.js (las escenas publican --p y marcan los pasos). Cada pieza recibe sus fases como
+   variables de 0 a 1, que escribe marca-llego.js: el scroll cuenta la decisión paso a paso */
+
+/* --- 1. PLANTILLA LÁMINA (PASA A caso-marco.css SI SE APRUEBA) --- */
+/* La pieza a sangre desde la columna 4 hasta el borde derecho y de alto completo. La decisión vive en el riel
+   (columnas 1 a 3) y abajo queda el rótulo de pasos. El marco calla: el riel tiene el fondo del módulo */
+.cs-lam .cs-fijo.cs-grilla { align-items: stretch; }
+.cs-lam-riel { grid-column: 1 / span 3; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-height: 0; padding: clamp(84px, 11vh, 112px) 0 clamp(28px, 5vh, 48px); }
+.cs-lam .cs-dec { gap: 12px; max-width: none; }
+.cs-lam .cs-dec-num { font-size: clamp(48px, 4.4vw, 80px); }
+.cs-lam .cs-dec h3 { font-size: clamp(24px, 2.1vw, 34px); }
+.cs-lam .cs-dec p { font-size: 15px; }
+.cs-lam-pieza { position: relative; grid-column: 4 / -1; margin-right: calc(var(--margen) * -1); overflow: clip; }
+.ml .cs-lam-pieza > * { position: absolute; }
+
+/* --- 2. COLOR: DIEZ VALORES --- */
+/* Las bandas caen una a una (--f por banda), el degradado liso las funde (--liso) y al final la capa se recoge en un
+   filete (--filete, hasta --fil-e, la escala de 10 px). Del filete suben los tres tonos con sus proporciones */
+@property --a { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+@property --b { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+.mv { background: var(--lf-papel); }
+.mv-capa { inset: 0; transform-origin: bottom; scale: 1 calc(1 - var(--filete, 0) * (1 - var(--fil-e, 0.011))); }
+.mv-bandas { position: absolute; inset: 0; display: flex; }
+.mv-bandas i { position: relative; flex: 1; background: var(--c); transform-origin: top; scale: 1 var(--f, 0); }
+.mv-bandas span { position: absolute; left: 14px; bottom: 26px; display: flex; flex-direction: column; gap: 4px; color: #FFFFFF; font-style: normal; opacity: clamp(0, calc(var(--f, 0) * 3 - 2), 1); }
+.mv-bandas i:nth-child(n+6) span { color: var(--lf-oscuro); }
+.mv-bandas b { font-weight: 400; opacity: 0.66; }
+/* El degradado liso tapa las bandas; el mouse abre una ventana (--a a --b) que deja ver la banda plana con su número y
+   su HEX */
+.mv-liso { position: absolute; inset: 0; opacity: var(--liso, 0); background: linear-gradient(90deg, #104E56 5%, #178181 15%, #1B9C9C 25%, #21B6B6 35%, #49C2BF 45%, #70CAC7 55%, #80E2DF 65%, #B7E5E2 75%, #E8E8E8 85%, #F4F4F4 95%); -webkit-mask: linear-gradient(90deg, #000 var(--a), transparent var(--a), transparent var(--b), #000 var(--b)); mask: linear-gradient(90deg, #000 var(--a), transparent var(--a), transparent var(--b), #000 var(--b)); transition: --a 320ms var(--ease), --b 320ms var(--ease); }
+.mv.mide { cursor: crosshair; }
+/* Los tres tonos: cada bloque sube desde el filete (--f por tono) y su texto entra cuando el bloque ya llegó */
+.mv-tonos { inset: 96px 0 10px; display: flex; pointer-events: none; }
+.mv-tono { flex: var(--w) 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 22px; background: var(--c); color: #FFFFFF; transform-origin: bottom; scale: 1 var(--f, 0); }
+.mv-tono > * { opacity: clamp(0, calc(var(--f, 0) * 3 - 2), 1); }
+.mv-tono-claro { color: var(--lf-oscuro); }
+.mv-tono > b { font: 200 clamp(48px, 5vw, 88px) / 0.9 var(--cs-f); letter-spacing: -0.05em; }
+.mv-tono > span { display: flex; flex-direction: column; gap: 6px; }
+.mv-tono em { font: 400 clamp(16px, 1.3vw, 20px) / 1.1 var(--cs-f); font-style: normal; }
+.mv-tono .mono { opacity: 0.8; }
+.mv-cab { inset: 0 0 auto; display: flex; align-items: flex-end; justify-content: space-between; height: 96px; padding: 0 22px 18px; color: var(--texto-2); opacity: var(--filete, 0); }
+.mv-madre { display: flex; align-items: center; gap: 10px; }
+.mv-madre i { width: 34px; height: 12px; background: linear-gradient(90deg, #84187C 0 50%, var(--lf-turquesa) 50% 100%); }
+
+/* --- 3. LOGO: LA MADRE NO SE TOCA --- */
+/* Todo en un SVG con las medidas del logotipo oficial: las cotas (--c1), la retícula de construcción que se dibuja
+   (--c2), el módulo X (--cx), el área de protección (--c3) y, al final, los mínimos a tamaño real (--c4) */
+.ml-pieza { background: #FFFFFF; }
+.ml-lienzo { inset: 0; width: 100%; height: 100%; overflow: visible; opacity: calc(1 - var(--c4, 0)); }
+.ml-lienzo text { font: 400 6.4px var(--cs-f-mono); letter-spacing: 0.04em; fill: var(--lf-oscuro); }
+/* Trazo de 1 px a esta escala, en unidades del SVG: el non-scaling-stroke rompe el dibujo con pathLength */
+.ml-lienzo line, .ml-borde { fill: none; stroke-width: 0.62; stroke-dasharray: 1; }
+.ml-logo { opacity: var(--c1, 0); transform: translateY(calc((1 - var(--c1, 0)) * 5px)); }
+.ml-cotas { opacity: var(--c1o, 0); }
+.ml-cotas line { stroke: var(--lf-turquesa); stroke-dashoffset: calc(1 - var(--c1, 0)); }
+.ml-cotas circle { fill: var(--lf-turquesa); }
+.ml-reticula { opacity: calc(1 - var(--c3, 0) * 0.55); }
+.ml-reticula line { stroke: rgba(16, 78, 86, 0.24); stroke-dashoffset: calc(1 - clamp(0, var(--c2, 0) * 1.5 - var(--i) * 0.12, 1)); }
+.ml-modulo { opacity: calc(var(--cx, 0) * (1 - var(--c3, 0))); }
+.ml-modulo rect { fill: rgba(23, 129, 129, 0.14); }
+.ml-modulo text, .ml-x text { fill: var(--lf-turquesa); }
+.ml-borde { stroke: var(--lf-turquesa); stroke-dashoffset: calc(1 - var(--c3, 0)); }
+.ml-x { opacity: clamp(0, calc(var(--c3, 0) * 5 - 2.6 - var(--i) * 0.4), 1); }
+.ml-x rect { fill: rgba(23, 129, 129, 0.1); stroke: rgba(23, 129, 129, 0.5); stroke-width: 0.62; }
+.ml-nota { left: 28px; bottom: 68px; display: grid; color: var(--lf-turquesa); }
+.ml-nota span { grid-area: 1 / 1; }
+.ml-nota-x { opacity: calc(var(--cx, 0) * (1 - var(--c3, 0))); }
+.ml-nota-p { opacity: calc(var(--c3, 0) * (1 - var(--c4, 0))); }
+/* Mínimos: las tres versiones a su tamaño mínimo real, sin escalar */
+.ml-minimos { inset: 0; display: flex; align-items: center; justify-content: center; gap: clamp(56px, 7vw, 112px); opacity: var(--c4, 0); }
+.ml-minimos figure { display: flex; flex-direction: column; align-items: center; gap: 20px; margin: 0; translate: 0 calc((1 - var(--c4, 0)) * 10px); }
+.ml-minimos img { display: block; max-width: none; height: auto; }
+.ml-minimos figure:nth-child(1) img { width: 16px; } .ml-minimos figure:nth-child(2) img { width: 120px; } .ml-minimos figure:nth-child(3) img { width: 140px; }
+.ml-minimos figcaption { white-space: nowrap; }
+.ml-minimos figcaption { display: flex; align-items: baseline; gap: 8px; color: var(--texto-3); }
+.ml-minimos figcaption b { font: 300 20px var(--cs-f); letter-spacing: -0.02em; color: var(--texto); text-transform: none; }
+.ml-minimos p { position: absolute; left: 0; right: 0; top: calc(50% + 72px); color: var(--texto-3); text-align: center; }
+.ml-pie { inset: auto 0 0; display: flex; justify-content: space-between; padding: 0 28px 24px; color: var(--texto-3); }
+
+/* --- 4. CAMINOS: LOS TRES, UNO AL LADO DEL OTRO --- */
+/* Tres columnas de alto completo: entra cada isotipo (--ci por columna), sube su aplicación desde abajo (--fo), la foto
+   se apaga para leer los cuatro criterios (--cr) y al final las dos no elegidas se velan (--el) */
+.mc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #FFFFFF; }
+.ml .mc > .mc-col { position: relative; }
+.mc-col { display: flex; flex-direction: column; align-items: center; padding: clamp(84px, 11vh, 112px) 24px 0; border-left: 1px solid var(--linea); overflow: clip; }
+.mc-col:first-child { border-left: 0; }
+.mc-cab { position: relative; z-index: 3; align-self: stretch; display: flex; align-items: center; gap: 14px; min-height: 22px; color: var(--texto-2); }
+.mc-cab span:first-child { color: var(--texto-3); }
+.mc-tag { margin-left: auto; padding: 3px 8px; border: 1px solid var(--linea); color: var(--texto-2); font-size: 10px; opacity: var(--el, 0); }
+.mc-elegida .mc-tag { border-color: var(--lf-turquesa); background: var(--lf-turquesa); color: #FFFFFF; }
+.mc-iso { width: 38%; margin-top: clamp(28px, 6vh, 64px); color: var(--lf-turquesa); opacity: var(--ci, 0); translate: 0 calc((1 - var(--fo, 0)) * 16vh + (1 - var(--ci, 0)) * 14px); }
+.mc-lema { max-width: 22ch; margin-top: 28px; font: 300 clamp(15px, 1.15vw, 18px) / 1.35 var(--cs-f); text-align: center; text-wrap: balance; opacity: var(--ci, 0); translate: 0 calc((1 - var(--fo, 0)) * 16vh); }
+.mc-foto { position: absolute; inset: auto 0 0; height: 50%; margin: 0; clip-path: inset(calc((1 - var(--fo, 0)) * 100%) 0 0 0); }
+.mc-foto img { width: 100%; height: 100%; object-fit: cover; }
+.mc-foto::after { content: ''; position: absolute; inset: 0; background: rgba(11, 52, 57, 0.8); opacity: var(--cr, 0); }
+.mc-crit { position: absolute; inset: auto 0 0; height: 50%; display: flex; flex-direction: column; justify-content: center; gap: 14px; margin: 0; padding: 0 24px; color: #FFFFFF; pointer-events: none; }
+.mc-crit div { padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.22); opacity: clamp(0, calc(var(--cr, 0) * 2.2 - var(--j) * 0.35), 1); }
+.mc-crit div:nth-child(1) { --j: 0; } .mc-crit div:nth-child(2) { --j: 1; } .mc-crit div:nth-child(3) { --j: 2; } .mc-crit div:nth-child(4) { --j: 3; }
+.mc-crit dt { padding-bottom: 4px; font-size: 10px; opacity: 0.7; }
+.mc-crit dd { margin: 0; font: 300 clamp(18px, 1.5vw, 24px) / 1.1 var(--cs-f); letter-spacing: -0.02em; }
+.mc-col:not(.mc-elegida)::after { content: ''; position: absolute; inset: 0; z-index: 2; background: rgba(255, 255, 255, 0.64); opacity: var(--el, 0); pointer-events: none; }
+.mc-col:not(.mc-elegida) .mc-foto img { filter: grayscale(var(--el, 0)); }
+.mc-elegida::before { content: ''; position: absolute; z-index: 3; inset: 0 0 auto; height: 3px; background: var(--lf-turquesa); transform-origin: left; scale: var(--el, 0) 1; }
+
+/* --- 5. MANUAL: LAS PÁGINAS REALES PASANDO --- */
+/* Las páginas van en fila; --d es la distancia de cada una a la que está al centro (la escribe el JS con una pausa en
+   cada página) y --o su opacidad. Sin sombras: el manual no las usa */
+.mm { background: var(--lf-negro); }
+.mm > .lf-degradado { inset: 0; }
+.mm-pista { inset: 0; }
+.mm-pag { position: absolute; left: 50%; top: 47%; width: 80%; margin: 0; translate: calc(-50% + var(--d, 0) * (100% + 40px)) -50%; opacity: var(--o, 1); will-change: translate; }
+.mm-pag img { display: block; width: 100%; height: auto; aspect-ratio: 2200 / 1237; object-fit: cover; background: var(--lf-papel); }
+.mm-pie { inset: auto 0 0; display: flex; justify-content: space-between; padding: 0 28px 24px; color: var(--texto-2); }
+
+/* --- 6. CIERRE DE LA EXPLORACIÓN --- */
+.ml-fin { display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.ml-fin .mono { color: var(--texto-3); }
+.ml-fin p { max-width: 38ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
+
+/* =======================================================
+   VISTA MÓVIL (PENDIENTE: POR AHORA SOLO APILA)
+   ======================================================= */
+@media (max-width: 768px), (orientation: portrait) and (max-width: 1100px) {
+    .cs-lam .cs-fijo.cs-grilla { grid-template-rows: auto 1fr; }
+    .cs-lam-riel { padding: 72px 0 16px; }
+    .cs-lam .cs-dec > :is(.cs-dec-num, p, .cs-mas) { display: none; }
+    .cs-lam-pieza { margin: 0 calc(var(--margen) * -1); }
+}
