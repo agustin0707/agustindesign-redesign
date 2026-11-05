@@ -1,0 +1,63 @@
+/* =======================================================
+   EL PITCH DE LLEGÓ FARMA · DECISIONES 01 Y 02 EN LÁMINA (.pl)
+   ======================================================= */
+/* Exploración de escritorio del capítulo 01 en la plantilla Lámina (caso-marco.css, 4.1). Se apoya en la piel de
+   llego.css y en caso-motor.js; las fases de cada pieza van de 0 a 1 y las escribe pitch-llego.js */
+
+/* --- 1. TOKEN NUEVO (PASA A LOS TOKENS DE llego.css SI SE APRUEBA) --- */
+/* El morado de Llegó: solo aparece donde la pieza habla de la marca madre */
+.pl { --lf-morado: #84187C; }
+
+/* --- 2. DIAGNÓSTICO: LO QUE NO SE TOCA, LO LIBRE Y EL HALLAZGO --- */
+/* Dos mitades a sangre: la marca madre en su morado y Farma en papel. Las filas entran una a una (--a1 a la izquierda,
+   --a2 a la derecha) y cada cosa libre dice qué decisión la resuelve. Al final sube el hallazgo desde abajo (--a3) */
+.lf-dg { background: var(--lf-papel); }
+.lf-dg-mitad { top: 0; bottom: 0; display: flex; flex-direction: column; padding: clamp(84px, 11vh, 112px) clamp(24px, 2.6vw, 44px) 0; }
+.lf-dg-madre { left: 0; width: 50%; background: var(--lf-morado); color: #FFFFFF; --v: var(--a1, 0); --raya: rgba(255, 255, 255, 0.2); --suave: rgba(255, 255, 255, 0.62); }
+.lf-dg-libre { left: 50%; right: 0; --v: var(--a2, 0); --raya: var(--linea); --suave: var(--texto-3); }
+.lf-dg-cab { display: flex; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid var(--raya); color: var(--suave); }
+.lf-dg-cab span:first-child { display: inline-flex; align-items: center; gap: 8px; }
+.lf-dg-cab span:first-child::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.lf-dg-libre .lf-dg-cab span:first-child::before { background: none; border: 1px solid var(--lf-turquesa); }
+.lf-dg-libre .lf-dg-cab { opacity: calc(0.4 + var(--v) * 0.6); }
+.lf-dg ul { list-style: none; }
+.lf-dg li { --t: clamp(0, calc(var(--v) * 2.2 - var(--i) * 0.25), 1); display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: baseline; column-gap: 12px; row-gap: 8px; padding: clamp(16px, 2.6vh, 26px) 0; border-bottom: 1px solid var(--raya); font: 300 clamp(22px, 2vw, 36px) / 1.08 var(--cs-f); letter-spacing: -0.03em; opacity: var(--t); translate: 0 calc((1 - var(--t)) * 14px); }
+.lf-dg li > .mono { color: var(--suave); }
+.lf-dg li small { grid-column: 2; color: var(--lf-turquesa); }
+/* El hallazgo: una franja oscura que sube y cruza las dos mitades */
+.lf-dg-hallazgo { left: 0; right: 0; bottom: 0; height: 30%; display: flex; flex-direction: column; justify-content: flex-end; gap: 18px; padding: clamp(28px, 3vw, 48px) clamp(24px, 2.6vw, 44px); background: var(--lf-oscuro); color: #FFFFFF; translate: 0 calc((1 - var(--a3, 0)) * 101%); }
+.lf-dg-hallazgo .mono { color: var(--lf-claro); }
+.lf-dg-hallazgo p { max-width: 30ch; font: 300 clamp(28px, 2.7vw, 46px) / 1.12 var(--cs-f); letter-spacing: -0.035em; text-wrap: balance; opacity: clamp(0, calc(var(--a3, 0) * 2 - 1), 1); }
+
+/* --- 3. SISTEMA: DE LA TRAMA AL NODO Y A LAS VERTICALES --- */
+/* La trama de Llegó llena la pieza en una ola diagonal (--r1). Los puntos de la ruta crecen a nodos y el resto se
+   apaga (--r2), los conectores se dibujan (--r3) y aparecen las dos lecturas (--r4). Al final la red sube y desde
+   abajo entran las verticales (--r5) */
+.lf-red { background: var(--lf-negro); }
+.lf-red > .lf-degradado { inset: 0; }
+.lf-red-svg { inset: 0; width: 100%; height: 100%; opacity: calc(1 - var(--r5, 0) * 0.55); translate: 0 calc(var(--r5, 0) * -16%); }
+.lf-red-svg circle { --ola: clamp(0, calc(var(--r1, 0) * 1.8 - var(--w) * 0.8), 1); fill: #FFFFFF; transform-box: fill-box; transform-origin: center; opacity: calc(var(--ola) * (1 - var(--r2, 0) * 0.84)); }
+.lf-red-svg circle.nodo { opacity: var(--ola); scale: calc(1 + var(--r2, 0) * 2.4); }
+.lf-red-svg line { stroke: #FFFFFF; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - clamp(0, calc(var(--r3, 0) * 1.9 - var(--k) * 0.15), 1)); }
+.lf-red-cab { inset: 0 0 auto; display: flex; align-items: flex-end; justify-content: space-between; height: 96px; padding: 0 28px 18px; color: var(--texto-2); }
+.lf-red-lect { left: 28px; bottom: 32px; display: flex; gap: 32px; font: 300 clamp(20px, 1.8vw, 30px) / 1 var(--cs-f); letter-spacing: -0.02em; opacity: calc(var(--r4, 0) * (1 - var(--r5, 0))); translate: 0 calc((1 - var(--r4, 0)) * 10px); }
+.lf-red-lect span { display: inline-flex; align-items: center; gap: 12px; }
+.lf-red-lect i { display: inline-block; width: 28px; color: var(--lf-claro); }
+/* Las verticales: tres columnas que suben desde abajo; solo Farma tiene isotipo, las otras esperan su hueco */
+.lf-red-vert { left: 0; right: 0; bottom: 0; height: 42%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--linea); background: rgba(10, 20, 21, 0.86); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); translate: 0 calc((1 - var(--r5, 0)) * 101%); }
+.lf-red-v { --t: clamp(0, calc(var(--r5, 0) * 2.2 - var(--k) * 0.3), 1); display: flex; flex-direction: column; justify-content: flex-end; gap: 18px; padding: 28px; border-left: 1px solid var(--linea); }
+.lf-red-v:first-child { border-left: 0; }
+.lf-red-v > * { opacity: var(--t); translate: 0 calc((1 - var(--t)) * 14px); }
+.lf-red-v .cs-marca, .lf-red-hueco { width: clamp(52px, 5.4vw, 88px); }
+.lf-red-v .cs-marca { color: var(--lf-claro); }
+.lf-red-hueco { aspect-ratio: 1; border: 1px dashed rgba(255, 255, 255, 0.4); border-radius: 50%; }
+.lf-red-v b { font: 400 clamp(22px, 2vw, 34px) / 1 var(--cs-f); letter-spacing: -0.03em; }
+.lf-red-v b span { display: block; font-weight: 300; color: var(--texto-2); }
+.lf-red-v:not(.lf-red-v-on) b span { color: var(--texto-3); }
+.lf-red-v small { color: var(--texto-3); }
+.lf-red-v-on small { color: var(--lf-claro); }
+
+/* --- 4. CIERRE DE LA EXPLORACIÓN --- */
+.pl-fin { display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.pl-fin .mono { color: var(--texto-3); }
+.pl-fin p { max-width: 38ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
