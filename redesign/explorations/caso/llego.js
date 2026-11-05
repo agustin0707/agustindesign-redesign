@@ -8,6 +8,10 @@
     const fijar = (v, a = 0, b = 1) => Math.min(Math.max(v, a), b);
     const svg = (tag, attrs) => { const n = document.createElementNS('http://www.w3.org/2000/svg', tag); Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, v)); return n; };
     const pad = n => String(n).padStart(2, '0');
+    /* Fases de las láminas: una fase va de 0 a 1 entre dos puntos del scroll, con curva firme y sin rebote */
+    const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const tramo = (p, a, b) => curva(fijar((p - a) / (b - a)));
+    const fase = (el, nombre, v) => el.style.setProperty(nombre, v.toFixed(4));
     /* Una curva de Bézier evaluada en JS, para la llegada desde el home, que avanza dentro del cuadro de la cinta */
     const bezier = (x1, y1, x2, y2) => t => {
         if (t <= 0) return 0; if (t >= 1) return 1;
@@ -36,7 +40,6 @@
         const h = document.querySelector('.lf-h');
         if (!h) return null;
         const $ = (sel, raiz = h) => raiz.querySelector(sel);
-        const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
         const suave = t => 1 - Math.pow(1 - t, 3);
         const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
         const TOMAS = ['hero', 's-capacidades', 's-propuesta', 's-calidad', 's-tecnologia', 's-experiencia', 's-categorias', 's-contacto'];
@@ -341,18 +344,72 @@
             };
         },
 
-        /* Manual: el encabezado de la lámina nombra la regla; la retícula alterna sola entre sin y con cortes */
-        manual: el => {
-            const pag = el.querySelector('[data-man-pag]'), nombres = ['Retícula', 'Grano', 'Tipografía', 'Nodos'];
-            const ret = el.querySelector('.lf-r-reticula'), pares = [...ret.querySelectorAll('.lf-r-par span')];
-            let reloj = null, actual = -1;
-            const alternar = () => { const sin = ret.classList.toggle('sin'); pares.forEach((s, i) => s.classList.toggle('on', i === (sin ? 0 : 1))); };
-            return p => {
-                const k = Math.min(Math.floor(p * 4), 3), activa = k === 0 && p > 0 && p < 1 && !quieto;
-                if (activa && !reloj) reloj = setInterval(alternar, 1600);
-                if (!activa && reloj) { clearInterval(reloj); reloj = null; }
+        /* Paleta, paso 1: caen las bandas, una tras otra. Paso 2: el degradado las funde y el mouse abre cada banda, con su HEX.
+           Paso 3: la capa se recoge en un filete y de él suben los tres tonos */
+        valores: el => {
+            const pieza = el.querySelector('.lf-val'), bandas = el.querySelector('.lf-val-bandas'), liso = el.querySelector('.lf-val-liso');
+            const tonos = ['104E56', '178181', '1B9C9C', '21B6B6', '49C2BF', '70CAC7', '80E2DF', 'B7E5E2', 'E8E8E8', 'F4F4F4'];
+            bandas.innerHTML = tonos.map((c, k) => `<i style="--c:#${c}"><span class="mono"><b>${pad(k + 1)}</b>#${c}</span></i>`).join('');
+            const tiras = [...bandas.children], bloques = [...el.querySelectorAll('.lf-val-tono')];
+            const escala = () => pieza.style.setProperty('--fil-e', (10 / (pieza.clientHeight || 900)).toFixed(4));
+            escala(); window.addEventListener('resize', escala);
+            let mide = false, actual = -1;
+            const abrir = k => {
                 if (k === actual) return;
-                actual = k; pag.textContent = nombres[k];
+                if (k < 0) { const c = (actual + 0.5) * 10 + '%'; liso.style.setProperty('--lf-va', c); liso.style.setProperty('--lf-vb', c); pieza.classList.remove('mide'); actual = -1; return; }
+                if (actual < 0) { const c = (k + 0.5) * 10 + '%'; liso.style.transition = 'none'; liso.style.setProperty('--lf-va', c); liso.style.setProperty('--lf-vb', c); void liso.offsetWidth; liso.style.transition = ''; }
+                actual = k; pieza.classList.add('mide');
+                liso.style.setProperty('--lf-va', k * 10 + '%'); liso.style.setProperty('--lf-vb', (k + 1) * 10 + '%');
+            };
+            pieza.addEventListener('pointermove', e => { if (!mide || e.pointerType === 'touch') return; const r = pieza.getBoundingClientRect(); abrir(Math.min(Math.floor(((e.clientX - r.left) / r.width) * 10), 9)); });
+            pieza.addEventListener('pointerleave', () => abrir(-1));
+            return p => {
+                tiras.forEach((t, k) => fase(t, '--f', tramo(p, 0.02 + k * 0.024, 0.12 + k * 0.024)));
+                const l = tramo(p, 0.38, 0.5), f = tramo(p, 0.68, 0.78);
+                fase(pieza, '--liso', l); fase(pieza, '--filete', f);
+                bloques.forEach((b, k) => fase(b, '--f', tramo(p, 0.74 + k * 0.04, 0.84 + k * 0.04)));
+                mide = l > 0.98 && f < 0.02;
+                if (!mide) abrir(-1);
+            };
+        },
+
+        /* Logo: composición, construcción con el módulo X, área de protección y mínimos */
+        lockup: el => {
+            const pieza = el.querySelector('.lf-lock'), pie = el.querySelector('[data-lock-pie]');
+            const nombres = ['Principal', 'Construcción', 'Área de protección', 'Mínimos'];
+            let paso = -1;
+            return p => {
+                const c1 = tramo(p, 0.02, 0.16);
+                fase(pieza, '--c1', c1); fase(pieza, '--c1o', c1 * (1 - tramo(p, 0.24, 0.29)));
+                fase(pieza, '--c2', tramo(p, 0.27, 0.45)); fase(pieza, '--cx', tramo(p, 0.42, 0.48));
+                fase(pieza, '--c3', tramo(p, 0.52, 0.68)); fase(pieza, '--c4', tramo(p, 0.76, 0.86));
+                const k = Math.min(Math.floor(p * 4), 3);
+                if (k !== paso) { paso = k; pie.textContent = nombres[k]; }
+            };
+        },
+
+        /* Caminos: entran los isotipos, suben sus aplicaciones, se leen los criterios y se marca el elegido */
+        caminos: el => {
+            const pieza = el.querySelector('.lf-cam'), cols = [...el.querySelectorAll('.lf-cam-col')];
+            return p => {
+                cols.forEach((c, k) => { fase(c, '--ci', tramo(p, 0.02 + k * 0.05, 0.12 + k * 0.05)); fase(c, '--fo', tramo(p, 0.27 + k * 0.05, 0.37 + k * 0.05)); });
+                fase(pieza, '--cr', tramo(p, 0.52, 0.68)); fase(pieza, '--el', tramo(p, 0.77, 0.87));
+            };
+        },
+
+        /* Manual: las páginas pasan y se detienen. La posición avanza página a página: el 40 % de cada tramo queda quieto y el resto es el paso a la siguiente. La
+           primera y la última tienen su pausa completa */
+        manual: el => {
+            const pags = [...el.querySelectorAll('.lf-man-pag')], n = pags.length, sec = el.querySelector('[data-man-sec]'), num = el.querySelector('[data-man-pag]');
+            let actual = -1;
+            return p => {
+                const t = fijar(p * (n - 0.4) - 0.3, 0, n - 1), k = Math.min(Math.floor(t), n - 2), pos = k + curva(fijar((t - k - 0.2) / 0.6));
+                pags.forEach((g, i) => { const d = i - pos; fase(g, '--d', d); fase(g, '--o', fijar(1 - Math.abs(d) * 0.72, 0.16, 1)); });
+                const c = Math.round(pos);
+                if (c === actual) return;
+                actual = c;
+                const g = pags[c].dataset;
+                sec.textContent = g.sec; num.textContent = g.pag === 'Portada' ? 'Portada' : `Pág. ${g.pag} / 36`;
             };
         },
 

@@ -2,7 +2,7 @@
    MARCO DE LOS CASOS (.cs-)
    ======================================================= */
 /* Lo que es de Agustín Design en cada caso, sacado del caso de Tap In: barra, grilla de 12, escenas fijas que avanzan
-   con el scroll, el bloque de decisión, las aperturas de capítulo, la evidencia del sitio real, los pliegos a sangre y
+   con el scroll, el bloque de decisión, la lámina (la pieza a sangre), las aperturas de capítulo, la evidencia del sitio real, los pliegos a sangre y
    el resultado. Cada caso pone su voz redefiniendo el contrato de variables (--cs-*) y los fondos de módulo (--fondo,
    --texto, --texto-2, --texto-3, --linea, --acento). Requiere works-base.css; la lógica está en caso-motor.js */
 
@@ -89,6 +89,17 @@ html:has(> body.cs), body.cs { overflow-x: clip; }
 .cs-mas[open] summary::before { transform: rotate(45deg); }
 .cs-mas p { margin-top: 10px; font-size: 15px; }
 @media (hover: hover) { .cs-mas summary:hover { color: var(--texto); } }
+
+/* --- 4.1 LÁMINA: LA DECISIÓN EN EL RIEL Y LA PIEZA A SANGRE --- */
+/* La pieza va de la columna 4 hasta el borde derecho y de alto completo. La decisión vive en el riel (columnas 1 a 3)
+   y abajo queda el rótulo de pasos. El marco calla: cada caso dibuja su pieza adentro */
+.cs-lam .cs-fijo.cs-grilla { align-items: stretch; }
+.cs-lam-riel { grid-column: 1 / span 3; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-height: 0; padding: clamp(84px, 11vh, 112px) 0 clamp(28px, 5vh, 48px); }
+.cs-lam .cs-dec { gap: 12px; max-width: none; }
+.cs-lam .cs-dec-num { font-size: clamp(48px, 4.4vw, 80px); }
+.cs-lam .cs-dec h3 { font-size: clamp(24px, 2.1vw, 34px); }
+.cs-lam .cs-dec p { font-size: 15px; }
+.cs-lam-pieza { position: relative; grid-column: 4 / -1; margin-right: calc(var(--margen) * -1); overflow: clip; }
 
 /* --- 5. RÓTULO DE PASOS DE UNA PIEZA --- */
 /* Contador, nombre del paso en curso y un segmento por paso (el motor marca .on y .ya en los [data-paso]) */
@@ -192,6 +203,11 @@ html:has(> body.cs), body.cs { overflow-x: clip; }
     .cs-dec-num { font-size: 52px; }
     .cs-dec p { font-size: 15px; }
     .cs-cap-txt { gap: 14px; }
+    /* Lámina: por ahora solo apila (la decisión arriba, sin bajada, y la pieza a todo el ancho) */
+    .cs-lam .cs-fijo.cs-grilla { grid-template-rows: auto 1fr; }
+    .cs-lam-riel { padding: 72px 0 16px; }
+    .cs-lam .cs-dec > :is(.cs-dec-num, p, .cs-mas) { display: none; }
+    .cs-lam-pieza { margin: 0 calc(var(--margen) * -1); }
     /* Evidencia: el índice arriba (solo la decisión en curso) y el sitio, en su versión de teléfono, abajo */
     .cs-ev .cs-fijo.cs-grilla { align-content: start; padding-top: 72px; row-gap: 12px; }
     .cs-ev-indice { grid-row: 1; }
