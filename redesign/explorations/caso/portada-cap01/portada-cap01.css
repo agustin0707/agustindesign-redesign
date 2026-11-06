@@ -1,0 +1,81 @@
+/* =======================================================
+   LLEGÓ FARMA · TRES PORTADAS PARA EL CAPÍTULO 01 (.pp)
+   ======================================================= */
+/* Exploración de escritorio. El paso es el del caso (Nodo, llego.js y llego.css 6.3); aquí cambia la portada. Las tres
+   comparten el riel con el dato (9 días, del brief al pitch) y la retícula sobre la grilla de 12. Lo que entra en la
+   pausa antes de la decisión lo lleva --pp-i (0 a 1), y la cinta de C, --pp-x (portada-cap01.js) */
+
+/* --- 1. SIN HERO: EL RESUMEN QUEDA COMO EN LA VISTA SIN PASO --- */
+/* Esta página parte en el resumen, así que nada del paso desde el hero aplica */
+.pp .lf-res { margin-top: 0; }
+.lf-paso .pp .lf-res.cs-claro { background: var(--fondo); }
+.lf-paso .pp .lf-res-arriba, .lf-paso .pp .lf-res-abajo { opacity: 1; translate: none; }
+.lf-paso .pp :is(.lf-ruta-base, .lf-ruta-avance, .lf-ruta-pista, .lf-semanas) { opacity: 1; }
+.lf-paso .pp .lf-hitos li { opacity: 1; scale: 1; }
+
+/* --- 2. COMÚN: RETÍCULA SOBRE LA GRILLA Y RIEL CON EL DATO --- */
+/* Las líneas interiores van al centro del medianil cada tres columnas: el título (columna 4) queda a medio medianil */
+.pp .lf-cap-1 .lf-reticula i:nth-child(2) { left: calc((100% + var(--medianil)) / 4 - var(--medianil) / 2); }
+.pp .lf-cap-1 .lf-reticula i:nth-child(3) { left: calc((100% + var(--medianil)) / 2 - var(--medianil) / 2); }
+.pp .lf-cap-1 .lf-reticula i:nth-child(4) { left: calc((100% + var(--medianil)) * 3 / 4 - var(--medianil) / 2); }
+.pp .lf-cap-1 .lf-reticula::after { display: none; }
+.pp-riel { display: flex; flex-direction: column; gap: 6px; padding-bottom: 0.5em; }
+.pp-riel .mono { color: var(--texto-2); }
+.pp-dato { margin-top: 10px; font: 200 clamp(40px, 3.6vw, 64px) / 0.9 var(--cs-f); letter-spacing: -0.05em; color: #FFFFFF; }
+.pp .lf-cap-1 .cs-cap-txt { grid-column: 4 / span 5; }
+/* El 01 calza en el último tramo de la retícula: su caja mide 0,8 em y llega justo a la línea del borde */
+.pp .lf-cap-1 .lf-cap-traza { right: var(--margen); font-size: calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35); }
+
+/* Lo que entra en la pausa: cada pieza con su retraso (--k) dentro de --pp-i */
+.pp-indice a { --v: clamp(0, calc(var(--pp-i, 0) * 4 - var(--k, 0)), 1); }
+
+/* --- 3. A · ÍNDICE: LAS TRES DECISIONES DEL CAPÍTULO --- */
+.pp-indice, .pp-dias, .pp-deck { display: none; }
+.pp-v-indice .pp-indice { display: flex; flex-direction: column; grid-column: 9 / span 4; align-self: end; padding-bottom: 0.4em; }
+.pp-indice > .mono { padding-bottom: 12px; color: var(--texto-2); opacity: var(--pp-i, 0); }
+.pp-indice a { display: grid; grid-template-columns: 40px 1fr auto; align-items: baseline; padding: 14px 0; border-top: 1px solid rgba(255, 255, 255, 0.18);
+    font: 300 clamp(17px, 1.4vw, 22px) / 1.2 var(--cs-f); letter-spacing: -0.02em; color: #FFFFFF; text-decoration: none;
+    opacity: var(--v); translate: 0 calc((1 - var(--v)) * 14px); }
+.pp-indice a:last-child { border-bottom: 1px solid rgba(255, 255, 255, 0.18); }
+.pp-indice a .mono { color: var(--lf-claro); }
+.pp-indice a i { font-style: normal; color: rgba(255, 255, 255, 0.5); transition: translate 180ms var(--ease), color 180ms; }
+@media (hover: hover) { .pp-indice a:hover i { translate: 6px 0; color: #FFFFFF; } }
+
+/* --- 4. B · NUEVE DÍAS: LA RETÍCULA SE VUELVE CALENDARIO --- */
+/* La línea de la retícula es el eje del 19 al 28 de agosto; el avance corre por los días como el mensajero del resumen */
+.pp-v-dias .lf-reticula { display: none; }
+.pp-v-dias .pp-dias { display: block; position: absolute; z-index: 1; inset: 0 var(--margen); --fy: 132px; }
+.pp-eje, .pp-avance { position: absolute; left: 0; right: 0; top: var(--fy); height: 1px; }
+.pp-eje { background: var(--lf-plan); opacity: 0.5; }
+.pp-avance { background: var(--lf-claro); transform-origin: left; scale: var(--pp-f, 0) 1; }
+.pp-dias ol { list-style: none; }
+.pp-dias-n li { position: absolute; top: 0; bottom: 0; left: calc(var(--x) * 100%); width: 1px; background: rgba(255, 255, 255, calc(0.08 * var(--lf-pl, 0))); }
+.pp-dias-n span { position: absolute; top: calc(var(--fy) - 26px); left: 0; translate: -50% 0; color: rgba(255, 255, 255, calc(0.3 + 0.5 * clamp(0, calc((var(--pp-f, 0) - var(--x)) * 40 + 1), 1))); opacity: var(--lf-pl, 0); }
+.pp-dias-n li:first-child span { translate: 0 0; }
+.pp-dias-n li:last-child span { translate: -100% 0; }
+.pp-hechos li { --on: clamp(0, calc((var(--pp-f, 0) - var(--x)) * 40 + 1), 1);
+    position: absolute; top: calc(var(--fy) - 6px); left: calc(var(--x) * 100%); display: flex; white-space: nowrap; flex-direction: column; gap: 4px; padding-top: 22px; opacity: calc(0.15 + 0.85 * var(--on)); }
+.pp-hechos li i { position: absolute; top: 0; left: -6px; width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--lf-claro); background: var(--lf-negro); }
+.pp-hechos li i::after { content: ''; position: absolute; inset: 2px; border-radius: 50%; background: var(--lf-claro); scale: var(--on); }
+.pp-hechos li:first-child i { left: 0; }
+.pp-hechos li:first-child { padding-left: 0; }
+.pp-hechos li:not(:first-child, .pp-fin) { translate: -6px 0; padding-left: 0; }
+.pp-hechos li.pp-fin { align-items: end; translate: -100% 0; text-align: right; }
+.pp-hechos li.pp-fin i { left: auto; right: -6px; }
+.pp-hechos .mono { color: var(--lf-claro); }
+.pp-hechos b { font: 300 clamp(18px, 1.5vw, 24px) / 1.15 var(--cs-f); letter-spacing: -0.02em; color: #FFFFFF; }
+.pp-hechos a { margin-top: 2px; font: 400 14px var(--cs-f); color: rgba(255, 255, 255, 0.6); text-decoration: none; }
+@media (hover: hover) { .pp-hechos a:hover { color: #FFFFFF; } }
+/* Las dos jornadas de revisión, un tramo punteado sobre el eje */
+.pp-hechos li.pp-tramo { width: calc(var(--w) * 100%); top: calc(var(--fy) + 124px); padding-top: 14px; border-top: 1px dashed rgba(112, 202, 199, 0.6); translate: 0 0; }
+.pp-hechos li.pp-tramo b { font-size: 15px; color: rgba(255, 255, 255, 0.78); }
+.pp-v-dias .lf-cap-traza { top: auto; bottom: clamp(56px, 10vh, 120px); }
+
+/* --- 5. C · LAS LÁMINAS: EL PITCH REAL PASANDO --- */
+/* Nueve de las once láminas del 28 de agosto en una cinta que avanza con el scroll, como la cinta del sitio en el hero */
+.pp-v-laminas .lf-cap-traza { display: none; }
+.pp-v-laminas .pp-deck { display: block; position: absolute; z-index: 1; left: 0; right: 0; top: clamp(96px, 14vh, 140px); height: clamp(200px, 30vh, 290px); }
+.pp-cinta { display: flex; gap: var(--medianil); height: 100%; padding-left: var(--margen); translate: calc(var(--pp-x, 0) * -1px) 0; will-change: translate; }
+.pp-cinta figure { position: relative; flex: none; display: flex; flex-direction: column; gap: 10px; height: 100%; }
+.pp-cinta img { display: block; height: calc(100% - 26px); width: auto; aspect-ratio: 16 / 9; border-radius: 4px; box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6); }
+.pp-cinta figcaption { color: rgba(255, 255, 255, 0.55); }
