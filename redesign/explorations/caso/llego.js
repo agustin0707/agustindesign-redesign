@@ -301,38 +301,33 @@
     /* Solo en escritorio y con movimiento: la pista del hero se alarga (280 a 400) para que el resumen suba sobre su
        última pantalla. Cuenta s, cuánto subió el resumen (0 a 1), desde el avance del hero, sin medir en cada cuadro.
        La ventana se cierra en un punto (0,04 a 0,40), el punto viaja al primer hito (0,40 a 0,58), el brazo se estira
-       por la ruta encendiendo los hitos (0,56 a 0,76) y el texto se despliega desde la línea (0,72 a 1) */
+       por la ruta encendiendo los hitos (0,56 a 0,76) y el texto se despliega desde la línea (0,72 a 1).
+       Dos cosas evitan el temblor: mientras el resumen sube, su panel queda fijo (.lf-sube), así no lo mueven el scroll
+       y el JS a la vez; y lo que se ve sigue al scroll con un resorte de unos 90 ms, así la rueda no avanza a saltos */
     const paso = (() => {
         const h = document.querySelector('.lf-h'), res = document.querySelector('.lf-res');
         if (!h || !res || !cinta) return null;
         const html = document.documentElement, fijo = h.querySelector('.lf-h-fijo'), vivo = h.querySelector('.lf-h-vivo');
-        const panel = res.querySelector('.lf-res-panel'), ruta = res.querySelector('[data-ruta]'), nodos = [...ruta.querySelectorAll('.lf-hitos li')], N = nodos.length;
+        const panel = res.querySelector('.lf-res-panel'), ruta = res.querySelector('[data-ruta]'), nodos = [...ruta.querySelectorAll('.lf-hitos li')];
         const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
-        const PISTA = 400, pistaBase = parseFloat(h.style.getPropertyValue('--pista')) || 280;
+        const PISTA = 400, pistaBase = parseFloat(h.style.getPropertyValue('--pista')) || 280, TAU = 90;
         const brazo = document.createElement('i');
         brazo.className = 'lf-brazo'; brazo.setAttribute('aria-hidden', 'true'); fijo.appendChild(brazo);
-        const g = { H: 1, recorrido: 1, x: 0, y: 0, w: 0 };
-        let on = false, ultimo = 0;
+        const g = { H: 1, recorrido: 1, x: 0, y: 0, w: 0, nx: [] };
+        let on = false, meta = 0, ver = 0, ult = 0, bucle = 0, sube = false, salto = true;
         const px = v => v.toFixed(2) + 'px';
-        /* La ruta queda siempre en el mismo lugar de la pantalla (el panel descuenta lo que le falta subir): se mide una
-           vez, relativa al panel */
+        /* La ruta queda siempre en el mismo lugar de la pantalla mientras el panel está fijo: se mide una vez, relativa al
+           panel, y los nodos por su centro (su posición sale de la escala de tiempo del HTML) */
         const medir = () => {
             g.H = window.innerHeight; g.recorrido = Math.max(h.offsetHeight - g.H, 1);
             const r = ruta.getBoundingClientRect(), pr = panel.getBoundingClientRect();
             g.x = r.left; g.y = r.top - pr.top + 6.5; g.w = r.width;
+            g.nx = nodos.map(li => r.left + r.width * parseFloat(li.style.getPropertyValue('--x')));
         };
-        const nx = i => g.x + g.w * (i + 0.5) / N;
-        const cuadro = p => {
-            ultimo = p;
-            if (!on) return;
-            const falta = g.recorrido * (1 - p), s = fijar(1 - falta / g.H);
+        const pintar = s => {
             const k = curva(fijar((s - 0.04) / 0.36)), mv = curva(fijar((s - 0.4) / 0.18)), b = curva(fijar((s - 0.56) / 0.2));
             fijo.style.setProperty('--lf-hund', s.toFixed(4));
-            res.style.setProperty('--lf-falta', Math.max(falta, 0).toFixed(1));
             res.style.setProperty('--lf-t', curva(fijar((s - 0.72) / 0.28)).toFixed(4));
-            res.classList.toggle('lf-opaco', s > 0.999);
-            /* Con el hero ya papel, la barra toma la tinta de los módulos claros */
-            h.dataset.claro = s > 0.25 ? '1' : '0';
             /* La ventana: un recorte que termina en un punto de 14 px y viaja al centro del primer hito */
             const bw = parseFloat(vivo.style.width) || 0, bh = parseFloat(vivo.style.height) || 0;
             const cx = (parseFloat(vivo.style.left) || 0) + bw / 2, cy = (parseFloat(vivo.style.top) || 0) + bh / 2;
@@ -340,22 +335,44 @@
             vivo.classList.toggle('lf-ido', b > 0.999);
             vivo.style.setProperty('--lf-k', k.toFixed(3));
             vivo.style.setProperty('--lf-ct', px((bh - 14) / 2 * k)); vivo.style.setProperty('--lf-cl', px((bw - 14) / 2 * k)); vivo.style.setProperty('--lf-cr', px(7 * k));
-            vivo.style.setProperty('--lf-dx', px((nx(0) - cx) * mv)); vivo.style.setProperty('--lf-dy', px((g.y - cy) * mv));
+            vivo.style.setProperty('--lf-dx', px((g.nx[0] - cx) * mv)); vivo.style.setProperty('--lf-dy', px((g.y - cy) * mv));
             /* El brazo crece desde el primer hito hacia los dos lados; al llegar a los bordes, la ruta toma su lugar */
-            const x0 = nx(0), izq = x0 - (x0 - g.x) * b, der = x0 + (g.x + g.w - x0) * b, listo = b > 0.999;
+            const x0 = g.nx[0], izq = x0 - (x0 - g.x) * b, der = x0 + (g.x + g.w - x0) * b, listo = b > 0.999;
             brazo.style.setProperty('--lf-bx', px(izq)); brazo.style.setProperty('--lf-by', px(g.y)); brazo.style.setProperty('--lf-bw', px(der - izq));
+            brazo.style.setProperty('--lf-bo', px(g.x - izq));
             brazo.classList.toggle('lf-vuela', b > 0 && !listo);
             ruta.classList.toggle('lf-trazo', listo);
-            nodos.forEach((li, i) => li.classList.toggle('lf-on', listo || (b > 0 && nx(i) <= der + 1)));
+            nodos.forEach((li, i) => li.classList.toggle('lf-on', listo || (b > 0 && g.nx[i] <= der + 1)));
+        };
+        const seguir = ahora => {
+            const dt = Math.min(ahora - (ult || ahora), 50); ult = ahora;
+            ver += (meta - ver) * (salto ? 1 : 1 - Math.exp(-dt / TAU));
+            if (Math.abs(meta - ver) < 0.0004) ver = meta;
+            salto = false;
+            pintar(ver);
+            if (ver !== meta) bucle = requestAnimationFrame(seguir);
+            else { bucle = 0; ult = 0; }
+        };
+        const cuadro = p => {
+            if (!on) return;
+            meta = fijar(1 - g.recorrido * (1 - p) / g.H);
+            /* La posición del panel y el fondo siguen al scroll real, no al suavizado: así nunca se descalzan */
+            const f = meta > 0 && meta < 1;
+            if (f !== sube) { sube = f; res.classList.toggle('lf-sube', f); }
+            res.classList.toggle('lf-opaco', meta > 0.999);
+            /* Con el hero ya papel, la barra toma la tinta de los módulos claros */
+            h.dataset.claro = meta > 0.25 ? '1' : '0';
+            if (!bucle) bucle = requestAnimationFrame(seguir);
         };
         const limpiar = () => {
-            ['--lf-hund'].forEach(v => fijo.style.removeProperty(v));
-            ['--lf-falta', '--lf-t'].forEach(v => res.style.removeProperty(v));
+            fijo.style.removeProperty('--lf-hund'); res.style.removeProperty('--lf-t');
             ['--lf-k', '--lf-ct', '--lf-cl', '--lf-cr', '--lf-dx', '--lf-dy'].forEach(v => vivo.style.removeProperty(v));
-            delete h.dataset.claro; res.classList.remove('lf-opaco'); vivo.classList.remove('lf-cierra', 'lf-ido'); brazo.classList.remove('lf-vuela'); ruta.classList.remove('lf-trazo');
+            delete h.dataset.claro; res.classList.remove('lf-opaco', 'lf-sube'); sube = false;
+            vivo.classList.remove('lf-cierra', 'lf-ido'); brazo.classList.remove('lf-vuela'); ruta.classList.remove('lf-trazo');
             nodos.forEach(li => li.classList.remove('lf-on'));
         };
         /* Entra y sale con el ancho: en la vista móvil el resumen queda quieto, con la ruta completa */
+        let ultimoP = 0;
         const activar = () => {
             const quiere = !movil.matches && !quieto;
             if (quiere === on) return;
@@ -364,34 +381,79 @@
             h.style.setProperty('--pista', String(on ? PISTA : pistaBase));
             cinta.esc = on ? (PISTA / 100 - 1) / (pistaBase / 100 - 1) : 1;
             if (!on) limpiar();
-            requestAnimationFrame(() => { medir(); cuadro(ultimo); });
+            /* Al entrar (o al cambiar de tamaño) se pinta directo, sin resorte */
+            requestAnimationFrame(() => { medir(); salto = true; cuadro(ultimoP); });
         };
         movil.addEventListener('change', activar);
-        window.addEventListener('resize', () => { if (on) { medir(); cuadro(ultimo); } });
+        window.addEventListener('resize', () => { if (on) { medir(); salto = true; cuadro(ultimoP); } });
         activar();
-        return cuadro;
+        return p => { ultimoP = p; cuadro(p); };
     })();
 
     /* --- 4. ESCENAS PROPIAS --- */
     window.CASO_ESCENAS = {
         /* Hero: el avance de su pista endereza la cinta y la hace aterrizar */
         hero: () => p => { if (cinta) cinta.p = p; if (paso) paso(p); },
-        /* Resumen: el proyecto avanza hito a hito como un envío rastreado. La línea avanza continua: se llena hasta el
-           centro del hito actual y sigue hacia el próximo al ritmo del scroll */
+        /* Resumen: el proyecto avanza hito a hito como un envío rastreado. La ruta va en escala de tiempo: el mensajero
+           recorre los días entre un hito y el siguiente al ritmo del scroll, suavizado (unos 90 ms), y lleva la semana y
+           la fecha. Cada hito es un botón: al pasar muestra su línea del registro y con clic lleva el scroll a él */
         resumen: el => {
             const hitos = [...el.querySelectorAll('.lf-hitos li')], registro = [...el.querySelectorAll('.lf-registro li')];
             const ruta = el.querySelector('[data-ruta]'), estado = el.querySelector('[data-envio-estado]'), n = el.querySelector('[data-envio-n]');
-            const total = hitos.length;
-            let actual = -1;
+            const num = el.querySelector('[data-envio-num]'), fecha = el.querySelector('[data-ruta-fecha]'), nota = el.querySelector('[data-ruta-nota]');
+            const caja = el.querySelector('.lf-estado'), total = hitos.length, TAU = 90;
+            const xs = hitos.map(li => parseFloat(li.style.getPropertyValue('--x'))), dias = hitos.map(li => +li.dataset.d);
+            const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'], INICIO = Date.UTC(2026, 7, 25);
+            const dia = d => { const f = new Date(INICIO + d * 864e5); return `Sem ${pad(Math.min(Math.floor(d / 7) + 1, 8))} · ${f.getUTCDate()} ${MESES[f.getUTCMonth()]}`; };
+            let actual = -1, meta = 0, ver = -1, ult = 0, bucle = 0, hoy = -1;
+            const relevo = (x, dir) => { x.style.setProperty('--dir', dir); x.classList.remove('cambia'); void x.offsetWidth; x.classList.add('cambia'); };
+            const pintar = q => {
+                const i = Math.min(Math.floor(q), total - 1), j = Math.min(i + 1, total - 1), t = q - i;
+                ruta.style.setProperty('--lf-f', (xs[i] + (xs[j] - xs[i]) * t).toFixed(5));
+                const d = Math.round(dias[i] + (dias[j] - dias[i]) * t);
+                if (d !== hoy) { hoy = d; fecha.textContent = dia(d); }
+            };
+            const seguir = ahora => {
+                const dt = Math.min(ahora - (ult || ahora), 50); ult = ahora;
+                ver = ver < 0 || quieto ? meta : ver + (meta - ver) * (1 - Math.exp(-dt / TAU));
+                if (Math.abs(meta - ver) < 0.001) ver = meta;
+                pintar(ver);
+                if (ver !== meta) bucle = requestAnimationFrame(seguir);
+                else { bucle = 0; ult = 0; }
+            };
+            /* Interacción: el foco (mouse o teclado) muestra la nota del hito; el clic lleva a su tramo de la pista */
+            const mostrar = i => {
+                hitos.forEach((li, k) => li.classList.toggle('foco', k === i));
+                if (i < 0) { nota.classList.remove('ve'); return; }
+                nota.innerHTML = registro[i].innerHTML;
+                nota.style.setProperty('--x', xs[i]);
+                nota.classList.add('ve');
+            };
+            hitos.forEach((li, i) => {
+                const b = li.querySelector('button');
+                b.setAttribute('aria-label', `${li.querySelector('b').textContent}, ${li.querySelector('.mono').textContent}: ir a este hito`);
+                b.addEventListener('pointerenter', () => mostrar(i));
+                b.addEventListener('pointerleave', () => mostrar(-1));
+                b.addEventListener('focus', () => mostrar(i));
+                b.addEventListener('blur', () => mostrar(-1));
+                b.addEventListener('click', () => {
+                    const r = el.getBoundingClientRect(), recorrido = r.height - window.innerHeight;
+                    window.scrollTo({ top: window.scrollY + r.top + (0.04 + 0.9 * (i + 0.5) / total) * recorrido, behavior: quieto ? 'auto' : 'smooth' });
+                });
+            });
             return p => {
                 const q = fijar((p - 0.04) / 0.9) * total, k = Math.min(Math.floor(q), total - 1);
-                ruta.style.setProperty('--lf-f', ((Math.min(q, total - 1) + 0.5) / total).toFixed(4));
+                meta = Math.min(q, total - 1);
+                if (!bucle) bucle = requestAnimationFrame(seguir);
                 if (k === actual) return;
+                const dir = k > actual ? 1 : -1, primero = actual < 0;
                 actual = k;
                 hitos.forEach((li, i) => { li.classList.toggle('hecho', i < k); li.classList.toggle('actual', i === k); });
                 registro.forEach((li, i) => li.classList.toggle('actual', i === k));
                 estado.textContent = hitos[k].querySelector('b').textContent;
                 n.textContent = `Hito ${pad(k + 1)} / ${pad(total)}`;
+                num.textContent = pad(k + 1);
+                if (!primero) { relevo(num, dir); relevo(caja, dir); }
             };
         },
 
