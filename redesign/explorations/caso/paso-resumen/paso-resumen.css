@@ -1,0 +1,41 @@
+/* =======================================================
+   LLEGÓ FARMA · PASO DEL HERO AL RESUMEN (.ps)
+   ======================================================= */
+/* Exploración de escritorio. El hero se queda fijo y el resumen sube encima como una hoja; la ventana en vivo sale
+   del hero (paso-resumen.js la deja fija sobre todo) y aterriza en la tarjeta de seguimiento, donde queda como el
+   destino del envío. Se apoya en llego.css, caso-marco.css y una copia de llego.js con la pista del hero más larga */
+
+/* --- 1. LA HOJA SUBE SOBRE EL HERO --- */
+/* El resumen empieza una pantalla antes de que termine el hero: su borde entra por abajo mientras el hero sigue fijo.
+   --hund (0 a 1, lo escribe el JS) hunde el hero: se achica apenas y se oscurece bajo la hoja */
+.ps .lf-res { z-index: 2; margin-top: -100lvh; box-shadow: 0 -24px 64px rgba(4, 30, 33, 0.28); }
+.ps .lf-h-fijo { transform-origin: 50% 100%; scale: calc(1 - var(--hund, 0) * 0.05); }
+.ps .lf-h-fijo::after { content: ''; position: absolute; inset: 0; z-index: 6; background: var(--lf-negro); opacity: calc(var(--hund, 0) * 0.6); pointer-events: none; }
+
+/* --- 2. LA VENTANA, FUERA DEL HERO --- */
+/* Fija sobre la página y bajo la barra. El JS la lleva del rectángulo del hero al del destino con translate y scale
+   (origen arriba a la izquierda): el sitio se ve igual de entero en todo el viaje. Su rótulo se apaga al despegar */
+.lf-h-vivo.ps-fuera { position: fixed; z-index: 40; transform-origin: 0 0; will-change: transform; }
+.lf-h-vivo.ps-fuera .lf-h-vivo-cab { opacity: calc(1 - var(--k, 0) * 4); }
+.ps-dejo .lf-h-vivo.ps-fuera { visibility: hidden; }
+
+/* --- 3. EL DESTINO EN LA TARJETA DE SEGUIMIENTO --- */
+/* Un hueco 16:10 con borde punteado, como el de un comprobante de entrega por llenar. Adentro, una copia del sitio
+   que toma el lugar de la ventana cuando el resumen se va (así nada viaja con lag mientras la hoja se mueve) */
+.lf-comp { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+.lf-comp-marco { position: relative; aspect-ratio: 16 / 10; overflow: hidden; outline: 1px dashed color-mix(in srgb, var(--acento) 60%, transparent); outline-offset: -1px; background: color-mix(in srgb, var(--acento) 6%, var(--fondo)); }
+.lf-comp-marco iframe { position: absolute; top: 0; left: 0; border: 0; pointer-events: none; transform-origin: 0 0; opacity: 0; }
+.ps-dejo .lf-comp-marco iframe { opacity: 1; }
+.lf-comp figcaption { display: flex; justify-content: space-between; color: var(--texto-3); }
+.lf-comp-est { display: inline-flex; align-items: center; gap: 8px; transition: color 300ms; }
+.lf-comp-est::before { content: ''; width: 6px; height: 6px; border-radius: 50%; border: 1px solid currentColor; transition: background-color 300ms, border-color 300ms; }
+.lf-comp.entregado .lf-comp-est { color: var(--texto); }
+.lf-comp.entregado .lf-comp-est::before { border-color: var(--acento); background: var(--acento); }
+/* La tarjeta crece con el destino: menos aire entre bloques para que quepa en 900 px de alto */
+.ps .lf-envio { gap: 16px; }
+.ps .lf-registro { min-height: 7.4em; }
+
+/* --- 4. CIERRE DE LA EXPLORACIÓN --- */
+.ps-fin { position: relative; z-index: 2; display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.ps-fin .mono { color: var(--texto-3); }
+.ps-fin p { max-width: 40ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
