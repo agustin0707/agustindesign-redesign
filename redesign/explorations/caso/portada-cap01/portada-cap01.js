@@ -61,7 +61,7 @@
         botones.forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === nombre)));
         try { localStorage.setItem('pp-portada', nombre); } catch (e) { /* sin almacenamiento, se parte en Índice */ }
         /* Con <base href> un '#x' suelto cambiaría la ruta: se arma la dirección entera */
-        history.replaceState(null, '', location.pathname + location.search + '#' + nombre);
+        try { history.replaceState(null, '', location.pathname + location.search + '#' + nombre); } catch (e) { /* un visor que no deja cambiar la dirección no corta el cambio de portada */ }
         requestAnimationFrame(() => { medir(); pintar(ver); if (volver) desdeElResumen(); });
     };
     botones.forEach(x => x.addEventListener('click', () => activar(x.dataset.v, true)));
