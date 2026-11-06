@@ -176,6 +176,9 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-h-vivo { z-index: 3; outline: 1px solid rgba(255, 255, 255, 0.2); background: var(--lf-profundo); opacity: 0; visibility: hidden; transition: opacity 450ms var(--sale), visibility 0s 450ms; }
 .lf-h-vivo.en { opacity: 1; visibility: visible; transition: opacity 450ms var(--sale); }
 .lf-h-vivo iframe { display: block; width: var(--iw, 100%); height: var(--ih, 100%); border: 0; pointer-events: none; transform-origin: 0 0; scale: var(--ie, 1); }
+/* Una capa encima del sitio recibe la rueda y el toque: Safari puede mandarle la rueda al iframe aunque tenga
+   pointer-events: none, y el sitio (overscroll-behavior: none) se la queda y no la pasa al caso */
+.lf-h-vivo::after { content: ''; position: absolute; inset: 0; }
 .lf-h-vivo-cab { position: absolute; left: 0; right: 0; bottom: calc(100% + 9px); display: flex; justify-content: space-between; font-size: 11px; color: rgba(255, 255, 255, 0.72); }
 .lf-h-vivo-cab > span:last-child { display: flex; align-items: center; gap: 8px; color: #FFFFFF; }
 .lf-h-vivo-cab i { width: 6px; height: 6px; border-radius: 50%; background: var(--lf-claro); animation: lf-h-late 1600ms ease-in-out infinite; }

@@ -1,0 +1,130 @@
+/* =======================================================
+   LLEGÓ FARMA · SEIS PROPUESTAS PARA EL PASO AL RESUMEN (.pv)
+   ======================================================= */
+/* Exploración de escritorio. Parte en el zoom de la cinta a la ventana en vivo y termina en el resumen. Dos grupos:
+   hoja (el resumen sube opaco sobre el hero y lo tapa) y funde (el hero se vuelve papel y la ventana llega a un lugar
+   del resumen). paso-propuestas.js escribe las variables del paso (--hund, --ks, --k, --s, --alto, --pv-*) */
+
+/* --- 1. MARCO COMÚN --- */
+/* El resumen empieza una pantalla antes de que termine el hero, así puede subir encima de él */
+.pv .lf-res { z-index: 2; margin-top: -100lvh; }
+.pv .lf-h-fijo::after { content: ''; position: absolute; inset: 0; z-index: 6; opacity: 0; pointer-events: none; }
+/* La carta de Inicio que queda bajo la ventana se apaga cuando la ventana se mueve o se angosta: así no queda un
+   doble del sitio ni un bloque oscuro detrás */
+.pv .lf-h-carta.blanco { opacity: calc(1 - var(--ks, 0) * 8); }
+/* La ventana, fija sobre la página. Viaja con translate y scale; el borde se mide en pixeles de pantalla */
+.lf-h-vivo.pv-fuera { --sale: var(--ease); position: fixed; z-index: 40; transform-origin: 0 0; will-change: transform;
+    outline-width: calc(1px / var(--s, 1));
+    box-shadow: 0 calc(var(--alto, 0) * 22px) calc(var(--alto, 0) * 56px) calc(var(--alto, 0) * -14px) rgba(4, 30, 33, 0.42); }
+.lf-h-vivo.pv-fuera .lf-h-vivo-cab { opacity: calc(1 - var(--k, 0) * 4); }
+.pv-dejo .lf-h-vivo.pv-fuera, .pv-tapado .lf-h-vivo.pv-fuera { visibility: hidden; }
+/* Piezas que solo usa una propuesta */
+.pv .lf-comp, .pv .pv-tel, .pv-sec, .pv-riel, .pv-capa { display: none; }
+/* La primera y la última fecha de la línea se alinean a los bordes en vez de salirse */
+.pv .lf-hitos li:first-child { align-items: flex-start; translate: -6.5px 0; }
+.pv .lf-hitos li:last-child { align-items: flex-end; translate: calc(-100% + 6.5px) 0; }
+
+/* --- 2. GRUPO HOJA: EL RESUMEN TAPA EL SITIO --- */
+/* La ventana queda bajo el resumen y se oscurece con el hero mientras la hoja sube */
+.pv-hoja .lf-res { box-shadow: 0 -24px 64px rgba(4, 30, 33, 0.28); }
+.pv-hoja .lf-h-fijo::after { background: var(--lf-negro); opacity: calc(var(--hund, 0) * 0.45); }
+.pv-hoja .lf-h-vivo.pv-fuera { z-index: 1; }
+.pv-hoja .lf-h-vivo.pv-fuera::after { background: var(--lf-negro); opacity: calc(var(--hund, 0) * 0.45); }
+
+/* --- 3. GRUPO FUNDE: EL HERO SE VUELVE PAPEL --- */
+/* El resumen llega transparente y quieto en su lugar (se descuenta lo que le falta por subir); su contenido aparece
+   en la segunda mitad. Recién arriba se vuelve opaco, cuando el hero ya es papel */
+.pv-funde .lf-res.cs-claro { background: none; }
+.pv-funde .lf-res.cs-claro.pv-opaco { background: var(--fondo); }
+.pv-funde .lf-h-fijo::after { background: var(--lf-papel); opacity: calc(var(--hund, 0) * 1.25); }
+.pv-funde .lf-res .cs-fijo { translate: 0 calc(var(--pv-falta, 0) * -1px); }
+.pv-funde .lf-res .cs-fijo > * { opacity: calc((var(--pv-papel, 1) - 0.4) * 2); }
+
+/* --- 4. RECORRIDO: EL SCROLL DEL CASO RECORRE EL ONE PAGE --- */
+/* La sección actual en el rótulo de la ventana y un riel de scroll propio a su derecha */
+.pv-recorrido .pv-sec { display: inline; color: #FFFFFF; }
+.pv-recorrido .pv-riel { display: block; position: absolute; top: 0; bottom: 0; right: -16px; width: 1px; background: rgba(255, 255, 255, 0.2); }
+.pv-riel i { position: absolute; left: -1px; width: 3px; top: calc(var(--pv-k, 0) * (1 - var(--pv-t, 0.1)) * 100%); height: calc(var(--pv-t, 0.1) * 100%); background: #FFFFFF; }
+
+/* --- 5. LÁMINA: EL SITIO GRANDE JUNTO AL RESUMEN --- */
+/* El texto en las columnas 1 a 5 y la ventana en las 6 a 12, con el seguimiento bajo ella (sin registro) */
+.pv-lamina .lf-res-txt { grid-column: 1 / span 5; }
+.pv-lamina .lf-enunciado { font-size: clamp(24px, 2.2vw, 36px); }
+.pv-lamina .lf-encargo { grid-template-columns: 1fr; }
+.pv-lamina .lf-encargo-flecha, .pv-lamina .lf-registro { display: none; }
+.pv-lamina .lf-envio { grid-column: 6 / -1; gap: 16px; padding: 0; border: 0; background: none; }
+.pv-lamina .lf-envio-estado b { font-size: clamp(24px, 2vw, 32px); }
+.pv-lamina .lf-comp { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+.lf-comp-marco, .pv-tel-marco { position: relative; overflow: hidden; background: color-mix(in srgb, var(--acento) 8%, var(--fondo)); }
+.lf-comp-marco { aspect-ratio: 16 / 10; }
+.lf-comp-marco iframe, .pv-tel-marco iframe { position: absolute; top: 0; left: 0; border: 0; pointer-events: none; transform-origin: 0 0; opacity: 0; }
+.pv-dejo :is(.lf-comp-marco, .pv-tel-marco) iframe { opacity: 1; }
+.pv .lf-comp figcaption, .pv-tel figcaption { display: flex; justify-content: space-between; color: var(--texto-3); }
+
+/* --- 6. RESPONSIVO: ESCRITORIO, TABLET Y CELULAR --- */
+/* La ventana cambia de caja con una transición corta; el sitio adentro se vuelve a armar a cada ancho */
+.pv-responsivo .lf-h-vivo.pv-fuera { transition: opacity 450ms var(--ease), left 320ms var(--ease), top 320ms var(--ease), width 320ms var(--ease), height 320ms var(--ease); }
+.pv-responsivo .lf-h-vivo iframe { transition: scale 320ms var(--ease); }
+.pv-responsivo .lf-envio { display: none; }
+.pv-responsivo .pv-tel { display: flex; flex-direction: column; gap: 10px; grid-column: 10 / -1; align-self: center; margin: 0; }
+.pv-tel-marco { aspect-ratio: 390 / 844; }
+
+/* --- 7. RUTA: LA VENTANA SE CIERRA EN LA LÍNEA DEL PROYECTO --- */
+/* La ventana se recorta hasta 1 px a la altura de su centro y el sitio se apaga en turquesa: esa línea viaja a la
+   ruta, que ocupa todo el ancho con los seis hitos y sus nombres. Los nodos se encienden de izquierda a derecha */
+.pv-ruta .lf-h-vivo.pv-fuera { clip-path: inset(calc(var(--pv-c, 0) * (50% - 0.5px)) 0); background: var(--lf-turquesa); box-shadow: none; }
+.pv-ruta .lf-h-vivo.pv-fuera iframe { opacity: calc(1 - (var(--pv-c, 0) - 0.45) * 2.5); }
+.pv-ruta .lf-res .cs-fijo { row-gap: clamp(40px, 7vh, 72px); }
+.pv-ruta .lf-res-txt { grid-column: 1 / span 8; }
+.pv-ruta .lf-envio { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--medianil); row-gap: 24px; padding: 0; border: 0; background: none; }
+.pv-ruta .lf-envio-cab, .pv-ruta .lf-hitos { grid-column: 1 / -1; }
+/* La ruta va antes del estado: la línea que baja no cruza ningún texto */
+.pv-ruta .lf-envio-cab { order: -2; }
+.pv-ruta .lf-hitos { order: -1; }
+.pv-ruta .lf-hitos { height: 72px; }
+.pv-ruta .lf-hitos::before { background: var(--acento); opacity: 0; }
+.pv-ruta .lf-hitos::after, .pv-ruta .lf-registro { display: none; }
+.pv-ruta .pv-trazo .lf-hitos::before { opacity: 1; }
+.pv-ruta .lf-hitos b { position: static; width: auto; height: auto; overflow: visible; clip-path: none; font: 400 15px / 1.2 var(--cs-f); white-space: nowrap; color: var(--texto-2); }
+.pv-ruta .lf-hitos li.actual b { color: var(--texto); }
+.pv-ruta .lf-hitos li { opacity: 0; scale: 0.7; transition: opacity 200ms var(--ease), scale 200ms var(--ease); }
+.pv-ruta .pv-trazo .lf-hitos li { opacity: 1; scale: 1; transition-delay: calc(var(--x) * 70ms); }
+.pv-ruta .lf-envio-estado { grid-column: 1 / span 6; }
+.pv-ruta .lf-etapas { grid-column: 9 / -1; align-self: end; }
+
+/* --- 8. COTAS: EL SITIO SE ANOTA COMO UNA LÁMINA DEL MANUAL --- */
+/* La capa recorta la lupa a la ventana. La lupa es la caja de evidencia del marco: un foco con las marcas de corte
+   del logo de Agustín Design, que se mueve de un elemento al siguiente (300 ms). El rótulo la sigue */
+.pv-cotas .pv-capa { display: block; position: absolute; inset: 0; z-index: 2; overflow: hidden; pointer-events: none; }
+.pv-lupa { position: absolute; left: 0; top: 0; width: var(--lw, 0px); height: var(--lh, 0px); transform: translate3d(var(--lx, 0px), var(--ly, 0px), 0);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5), 0 0 0 200vmax rgba(4, 30, 33, 0.55); opacity: 0;
+    transition: opacity 300ms, transform 300ms var(--ease), width 300ms var(--ease), height 300ms var(--ease); }
+.pv-lupa::before {
+    content: ''; position: absolute; inset: -7px; color: #FFFFFF;
+    --t: 1px; --b: 10px; --c: linear-gradient(currentColor, currentColor);
+    background: var(--c) left top / var(--b) var(--t), var(--c) left top / var(--t) var(--b),
+                var(--c) right top / var(--b) var(--t), var(--c) right top / var(--t) var(--b),
+                var(--c) left bottom / var(--b) var(--t), var(--c) left bottom / var(--t) var(--b),
+                var(--c) right bottom / var(--b) var(--t), var(--c) right bottom / var(--t) var(--b);
+    background-repeat: no-repeat;
+}
+.pv-nota { position: absolute; left: 0; top: 0; display: flex; gap: 12px; padding: 9px 12px; transform: translate3d(var(--lx, 0px), var(--ly, 0px), 0);
+    background: var(--lf-negro); color: #FFFFFF; font-size: 11px; white-space: nowrap; opacity: 0;
+    transition: opacity 300ms, transform 300ms var(--ease); }
+.pv-nota.arriba { translate: 0 -100%; }
+.pv-nota b { font-weight: 400; color: var(--lf-claro); }
+.pv-anota :is(.pv-lupa, .pv-nota) { opacity: 1; }
+
+/* --- 9. CIERRE Y SELECTOR DE LA EXPLORACIÓN --- */
+.pv-fin { position: relative; z-index: 2; display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.pv-fin .mono { color: var(--texto-3); }
+.pv-fin p { max-width: 40ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
+.pv-sel { position: fixed; left: 50%; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; width: max-content; max-width: calc(100vw - 32px); padding: 10px 12px; translate: -50% 0;
+    background: rgba(10, 20, 21, 0.86); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.pv-sel-desc { max-width: 64ch; padding: 0 10px; font: 400 13px / 1.4 var(--cs-f); text-transform: none; letter-spacing: 0; color: rgba(255, 255, 255, 0.74); }
+.pv-sel-fila { display: flex; flex-wrap: wrap; gap: 4px; }
+.pv-sel button { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; background: none; color: rgba(255, 255, 255, 0.6); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.pv-sel button span { color: var(--lf-claro); }
+.pv-sel button[aria-pressed="true"] { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+.pv-sel-otra { margin-left: auto; }
+@media (hover: hover) { .pv-sel button:hover { color: #FFFFFF; } }

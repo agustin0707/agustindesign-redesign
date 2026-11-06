@@ -50,7 +50,7 @@
         const MOVIL = { n: 3, ancho: 0.5, dx: 0.06, dy: -0.12 };
         const fijo = $('.lf-h-fijo'), escena = $('.lf-h-escena'), plano = $('.lf-h-plano');
         const vivo = $('.lf-h-vivo'), marco = $('iframe', vivo), ancho = $('[data-ancho]'), linea = $('.lf-h-linea');
-        const c = { W: 0, H: 0, cw: 0, ch: 0, g: 28, paso: 0, ciclo: 0, largo: 0, off: 0, p: 0, t: 0, escala: 1 };
+        const c = { W: 0, H: 0, cw: 0, ch: 0, g: 28, paso: 0, ciclo: 0, largo: 0, off: 0, p: 0, t: 0 };
         let P = HORIZONTE, cols = [], foco = 0, armado = 0;
         let mx = 0, my = 0, sx = 0, sy = 0, ox = 0, oy = 0, vx = 0, vy = 0, ult = 0, t0 = 0, hd = false, abierto = false, vez = 0, blanco = -1;
 
@@ -90,7 +90,6 @@
             P = movil.matches ? { ...HORIZONTE, ...MOVIL } : HORIZONTE;
             armar();
             c.W = fijo.clientWidth; c.H = fijo.clientHeight;
-            c.escala = (parseFloat(getComputedStyle(h).getPropertyValue('--pista')) - 100) / 180;
             c.cw = Math.round(c.W * P.ancho); c.ch = c.cw * 10 / 16; c.g = Math.round(fijar(c.cw * 0.067, 10, 36));
             c.paso = c.ch + c.g; c.ciclo = 8 * c.paso; c.largo = Math.max(c.W, c.H) * 3.4;
             const n = Math.ceil((c.largo + c.ciclo) / c.paso) + 1;
@@ -122,8 +121,9 @@
             sx += (mx - sx) * k; sy += (my - sy) * k;
             vx += (w * w * (sx - ox) - 2 * w * vx) * s; vy += (w * w * (sy - oy) - 2 * w * vy) * s;
             ox += vx * s; oy += vy * s;
-            /* Copia: pa es el avance en la escala de la pista original (280), así el aterrizaje no cambia de ritmo */
-            const pa = c.p * c.escala, e = curva(fijar(pa / 0.85));
+            /* Copia: pa es el avance en la escala de la pista original (280), así el aterrizaje no cambia de ritmo. La
+               escala sale del alto real de la pista, que cada propuesta del paso puede alargar */
+            const pa = c.p * Math.max(h.offsetHeight - c.H, 1) / (c.H * 1.8), e = curva(fijar(pa / 0.85));
             /* Llegando del home, la carta parte aterrizada sobre la ventana de la portada (L = 1) y se suelta; E es el
                aterrizaje que se ve, el del scroll o el de la llegada, y r la caja donde aterriza */
             const ll = c.llega, L = ll ? 1 - ll.curva(fijar((ahora - ll.t0) / ll.dur)) : 0, E = Math.max(e, L);
