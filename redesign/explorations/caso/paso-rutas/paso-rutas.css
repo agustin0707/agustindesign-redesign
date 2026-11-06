@@ -1,0 +1,119 @@
+/* =======================================================
+   LLEGÓ FARMA · SEIS RUTAS PARA EL PASO AL RESUMEN (.rt)
+   ======================================================= */
+/* Exploración de escritorio sobre la propuesta Ruta: la ventana en vivo se vuelve la línea del proyecto. El hero se
+   vuelve papel mientras el resumen sube transparente; la ruta queda a media pantalla, cerca del centro de la ventana,
+   así la línea casi no viaja. El enunciado y el estado se despliegan desde la línea al final. paso-rutas.js escribe
+   las variables del paso (--hund, --rt-*) */
+
+/* --- 1. MARCO COMÚN --- */
+/* El resumen empieza una pantalla antes de que termine el hero y llega quieto en su lugar: se descuenta lo que le
+   falta por subir. Recién arriba se vuelve opaco, cuando el hero ya es papel */
+.rt .lf-res { z-index: 2; margin-top: -100lvh; }
+.rt .lf-res.cs-claro { background: none; }
+.rt .lf-res.cs-claro.rt-opaco { background: var(--fondo); }
+.rt .lf-res .cs-fijo { translate: 0 calc(var(--rt-falta, 0) * -1px); }
+.rt .lf-h-fijo::after { content: ''; position: absolute; inset: 0; z-index: 6; background: var(--lf-papel); opacity: calc(var(--hund, 0) * 2); pointer-events: none; }
+.rt .lf-h-carta.blanco { opacity: calc(1 - var(--hund, 0) * 8); }
+/* La ventana, fija sobre la página; cada ruta la transforma a su manera */
+.lf-h-vivo.rt-fuera { --sale: var(--ease); position: fixed; z-index: 40; transform-origin: 0 0; will-change: transform; }
+.lf-h-vivo.rt-fuera .lf-h-vivo-cab { opacity: calc(1 - var(--rt-s, 0) * 10); }
+.rt-ida .lf-h-vivo.rt-fuera { visibility: hidden; }
+.rt-destino { display: none; }
+
+/* --- 2. LA LÍNEA EN VUELO --- */
+/* Seis tramos de 1 px con su nodo al centro: el mismo reparto que los hitos de la ruta, así el relevo no salta */
+.rt-linea { position: fixed; left: 0; top: 0; z-index: 45; display: flex; width: var(--lw, 0px); height: 1px; transform: translate3d(var(--lx, 0px), calc(var(--ly, 0px) - 0.5px), 0); opacity: var(--la, 0); pointer-events: none; }
+.rt-linea i { position: relative; flex: 1; background: var(--lf-turquesa); opacity: var(--o, 1); }
+.rt-linea i::after { content: ''; position: absolute; left: 50%; top: 50%; width: 13px; height: 13px; margin: -6.5px; border-radius: 50%; background: var(--lf-turquesa); scale: var(--n, 0); }
+
+/* --- 3. EL RESUMEN EN TRES BANDAS --- */
+/* Arriba el enunciado, al medio la ruta a todo el ancho y abajo el estado, el encargo y los capítulos */
+.rt-panel { display: grid; grid-template-rows: 1fr auto 1fr; row-gap: clamp(36px, 6vh, 64px); padding: 0 var(--margen); }
+.rt-arriba { align-self: end; opacity: var(--rt-t, 0); translate: 0 calc((1 - var(--rt-t, 0)) * 36px); }
+.rt-abajo { align-self: start; align-items: start; opacity: var(--rt-t, 0); translate: 0 calc((1 - var(--rt-t, 0)) * -36px); }
+.rt .lf-res-txt { grid-column: 1 / span 8; }
+.rt-estado { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 6px; }
+.rt-estado > .mono { color: var(--texto-3); }
+.rt-estado b { font: 300 clamp(26px, 2.2vw, 36px) / 1 var(--cs-f); letter-spacing: -0.035em; }
+.rt .lf-registro { min-height: 0; margin-top: 10px; padding-top: 12px; }
+.rt .lf-registro li:not(.actual) { display: none; }
+.rt .lf-encargo { grid-column: 4 / span 5; }
+.rt .lf-etapas { grid-column: 9 / -1; padding-top: 22px; border-top: 1px solid var(--linea); }
+
+/* --- 4. LA RUTA --- */
+/* Seis tramos iguales con un hito al centro de cada uno. La línea se llena con el scroll hasta el hito actual y sigue
+   hacia el próximo; el mensajero va en la punta */
+.rt-ruta { position: relative; height: 76px; --rt-f: 0.0833; }
+.rt-base, .rt-avance, .rt-marca { position: absolute; display: block; opacity: 0; transition: opacity 200ms; }
+.rt-base { left: 0; right: 0; top: 6px; height: 1px; background: var(--acento); }
+.rt-avance { left: 0; top: 5.5px; width: calc(var(--rt-f) * 100%); height: 2px; background: var(--lf-oscuro); }
+.rt-marca { left: calc(var(--rt-f) * 100%); top: 6.5px; z-index: 2; width: 7px; height: 7px; margin: -3.5px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 0 2px var(--lf-oscuro); }
+.rt-trazo :is(.rt-base, .rt-avance, .rt-marca) { opacity: 1; }
+.rt .lf-hitos { position: absolute; inset: 0; height: auto; margin: 0; }
+.rt .lf-hitos::before, .rt .lf-hitos::after { display: none; }
+.rt .lf-hitos li { left: calc((var(--x) + 0.5) * 100% / 6); translate: -50% var(--rt-y, 0px); opacity: 0; scale: 0.6; transition: opacity 180ms var(--ease), scale 180ms var(--ease); }
+.rt .lf-hitos li.rt-on { opacity: 1; scale: 1; }
+.rt .lf-hitos b { position: static; width: auto; height: auto; overflow: visible; clip-path: none; margin-top: -2px; font: 400 15px / 1.2 var(--cs-f); white-space: nowrap; color: var(--texto-2); }
+.rt .lf-hitos li.actual b { color: var(--texto); }
+.rt-red { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; display: none; }
+.rt-red path { fill: none; stroke-linejoin: round; }
+.rt-red-base { stroke: var(--acento); stroke-width: 1; stroke-dasharray: calc(var(--rt-total, 1) * 1px); stroke-dashoffset: calc(var(--rt-total, 1) * (1 - var(--rt-g, 0)) * 1px); }
+.rt-red-avance { stroke: var(--lf-oscuro); stroke-width: 2; stroke-dasharray: calc(var(--rt-lf, 0) * 1px) calc(var(--rt-total, 1) * 1px); opacity: 0; transition: opacity 200ms; }
+
+/* --- 5. HORIZONTE --- */
+/* La ventana se acuesta sobre su eje como la cinta sobre el horizonte, y se oscurece al quedar de canto */
+.rt-v-horizonte .lf-h-vivo.rt-fuera { transform-origin: 50% 50%; }
+.rt-v-horizonte .lf-h-vivo.rt-fuera::after { background: var(--lf-profundo); opacity: calc(var(--rt-k, 0) * 0.7); }
+
+/* --- 6. ESCANEO --- */
+/* Lo leído se borra sobre la línea; el rótulo de la lectura va pegado a la línea, a la derecha */
+.rt-v-escaneo .lf-h-vivo.rt-fuera { clip-path: inset(calc(var(--rt-sc, 0) * 100%) 0 0 0); }
+.rt-v-escaneo .rt-linea { box-shadow: 0 0 18px 1px color-mix(in srgb, var(--lf-claro) 70%, transparent); }
+.rt-v-escaneo .rt-linea::before { content: attr(data-t); position: absolute; right: 0; bottom: 9px; padding: 5px 8px; background: var(--lf-turquesa); color: #FFFFFF; font: 400 11px / 1 var(--cs-mono, 'Geist Mono', monospace); text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; opacity: var(--lt, 1); }
+
+/* --- 7. TRAMOS --- */
+/* El recorte de seis columnas lo escribe el JS; cada tramo cerrado se vuelve turquesa con su nodo */
+.rt-v-tramos .lf-h-vivo.rt-fuera { box-shadow: none; }
+
+/* --- 8. MENSAJERO Y REPARTO: LA VENTANA SE CIERRA EN UN PUNTO --- */
+/* Un recorte redondeado que termina en un punto de 14 px, el nodo central del isotipo */
+:is(.rt-v-mensajero, .rt-v-reparto) .lf-h-vivo.rt-fuera { clip-path: inset(var(--rt-ct, 0px) var(--rt-cl, 0px) round var(--rt-cr, 0px)); background: var(--lf-turquesa); box-shadow: none; }
+:is(.rt-v-mensajero, .rt-v-reparto) .lf-h-vivo.rt-fuera iframe { opacity: calc(1 - var(--rt-k, 0) * 2.5); }
+/* El hito actual late como la onda del isotipo */
+.rt-v-mensajero .lf-hitos li.actual i::after { content: ''; position: absolute; inset: -1px; border-radius: 50%; border: 1px solid var(--acento); animation: rt-onda 1800ms var(--ease) infinite; }
+@keyframes rt-onda { from { scale: 1; opacity: 0.8; } 50%, to { scale: 3.4; opacity: 0; } }
+/* Reparto: la ruta va por calles de la retícula. Se dibuja con el SVG y no con la línea recta */
+.rt-v-reparto .rt-red { display: block; }
+.rt-v-reparto :is(.rt-base, .rt-avance) { display: none; }
+.rt-v-reparto.rt-ida .rt-red-base { opacity: 1; }
+.rt-v-reparto .rt-trazo .rt-red-avance { opacity: 1; }
+.rt-v-reparto .rt-marca { left: var(--rt-mx, 0px); top: var(--rt-my, 6.5px); }
+
+/* --- 9. DESTINO --- */
+/* El sitio vuela al final de la ruta y queda ahí, sobre el último hito, con un tallo de 1 px hasta la línea */
+.rt-v-destino .rt-destino { position: absolute; right: 0; bottom: calc(100% - 6px + 22px); display: flex; flex-direction: column; gap: 8px; width: clamp(200px, 17vw, 260px); margin: 0; }
+.rt-v-destino .rt-destino::after { content: ''; position: absolute; top: 100%; left: calc(100% - (100vw - 2 * var(--margen)) / 12); width: 1px; height: 22px; background: var(--acento); scale: 1 var(--rt-g, 0); transform-origin: 0 100%; }
+.rt-destino-marco { position: relative; order: 2; aspect-ratio: 16 / 10; overflow: hidden; outline: 1px solid var(--linea); }
+.rt-destino-marco iframe { position: absolute; top: 0; left: 0; border: 0; pointer-events: none; transform-origin: 0 0; opacity: 0; }
+.rt-ida .rt-destino-marco iframe { opacity: 1; }
+.rt-v-destino figcaption { order: 1; display: flex; justify-content: space-between; color: var(--texto-3); opacity: var(--rt-t, 0); }
+.rt-v-destino .entregado .rt-destino-est { color: var(--acento); }
+.rt-destino-est.cambia { animation: rt-relevo 300ms var(--ease); }
+@keyframes rt-relevo { from { opacity: 0; translate: 0 6px; } }
+.rt-v-destino .lf-h-vivo.rt-fuera { outline-width: calc(1px / var(--s, 1));
+    box-shadow: 0 calc(var(--alto, 0) * 22px) calc(var(--alto, 0) * 56px) calc(var(--alto, 0) * -14px) rgba(4, 30, 33, 0.42); }
+
+/* --- 10. CIERRE Y SELECTOR DE LA EXPLORACIÓN --- */
+.rt-fin { position: relative; z-index: 2; display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.rt-fin .mono { color: var(--texto-3); }
+.rt-fin p { max-width: 40ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
+.rt-sel { position: fixed; left: 50%; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; width: max-content; max-width: calc(100vw - 32px); padding: 10px 12px; translate: -50% 0;
+    background: rgba(10, 20, 21, 0.86); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.rt-sel-desc { max-width: 64ch; padding: 0 10px; font: 400 13px / 1.4 var(--cs-f); text-transform: none; letter-spacing: 0; color: rgba(255, 255, 255, 0.74); }
+.rt-sel-fila { display: flex; flex-wrap: wrap; gap: 4px; }
+.rt-sel button { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; background: none; color: rgba(255, 255, 255, 0.6); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.rt-sel button span { color: var(--lf-claro); }
+.rt-sel button[aria-pressed="true"] { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+.rt-sel-otra { margin-left: auto; }
+@media (hover: hover) { .rt-sel button:hover { color: #FFFFFF; } }
