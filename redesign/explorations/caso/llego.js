@@ -401,8 +401,9 @@
             const hitos = [...el.querySelectorAll('.lf-hitos li')], registro = [...el.querySelectorAll('.lf-registro li')];
             const ruta = el.querySelector('[data-ruta]'), estado = el.querySelector('[data-envio-estado]'), n = el.querySelector('[data-envio-n]');
             const num = el.querySelector('[data-envio-num]'), fecha = el.querySelector('[data-ruta-fecha]'), nota = el.querySelector('[data-ruta-nota]');
-            /* data-tramo: la parte de la pista que usa la ruta (1 por defecto); el resto queda para el paso siguiente */
-            const caja = el.querySelector('.lf-estado'), total = hitos.length, TAU = 90, tramo = +el.dataset.tramo || 1;
+            /* data-tramo: la parte de la pista que usa la ruta (1 por defecto); el resto queda para el paso al capítulo.
+               Se lee en cada cuadro porque la escena del capítulo lo pone y lo saca con el ancho */
+            const caja = el.querySelector('.lf-estado'), total = hitos.length, TAU = 90, parte = () => +el.dataset.tramo || 1;
             const xs = hitos.map(li => parseFloat(li.style.getPropertyValue('--x'))), dias = hitos.map(li => +li.dataset.d);
             const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'], INICIO = Date.UTC(2026, 7, 25);
             const dia = d => { const f = new Date(INICIO + d * 864e5); return `Sem ${pad(Math.min(Math.floor(d / 7) + 1, 8))} · ${f.getUTCDate()} ${MESES[f.getUTCMonth()]}`; };
@@ -438,12 +439,12 @@
                 b.addEventListener('focus', () => mostrar(i));
                 b.addEventListener('blur', () => mostrar(-1));
                 b.addEventListener('click', () => {
-                    const r = el.getBoundingClientRect(), recorrido = (r.height - window.innerHeight) * tramo;
+                    const r = el.getBoundingClientRect(), recorrido = (r.height - window.innerHeight) * parte();
                     window.scrollTo({ top: window.scrollY + r.top + (0.04 + 0.9 * (i + 0.5) / total) * recorrido, behavior: quieto ? 'auto' : 'smooth' });
                 });
             });
             return p => {
-                p = Math.min(p / tramo, 1);
+                p = Math.min(p / parte(), 1);
                 const q = fijar((p - 0.04) / 0.9) * total, k = Math.min(Math.floor(q), total - 1);
                 meta = Math.min(q, total - 1);
                 if (!bucle) bucle = requestAnimationFrame(seguir);
@@ -457,6 +458,85 @@
                 num.textContent = pad(k + 1);
                 if (!primero) { relevo(num, dir); relevo(caja, dir); }
             };
+        },
+
+        /* Capítulo 01, solo con el paso (.lf-paso: escritorio y con movimiento). La pista del resumen crece de 260 a 360
+           (la ruta usa los primeros 160 y el resumen queda quieto los últimos 100) y la del capítulo de 100 a 400, así su
+           portada sube fija sobre el resumen quieto. Su avance va en tres tercios: el hito del pitch se llena de la
+           portada y crece hasta cubrir la pantalla; se traza el 01, crece la retícula y entra el título (empieza antes de
+           terminar de abrir, así nunca queda vacía); y la decisión 01 sube encima mientras la portada se hunde. Lo que se
+           ve sigue al scroll con el resorte de 90 ms del resumen; abrir y la tinta de la barra siguen al scroll real */
+        capitulo: el => {
+            const res = document.querySelector('.lf-res'), fijo = el.querySelector('[data-cap]');
+            if (!res || !fijo) return null;
+            const html = document.documentElement, panel = res.querySelector('.lf-res-panel'), ruta = res.querySelector('[data-ruta]');
+            const nodo = ruta.querySelectorAll('.lf-hitos li')[1];
+            const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
+            const base = { res: parseFloat(res.style.getPropertyValue('--pista')) || 260, cap: parseFloat(el.style.getPropertyValue('--pista')) || 100 };
+            const VARS = ['--lf-pr', '--lf-px', '--lf-py', '--lf-pl', '--lf-pd', '--lf-pt', '--lf-ps'], TAU = 90;
+            const g = { H: 1, R: 1, techo: 1 };
+            let on = false, meta = 0, ver = 0, ult = 0, bucle = 0, salto = true, ultimoP = 0;
+            const px = v => v.toFixed(2) + 'px';
+            /* El centro del hito sale de la escala de tiempo de la ruta (no de su caja, que el paso escala), relativo al
+               panel del resumen, que mientras la portada se abre está fijo arriba */
+            const medir = () => {
+                const W = window.innerWidth, r = ruta.getBoundingClientRect(), pr = panel.getBoundingClientRect();
+                const x = r.left + r.width * parseFloat(nodo.style.getPropertyValue('--x')), y = r.top - pr.top + 6.5;
+                g.H = window.innerHeight;
+                g.R = Math.hypot(Math.max(x, W - x), Math.max(y, g.H - y));
+                /* Desde este radio el círculo ya tapa la franja de la barra */
+                g.techo = Math.hypot(Math.max(x, W - x), y);
+                fijo.style.setProperty('--lf-px', px(x)); fijo.style.setProperty('--lf-py', px(y));
+            };
+            /* Primero el nodo se llena (hasta su radio de 6,5 px) y después crece con curva firme hasta la esquina más lejana */
+            const radio = p => { const r = fijar(p * 3); return r < 0.08 ? 6.5 * r / 0.08 : 6.5 + (g.R - 6.5) * curva((r - 0.08) / 0.92); };
+            const pintar = p => {
+                fijo.style.setProperty('--lf-pr', px(radio(p)));
+                fase(fijo, '--lf-pl', tramo(p, 0.227, 0.427));
+                fase(fijo, '--lf-pd', tramo(p, 0.253, 0.533));
+                fase(fijo, '--lf-pt', tramo(p, 0.32, 0.493));
+                /* La hoja de la decisión sube al ritmo del scroll: la portada se hunde en línea con ella */
+                fase(fijo, '--lf-ps', fijar((p - 2 / 3) * 3));
+                nodo.classList.toggle('lf-elegido', p > 0);
+            };
+            const seguir = ahora => {
+                const dt = Math.min(ahora - (ult || ahora), 50); ult = ahora;
+                ver += (meta - ver) * (salto ? 1 : 1 - Math.exp(-dt / TAU));
+                if (Math.abs(meta - ver) < 0.0004) ver = meta;
+                salto = false;
+                pintar(ver);
+                if (ver !== meta) bucle = requestAnimationFrame(seguir);
+                else { bucle = 0; ult = 0; }
+            };
+            const cuadro = p => {
+                if (!on) return;
+                meta = p;
+                el.classList.toggle('lf-abre', p > 0.0005);
+                /* La barra: tinta clara apenas la portada tapa su franja, y otra vez oscura cuando la hoja de la decisión llega arriba */
+                if (radio(p) >= g.techo) res.dataset.claro = '0'; else delete res.dataset.claro;
+                if (fijar((p - 2 / 3) * 3) > 1 - 32 / g.H) el.dataset.claro = '1'; else delete el.dataset.claro;
+                if (!bucle) bucle = requestAnimationFrame(seguir);
+            };
+            const activar = () => {
+                const quiere = html.classList.contains('lf-paso');
+                if (quiere === on) return;
+                on = quiere;
+                res.style.setProperty('--pista', String(on ? base.res + 100 : base.res));
+                el.style.setProperty('--pista', String(on ? 400 : base.cap));
+                if (on) res.dataset.tramo = String((base.res - 100) / base.res); else delete res.dataset.tramo;
+                if (!on) {
+                    VARS.forEach(v => fijo.style.removeProperty(v));
+                    el.classList.remove('lf-abre'); nodo.classList.remove('lf-elegido');
+                    delete res.dataset.claro; delete el.dataset.claro;
+                    return;
+                }
+                requestAnimationFrame(() => { medir(); salto = true; cuadro(ultimoP); });
+            };
+            /* El paso del hero decide .lf-paso con la misma consulta y escucha antes: aquí solo se sigue */
+            movil.addEventListener('change', activar);
+            window.addEventListener('resize', () => { if (on) { medir(); salto = true; cuadro(ultimoP); } });
+            activar();
+            return p => { ultimoP = p; cuadro(p); };
         },
 
         /* Sistema: la trama de puntos de Llegó; en el paso 2 una ruta de puntos se vuelve nodos conectados */
@@ -619,7 +699,9 @@
         const destino = document.querySelector(a.getAttribute('href'));
         if (!destino) return;
         ev.preventDefault();
-        window.scrollTo({ top: destino.getBoundingClientRect().top + window.scrollY, behavior: quieto ? 'auto' : 'smooth' });
+        /* Con el paso, la portada del capítulo 01 empieza bajo el resumen: data-ancla dice en qué parte de su pista ya está abierta */
+        const f = document.documentElement.classList.contains('lf-paso') ? +destino.dataset.ancla || 0 : 0;
+        window.scrollTo({ top: destino.getBoundingClientRect().top + window.scrollY + f * (destino.offsetHeight - window.innerHeight), behavior: quieto ? 'auto' : 'smooth' });
     }));
     /* Arriba el turquesa del hero, abajo el morado de Tap In: el estirón del scroll nunca muestra un color ajeno */
     let abajo = null;

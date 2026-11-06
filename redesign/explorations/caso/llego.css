@@ -301,12 +301,38 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-paso .lf-hitos li { opacity: 0; scale: 0.6; transition: opacity 180ms var(--ease), scale 180ms var(--ease); }
 .lf-paso .lf-hitos li.lf-on { opacity: 1; scale: 1; }
 
+/* --- 6.3 EL PASO AL CAPÍTULO 01: EL NODO (ESCRITORIO) --- */
+/* Con .lf-paso (llego.js, escena capitulo) la portada empieza dos pantallas antes de que termine el resumen y queda
+   fija encima. El hito del pitch (28 ago) se llena de ella y crece desde su centro hasta cubrir la pantalla; después
+   se traza el 01, crece la retícula y entra el título. Al final la decisión 01 sube encima como una hoja y la portada
+   se hunde. La sección es transparente y no toma el mouse hasta abrir, así el resumen sigue respondiendo debajo */
+.lf-paso .lf-cap-1 { z-index: 3; margin-top: -200lvh; pointer-events: none; }
+.lf-paso .lf-cap-1.cs-oscuro { background: none; }
+.lf-paso .lf-cap-fijo { background: var(--lf-negro); clip-path: circle(var(--lf-pr, 0px) at var(--lf-px, 50%) var(--lf-py, 50%)); visibility: hidden; }
+.lf-paso .lf-cap-1.lf-abre .lf-cap-fijo { visibility: visible; pointer-events: auto; }
+.lf-paso .lf-hitos li.lf-elegido i { scale: 1.35; border-color: var(--lf-negro); }
+.lf-paso .lf-cap-1 .lf-reticula i { scale: 1 var(--lf-pl, 0); }
+.lf-paso .lf-cap-1 .lf-reticula::after { scale: var(--lf-pl, 0) 1; }
+/* El título no espera a verse: lo lleva el scroll */
+.lf-paso .lf-cap-1 .lf-cap-in { opacity: 1; translate: 0 calc(var(--lf-ps, 0) * -10vh); transition: none; }
+.lf-paso .lf-cap-1 :is(.cs-cap-n, .cs-cap-txt p) { opacity: var(--lf-pt, 0); }
+.lf-paso .lf-cap-1 h2 { opacity: var(--lf-pt, 0); translate: 0 calc((1 - var(--lf-pt, 0)) * 0.35em); }
+/* La salida: la decisión 01 sube sobre la última pantalla de la portada, que se oscurece debajo */
+.lf-paso .lf-cap-1 + .lf-dsec { position: relative; z-index: 4; margin-top: -100lvh; }
+.lf-paso .lf-cap-fijo::after { content: ''; position: absolute; inset: 0; z-index: 2; background: var(--lf-negro); opacity: calc(var(--lf-ps, 0) * 0.7); pointer-events: none; }
+
 /* --- 7. APERTURAS DE CAPÍTULO --- */
 /* El número gigante en contorno, como los separadores del manual */
 .lf-cap { position: relative; display: flex; align-items: end; min-height: 100svh; padding: 0 var(--margen) clamp(56px, 10vh, 120px); overflow: clip; }
 .lf-cap-in { width: 100%; align-items: end; }
 .lf-cap .cs-cap-n { align-self: end; padding-bottom: 0.6em; }
-.lf-cap-num, .lf-dom .lf-cap-num { position: absolute; right: calc(var(--margen) - 0.06em); top: clamp(80px, 12vh, 140px); z-index: 0; font: 200 clamp(220px, 40vw, 680px) / 0.8 var(--cs-f); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3); pointer-events: none; }
+.lf-cap-num, .lf-dom .lf-cap-num, .lf-cap-traza { position: absolute; right: calc(var(--margen) - 0.06em); top: clamp(80px, 12vh, 140px); z-index: 0; font: 200 clamp(220px, 40vw, 680px) / 0.8 var(--cs-f); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3); pointer-events: none; }
+/* El capítulo 01 es una escena: su portada va en un panel fijo (en la vista móvil la pista mide una pantalla y queda
+   igual que las otras). El 01 va en SVG para poder trazarlo; sin el paso queda dibujado entero */
+.lf-cap-1 { display: block; padding: 0; }
+.lf-cap-fijo { display: flex; align-items: end; padding: 0 var(--margen) clamp(56px, 10vh, 120px); }
+.lf-cap-traza { width: 1.15em; height: 0.8em; overflow: visible; -webkit-text-stroke: 0; }
+.lf-cap-traza text { font: inherit; letter-spacing: -0.07em; fill: none; stroke: rgba(255, 255, 255, 0.3); stroke-width: 1px; stroke-dasharray: 3200; stroke-dashoffset: calc((1 - var(--lf-pd, 1)) * 3200); }
 .lf .cs-cap-txt h2 { font-weight: 200; font-size: clamp(64px, 9vw, 160px); letter-spacing: -0.05em; }
 
 /* --- 8. ESCENAS DE DECISIÓN --- */
@@ -556,7 +582,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     /* Capítulos */
     .lf-cap .cs-cap-n { padding-bottom: 0; }
     .lf .cs-cap-txt h2 { font-size: 18vw; }
-    .lf-cap-num { font-size: 70vw; top: 96px; }
+    .lf-cap-num, .lf-cap-traza { font-size: 70vw; top: 96px; }
     /* Decisiones: el texto arriba y la pieza abajo, en el mismo panel */
     .lf-dsec .cs-fijo { align-content: start; padding-top: 72px; row-gap: 18px; }
     .lf-dsec .cs-dec h3 { font-size: 26px; }
