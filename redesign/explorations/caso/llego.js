@@ -464,7 +464,7 @@
            (la ruta usa los primeros 160 y el resumen queda quieto los últimos 100) y la del capítulo de 100 a 400, así su
            portada sube fija sobre el resumen quieto. Su avance va en tres tercios: el hito del pitch se llena de la
            portada y crece hasta cubrir la pantalla; se traza el 01, crece la retícula y entra el título (empieza antes de
-           terminar de abrir, así nunca queda vacía); y la decisión 01 sube encima mientras la portada se hunde. Lo que se
+           terminar de abrir, así nunca queda vacía, y en la pausa entra el índice del capítulo); y la decisión 01 sube encima mientras la portada se hunde. Lo que se
            ve sigue al scroll con el resorte de 90 ms del resumen; abrir y la tinta de la barra siguen al scroll real */
         capitulo: el => {
             const res = document.querySelector('.lf-res'), fijo = el.querySelector('[data-cap]');
@@ -473,7 +473,7 @@
             const nodo = ruta.querySelectorAll('.lf-hitos li')[1];
             const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
             const base = { res: parseFloat(res.style.getPropertyValue('--pista')) || 260, cap: parseFloat(el.style.getPropertyValue('--pista')) || 100 };
-            const VARS = ['--lf-pr', '--lf-px', '--lf-py', '--lf-pl', '--lf-pd', '--lf-pt', '--lf-ps'], TAU = 90;
+            const VARS = ['--lf-pr', '--lf-px', '--lf-py', '--lf-pl', '--lf-pd', '--lf-pt', '--lf-pi', '--lf-ps'], TAU = 90;
             const g = { H: 1, R: 1, techo: 1 };
             let on = false, meta = 0, ver = 0, ult = 0, bucle = 0, salto = true, ultimoP = 0;
             const px = v => v.toFixed(2) + 'px';
@@ -495,6 +495,8 @@
                 fase(fijo, '--lf-pl', tramo(p, 0.227, 0.427));
                 fase(fijo, '--lf-pd', tramo(p, 0.253, 0.533));
                 fase(fijo, '--lf-pt', tramo(p, 0.32, 0.493));
+                /* El índice del capítulo entra en la pausa, una línea a la vez (el CSS reparte --lf-pi con el --k de cada una) */
+                fase(fijo, '--lf-pi', fijar((p - 0.4) / 0.22));
                 /* La hoja de la decisión sube al ritmo del scroll: la portada se hunde en línea con ella */
                 fase(fijo, '--lf-ps', fijar((p - 2 / 3) * 3));
                 nodo.classList.toggle('lf-elegido', p > 0);
@@ -694,8 +696,8 @@
         }
     };
 
-    /* --- 5. ENLACES A LOS CAPÍTULOS Y FONDO DEL ESTIRÓN --- */
-    document.querySelectorAll('.lf-etapas a').forEach(a => a.addEventListener('click', ev => {
+    /* --- 5. ENLACES A LOS CAPÍTULOS Y A LAS DECISIONES, Y FONDO DEL ESTIRÓN --- */
+    document.querySelectorAll('.lf-etapas a, .lf-indice a').forEach(a => a.addEventListener('click', ev => {
         const destino = document.querySelector(a.getAttribute('href'));
         if (!destino) return;
         ev.preventDefault();

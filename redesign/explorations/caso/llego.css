@@ -335,6 +335,34 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-cap-traza text { font: inherit; letter-spacing: -0.07em; fill: none; stroke: rgba(255, 255, 255, 0.3); stroke-width: 1px; stroke-dasharray: 3200; stroke-dashoffset: calc((1 - var(--lf-pd, 1)) * 3200); }
 .lf .cs-cap-txt h2 { font-weight: 200; font-size: clamp(64px, 9vw, 160px); letter-spacing: -0.05em; }
 
+/* --- 7.1 PORTADA DEL CAPÍTULO 01: EL RIEL Y EL ÍNDICE --- */
+/* El riel junta el rótulo con el dato del capítulo; el índice lleva a sus tres decisiones. Con el paso, el índice entra
+   en la pausa antes de la decisión (--lf-pi, llego.js); sin el paso queda entero */
+.lf-riel { display: flex; flex-direction: column; gap: 6px; padding-bottom: 0.5em; }
+.lf-riel .mono { color: var(--texto-2); }
+.lf-dato { margin-top: 10px; font: 200 clamp(40px, 3.6vw, 64px) / 0.9 var(--cs-f); letter-spacing: -0.05em; color: var(--texto); }
+.lf-indice { display: flex; flex-direction: column; }
+.lf-indice > .mono { padding-bottom: 12px; color: var(--texto-2); opacity: var(--lf-pi, 1); }
+.lf-indice a { --v: clamp(0, calc(var(--lf-pi, 1) * 4 - var(--k, 0)), 1);
+    display: grid; grid-template-columns: 40px 1fr auto; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--linea);
+    font: 300 clamp(17px, 1.4vw, 22px) / 1.2 var(--cs-f); letter-spacing: -0.02em; color: var(--texto); text-decoration: none;
+    opacity: var(--v); translate: 0 calc((1 - var(--v)) * 14px); }
+.lf-indice a:last-child { border-bottom: 1px solid var(--linea); }
+.lf-indice a .mono { color: var(--acento); }
+.lf-indice a i { font-style: normal; color: var(--texto-3); transition: translate 180ms var(--ease), color 180ms; }
+@media (hover: hover) { .lf-indice a:hover i { translate: 6px 0; color: var(--texto); } }
+/* En escritorio el título deja lugar al índice, la retícula va en los medianiles de la grilla de 12 (el título queda a
+   medio medianil de su línea) y el 01 calza en el último tramo: su caja mide 0,8 em y llega justo a la línea del borde */
+@media (min-width: 1101px), (min-width: 769px) and (orientation: landscape) {
+    .lf-cap-1 .cs-cap-txt { grid-column: 4 / span 5; }
+    .lf-indice { grid-column: 9 / span 4; align-self: end; padding-bottom: 0.4em; }
+    .lf-cap-1 .lf-reticula i:nth-child(2) { left: calc((100% + var(--medianil)) / 4 - var(--medianil) / 2); }
+    .lf-cap-1 .lf-reticula i:nth-child(3) { left: calc((100% + var(--medianil)) / 2 - var(--medianil) / 2); }
+    .lf-cap-1 .lf-reticula i:nth-child(4) { left: calc((100% + var(--medianil)) * 3 / 4 - var(--medianil) / 2); }
+    .lf-cap-1 .lf-reticula::after { display: none; }
+    .lf-cap-1 .lf-cap-traza { right: var(--margen); font-size: calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35); }
+}
+
 /* --- 8. ESCENAS DE DECISIÓN --- */
 .lf-dsec .cs-fijo { padding-top: 64px; }
 .lf-dsec .cs-dec { grid-column: 1 / span 4; }
@@ -583,6 +611,10 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-cap .cs-cap-n { padding-bottom: 0; }
     .lf .cs-cap-txt h2 { font-size: 18vw; }
     .lf-cap-num, .lf-cap-traza { font-size: 70vw; top: 96px; }
+    /* Portada del capítulo 01: aire entre rótulo, título e índice; el dato queda para escritorio, así cabe en una pantalla */
+    .lf-cap-1 .lf-cap-in { row-gap: 18px; }
+    .lf-riel .lf-dato, .lf-riel .lf-dato + .mono { display: none; }
+    .lf-indice a { padding: 12px 0; }
     /* Decisiones: el texto arriba y la pieza abajo, en el mismo panel */
     .lf-dsec .cs-fijo { align-content: start; padding-top: 72px; row-gap: 18px; }
     .lf-dsec .cs-dec h3 { font-size: 26px; }
