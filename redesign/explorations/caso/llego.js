@@ -50,7 +50,7 @@
         const MOVIL = { n: 3, ancho: 0.5, dx: 0.06, dy: -0.12 };
         const fijo = $('.lf-h-fijo'), escena = $('.lf-h-escena'), plano = $('.lf-h-plano');
         const vivo = $('.lf-h-vivo'), marco = $('iframe', vivo), ancho = $('[data-ancho]'), linea = $('.lf-h-linea');
-        const c = { W: 0, H: 0, cw: 0, ch: 0, g: 28, paso: 0, ciclo: 0, largo: 0, off: 0, p: 0, t: 0 };
+        const c = { W: 0, H: 0, cw: 0, ch: 0, g: 28, paso: 0, ciclo: 0, largo: 0, off: 0, p: 0, t: 0, esc: 1 };
         let P = HORIZONTE, cols = [], foco = 0, armado = 0;
         let mx = 0, my = 0, sx = 0, sy = 0, ox = 0, oy = 0, vx = 0, vy = 0, ult = 0, t0 = 0, hd = false, abierto = false, vez = 0, blanco = -1;
 
@@ -121,7 +121,9 @@
             sx += (mx - sx) * k; sy += (my - sy) * k;
             vx += (w * w * (sx - ox) - 2 * w * vx) * s; vy += (w * w * (sy - oy) - 2 * w * vy) * s;
             ox += vx * s; oy += vy * s;
-            const e = curva(fijar(c.p / 0.85));
+            /* pa es el avance en la escala de la pista original (280): si el paso al resumen alarga la pista (esc), el
+               aterrizaje no cambia de ritmo */
+            const pa = c.p * c.esc, e = curva(fijar(pa / 0.85));
             /* Llegando del home, la carta parte aterrizada sobre la ventana de la portada (L = 1) y se suelta; E es el
                aterrizaje que se ve, el del scroll o el de la llegada, y r la caja donde aterriza */
             const ll = c.llega, L = ll ? 1 - ll.curva(fijar((ahora - ll.t0) / ll.dur)) : 0, E = Math.max(e, L);
@@ -151,8 +153,8 @@
             fijo.style.setProperty('--q', E.toFixed(3));
             fijo.style.setProperty('--niebla', (P.niebla * (1 - E)).toFixed(3));
             if (ll && ahora >= ll.t0 + ll.dur) { c.llega = null; ll.d.terminar(); }
-            fijo.style.setProperty('--sub', fijar(c.p / 0.12).toFixed(3));
-            linea.style.setProperty('--sal', fijar((c.p - 0.02) / 0.2).toFixed(3));
+            fijo.style.setProperty('--sub', fijar(pa / 0.12).toFixed(3));
+            linea.style.setProperty('--sal', fijar((pa - 0.02) / 0.2).toFixed(3));
             /* Al aterrizar, la captura se vuelve el sitio real; cada vez se recarga para que corra su entrada */
             if (e > 0.985 && !abierto) {
                 abierto = true;
@@ -295,23 +297,99 @@
         else requestAnimationFrame(cinta.entrar);
     }
 
-    /* --- 3. ESCENAS PROPIAS --- */
+    /* --- 3. PASO DEL HERO AL RESUMEN: EL MENSAJERO --- */
+    /* Solo en escritorio y con movimiento: la pista del hero se alarga (280 a 400) para que el resumen suba sobre su
+       última pantalla. Cuenta s, cuánto subió el resumen (0 a 1), desde el avance del hero, sin medir en cada cuadro.
+       La ventana se cierra en un punto (0,04 a 0,40), el punto viaja al primer hito (0,40 a 0,58), el brazo se estira
+       por la ruta encendiendo los hitos (0,56 a 0,76) y el texto se despliega desde la línea (0,72 a 1) */
+    const paso = (() => {
+        const h = document.querySelector('.lf-h'), res = document.querySelector('.lf-res');
+        if (!h || !res || !cinta) return null;
+        const html = document.documentElement, fijo = h.querySelector('.lf-h-fijo'), vivo = h.querySelector('.lf-h-vivo');
+        const panel = res.querySelector('.lf-res-panel'), ruta = res.querySelector('[data-ruta]'), nodos = [...ruta.querySelectorAll('.lf-hitos li')], N = nodos.length;
+        const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
+        const PISTA = 400, pistaBase = parseFloat(h.style.getPropertyValue('--pista')) || 280;
+        const brazo = document.createElement('i');
+        brazo.className = 'lf-brazo'; brazo.setAttribute('aria-hidden', 'true'); fijo.appendChild(brazo);
+        const g = { H: 1, recorrido: 1, x: 0, y: 0, w: 0 };
+        let on = false, ultimo = 0;
+        const px = v => v.toFixed(2) + 'px';
+        /* La ruta queda siempre en el mismo lugar de la pantalla (el panel descuenta lo que le falta subir): se mide una
+           vez, relativa al panel */
+        const medir = () => {
+            g.H = window.innerHeight; g.recorrido = Math.max(h.offsetHeight - g.H, 1);
+            const r = ruta.getBoundingClientRect(), pr = panel.getBoundingClientRect();
+            g.x = r.left; g.y = r.top - pr.top + 6.5; g.w = r.width;
+        };
+        const nx = i => g.x + g.w * (i + 0.5) / N;
+        const cuadro = p => {
+            ultimo = p;
+            if (!on) return;
+            const falta = g.recorrido * (1 - p), s = fijar(1 - falta / g.H);
+            const k = curva(fijar((s - 0.04) / 0.36)), mv = curva(fijar((s - 0.4) / 0.18)), b = curva(fijar((s - 0.56) / 0.2));
+            fijo.style.setProperty('--lf-hund', s.toFixed(4));
+            res.style.setProperty('--lf-falta', Math.max(falta, 0).toFixed(1));
+            res.style.setProperty('--lf-t', curva(fijar((s - 0.72) / 0.28)).toFixed(4));
+            res.classList.toggle('lf-opaco', s > 0.999);
+            /* Con el hero ya papel, la barra toma la tinta de los módulos claros */
+            h.dataset.claro = s > 0.25 ? '1' : '0';
+            /* La ventana: un recorte que termina en un punto de 14 px y viaja al centro del primer hito */
+            const bw = parseFloat(vivo.style.width) || 0, bh = parseFloat(vivo.style.height) || 0;
+            const cx = (parseFloat(vivo.style.left) || 0) + bw / 2, cy = (parseFloat(vivo.style.top) || 0) + bh / 2;
+            vivo.classList.toggle('lf-cierra', k > 0);
+            vivo.classList.toggle('lf-ido', b > 0.999);
+            vivo.style.setProperty('--lf-k', k.toFixed(3));
+            vivo.style.setProperty('--lf-ct', px((bh - 14) / 2 * k)); vivo.style.setProperty('--lf-cl', px((bw - 14) / 2 * k)); vivo.style.setProperty('--lf-cr', px(7 * k));
+            vivo.style.setProperty('--lf-dx', px((nx(0) - cx) * mv)); vivo.style.setProperty('--lf-dy', px((g.y - cy) * mv));
+            /* El brazo crece desde el primer hito hacia los dos lados; al llegar a los bordes, la ruta toma su lugar */
+            const x0 = nx(0), izq = x0 - (x0 - g.x) * b, der = x0 + (g.x + g.w - x0) * b, listo = b > 0.999;
+            brazo.style.setProperty('--lf-bx', px(izq)); brazo.style.setProperty('--lf-by', px(g.y)); brazo.style.setProperty('--lf-bw', px(der - izq));
+            brazo.classList.toggle('lf-vuela', b > 0 && !listo);
+            ruta.classList.toggle('lf-trazo', listo);
+            nodos.forEach((li, i) => li.classList.toggle('lf-on', listo || (b > 0 && nx(i) <= der + 1)));
+        };
+        const limpiar = () => {
+            ['--lf-hund'].forEach(v => fijo.style.removeProperty(v));
+            ['--lf-falta', '--lf-t'].forEach(v => res.style.removeProperty(v));
+            ['--lf-k', '--lf-ct', '--lf-cl', '--lf-cr', '--lf-dx', '--lf-dy'].forEach(v => vivo.style.removeProperty(v));
+            delete h.dataset.claro; res.classList.remove('lf-opaco'); vivo.classList.remove('lf-cierra', 'lf-ido'); brazo.classList.remove('lf-vuela'); ruta.classList.remove('lf-trazo');
+            nodos.forEach(li => li.classList.remove('lf-on'));
+        };
+        /* Entra y sale con el ancho: en la vista móvil el resumen queda quieto, con la ruta completa */
+        const activar = () => {
+            const quiere = !movil.matches && !quieto;
+            if (quiere === on) return;
+            on = quiere;
+            html.classList.toggle('lf-paso', on);
+            h.style.setProperty('--pista', String(on ? PISTA : pistaBase));
+            cinta.esc = on ? (PISTA / 100 - 1) / (pistaBase / 100 - 1) : 1;
+            if (!on) limpiar();
+            requestAnimationFrame(() => { medir(); cuadro(ultimo); });
+        };
+        movil.addEventListener('change', activar);
+        window.addEventListener('resize', () => { if (on) { medir(); cuadro(ultimo); } });
+        activar();
+        return cuadro;
+    })();
+
+    /* --- 4. ESCENAS PROPIAS --- */
     window.CASO_ESCENAS = {
         /* Hero: el avance de su pista endereza la cinta y la hace aterrizar */
-        hero: () => p => { if (cinta) cinta.p = p; },
-        /* Resumen: el proyecto avanza hito a hito como un envío rastreado */
+        hero: () => p => { if (cinta) cinta.p = p; if (paso) paso(p); },
+        /* Resumen: el proyecto avanza hito a hito como un envío rastreado. La línea avanza continua: se llena hasta el
+           centro del hito actual y sigue hacia el próximo al ritmo del scroll */
         resumen: el => {
             const hitos = [...el.querySelectorAll('.lf-hitos li')], registro = [...el.querySelectorAll('.lf-registro li')];
-            const linea = el.querySelector('.lf-hitos'), estado = el.querySelector('[data-envio-estado]'), n = el.querySelector('[data-envio-n]');
+            const ruta = el.querySelector('[data-ruta]'), estado = el.querySelector('[data-envio-estado]'), n = el.querySelector('[data-envio-n]');
             const total = hitos.length;
             let actual = -1;
             return p => {
-                const k = Math.min(Math.floor(fijar((p - 0.04) / 0.9) * total), total - 1);
+                const q = fijar((p - 0.04) / 0.9) * total, k = Math.min(Math.floor(q), total - 1);
+                ruta.style.setProperty('--lf-f', ((Math.min(q, total - 1) + 0.5) / total).toFixed(4));
                 if (k === actual) return;
                 actual = k;
                 hitos.forEach((li, i) => { li.classList.toggle('hecho', i < k); li.classList.toggle('actual', i === k); });
-                registro.forEach((li, i) => { li.classList.toggle('visto', i <= k); li.classList.toggle('actual', i === k); });
-                linea.style.setProperty('--avance', (k / (total - 1)).toFixed(3));
+                registro.forEach((li, i) => li.classList.toggle('actual', i === k));
                 estado.textContent = hitos[k].querySelector('b').textContent;
                 n.textContent = `Hito ${pad(k + 1)} / ${pad(total)}`;
             };
@@ -472,7 +550,7 @@
         }
     };
 
-    /* --- 4. ENLACES A LOS CAPÍTULOS Y FONDO DEL ESTIRÓN --- */
+    /* --- 5. ENLACES A LOS CAPÍTULOS Y FONDO DEL ESTIRÓN --- */
     document.querySelectorAll('.lf-etapas a').forEach(a => a.addEventListener('click', ev => {
         const destino = document.querySelector(a.getAttribute('href'));
         if (!destino) return;

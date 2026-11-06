@@ -200,39 +200,76 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 @keyframes lf-lg-farma { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
 
 /* --- 6. RESUMEN: EL PROYECTO, RASTREADO --- */
-.lf-res .cs-fijo { align-content: center; row-gap: 32px; }
-.lf-res-txt { grid-column: 1 / span 7; display: flex; flex-direction: column; gap: 28px; }
+/* Tres bandas: el enunciado arriba, la ruta a todo el ancho al medio y abajo el estado, el encargo y los capítulos.
+   La ruta queda a la altura del centro de la ventana en vivo del hero, así el paso (6.2) casi no la mueve */
+.lf-res-panel { display: grid; grid-template-rows: 1fr auto 1fr; row-gap: clamp(36px, 6vh, 64px); padding: 0 var(--margen); }
+.lf-res-arriba { align-self: end; }
+.lf-res-abajo { align-self: start; align-items: start; }
+.lf-res-txt { grid-column: 1 / span 8; display: flex; flex-direction: column; gap: 28px; }
 .lf-etq { color: var(--texto-2); }
 .lf-enunciado { font-size: clamp(26px, 2.7vw, 46px); line-height: 1.12; }
-.lf-encargo { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: start; padding-top: 22px; border-top: 1px solid var(--linea); }
+.lf-estado { grid-column: 1 / span 3; display: flex; flex-direction: column; gap: 6px; }
+.lf-estado > .mono { color: var(--texto-3); }
+.lf-estado b { font: 300 clamp(26px, 2.2vw, 36px) / 1 var(--cs-f); letter-spacing: -0.035em; }
+.lf-registro { list-style: none; margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--linea); text-transform: none; letter-spacing: 0; }
+.lf-registro li { display: grid; grid-template-columns: 4.2em 1fr; gap: 10px; font-size: 11px; line-height: 1.45; color: var(--texto); }
+.lf-registro li:not(.actual) { display: none; }
+.lf-registro span { color: var(--acento); }
+.lf-encargo { grid-column: 4 / span 5; display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: start; padding-top: 22px; border-top: 1px solid var(--linea); }
 .lf-encargo .mono { color: var(--texto-3); }
 .lf-encargo p { margin-top: 8px; font: 400 16px / 1.45 var(--cs-f); }
 .lf-encargo-flecha { padding-top: 22px; color: var(--acento); }
-/* Tarjeta de seguimiento, como el de la sección Tecnología del sitio: estado grande, seis hitos y un registro */
-.lf-envio { grid-column: 9 / -1; display: flex; flex-direction: column; gap: 22px; padding: 22px; border: 1px solid var(--linea); background: #FFFFFF; }
-.lf-envio-cab { display: flex; justify-content: space-between; color: var(--texto-3); }
-.lf-envio-estado { display: flex; flex-direction: column; gap: 6px; }
-.lf-envio-estado .mono { color: var(--texto-3); }
-.lf-envio-estado b { font: 300 clamp(28px, 2.4vw, 40px) / 1 var(--cs-f); letter-spacing: -0.035em; }
-.lf-hitos { position: relative; list-style: none; height: 46px; margin: 0 6px; }
-.lf-hitos::before, .lf-hitos::after { content: ''; position: absolute; left: 0; right: 0; top: 6px; height: 1px; background: var(--linea); }
-.lf-hitos::after { background: var(--acento); right: auto; width: calc(var(--avance, 0) * 100%); transition: width 500ms var(--cs-curva); }
-.lf-hitos li { position: absolute; top: 0; left: calc(var(--x) * 20%); translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.lf-hitos i { position: relative; z-index: 1; width: 13px; height: 13px; border-radius: 50%; border: 1px solid var(--texto-3); background: #FFFFFF; transition: background-color 300ms, border-color 300ms, box-shadow 300ms; }
-.lf-hitos li.hecho i { background: var(--acento); border-color: var(--acento); }
-.lf-hitos li.actual i { background: var(--acento); border-color: var(--acento); box-shadow: 0 0 0 5px color-mix(in srgb, var(--acento) 22%, transparent); }
-.lf-hitos .mono { color: var(--texto-3); white-space: nowrap; font-size: 10px; }
-.lf-hitos li.actual .mono { color: var(--texto); }
-.lf-hitos b { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.lf-registro { list-style: none; display: flex; flex-direction: column; gap: 8px; min-height: 9.5em; padding-top: 16px; border-top: 1px solid var(--linea); text-transform: none; letter-spacing: 0; }
-.lf-registro li { display: grid; grid-template-columns: 4.2em 1fr; gap: 10px; font-size: 11px; line-height: 1.45; color: var(--texto-3); }
-.lf-registro li:not(.visto) { display: none; }
-.lf-registro li.actual { color: var(--texto); }
-.lf-registro span { color: var(--acento); }
-.lf-etapas { display: flex; gap: 6px; }
+.lf-etapas { grid-column: 9 / -1; display: flex; gap: 6px; padding-top: 22px; border-top: 1px solid var(--linea); }
 .lf-etapas a { flex: 1; display: flex; flex-direction: column; gap: 4px; min-height: 44px; padding: 10px 12px; border: 1px solid var(--linea); font: 400 14px var(--cs-f); transition: background-color 250ms, color 250ms; }
 .lf-etapas a .mono { color: var(--texto-3); }
 @media (hover: hover) { .lf-etapas a:hover { background: var(--texto); color: var(--fondo); } }
+
+/* --- 6.1 LA RUTA Y SUS SEIS HITOS --- */
+/* Seis tramos iguales con un hito al centro de cada uno. La línea se llena con el scroll hasta el hito actual y sigue
+   hacia el próximo (--lf-f lo escribe la escena); el mensajero va en la punta y el hito actual late como la onda del
+   isotipo */
+.lf-ruta { position: relative; height: 76px; --lf-f: 0.0833; }
+.lf-ruta-base, .lf-ruta-avance, .lf-ruta-marca { position: absolute; display: block; }
+.lf-ruta-base { left: 0; right: 0; top: 6px; height: 1px; background: var(--acento); }
+.lf-ruta-avance { left: 0; top: 5.5px; width: calc(var(--lf-f) * 100%); height: 2px; background: var(--lf-oscuro); }
+.lf-ruta-marca { left: calc(var(--lf-f) * 100%); top: 6.5px; z-index: 2; width: 7px; height: 7px; margin: -3.5px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 0 2px var(--lf-oscuro); }
+.lf-hitos { position: absolute; inset: 0; list-style: none; }
+.lf-hitos li { position: absolute; top: 0; left: calc((var(--x) + 0.5) * 100% / 6); translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.lf-hitos i { position: relative; z-index: 1; width: 13px; height: 13px; border-radius: 50%; border: 1px solid var(--texto-3); background: #FFFFFF; transition: background-color 300ms, border-color 300ms, box-shadow 300ms; }
+.lf-hitos li.hecho i { background: var(--acento); border-color: var(--acento); }
+.lf-hitos li.actual i { background: var(--acento); border-color: var(--acento); box-shadow: 0 0 0 5px color-mix(in srgb, var(--acento) 22%, transparent); }
+.lf-hitos li.actual i::after { content: ''; position: absolute; inset: -1px; border-radius: 50%; border: 1px solid var(--acento); animation: lf-onda 1800ms var(--ease) infinite; }
+.lf-hitos .mono { color: var(--texto-3); white-space: nowrap; font-size: 10px; }
+.lf-hitos li.actual .mono { color: var(--texto); }
+.lf-hitos b { margin-top: -2px; font: 400 15px / 1.2 var(--cs-f); white-space: nowrap; color: var(--texto-2); }
+.lf-hitos li.actual b { color: var(--texto); }
+@keyframes lf-onda { from { scale: 1; opacity: 0.8; } 50%, to { scale: 3.4; opacity: 0; } }
+
+/* --- 6.2 EL PASO DESDE EL HERO: EL MENSAJERO (ESCRITORIO) --- */
+/* Con .lf-paso (llego.js, sección 3) el resumen empieza una pantalla antes de que termine el hero y sube transparente,
+   quieto en su lugar (se descuenta lo que le falta por subir), mientras el hero se vuelve papel. La ventana en vivo se
+   cierra en un punto turquesa, el nodo central del isotipo, que viaja al primer hito; el brazo se estira desde ahí y
+   enciende los hitos que alcanza. Al final el enunciado y el estado se despliegan desde la línea */
+.lf-paso .lf-res { z-index: 2; margin-top: -100lvh; }
+.lf-paso .lf-res.cs-claro { background: none; }
+.lf-paso .lf-res.cs-claro.lf-opaco { background: var(--fondo); }
+.lf-paso .lf-res-panel { translate: 0 calc(var(--lf-falta, 0) * -1px); }
+.lf-paso .lf-res-arriba { opacity: var(--lf-t, 0); translate: 0 calc((1 - var(--lf-t, 0)) * 36px); }
+.lf-paso .lf-res-abajo { opacity: var(--lf-t, 0); translate: 0 calc((1 - var(--lf-t, 0)) * -36px); }
+.lf-paso .lf-h-fijo::after { content: ''; position: absolute; inset: 0; z-index: 20; background: var(--lf-papel); opacity: calc(var(--lf-hund, 0) * 2); pointer-events: none; }
+/* La carta de Inicio que queda bajo la ventana se apaga apenas la ventana se cierra: así no queda un doble del sitio */
+.lf-paso .lf-h-carta.blanco { opacity: calc(1 - var(--lf-hund, 0) * 8); }
+.lf-paso .lf-h-vivo { z-index: 21; }
+.lf-paso .lf-h-vivo-cab { opacity: calc(1 - var(--lf-k, 0) * 10); }
+.lf-h-vivo.lf-cierra { translate: var(--lf-dx, 0px) var(--lf-dy, 0px); clip-path: inset(var(--lf-ct, 0px) var(--lf-cl, 0px) round var(--lf-cr, 0px)); background: var(--lf-turquesa); }
+.lf-h-vivo.lf-cierra iframe { opacity: calc(1 - var(--lf-k, 0) * 2.5); }
+.lf-h-vivo.lf-ido { visibility: hidden; }
+.lf-brazo { left: 0; top: 0; z-index: 22; width: var(--lf-bw, 0px); height: 1px; translate: var(--lf-bx, 0px) calc(var(--lf-by, 0px) - 0.5px); background: var(--lf-turquesa); opacity: 0; pointer-events: none; }
+.lf-brazo.lf-vuela { opacity: 1; }
+.lf-paso :is(.lf-ruta-base, .lf-ruta-avance, .lf-ruta-marca) { opacity: 0; transition: opacity 200ms; }
+.lf-paso .lf-trazo :is(.lf-ruta-base, .lf-ruta-avance, .lf-ruta-marca) { opacity: 1; }
+.lf-paso .lf-hitos li { opacity: 0; scale: 0.6; transition: opacity 180ms var(--ease), scale 180ms var(--ease); }
+.lf-paso .lf-hitos li.lf-on { opacity: 1; scale: 1; }
 
 /* --- 7. APERTURAS DE CAPÍTULO --- */
 /* El número gigante en contorno, como los separadores del manual */
@@ -469,16 +506,17 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-logo { width: 100%; }
     .lf-h-ficha { grid-column: 1 / -1; grid-template-columns: 1fr; }
     .lf-h-ficha li { grid-column: auto; padding-top: 10px; font-size: 15px; }
-    /* Resumen: el enunciado y la tarjeta de seguimiento, apilados */
-    .lf-res .cs-fijo { align-content: start; padding-top: 72px; row-gap: 18px; }
+    /* Resumen: el enunciado, la ruta y el estado, apilados. En la ruta solo la fecha del hito actual; su nombre ya está
+       en el estado */
+    .lf-res-panel { grid-template-rows: none; align-content: start; padding-top: 72px; row-gap: 28px; }
+    .lf-res-arriba, .lf-res-abajo { align-self: auto; row-gap: 22px; }
     .lf-res-txt { gap: 16px; }
     .lf-enunciado { font-size: clamp(22px, 6vw, 30px); }
     .lf-encargo { display: none; }
-    .lf-envio { padding: 16px; gap: 14px; }
-    .lf-envio-estado b { font-size: 26px; }
-    .lf-registro { min-height: 0; }
+    .lf-estado b { font-size: 26px; }
+    .lf-ruta { height: 40px; }
+    .lf-hitos b { display: none; }
     .lf-hitos li:not(.actual) .mono { opacity: 0; }
-    .lf-registro li:not(.actual) { display: none; }
     /* Capítulos */
     .lf-cap .cs-cap-n { padding-bottom: 0; }
     .lf .cs-cap-txt h2 { font-size: 18vw; }
@@ -522,5 +560,6 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 @media (prefers-reduced-motion: reduce) {
     .lf-h *, .lf-h *::before, .lf-h *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; }
     .lf-dom-cursor { animation: none; }
+    .lf-hitos li.actual i::after { animation: none; opacity: 0; }
     .lf-verticales.on .lf-vert { animation: none; }
 }

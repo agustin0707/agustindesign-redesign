@@ -48,19 +48,18 @@
              RESUMEN: EL PROYECTO, RASTREADO COMO UN ENVÍO
              ======================================================= -->
         <section class="lf-res cs-claro" data-escena="resumen" style="--pista:260">
-            <div class="cs-fijo cs-grilla">
-                <div class="lf-res-txt">
-                    <span class="mono lf-etq">Resumen</span>
-                    <p class="cs-enunciado lf-enunciado" data-luz>Llegó abría una vertical farmacéutica y ya le habían rechazado una propuesta. <em>Gané el pitch con un sistema,</em> diseñé la marca y su manual, y programé el sitio.</p>
-                    <div class="lf-encargo">
-                        <div><span class="mono">El encargo</span><p>Una submarca que se viera especializada en salud sin perder el respaldo de Llegó</p></div>
-                        <span class="lf-encargo-flecha" aria-hidden="true">→</span>
-                        <div><span class="mono">El resultado</span><p>Marca, manual de 36 páginas y llegofarma.cl en línea antes de la feria del sector</p></div>
+            <!-- Tres bandas alrededor de la ruta: el enunciado arriba, la línea con sus seis hitos al medio y el estado, el
+                 encargo y los capítulos abajo. En escritorio la ventana en vivo del hero se cierra en el primer hito y el
+                 brazo se estira en esta línea (llego.js, sección 3) -->
+            <div class="cs-fijo lf-res-panel">
+                <div class="cs-grilla lf-res-arriba">
+                    <div class="lf-res-txt">
+                        <span class="mono lf-etq">Resumen</span>
+                        <p class="cs-enunciado lf-enunciado" data-luz>Llegó abría una vertical farmacéutica y ya le habían rechazado una propuesta. <em>Gané el pitch con un sistema,</em> diseñé la marca y su manual, y programé el sitio.</p>
                     </div>
                 </div>
-                <div class="lf-envio" data-envio aria-label="Seguimiento del proyecto en seis hitos, del diagnóstico al sitio en línea">
-                    <div class="lf-envio-cab mono"><span>Seguimiento del proyecto</span><span data-envio-n>Hito 01 / 06</span></div>
-                    <div class="lf-envio-estado" aria-live="polite"><span class="mono">Estado</span><b data-envio-estado>Diagnóstico</b></div>
+                <div class="lf-ruta" data-ruta aria-label="Seguimiento del proyecto en seis hitos, del diagnóstico al sitio en línea">
+                    <b class="lf-ruta-base" aria-hidden="true"></b><b class="lf-ruta-avance" aria-hidden="true"></b><b class="lf-ruta-marca" aria-hidden="true"></b>
                     <ol class="lf-hitos">
                         <li data-h="0" style="--x:0"><i></i><span class="mono">25 ago</span><b>Diagnóstico</b></li>
                         <li data-h="1" style="--x:1"><i></i><span class="mono">28 ago</span><b>Pitch</b></li>
@@ -69,14 +68,24 @@
                         <li data-h="4" style="--x:4"><i></i><span class="mono">14 oct</span><b>Sitio aprobado</b></li>
                         <li data-h="5" style="--x:5"><i></i><span class="mono">20 oct</span><b>En línea</b></li>
                     </ol>
-                    <ul class="lf-registro mono">
-                        <li data-h="0"><span>25.08</span>La propuesta anterior, el brief y el manual de Llegó, leídos antes de dibujar</li>
-                        <li data-h="1"><span>28.08</span>"Sistema de Nodos Conectados", en 11 láminas. Pitch ganado</li>
-                        <li data-h="2"><span>09.09</span>Tres caminos para la cruz; el cliente elige Nodos</li>
-                        <li data-h="3"><span>23.09</span>Manual de marca de 36 páginas</li>
-                        <li data-h="4"><span>14.10</span>Sitio presentado a la gerencia y aprobado para lanzar</li>
-                        <li data-h="5"><span>20.10</span>llegofarma.cl en el servidor de Llegó</li>
-                    </ul>
+                </div>
+                <div class="cs-grilla lf-res-abajo">
+                    <div class="lf-estado" aria-live="polite">
+                        <span class="mono" data-envio-n>Hito 01 / 06</span><b data-envio-estado>Diagnóstico</b>
+                        <ul class="lf-registro mono">
+                            <li data-h="0"><span>25.08</span>La propuesta anterior, el brief y el manual de Llegó, leídos antes de dibujar</li>
+                            <li data-h="1"><span>28.08</span>"Sistema de Nodos Conectados", en 11 láminas. Pitch ganado</li>
+                            <li data-h="2"><span>09.09</span>Tres caminos para la cruz; el cliente elige Nodos</li>
+                            <li data-h="3"><span>23.09</span>Manual de marca de 36 páginas</li>
+                            <li data-h="4"><span>14.10</span>Sitio presentado a la gerencia y aprobado para lanzar</li>
+                            <li data-h="5"><span>20.10</span>llegofarma.cl en el servidor de Llegó</li>
+                        </ul>
+                    </div>
+                    <div class="lf-encargo">
+                        <div><span class="mono">El encargo</span><p>Una submarca que se viera especializada en salud sin perder el respaldo de Llegó</p></div>
+                        <span class="lf-encargo-flecha" aria-hidden="true">→</span>
+                        <div><span class="mono">El resultado</span><p>Marca, manual de 36 páginas y llegofarma.cl en línea antes de la feria del sector</p></div>
+                    </div>
                     <nav class="lf-etapas" aria-label="Capítulos del caso"><a href="#cap-1"><span class="mono">01</span>El pitch</a><a href="#cap-2"><span class="mono">02</span>La marca</a><a href="#cap-3"><span class="mono">03</span>La web</a></nav>
                 </div>
             </div>
