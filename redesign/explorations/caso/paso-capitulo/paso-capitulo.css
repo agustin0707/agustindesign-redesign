@@ -1,0 +1,63 @@
+/* =======================================================
+   LLEGÓ FARMA · TRES PASOS DEL RESUMEN AL CAPÍTULO 01 (.pc)
+   ======================================================= */
+/* Exploración de escritorio. La portada del capítulo sube encima del resumen y queda fija mientras el resumen sigue
+   quieto debajo. En la primera mitad de su pista se abre desde algo que ya está en pantalla (el hito del pitch, la
+   tarjeta del índice o las columnas de la retícula); en la segunda se dibuja el 01 y entra el título.
+   paso-capitulo.js escribe las variables (--pc-*) */
+
+/* --- 1. LA PORTADA, FIJA SOBRE EL RESUMEN --- */
+.pc-cap { z-index: 3; display: block; min-height: 0; margin-top: -200lvh; padding: 0; overflow: visible; }
+.lf .pc-cap.cs-oscuro { background: none; }
+.pc-fijo { display: flex; align-items: end; padding: 0 var(--margen) clamp(56px, 10vh, 120px); background: var(--lf-negro); visibility: hidden; }
+.pc-abre .pc-fijo { visibility: visible; }
+.pc-in { width: 100%; }
+
+/* --- 2. EL 01 SE DIBUJA COMO EN LOS SEPARADORES DEL MANUAL --- */
+/* El mismo tamaño y lugar del número del capítulo, pero en SVG: el contorno se traza con el scroll (--pc-d) */
+.pc-num { position: absolute; z-index: 0; right: calc(var(--margen) - 0.06em); top: clamp(80px, 12vh, 140px); width: 1.15em; height: 0.8em; overflow: visible; pointer-events: none;
+    font: 200 clamp(220px, 40vw, 680px) / 0.8 var(--cs-f); }
+.lf .pc-fijo > .pc-num { position: absolute; }
+.pc-num text { font: inherit; letter-spacing: -0.07em; fill: none; stroke: rgba(255, 255, 255, 0.3); stroke-width: 1px;
+    stroke-dasharray: 3200; stroke-dashoffset: calc((1 - var(--pc-d, 0)) * 3200); }
+
+/* --- 3. LA RETÍCULA Y EL TÍTULO ENTRAN DESPUÉS DE ABRIR --- */
+.pc-fijo .lf-reticula i { scale: 1 var(--pc-l, 0); }
+.pc-fijo .lf-reticula::after { scale: var(--pc-l, 0) 1; }
+.pc-in .cs-cap-n, .pc-in .cs-cap-txt p { opacity: var(--pc-t, 0); }
+.pc-in h2 { opacity: var(--pc-t, 0); translate: 0 calc((1 - var(--pc-t, 0)) * 0.35em); }
+
+/* --- 4. NODO: LA PORTADA SALE DEL HITO DEL PITCH --- */
+/* El hito del 28 de agosto se llena de la portada y crece hasta cubrir la pantalla, desde su centro */
+.pc-v-nodo .pc-fijo { clip-path: circle(var(--pc-r, 0px) at var(--pc-x, 50%) var(--pc-y, 50%)); }
+.pc-v-nodo .lf-hitos li.pc-elegido i { scale: 1.35; border-color: var(--lf-negro); }
+
+/* --- 5. ÍNDICE: LA TARJETA DEL CAPÍTULO SE VUELVE LA PORTADA --- */
+/* La tarjeta "01 El pitch" del resumen se llena y crece hasta la pantalla; su rótulo la acompaña y se apaga */
+.pc-v-indice .pc-fijo { clip-path: inset(var(--pc-it, 0px) var(--pc-ir, 0px) var(--pc-ib, 0px) var(--pc-il, 0px)); }
+.pc-rotulo { display: none; }
+.pc-v-indice .pc-rotulo { display: flex; flex-direction: column; gap: 4px; position: absolute; z-index: 2; left: 0; top: 0; translate: calc(var(--pc-il, 0px) + 12px) calc(var(--pc-it, 0px) + 10px);
+    font: 400 14px var(--cs-f); color: #FFFFFF; opacity: var(--pc-ro, 0); }
+.lf .pc-fijo > .pc-rotulo { position: absolute; }
+.pc-rotulo .mono { color: rgba(255, 255, 255, 0.6); }
+
+/* --- 6. RETÍCULA: LA PORTADA SUBE EN LAS CUATRO COLUMNAS DE LA MARCA --- */
+/* Las columnas de la retícula de Llegó suben desfasadas de izquierda a derecha; los márgenes van con las de afuera */
+.pc-v-reticula .pc-fijo {
+    --c1: calc(var(--margen) + (100% - 2 * var(--margen)) * 0.25); --c2: 50%; --c3: calc(var(--margen) + (100% - 2 * var(--margen)) * 0.75);
+    clip-path: polygon(0 100%, 0 var(--pc-t0, 100%), var(--c1) var(--pc-t0, 100%), var(--c1) var(--pc-t1, 100%), var(--c2) var(--pc-t1, 100%), var(--c2) var(--pc-t2, 100%),
+        var(--c3) var(--pc-t2, 100%), var(--c3) var(--pc-t3, 100%), 100% var(--pc-t3, 100%), 100% 100%); }
+
+/* --- 7. CIERRE Y SELECTOR DE LA EXPLORACIÓN --- */
+.pc-fin { position: relative; z-index: 3; display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.pc-fin .mono { color: var(--texto-3); }
+.pc-fin p { max-width: 40ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
+.pc-sel { position: fixed; left: 50%; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; width: max-content; max-width: calc(100vw - 32px); padding: 10px 12px; translate: -50% 0;
+    background: rgba(10, 20, 21, 0.86); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.pc-sel-desc { max-width: 64ch; padding: 0 10px; font: 400 13px / 1.4 var(--cs-f); text-transform: none; letter-spacing: 0; color: rgba(255, 255, 255, 0.74); }
+.pc-sel-fila { display: flex; flex-wrap: wrap; gap: 4px; }
+.pc-sel button { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; background: none; color: rgba(255, 255, 255, 0.6); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.pc-sel button span { color: var(--lf-claro); }
+.pc-sel button[aria-pressed="true"] { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+.pc-sel-otra { margin-left: auto; }
+@media (hover: hover) { .pc-sel button:hover { color: #FFFFFF; } }

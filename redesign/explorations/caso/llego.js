@@ -401,7 +401,8 @@
             const hitos = [...el.querySelectorAll('.lf-hitos li')], registro = [...el.querySelectorAll('.lf-registro li')];
             const ruta = el.querySelector('[data-ruta]'), estado = el.querySelector('[data-envio-estado]'), n = el.querySelector('[data-envio-n]');
             const num = el.querySelector('[data-envio-num]'), fecha = el.querySelector('[data-ruta-fecha]'), nota = el.querySelector('[data-ruta-nota]');
-            const caja = el.querySelector('.lf-estado'), total = hitos.length, TAU = 90;
+            /* data-tramo: la parte de la pista que usa la ruta (1 por defecto); el resto queda para el paso siguiente */
+            const caja = el.querySelector('.lf-estado'), total = hitos.length, TAU = 90, tramo = +el.dataset.tramo || 1;
             const xs = hitos.map(li => parseFloat(li.style.getPropertyValue('--x'))), dias = hitos.map(li => +li.dataset.d);
             const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'], INICIO = Date.UTC(2026, 7, 25);
             const dia = d => { const f = new Date(INICIO + d * 864e5); return `Sem ${pad(Math.min(Math.floor(d / 7) + 1, 8))} · ${f.getUTCDate()} ${MESES[f.getUTCMonth()]}`; };
@@ -437,11 +438,12 @@
                 b.addEventListener('focus', () => mostrar(i));
                 b.addEventListener('blur', () => mostrar(-1));
                 b.addEventListener('click', () => {
-                    const r = el.getBoundingClientRect(), recorrido = r.height - window.innerHeight;
+                    const r = el.getBoundingClientRect(), recorrido = (r.height - window.innerHeight) * tramo;
                     window.scrollTo({ top: window.scrollY + r.top + (0.04 + 0.9 * (i + 0.5) / total) * recorrido, behavior: quieto ? 'auto' : 'smooth' });
                 });
             });
             return p => {
+                p = Math.min(p / tramo, 1);
                 const q = fijar((p - 0.04) / 0.9) * total, k = Math.min(Math.floor(q), total - 1);
                 meta = Math.min(q, total - 1);
                 if (!bucle) bucle = requestAnimationFrame(seguir);
