@@ -1,0 +1,76 @@
+/* =======================================================
+   EXPLORACIÓN · EL PASO DE LA DECISIÓN 01 A LA 02 (.p2)
+   ======================================================= */
+/* Seis versiones del paso del mapa (papel) al taller del nodo (oscuro). Todas viven en la misma ventana: la última
+   pantalla de la pista de la 01, con el mapa quieto, mientras la 02 sube 100lvh sobre ella. paso-02.js escribe el
+   avance --t (0 a 1), sus curvas --e, --e2 (parte al 15 %) y --e3 (parte al 35 %) y las medidas de cada versión.
+   Fuera de la ventana no se toca nada: al terminar, la 02 queda exactamente como en el caso */
+
+/* --- 1. LA 02 SUBE SOBRE EL FINAL DE LA 01 --- */
+.p2 #dec-02 { position: relative; z-index: 4; margin-top: -100lvh; }
+
+/* --- 2. EN LA VENTANA, EL PANEL DE LA 02 QUEDA FIJO (TODAS MENOS LA HOJA) --- */
+/* Fijo en el mismo lugar donde lo deja el sticky al terminar: el cambio de vuelta no se nota */
+html.p2-ventana:not(.p2-v-a) #dec-02 { background: transparent; }
+html.p2-ventana:not(.p2-v-a) #dec-02 > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; }
+/* Para medir: nada recortado ni desplazado */
+html.p2-midiendo #dec-02 > .cs-fijo, html.p2-midiendo .lf-taller-madre, html.p2-midiendo .lf-taller-llego { clip-path: none !important; transform: none !important; }
+
+/* --- 3. A · LA HOJA --- */
+/* La 02 sube con su borde en sombra y el mapa se apaga un poco debajo, como de la portada del capítulo a la 01 */
+.p2-v-a #dec-02 > .cs-fijo { box-shadow: 0 -24px 72px rgba(10, 20, 21, 0.2); }
+.p2-v-a.p2-ventana #dec-01 > .cs-fijo::after { content: ''; position: absolute; inset: 0; z-index: 10; pointer-events: none; background: var(--lf-negro); opacity: calc(var(--t) * 0.3); }
+
+/* --- 4. B · EL ESPACIO SE ABRE --- */
+/* El espacio "Un sistema gráfico" se llena con la 02 y se abre hasta la pantalla */
+.p2-v-b.p2-ventana #dec-02 > .cs-fijo { clip-path: inset(calc(var(--p2-et) * (1 - var(--e2))) calc(var(--p2-er) * (1 - var(--e2))) calc(var(--p2-eb) * (1 - var(--e2))) calc(var(--p2-el) * (1 - var(--e2)))); }
+
+/* --- 5. C · EL PUNTO --- */
+/* La flecha del espacio de la 02 se vuelve un punto que crece hasta cubrir la pantalla */
+.p2-v-c.p2-ventana #dec-02 > .cs-fijo { clip-path: circle(calc(5px + (var(--p2-pr) - 5px) * var(--e2)) at var(--p2-px) var(--p2-py)); }
+.p2-v-c.p2-ventana .lf-mapa-libre a[href="#dec-02"] i { opacity: 0; }
+
+/* --- 6. D · LA MADRE PASA --- */
+/* La ficha del logotipo en el mapa se invierte en la lámina morada de la 02 y se abre a su tamaño mientras el logotipo
+   viaja a su lugar. Después entra el fondo oscuro y, al final, el texto y la trama de la 02 */
+.p2-v-d.p2-ventana #dec-02 .lf-degradado { opacity: clamp(0, (var(--t) - 0.15) * 2.4, 1); }
+.p2-v-d.p2-ventana #dec-02 .cs-dec,
+.p2-v-d.p2-ventana .lf-taller > :not(.lf-taller-mesa),
+.p2-v-d.p2-ventana .lf-taller-lente { opacity: clamp(0, (var(--t) - 0.5) * 2, 1); }
+.p2-v-d.p2-ventana .lf-taller-madre { clip-path: inset(calc(var(--p2-mt) * (1 - var(--e))) calc(var(--p2-mr) * (1 - var(--e))) calc(var(--p2-mb) * (1 - var(--e))) calc(var(--p2-ml) * (1 - var(--e)))); transition: none; }
+.p2-v-d.p2-ventana .lf-taller-llego { transform: translate(calc(var(--p2-lx) * (1 - var(--e))), calc(var(--p2-ly) * (1 - var(--e)))) scale(calc(1 + (var(--p2-ls) - 1) * (1 - var(--e)))); }
+.p2-v-d.p2-ventana .lf-mapa-llego { opacity: 0; }
+
+/* --- 7. E · FUNDIDO --- */
+/* Sin costura y en tres tiempos cortos: el mapa se retira hacia arriba, el fondo oscuro entra y después el texto y la
+   pieza de la 02. Los tiempos casi no se cruzan: así el papel no pasa por un gris turbio */
+.p2-v-e.p2-ventana #dec-01 > .cs-fijo > * { opacity: clamp(0, 1 - var(--t) * 3.3, 1); translate: 0 calc(var(--t) * -24px); }
+.p2-v-e.p2-ventana #dec-02 .lf-degradado { opacity: clamp(0, (var(--t) - 0.25) * 3.3, 1); }
+.p2-v-e.p2-ventana #dec-02 > .cs-fijo > :not(.lf-degradado) { opacity: clamp(0, (var(--t) - 0.55) * 2.2, 1); translate: 0 calc((1 - clamp(0, (var(--t) - 0.55) * 2.2, 1)) * 16px); }
+
+/* --- 8. F · EL FILO --- */
+/* La 02 se descubre en su lugar desde abajo, al ritmo del scroll; en el borde, una línea turquesa con su nombre */
+.p2-v-f.p2-ventana #dec-02 > .cs-fijo { clip-path: inset(calc((1 - var(--t)) * 100%) 0 0 0); }
+.p2-filo { position: fixed; left: 0; right: 0; top: calc((1 - var(--t, 0)) * 100lvh); z-index: 6; height: 1px; background: var(--lf-turquesa); pointer-events: none; display: none; }
+.p2-filo span { position: absolute; right: var(--margen); bottom: 0; padding: 4px 8px 6px; font-size: 11px; color: var(--lf-turquesa); white-space: nowrap; background: var(--lf-papel); }
+.p2-v-f.p2-ventana .p2-filo { display: block; }
+
+/* =======================================================
+   SOLO DE LA EXPLORACIÓN: CIERRE Y SELECTOR (.p2-)
+   ======================================================= */
+/* --- 1. CIERRE --- */
+.p2-cierre { position: relative; z-index: 3; display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.p2-cierre .mono { color: var(--texto-3); }
+.p2-cierre p { max-width: 40ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
+
+/* --- 2. SELECTOR, ABAJO A LA IZQUIERDA: BAJO EL TEXTO, ASÍ NO TAPA LA PIEZA --- */
+.p2-sel { position: fixed; left: 16px; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; width: max-content; max-width: min(470px, calc(100vw - 32px)); padding: 10px 12px;
+    background: rgba(10, 20, 21, 0.86); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.p2-sel-desc { max-width: 64ch; padding: 0 10px; font: 400 13px / 1.4 var(--cs-f); text-transform: none; letter-spacing: 0; color: rgba(255, 255, 255, 0.74); }
+.p2-sel-fila { display: flex; flex-wrap: wrap; gap: 4px; }
+.p2-sel button { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; background: none; color: rgba(255, 255, 255, 0.6); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.p2-sel button span { color: var(--lf-claro); }
+.p2-sel button[aria-pressed="true"] { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+.p2-sel-otra { margin-left: auto; }
+@media (max-width: 768px) { .p2-sel-desc { display: none; } }
+@media (hover: hover) { .p2-sel button:hover { color: #FFFFFF; } }
