@@ -1,0 +1,152 @@
+/* =======================================================
+   EXPLORACIÓN · DECISIÓN 02 COMO EL TALLER DEL NODO (.lf-taller)
+   ======================================================= */
+/* La pieza cuenta la construcción real sobre una sola trama, en cuatro pasos: los puntos de la madre, hoy decorativos
+   (lámina 05 del pitch); dos puntos y un conector forman el nodo, con sus dos lecturas (lámina 06); la misma regla arma
+   el isotipo de Farma; y deja el espacio de las verticales que vienen, con su receta (lámina 10). La lente acerca la
+   trama al nodo y vuelve a soltarla. decision-02.js mide la mesa y escribe la geometría como variables: --P (el paso
+   de la trama), --cx y --cy (el nodo central), --Z y --PZ (el acercamiento) y los desplazamientos de cada paso.
+   Las clases llevan el prefijo del caso (lf-) para pasar tal cual a llego.css; lo propio de la exploración va con d2- */
+
+/* --- 1. COMPOSICIÓN: LA MISMA DE LA 01, TEXTO Y PIEZA PARTEN EN LA MISMA LÍNEA --- */
+.lf-taller-sec .cs-fijo.cs-grilla { align-items: stretch; grid-template-rows: 100%; padding-top: clamp(96px, 13.4vh, 120px); padding-bottom: clamp(36px, 6.2vh, 56px); }
+.lf-taller-sec .cs-dec { position: relative; align-self: start; }
+.lf-taller {
+    grid-column: 6 / -1; min-height: 0; gap: clamp(14px, 2.2vh, 20px);
+    --lf-madre: #84187C;
+    --lf-madre-tinta: #4E126A;
+    --lf-taller-punto-madre: #C873D6;
+    --lf-taller-tinta: #FFFFFF;
+    --lf-taller-lente: 760ms;
+    --lf-taller-entra: 420ms;
+}
+.lf-taller:is([data-k="2"], [data-k="3"]) { --lf-taller-tinta: var(--lf-claro); }
+
+/* --- 2. LA MESA Y LA LENTE --- */
+/* La mesa recorta; la lente lleva la trama y el nodo en píxeles de la mesa y se acerca con un solo transform */
+.lf-taller-mesa { position: relative; flex: 1; min-height: 0; overflow: hidden; border-radius: 2px; }
+.lf-taller-lente { position: absolute; inset: 0; transform-origin: 0 0; transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--z, 1)); transition: transform var(--lf-taller-lente) var(--cs-curva); }
+.lf-taller[data-k="1"] .lf-taller-lente { --tx: var(--t1x); --ty: var(--t1y); --z: var(--Z); }
+.lf-taller[data-k="2"] .lf-taller-lente { --tx: var(--t2x); --ty: var(--t2y); --z: var(--Z); }
+.lf-taller-trama { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+/* --- 3. PASO 1: LA MADRE, CON SU TRAMA EN LOS BORDES --- */
+/* El morado de Llegó y sus campos de puntos, como decoración. Al pasar al nodo la madre se retira y queda el fondo de Farma */
+.lf-taller-madre { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(70% 80% at 0% 0%, rgba(214, 11, 82, 0.28) 0%, rgba(214, 11, 82, 0) 70%), linear-gradient(155deg, var(--lf-madre) 0%, #631577 48%, var(--lf-madre-tinta) 100%); transition: opacity 480ms var(--cs-curva); }
+.lf-taller-llego { width: clamp(96px, 18%, 150px); aspect-ratio: 200 / 77; background: #FFFFFF; -webkit-mask: url("../media/lf-llego-logotipo.svg") center / contain no-repeat; mask: url("../media/lf-llego-logotipo.svg") center / contain no-repeat; }
+.lf-taller:not([data-k="0"]) .lf-taller-madre { opacity: 0; }
+.lf-taller-trama circle { fill: #FFFFFF; opacity: 0; transform-box: fill-box; transform-origin: center; scale: var(--ds, 1); transition: opacity 360ms var(--cs-curva), fill 360ms var(--cs-curva), scale var(--lf-taller-lente) var(--cs-curva); }
+/* Con la lente cerca los puntos guardan su tamaño en pantalla: se acerca la trama, no el grano */
+.lf-taller:is([data-k="1"], [data-k="2"]) .lf-taller-trama { --ds: calc(1.5 / var(--Z)); }
+.lf-taller:is([data-k="1"], [data-k="2"]) .lf-taller-trama circle { opacity: 0.2; }
+.lf-taller[data-k="0"] .lf-taller-trama .f { fill: var(--lf-taller-punto-madre); opacity: var(--o); }
+/* Del paso 2 en adelante los campos se ordenan en una sola trama, desde el nodo hacia afuera */
+.lf-taller:not([data-k="0"]) .lf-taller-trama circle { opacity: 0.26; transition-delay: calc(var(--d) * 1ms); }
+
+/* --- 4. EL NODO Y EL ISOTIPO --- */
+/* Los nodos son puntos de la trama que crecen a un tercio del paso (la proporción del isotipo); el conector es la
+   cápsula real, puesta sobre dos nodos; al final entra el isotipo real encima de su construcción */
+.lf-taller-lente { --rn: calc(var(--P) * 0.335); }
+.lf-taller-n { position: absolute; left: calc(var(--cx) + var(--i) * var(--P) - var(--rn)); top: calc(var(--cy) + var(--j) * var(--P) - var(--rn)); width: calc(var(--rn) * 2); aspect-ratio: 1; border-radius: 50%; background: var(--lf-taller-tinta); opacity: 0; scale: calc(var(--s0) * 1.5 / var(--Z)); transition: scale var(--lf-taller-entra) var(--cs-curva), opacity 260ms, background-color var(--lf-taller-entra); }
+.lf-taller[data-k="1"] .lf-taller-n-par { opacity: 1; scale: 1; transition-delay: 560ms; }
+.lf-taller:is([data-k="2"], [data-k="3"]) .lf-taller-n { opacity: 1; scale: 1; transition-delay: calc(240ms + var(--o, 0) * 90ms); }
+.lf-taller-cuello { position: absolute; left: calc(var(--cx) - var(--P) * 0.33756); top: calc(var(--cy) - var(--P) * 0.33725); width: calc(var(--P) * 1.6751); height: calc(var(--P) * 0.6745); transform-origin: calc(var(--P) * 0.33756) calc(var(--P) * 0.33725); background: var(--lf-taller-tinta); opacity: 0; transition: opacity 280ms var(--cs-curva), background-color var(--lf-taller-entra);
+    -webkit-mask: url("../media/lf-nodo-capsula.svg") center / 100% 100% no-repeat; mask: url("../media/lf-nodo-capsula.svg") center / 100% 100% no-repeat; }
+.lf-taller-cuello-v { rotate: 90deg; }
+.lf-taller-cuello-h { left: calc(var(--cx) - var(--P) * 1.33756); }
+.lf-taller[data-k="1"] .lf-taller-cuello-v { opacity: 1; transition-delay: 860ms; }
+.lf-taller:is([data-k="2"], [data-k="3"]) .lf-taller-cuello { opacity: 1; transition-delay: 560ms; }
+.lf-taller-iso { position: absolute; left: calc(var(--cx) - var(--P) * 1.3346); top: calc(var(--cy) - var(--P) * 1.3346); width: calc(var(--P) * 2.6692); aspect-ratio: 1; background: var(--lf-claro); opacity: 0; transition: opacity 240ms;
+    -webkit-mask: url("../media/lf-iso-nodos.svg") center / contain no-repeat; mask: url("../media/lf-iso-nodos.svg") center / contain no-repeat; }
+.lf-taller:is([data-k="2"], [data-k="3"]) .lf-taller-iso { opacity: 1; transition-delay: 980ms; }
+
+/* --- 5. LA CAJA DEL ISOTIPO Y LOS ESPACIOS QUE VIENEN --- */
+/* La caja punteada es el espacio del isotipo: en el paso 3 enmarca la construcción de Farma; en el 4 se repite vacía
+   para minería y food, con la trama encendida solo adentro. Son rectángulos de la trama: el JS divide su trazo por el
+   acercamiento para que quede en 1 px */
+.lf-taller-trama rect { fill: none; stroke: color-mix(in srgb, var(--lf-claro) 60%, transparent); opacity: 0; transition: opacity 300ms var(--cs-curva); }
+.lf-taller[data-k="2"] .lf-taller-trama .caja { opacity: 1; transition-delay: 180ms; }
+.lf-taller[data-k="3"] .lf-taller-trama .hueco { opacity: 1; transition-delay: 520ms; }
+.lf-taller[data-k="3"] .lf-taller-trama .hueco + .hueco { transition-delay: 610ms; }
+.lf-taller[data-k="3"] .lf-taller-trama circle { opacity: 0.07; }
+.lf-taller[data-k="3"] .lf-taller-trama .h { opacity: 0.36; transition-delay: 560ms; }
+
+/* --- 6. LAS DOS LECTURAS Y LAS NOTAS DEL ISOTIPO --- */
+/* A cada lado del nodo, fuera de la lente: no crecen con el acercamiento. Parten pasado el primer punto de la trama */
+.lf-taller-lect, .lf-taller-nota { position: absolute; top: 50%; display: flex; flex-direction: column; gap: 10px; opacity: 0; translate: 0 calc(-50% + 12px); transition: opacity 300ms var(--cs-curva), translate 480ms var(--cs-curva); }
+.lf-taller-lect.lf-taller-izq { right: calc(50% + var(--PZ) * 1.25); align-items: flex-end; text-align: right; }
+.lf-taller-lect.lf-taller-der { left: calc(50% + var(--PZ) * 1.25); }
+.lf-taller-lect { max-width: calc(50% - var(--PZ) * 1.25 - 8px); }
+.lf-taller-lect .mono, .lf-taller-nota .mono { color: var(--texto-3); }
+.lf-taller-lect p { font: 300 clamp(22px, 2.15vw, 34px) / 1.06 var(--cs-f); letter-spacing: -0.035em; }
+.lf-taller-nota.lf-taller-izq { right: calc(50% + var(--PZ) * 1.85); align-items: flex-end; text-align: right; }
+.lf-taller-nota.lf-taller-der { left: calc(50% + var(--PZ) * 1.85); }
+.lf-taller-nota { max-width: min(24ch, calc(50% - var(--PZ) * 1.85 - 8px)); }
+.lf-taller-nota p { font: 400 15px / 1.4 var(--cs-f); color: var(--texto-2); text-wrap: pretty; }
+.lf-taller[data-k="1"] .lf-taller-lect, .lf-taller[data-k="2"] .lf-taller-nota { opacity: 1; translate: 0 -50%; transition-delay: 940ms; }
+.lf-taller[data-k="1"] .lf-taller-der.lf-taller-lect { transition-delay: 1020ms; }
+.lf-taller[data-k="2"] .lf-taller-nota { transition-delay: 1100ms; }
+
+/* --- 7. PASO 4: LA FAMILIA Y LO QUE QUEDA EN RESERVA --- */
+/* Tres columnas: cada marca en el centro de su tercio y, debajo, su nombre, su estado y su receta */
+.lf-taller-familia { position: absolute; left: 0; right: 0; top: calc(var(--cy) + var(--P) * 1.6346 + 18px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; text-align: center; }
+.lf-taller-v { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 12px; opacity: 0; translate: 0 12px; transition: opacity 300ms var(--cs-curva), translate 480ms var(--cs-curva); }
+.lf-taller-v b { font: 500 clamp(18px, 1.6vw, 24px) / 1 var(--cs-f); letter-spacing: -0.03em; }
+.lf-taller-v b span { font-weight: 300; color: var(--texto-2); }
+.lf-taller-v small { color: var(--texto-3); }
+.lf-taller-v-on small { color: var(--lf-claro); }
+.lf-taller-v p { max-width: 22ch; font: 400 14px / 1.4 var(--cs-f); color: var(--texto-2); text-wrap: balance; }
+.lf-taller-v:not(.lf-taller-v-on) b span { color: var(--texto-3); }
+.lf-taller-reserva { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 5fr); column-gap: var(--medianil); padding-top: 12px; border-top: 1px solid var(--linea); font: 400 14px / 1.45 var(--cs-f); color: var(--texto-2); text-wrap: pretty; opacity: 0; translate: 0 12px; transition: opacity 300ms var(--cs-curva), translate 480ms var(--cs-curva); }
+.lf-taller-reserva .mono { color: var(--lf-claro); }
+.lf-taller[data-k="3"] :is(.lf-taller-v, .lf-taller-reserva) { opacity: 1; translate: 0 0; transition-delay: calc(560ms + var(--k, 3) * 90ms); }
+
+/* --- 8. EL PIE: LA FUENTE DE CADA PASO --- */
+.lf-taller-pie { display: grid; font: 400 13px / 1.4 var(--cs-f); color: var(--texto-2); }
+.lf-taller-pie > span { grid-area: 1 / 1; opacity: 0; translate: 0 6px; transition: opacity 260ms, translate 400ms var(--cs-curva); }
+.lf-taller-pie > span.on { opacity: 1; translate: 0 0; }
+.lf-taller-pie b { margin-right: 12px; font-weight: 400; color: var(--texto-3); }
+
+/* --- 9. VISTA MÓVIL --- */
+/* La mesa toma el alto que queda bajo el texto; las lecturas y las notas bajan un punto */
+@media (max-width: 768px), (orientation: portrait) and (max-width: 1100px) {
+    .lf-taller-sec .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-top: 64px; padding-bottom: 16px; }
+    .lf-taller-sec .cs-dec p:not(.cs-porque) { display: none; }
+    .lf-taller { gap: 10px; }
+    .lf-taller-mesa { min-height: 0; }
+    .lf-taller-nota { display: none; }
+    .lf-taller-lect p { font-size: 18px; }
+    .lf-taller-nota p, .lf-taller-v p { font-size: 12px; }
+    .lf-taller-v b { font-size: 15px; }
+    .lf-taller-v { padding: 0 4px; gap: 6px; }
+    .lf-taller-reserva { grid-template-columns: 1fr; row-gap: 4px; font-size: 12px; }
+    .lf-taller-pie b { display: block; margin: 0 0 2px; }
+}
+
+/* --- 10. MOVIMIENTO REDUCIDO --- */
+@media (prefers-reduced-motion: reduce) {
+    .lf-taller *, .lf-taller-trama circle { transition-duration: 1ms !important; transition-delay: 0ms !important; }
+}
+
+/* =======================================================
+   SOLO DE LA EXPLORACIÓN: CIERRE Y SELECTOR (.d2-)
+   ======================================================= */
+/* --- 1. LA PIEZA QUE NO SE ESTÁ VIENDO --- */
+.d2-oculta { display: none; }
+
+/* --- 2. CIERRE --- */
+.d2-cierre { position: relative; z-index: 3; display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.d2-cierre .mono { color: var(--texto-3); }
+.d2-cierre p { max-width: 40ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
+
+/* --- 3. SELECTOR, ABAJO A LA IZQUIERDA: BAJO EL TEXTO, ASÍ NO TAPA LA PIEZA --- */
+.d2-sel { position: fixed; left: 16px; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; width: max-content; max-width: min(460px, calc(100vw - 32px)); padding: 10px 12px;
+    background: rgba(10, 20, 21, 0.86); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.d2-sel-desc { max-width: 64ch; padding: 0 10px; font: 400 13px / 1.4 var(--cs-f); text-transform: none; letter-spacing: 0; color: rgba(255, 255, 255, 0.74); }
+.d2-sel-fila { display: flex; flex-wrap: wrap; gap: 4px; }
+.d2-sel button { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; background: none; color: rgba(255, 255, 255, 0.6); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.d2-sel button span { color: var(--lf-claro); }
+.d2-sel button[aria-pressed="true"] { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+.d2-sel-otra { margin-left: auto; }
+@media (max-width: 768px) { .d2-sel-desc { display: none; } }
+@media (hover: hover) { .d2-sel button:hover { color: #FFFFFF; } }
