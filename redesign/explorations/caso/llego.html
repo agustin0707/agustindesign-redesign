@@ -128,7 +128,8 @@
         <!-- La pieza es el mapa del caso: a la izquierda lo que de Llegó no se toca, con sus piezas reales; a la derecha los
              cuatro espacios libres, con el punteado de lo planeado y la decisión que llena cada uno; abajo el quinto, el
              hallazgo, que todo el caso va llenando. Paso 1: entra la madre. Paso 2: se dibujan los espacios. Paso 3: se abre el hallazgo -->
-        <section class="lf-dsec lf-mapa-sec cs-claro" id="dec-01" data-escena="diagnostico" data-pasos="3" style="--pista:280">
+        <!-- La pista suma una pantalla a la de sus pasos (data-pasos-hasta): con el mapa quieto, la 02 sube sobre ella (el filo) -->
+        <section class="lf-dsec lf-mapa-sec cs-claro" id="dec-01" data-escena="diagnostico" data-pasos="3" data-pasos-hasta="0.643" style="--pista:380">
             <div class="cs-fijo cs-grilla">
                 <aside class="cs-dec">
                     <span class="cs-dec-num" aria-hidden="true">01</span>
@@ -192,6 +193,8 @@
              decorativos; dos puntos y un conector forman el nodo; la gramática del nodo arma el isotipo; y la misma
              gramática deja el espacio de las verticales que vienen. La geometría la mide llego.js (escena taller) -->
         <section class="lf-dsec lf-taller-sec cs-oscuro" id="dec-02" data-escena="taller" data-pasos="4" style="--pista:380">
+            <!-- El filo del paso desde la 01: una línea que sube con el nombre de la decisión (llego.css 8.1.6) -->
+            <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 02 · Un sistema gráfico</span></div>
             <div class="cs-fijo cs-grilla">
                 <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
                 <aside class="cs-dec">

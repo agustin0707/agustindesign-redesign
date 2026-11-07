@@ -736,6 +736,24 @@
     let abajo = null;
     const fondo = () => { const b = window.scrollY > document.documentElement.scrollHeight / 2; if (b !== abajo) { abajo = b; document.documentElement.classList.toggle('lf-abajo', b); } };
     window.addEventListener('scroll', fondo, { passive: true }); fondo();
+
+    /* --- 6. PASO DE LA DECISIÓN 01 A LA 02: EL FILO --- */
+    /* Con el paso (.lf-paso), mientras la 02 sube su primera pantalla sobre el mapa quieto, --lf-filo dice cuánto subió
+       (0 a 1) y .lf-filo-on deja su panel fijo para descubrirlo en su lugar (llego.css 8.1.6). Una sola lectura por cuadro */
+    (() => {
+        const d2 = document.querySelector('.lf-mapa-sec + .lf-taller-sec');
+        if (!d2) return;
+        const html = document.documentElement;
+        let ultimo = -1, pedido = 0;
+        const cuadro = () => {
+            pedido = 0;
+            const t = html.classList.contains('lf-paso') ? fijar(1 - d2.getBoundingClientRect().top / window.innerHeight) : 1;
+            html.classList.toggle('lf-filo-on', t > 0 && t < 1);
+            if (t !== ultimo) { ultimo = t; html.style.setProperty('--lf-filo', t.toFixed(4)); }
+        };
+        const pedir = () => { if (!pedido) pedido = requestAnimationFrame(cuadro); };
+        window.addEventListener('scroll', pedir, { passive: true }); window.addEventListener('resize', pedir); cuadro();
+    })();
 })();
 /* =======================================================
    FIN JS · CASO LLEGÓ FARMA (.lf-)
