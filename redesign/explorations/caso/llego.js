@@ -697,7 +697,7 @@
     };
 
     /* --- 5. ENLACES A LOS CAPÍTULOS Y A LAS DECISIONES, Y FONDO DEL ESTIRÓN --- */
-    document.querySelectorAll('.lf-etapas a, .lf-indice a').forEach(a => a.addEventListener('click', ev => {
+    document.querySelectorAll('.lf-etapas a, .lf-indice a, .lf-mapa-libre a').forEach(a => a.addEventListener('click', ev => {
         const destino = document.querySelector(a.getAttribute('href'));
         if (!destino) return;
         ev.preventDefault();

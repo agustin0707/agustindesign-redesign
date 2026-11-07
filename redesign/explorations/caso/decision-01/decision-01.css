@@ -148,8 +148,6 @@
     .lf-mapa-marco { height: 80px; flex: none; }
     /* En una pantalla no caben todas las intocables: bajada y tipografía quedan para escritorio */
     .lf-mapa-dato { display: none; }
-    .lf-mapa-dato { padding: 8px 12px; gap: 4px; }
-    .lf-mapa-dato b { font-size: 14px; }
     .lf-mapa-paleta { padding: 8px 12px 10px; gap: 6px; }
     .lf-mapa-paleta ol li { height: 26px; padding: 4px 6px; font-size: 9px; }
     .lf-mapa-libre ul { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 8px; }

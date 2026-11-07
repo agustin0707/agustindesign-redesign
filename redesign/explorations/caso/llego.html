@@ -124,8 +124,11 @@
             </div>
         </section>
 
-        <!-- --- DECISIÓN 01 · PRIMERO, EL DIAGNÓSTICO --- -->
-        <section class="lf-dsec cs-claro" id="dec-01" data-escena="diagnostico" data-pasos="3" style="--pista:280">
+        <!-- --- DECISIÓN 01 · PRIMERO, EL DIAGNÓSTICO: EL MAPA --- -->
+        <!-- La pieza es el mapa del caso: a la izquierda lo que de Llegó no se toca, con sus piezas reales; a la derecha los
+             cuatro espacios libres, con el punteado de lo planeado y la decisión que llena cada uno; abajo el quinto, el
+             hallazgo, que todo el caso va llenando. Paso 1: entra la madre. Paso 2: se dibujan los espacios. Paso 3: se abre el hallazgo -->
+        <section class="lf-dsec lf-mapa-sec cs-claro" id="dec-01" data-escena="diagnostico" data-pasos="3" style="--pista:280">
             <div class="cs-fijo cs-grilla">
                 <aside class="cs-dec">
                     <span class="cs-dec-num" aria-hidden="true">01</span>
@@ -134,13 +137,52 @@
                     <p>Separé lo que había funcionado en la propuesta anterior, la estrategia, de lo que había fallado, la ejecución. Y lo que de Llegó no se podía tocar, de lo que quedaba libre.</p>
                     <p class="cs-porque"><span class="mono">Por qué</span>El cliente ya había visto una buena idea mal ejecutada: había que ganar con un sistema demostrado, no con otra idea</p>
                 </aside>
-                <div class="lf-pieza lf-diag" role="img" aria-label="Diagnóstico: lo intocable de Llegó, lo libre para Farma y el hallazgo de que no había reglas para submarcas">
+                <div class="lf-pieza lf-mapa">
                     <div class="cs-rotulo"><b class="mono" data-paso-n>01 / 03</b><span class="cs-rotulo-t"><span data-paso="0">Lo que no se toca</span><span data-paso="1">Lo que queda libre</span><span data-paso="2">El hallazgo</span></span><span class="cs-segmentos" aria-hidden="true"><i data-paso="0"></i><i data-paso="1"></i><i data-paso="2"></i></span></div>
-                    <div class="lf-diag-tabla">
-                        <div class="lf-diag-col" data-paso="0"><span class="mono">Intocable · Llegó</span><ul><li>El logotipo y su ó</li><li>"Entregando confianza"</li><li>La paleta morada</li><li>Su tipografía</li><li>El área de protección</li></ul></div>
-                        <div class="lf-diag-col lf-libre" data-paso="1"><span class="mono">Libre · Farma</span><ul><li>Un isotipo propio</li><li>Un color para la vertical</li><li>Un trazo bajo el logotipo</li><li>Un sistema gráfico</li></ul></div>
+                    <div class="lf-mapa-tablero">
+                        <!-- La marca madre sobre la mesa: logotipo con su área de protección, bajada, tipografía y paleta -->
+                        <div class="lf-mapa-madre" data-paso="0">
+                            <h4 class="lf-mapa-cab mono">Intocable · Llegó</h4>
+                            <ul>
+                                <li class="lf-mapa-logo" style="--k:0">
+                                    <span class="mono">Logotipo y área de protección</span>
+                                    <span class="lf-mapa-marco">
+                                        <span class="lf-mapa-area" aria-hidden="true"><i class="lf-mapa-cota lf-mapa-cota-h"><b>x</b></i><i class="lf-mapa-cota lf-mapa-cota-v"><b>x</b></i></span>
+                                        <span class="lf-mapa-llego" role="img" aria-label="Logotipo Llegó"><i class="lf-mapa-o" aria-hidden="true"><b class="mono">Su ó</b></i></span>
+                                    </span>
+                                </li>
+                                <li class="lf-mapa-dato" style="--k:1"><span class="mono">Bajada</span><b>“Entregando confianza”</b></li>
+                                <li class="lf-mapa-dato" style="--k:2"><span class="mono">Tipografía</span><b>Aeonik</b></li>
+                                <li class="lf-mapa-paleta" style="--k:3"><span class="mono">Paleta</span>
+                                    <ol>
+                                        <li style="--c:#84187C"><span class="mono">84187C</span></li>
+                                        <li style="--c:#4E126A"><span class="mono">4E126A</span></li>
+                                        <li style="--c:#D60B52"><span class="mono">D60B52</span></li>
+                                        <li style="--c:#334759"><span class="mono">334759</span></li>
+                                    </ol>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Los cuatro espacios libres: cada uno lleva a la decisión que lo llena -->
+                        <div class="lf-mapa-libre" data-paso="1">
+                            <h4 class="lf-mapa-cab mono">Libre · Farma</h4>
+                            <ul>
+                                <li style="--k:0"><a href="#dec-05"><span class="mono">Decisión 05<i aria-hidden="true">→</i></span><b>Un isotipo propio</b></a></li>
+                                <li style="--k:1"><a href="#dec-03"><span class="mono">Decisión 03<i aria-hidden="true">→</i></span><b>Un color para la vertical</b></a></li>
+                                <li style="--k:2"><a href="#dec-04"><span class="mono">Decisión 04<i aria-hidden="true">→</i></span><b>Un trazo bajo el logotipo</b></a></li>
+                                <li style="--k:3"><a href="#dec-02"><span class="mono">Decisión 02<i aria-hidden="true">→</i></span><b>Un sistema gráfico</b></a></li>
+                            </ul>
+                        </div>
                     </div>
-                    <p class="lf-hallazgo" data-paso="2"><span class="mono">Hallazgo</span>El manual de Llegó no tenía reglas para submarcas. Había que inventarlas, y que sirvieran para las verticales que vinieran después.</p>
+                    <!-- El quinto espacio, el más grande: vacío hasta el paso 3, cuando el hallazgo pasa a tipografía grande -->
+                    <div class="lf-mapa-hallazgo" data-paso="2">
+                        <span class="lf-mapa-cab mono"><span>Quinto espacio · sin dueño</span><span>Hallazgo · no existían</span></span>
+                        <p class="lf-mapa-titulo">Reglas para submarcas</p>
+                        <div class="lf-mapa-cuerpo">
+                            <p>El manual de Llegó no las tenía. Había que inventarlas, y que sirvieran para las verticales que vinieran después.</p>
+                            <p class="lf-mapa-regla"><span class="mono">El criterio</span>Libertad total, pero también responsabilidad total.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -214,7 +256,7 @@
         </section>
 
         <!-- --- DECISIÓN 04 · LA MADRE NO SE TOCA --- -->
-        <section class="cs-lam cs-claro" data-escena="lockup" data-pasos="4" style="--pista:360">
+        <section class="cs-lam cs-claro" id="dec-04" data-escena="lockup" data-pasos="4" style="--pista:360">
             <div class="cs-fijo cs-grilla">
                 <div class="cs-lam-riel">
                     <aside class="cs-dec" data-revela>
@@ -272,7 +314,7 @@
         </section>
 
         <!-- --- DECISIÓN 05 · TRES CAMINOS, LA DECISIÓN DEL CLIENTE --- -->
-        <section class="cs-lam cs-claro" data-escena="caminos" data-pasos="4" style="--pista:400">
+        <section class="cs-lam cs-claro" id="dec-05" data-escena="caminos" data-pasos="4" style="--pista:400">
             <div class="cs-fijo cs-grilla">
                 <div class="cs-lam-riel">
                     <aside class="cs-dec" data-revela>
