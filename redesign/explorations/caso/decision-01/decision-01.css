@@ -1,0 +1,190 @@
+/* =======================================================
+   EXPLORACIÓN · DECISIÓN 01 COMO MAPA DEL CASO (.lf-mapa)
+   ======================================================= */
+/* La pieza del diagnóstico deja de ser texto: a la izquierda la marca madre sobre la mesa, con sus piezas reales; a la
+   derecha los cuatro espacios libres con el punteado de lo planeado, cada uno un enlace a la decisión que lo llena; abajo
+   el quinto, el hallazgo. Lo que aún no llega se ve como contorno y nada se apaga: el último paso es la pieza completa.
+   Las clases llevan el prefijo del caso (lf-) para pasar tal cual a llego.css; lo propio de la exploración va con d1- */
+
+/* --- 1. COMPOSICIÓN: TEXTO Y PIEZA PARTEN EN LA MISMA LÍNEA Y LA PIEZA OCUPA LA ALTURA ÚTIL --- */
+.lf-mapa-sec .cs-fijo.cs-grilla { align-items: stretch; grid-template-rows: 100%; padding-top: clamp(96px, 13.4vh, 120px); padding-bottom: clamp(36px, 6.2vh, 56px); }
+.lf-mapa-sec .cs-dec { align-self: start; }
+.lf-mapa { grid-column: 6 / -1; min-height: 0; gap: clamp(14px, 2.2vh, 20px); }
+.lf-mapa {
+    --lf-madre: #84187C;
+    --lf-madre-tinta: #4E126A;
+    --lf-tr-tenue: var(--linea);
+    --lf-tr: color-mix(in srgb, var(--lf-turquesa) 60%, transparent);
+    --lf-entra: 420ms;
+}
+
+/* --- 2. EL TABLERO: SIETE COLUMNAS DE LA GRILLA, CUATRO PARA LA MADRE Y TRES PARA LO LIBRE --- */
+.lf-mapa-tablero { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); column-gap: var(--medianil); }
+.lf-mapa-madre { grid-column: span 4; }
+.lf-mapa-libre { grid-column: span 3; }
+.lf-mapa-madre, .lf-mapa-libre { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.lf-mapa-cab { display: flex; align-items: center; gap: 8px; color: var(--texto-3); font-weight: 400; }
+.lf-mapa-cab::before { content: ''; flex: none; width: 8px; height: 8px; border-radius: 50%; }
+.lf-mapa-madre .lf-mapa-cab::before { background: var(--lf-madre); }
+.lf-mapa-libre .lf-mapa-cab::before, .lf-mapa-hallazgo .lf-mapa-cab::before { box-shadow: inset 0 0 0 1px var(--acento); }
+
+/* --- 3. LA MADRE SOBRE LA MESA --- */
+/* Una lámina blanca: el logotipo con su área de protección arriba, bajada y tipografía al medio, la paleta abajo */
+.lf-mapa-madre > ul { flex: 1; min-height: 0; display: grid; grid-template-columns: 3fr 2fr; grid-template-rows: minmax(120px, 1fr) auto auto; list-style: none; background: #FFFFFF; outline: 1px solid var(--linea); }
+.lf-mapa-madre > ul > li { opacity: 0; translate: 0 10px; transition: opacity var(--lf-entra) var(--cs-curva), translate 600ms var(--cs-curva); transition-delay: calc(var(--k, 0) * 110ms); }
+.lf-mapa-madre:is(.on, .ya) > ul > li { opacity: 1; translate: 0 0; }
+
+/* El logotipo, sacado del lockup de Llegó Farma, en el morado de la madre. El marco es un contenedor: el logotipo toma el
+   tamaño que deja la lámina, así el área de protección siempre cabe. --lf-mx es la medida del área (0,19 del ancho) */
+.lf-mapa-logo { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; min-height: 0; padding: 14px 18px 18px; }
+.lf-mapa-logo > .mono { color: var(--texto-3); }
+.lf-mapa-marco { flex: 1; min-height: 0; display: grid; place-content: center; container-type: size; }
+.lf-mapa-marco > * { grid-area: 1 / 1; --lf-mw: min(236px, calc((100cqh - 2px) / 0.765), calc((100cqw - 2px) / 1.38)); --lf-mx: calc(var(--lf-mw) * 0.19); }
+.lf-mapa-llego { position: relative; width: var(--lf-mw); aspect-ratio: 200 / 77; margin: var(--lf-mx); }
+/* La máscara va en un pseudo: así no recorta el círculo de su ó, que vive dentro */
+.lf-mapa-llego::before { content: ''; position: absolute; inset: 0; background: var(--lf-madre); -webkit-mask: url("../media/lf-llego-logotipo.svg") center / contain no-repeat; mask: url("../media/lf-llego-logotipo.svg") center / contain no-repeat; }
+
+/* El área de protección se traza como un plano: el marco punteado y dos cotas x, en el morado de la madre */
+.lf-mapa-area { --lf-tr: color-mix(in srgb, var(--lf-madre) 55%, transparent); position: relative; }
+.lf-mapa-area, .lf-mapa-libre a, .lf-mapa-hallazgo {
+    background-image: repeating-linear-gradient(90deg, var(--lf-tr) 0 4px, transparent 4px 8px), repeating-linear-gradient(90deg, var(--lf-tr) 0 4px, transparent 4px 8px), repeating-linear-gradient(180deg, var(--lf-tr) 0 4px, transparent 4px 8px), repeating-linear-gradient(180deg, var(--lf-tr) 0 4px, transparent 4px 8px);
+    background-position: left top, left bottom, left top, right top;
+    background-repeat: no-repeat;
+    background-size: 0 1px, 0 1px, 1px 0, 1px 0;
+    transition: background-size 640ms var(--cs-curva);
+}
+/* El trazo completo: el marco se dibuja desde la esquina de arriba a la izquierda */
+.lf-mapa-madre:is(.on, .ya) .lf-mapa-area { background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%; transition-delay: 380ms; }
+.lf-mapa-cota { position: absolute; display: block; background: var(--lf-madre); opacity: 0; transition: opacity 300ms 760ms; }
+.lf-mapa-madre:is(.on, .ya) .lf-mapa-cota { opacity: 1; }
+.lf-mapa-cota b { position: absolute; font: 400 11px / 1 var(--cs-f-mono); color: var(--lf-madre); }
+.lf-mapa-cota::before, .lf-mapa-cota::after { content: ''; position: absolute; background: inherit; }
+.lf-mapa-cota-h { left: 0; top: 50%; width: var(--lf-mx); height: 1px; }
+.lf-mapa-cota-h::before, .lf-mapa-cota-h::after { top: -3px; width: 1px; height: 7px; }
+.lf-mapa-cota-h::before { left: 0; }
+.lf-mapa-cota-h::after { right: 0; }
+.lf-mapa-cota-h b { left: 50%; bottom: 6px; translate: -50% 0; }
+.lf-mapa-cota-v { left: 24%; top: 0; width: 1px; height: var(--lf-mx); }
+.lf-mapa-cota-v::before, .lf-mapa-cota-v::after { left: -3px; width: 7px; height: 1px; }
+.lf-mapa-cota-v::before { top: 0; }
+.lf-mapa-cota-v::after { bottom: 0; }
+.lf-mapa-cota-v b { top: 50%; left: 7px; translate: 0 -50%; }
+
+/* Su ó: el trazo diagonal de la o, que también es símbolo, señalado con un círculo de plano */
+.lf-mapa-o { position: absolute; left: 79%; top: 4%; width: 22%; aspect-ratio: 1; border: 1px dashed var(--lf-madre); border-radius: 50%; opacity: 0; scale: 0.6; transition: opacity 300ms 900ms, scale 500ms 900ms var(--cs-curva); }
+.lf-mapa-madre:is(.on, .ya) .lf-mapa-o { opacity: 1; scale: 1; }
+.lf-mapa-o b { position: absolute; left: 50%; bottom: calc(100% + 6px); translate: -50% 0; color: var(--lf-madre); white-space: nowrap; }
+
+/* Bajada y tipografía, lado a lado; la paleta a todo el ancho */
+.lf-mapa-dato { display: flex; flex-direction: column; gap: 8px; padding: 12px 18px 14px; border-top: 1px solid var(--linea); }
+.lf-mapa-dato + .lf-mapa-dato { border-left: 1px solid var(--linea); }
+.lf-mapa-dato .mono, .lf-mapa-paleta > .mono { color: var(--texto-3); }
+.lf-mapa-dato b { font: 300 clamp(16px, 1.3vw, 20px) / 1.15 var(--cs-f); white-space: nowrap; letter-spacing: -0.02em; color: var(--lf-madre-tinta); }
+.lf-mapa-paleta { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; padding: 12px 18px 16px; border-top: 1px solid var(--linea); }
+.lf-mapa-paleta ol { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; list-style: none; }
+/* Cada muestra lleva su código adentro, así la paleta ocupa una sola franja */
+.lf-mapa-paleta ol li { display: flex; align-items: flex-end; height: clamp(34px, 5vh, 46px); padding: 6px 8px; background: var(--c); color: rgba(255, 255, 255, 0.86); font-size: 10px; }
+
+/* --- 4. LOS CUATRO ESPACIOS LIBRES --- */
+/* Antes de su paso ya están, como contorno tenue: el espacio existe, falta llenarlo. En su paso se dibuja el punteado de
+   lo planeado (el mismo de la ruta del resumen) y entra quién lo llena */
+.lf-mapa-libre ul { flex: 1; min-height: 0; display: grid; grid-template-rows: repeat(4, minmax(0, 1fr)); gap: 10px; list-style: none; }
+.lf-mapa-libre a { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; height: 100%; padding: clamp(8px, 1.3vh, 12px) 16px clamp(10px, 1.5vh, 14px); color: inherit; text-decoration: none; transition: background-size 560ms var(--cs-curva), background-color 160ms; transition-delay: calc(var(--k, 0) * 110ms), 0ms; }
+.lf-mapa-libre a::before, .lf-mapa-hallazgo::before { content: ''; position: absolute; inset: 0; pointer-events: none; border: 1px dashed var(--lf-tr-tenue); }
+.lf-mapa-libre a > * { opacity: 0; translate: 0 6px; transition: opacity 320ms, translate 500ms var(--cs-curva), color 160ms; transition-delay: calc(var(--k, 0) * 110ms + 240ms); }
+.lf-mapa-libre a .mono { display: flex; justify-content: space-between; align-items: center; color: var(--texto-3); }
+.lf-mapa-libre a i { font-style: normal; transition: translate 180ms var(--cs-curva); }
+.lf-mapa-libre a b { font: 300 clamp(15px, min(1.35vw, 2.4vh), 21px) / 1.15 var(--cs-f); letter-spacing: -0.02em; text-wrap: balance; }
+.lf-mapa-libre:is(.on, .ya) a { background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%; }
+.lf-mapa-libre:is(.on, .ya) a > * { opacity: 1; translate: 0 0; }
+@media (hover: hover) {
+    .lf-mapa-libre:is(.on, .ya) a:hover { --lf-tr: var(--acento); background-color: color-mix(in srgb, var(--lf-turquesa) 6%, transparent); transition-delay: 0ms; }
+    .lf-mapa-libre a:hover .mono { color: var(--acento); }
+    .lf-mapa-libre a:hover i { translate: 4px 0; }
+}
+.lf-mapa-libre a:focus-visible { outline: 1px solid var(--acento); outline-offset: 2px; }
+
+/* --- 5. EL QUINTO ESPACIO: EL HALLAZGO --- */
+/* El más grande. Contorno en el paso 1; en el paso 2 se dibuja con los demás, todavía sin dueño; en el paso 3 el hallazgo
+   pasa a tipografía grande. La segunda columna calza con la de los espacios libres (más su relleno de 16 px) */
+.lf-mapa-hallazgo { position: relative; flex: none; display: grid; grid-template-columns: calc((100% + 32px + var(--medianil)) * 4 / 7 - var(--medianil)) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: var(--medianil); row-gap: 14px; min-height: clamp(140px, 22vh, 220px); padding: 14px 16px 18px; }
+.lf-mapa-hallazgo .lf-mapa-cab { grid-column: 1 / -1; }
+.lf-mapa-hallazgo .lf-mapa-cab > span { grid-area: 1 / 2; transition: opacity 260ms, translate 400ms var(--cs-curva); }
+.lf-mapa-hallazgo .lf-mapa-cab { display: grid; grid-template-columns: 8px auto; justify-content: start; }
+.lf-mapa-hallazgo .lf-mapa-cab::before { grid-area: 1 / 1; opacity: 0; transition: opacity 260ms 760ms; }
+.lf-mapa:has(.lf-mapa-libre:is(.on, .ya)) .lf-mapa-hallazgo .lf-mapa-cab::before { opacity: 1; }
+.lf-mapa-hallazgo .lf-mapa-cab > span { opacity: 0; translate: 0 6px; }
+.lf-mapa-titulo { align-self: end; font: 200 clamp(30px, 3.1vw, 48px) / 0.98 var(--cs-f); letter-spacing: -0.045em; text-wrap: balance; }
+.lf-mapa-cuerpo { align-self: end; display: flex; flex-direction: column; gap: 12px; font: 400 14px / 1.45 var(--cs-f); color: var(--texto-2); text-wrap: pretty; }
+.lf-mapa-regla { display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid var(--linea); font: 300 clamp(16px, 1.3vw, 19px) / 1.25 var(--cs-f); letter-spacing: -0.015em; color: var(--texto); }
+.lf-mapa-regla .mono { color: var(--texto-3); }
+.lf-mapa-titulo, .lf-mapa-cuerpo { opacity: 0; translate: 0 16px; transition: opacity 420ms var(--cs-curva), translate 640ms var(--cs-curva); }
+/* Paso 2: el quinto espacio se dibuja al final de los cuatro, todavía sin dueño */
+.lf-mapa:has(.lf-mapa-libre:is(.on, .ya)) .lf-mapa-hallazgo { background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%; transition-delay: 520ms; }
+.lf-mapa:has(.lf-mapa-libre.on) .lf-mapa-cab > span:first-child { opacity: 1; translate: 0 0; transition-delay: 760ms; }
+/* Paso 3: el hallazgo toma el espacio */
+.lf-mapa-hallazgo.on .lf-mapa-cab > span:last-child { opacity: 1; translate: 0 0; }
+.lf-mapa-hallazgo.on .lf-mapa-titulo { opacity: 1; translate: 0 0; transition-delay: 120ms; }
+.lf-mapa-hallazgo.on .lf-mapa-cuerpo { opacity: 1; translate: 0 0; transition-delay: 260ms; }
+
+/* --- 6. ESCRITORIO BAJO --- */
+/* Bajo 820 px de alto el rótulo del logotipo cede su línea: el área de protección ya se explica con sus cotas */
+@media (max-height: 820px) and (min-width: 769px) {
+    .lf-mapa-logo > .mono { display: none; }
+    .lf-mapa-logo { padding-top: 12px; padding-bottom: 12px; }
+}
+
+/* --- 7. VISTA MÓVIL --- */
+@media (max-width: 768px), (orientation: portrait) and (max-width: 1100px) {
+    .lf-mapa-sec .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-top: 64px; padding-bottom: 16px; }
+    .lf-mapa-sec .cs-dec p:not(.cs-porque) { display: none; }
+    .lf-mapa { gap: 10px; }
+    .lf-mapa-tablero { flex: none; grid-template-columns: 1fr; row-gap: 10px; }
+    .lf-mapa-madre, .lf-mapa-libre { grid-column: 1; gap: 8px; }
+    .lf-mapa-cab { font-size: 10px; }
+    .lf-mapa-madre > ul { flex: none; grid-template-rows: auto auto; }
+    .lf-mapa-logo { padding: 8px 12px; }
+    .lf-mapa-logo > .mono { display: none; }
+    .lf-mapa-marco { height: 80px; flex: none; }
+    /* En una pantalla no caben todas las intocables: bajada y tipografía quedan para escritorio */
+    .lf-mapa-dato { display: none; }
+    .lf-mapa-dato { padding: 8px 12px; gap: 4px; }
+    .lf-mapa-dato b { font-size: 14px; }
+    .lf-mapa-paleta { padding: 8px 12px 10px; gap: 6px; }
+    .lf-mapa-paleta ol li { height: 26px; padding: 4px 6px; font-size: 9px; }
+    .lf-mapa-libre ul { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 8px; }
+    .lf-mapa-libre a { padding: 8px 10px; gap: 4px; }
+    .lf-mapa-libre a b { font-size: 14px; }
+    .lf-mapa-hallazgo { grid-template-columns: 1fr; min-height: 0; padding: 10px 12px 12px; row-gap: 8px; }
+    .lf-mapa-titulo { font-size: 26px; }
+    .lf-mapa-cuerpo > p:first-child { display: none; }
+    .lf-mapa-regla { font-size: 15px; }
+}
+
+/* --- 8. MOVIMIENTO REDUCIDO --- */
+@media (prefers-reduced-motion: reduce) {
+    .lf-mapa *, .lf-mapa *::before, .lf-mapa-hallazgo { transition-duration: 1ms; transition-delay: 0ms; }
+}
+
+/* =======================================================
+   SOLO DE LA EXPLORACIÓN: CIERRE Y SELECTOR (.d1-)
+   ======================================================= */
+/* --- 1. LA PIEZA QUE NO SE ESTÁ VIENDO --- */
+.d1-oculta { display: none; }
+
+/* --- 2. CIERRE --- */
+.d1-cierre { position: relative; z-index: 3; display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.d1-cierre .mono { color: var(--texto-3); }
+.d1-cierre p { max-width: 40ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
+
+/* --- 3. SELECTOR, ABAJO A LA IZQUIERDA: BAJO EL TEXTO, ASÍ NO TAPA LA PIEZA --- */
+.d1-sel { position: fixed; left: 16px; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; width: max-content; max-width: min(460px, calc(100vw - 32px)); padding: 10px 12px;
+    background: rgba(10, 20, 21, 0.86); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.d1-sel-desc { max-width: 64ch; padding: 0 10px; font: 400 13px / 1.4 var(--cs-f); text-transform: none; letter-spacing: 0; color: rgba(255, 255, 255, 0.74); }
+.d1-sel-fila { display: flex; flex-wrap: wrap; gap: 4px; }
+.d1-sel button { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; background: none; color: rgba(255, 255, 255, 0.6); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.d1-sel button span { color: var(--lf-claro); }
+.d1-sel button[aria-pressed="true"] { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+.d1-sel-otra { margin-left: auto; }
+@media (max-width: 768px) { .d1-sel-desc { display: none; } }
+@media (hover: hover) { .d1-sel button:hover { color: #FFFFFF; } }
