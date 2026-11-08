@@ -665,20 +665,44 @@
             };
         },
 
-        /* Manual: las páginas pasan y se detienen. La posición avanza página a página: el 40 % de cada tramo queda quieto y el resto es el paso a la siguiente. La
-           primera y la última tienen su pausa completa */
+        /* Manual: las páginas pasan y se detienen. Cada página queda al centro alrededor de su paso del rótulo y el cambio
+           ocurre justo en el borde entre pasos. La curva nunca se detiene del todo (un 20 % lineal), así el scroll siempre
+           mueve algo; y la posición sigue al scroll con inercia, para que una muesca de la rueda no salte media página.
+           Si la sección tiene más pasos que páginas, el último es el cierre: --fin va de 0 a 1 con las páginas quietas. Si la
+           pista suma la pantalla de un paso (data-pasos-hasta), todo termina antes de ella */
         manual: el => {
             const pags = [...el.querySelectorAll('.lf-man-pag')], n = pags.length, sec = el.querySelector('[data-man-sec]'), num = el.querySelector('[data-man-pag]');
-            let actual = -1;
-            return p => {
-                const t = fijar(p * (n - 0.4) - 0.3, 0, n - 1), k = Math.min(Math.floor(t), n - 2), pos = k + curva(fijar((t - k - 0.2) / 0.6));
+            const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const pasos = Math.max(+el.dataset.pasos || n, n), hasta = +el.dataset.pasosHasta || 1;
+            const suave = u => u * u * u * (u * (u * 6 - 15) + 10);
+            const curvaPag = u => 0.8 * suave(fijar((u - 0.1) / 0.8)) + 0.2 * u;
+            let actual = -1, objetivo = 0, mostrado = null, bucle = 0, antes = 0;
+            const pintar = total => {
+                const pos = Math.min(total, n - 1);
+                if (pasos > n) fase(el, '--fin', fijar(total - (n - 1)));
                 pags.forEach((g, i) => { const d = i - pos; fase(g, '--d', d); fase(g, '--o', fijar(1 - Math.abs(d) * 0.72, 0.16, 1)); });
-                const c = Math.round(pos);
+                const c = Math.min(Math.max(Math.round(pos), 0), n - 1);
                 if (c === actual) return;
                 actual = c;
                 const g = pags[c].dataset;
                 /* La última hoja no es una página: es el desenlace */
                 sec.textContent = g.sec; num.textContent = g.pag === 'Portada' ? 'Portada' : g.pag === 'fin' ? 'Aprobado' : `Pág. ${g.pag} / 36`;
+            };
+            /* Seguimiento con inercia: se acerca al objetivo con una constante de 110 ms, sin pasarse */
+            const seguir = ahora => {
+                const dt = Math.min(64, antes ? ahora - antes : 16);
+                antes = ahora;
+                mostrado += (objetivo - mostrado) * (1 - Math.exp(-dt / 110));
+                if (Math.abs(objetivo - mostrado) < 0.0006) mostrado = objetivo;
+                pintar(mostrado);
+                if (mostrado === objetivo) { bucle = 0; antes = 0; } else bucle = requestAnimationFrame(seguir);
+            };
+            return q => {
+                const p = fijar(q / hasta), t = fijar(p * pasos - 0.5, 0, pasos - 1), k = Math.min(Math.floor(t), pasos - 2);
+                objetivo = k + curvaPag(t - k);
+                /* La primera vez, con movimiento reducido o en un salto largo (un enlace), se pinta directo */
+                if (mostrado === null || quieto || Math.abs(objetivo - mostrado) > 2.5) { cancelAnimationFrame(bucle); bucle = 0; antes = 0; mostrado = objetivo; pintar(mostrado); return; }
+                if (!bucle) bucle = requestAnimationFrame(seguir);
             };
         },
 

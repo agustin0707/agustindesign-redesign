@@ -1,0 +1,135 @@
+/* =======================================================
+   EXPLORACIÓN · EL CIERRE DEL MANUAL Y EL PASO A LA PORTADA DEL CAPÍTULO 03 (.p3)
+   ======================================================= */
+/* Tres versiones. Todas cierran el manual en el décimo paso de la 07 (--fin, lo escribe llego.js) y después viven en la
+   misma ventana: la última pantalla de la pista de la 07, con el cierre quieto, mientras la portada del 03 sube 100lvh
+   encima con su panel fijo. portada-03.js escribe en la portada el avance de la ventana y las medidas de lo que viaja:
+   la portada del manual (A), las líneas de la retícula (B) o el nodo del 1 de octubre (C) */
+
+/* --- 1. COMUNES DEL CIERRE --- */
+/* Solo se ve el cierre de la versión elegida; el pie de la 07 se retira cuando las páginas terminan */
+.p3 #dec-07 .lf-man { container-type: size; }
+.p3 #dec-07 .p3-cierre { display: none; inset: 0; z-index: 3; pointer-events: none; }
+.p3-v-a #dec-07 .p3-ca, .p3-v-b #dec-07 .p3-cb, .p3-v-c #dec-07 .p3-cc { display: block; }
+.p3 #dec-07 .lf-man-pie { opacity: calc(1 - var(--fin, 0)); }
+.p3-t-grande { font: 200 clamp(30px, 3vw, 52px) / 1.04 var(--cs-f); letter-spacing: -0.035em; color: #FFFFFF; text-wrap: balance; }
+.p3-t-sub { margin-top: 10px; font: 300 clamp(15px, 1.15vw, 18px) / 1.4 var(--cs-f); color: var(--texto-2); }
+.p3-cita { display: flex; flex-direction: column; gap: 10px; }
+.p3-cita p:first-child { font: 300 clamp(14px, 1.05vw, 17px) / 1.4 var(--cs-f); color: var(--texto-2); }
+.p3-cita p:first-child::before { content: '“'; } .p3-cita p:first-child::after { content: '”'; }
+.p3-cita .mono { color: var(--texto-3); line-height: 1.9; }
+
+/* --- 2. A · EL MANUAL SE CIERRA --- */
+/* Las páginas se juntan al centro bajo la portada, como un mazo, y se achican; la retícula del manual mide la pila con
+   cuatro líneas y sus datos en las esquinas. Pila: 46,4cqw de ancho, centrada en 50cqw y 38cqh */
+/* Las páginas se juntan en el primer 60 % del paso (--fp); las líneas y el texto entran después, sin pisarlas */
+.p3-v-a #dec-07 .lf-man-pag { --fp: clamp(0, calc(var(--fin, 0) / 0.6), 1); z-index: calc(20 - var(--i)); opacity: calc(var(--o, 1) + (1 - var(--o, 1)) * var(--fp)); scale: calc(1 - var(--fp) * 0.42);
+    translate: calc(-50% + var(--d, 0) * (100% + 40px) * (1 - var(--fp)) + min(var(--i), 3) * 5px * var(--fp)) calc(-50% - var(--fp) * 9cqh + min(var(--i), 3) * 5px * var(--fp)); }
+.p3-ca { --fa: clamp(0, calc(var(--fin, 0) * 2 - 1), 1); --ft: clamp(0, calc(var(--fin, 0) * 3 - 2), 1); }
+.p3-ca i { position: absolute; background: rgba(255, 255, 255, 0.22); }
+.p3-ca-v { top: 0; bottom: 0; width: 1px; transform-origin: 50% 38%; scale: 1 var(--fa); }
+.p3-ca-v1 { left: 26.8cqw; } .p3-ca-v2 { left: 73.2cqw; }
+.p3-ca-h { left: 0; right: 0; height: 1px; scale: var(--fa) 1; }
+.p3-ca-h1 { top: calc(38cqh - 13.05cqw - 6px); } .p3-ca-h2 { top: calc(38cqh + 13.05cqw + 14px); }
+.p3-ca-dato { position: absolute; color: var(--texto-3); opacity: var(--fa); white-space: nowrap; }
+.p3-ca-tl { left: calc(26.8cqw + 10px); top: calc(38cqh - 13.05cqw - 30px); }
+.p3-ca-tr { right: calc(26.8cqw + 10px); top: calc(38cqh - 13.05cqw - 30px); }
+.p3-ca-bl { right: calc(73.2cqw + 14px); top: calc(38cqh + 13.05cqw + 4px); }
+.p3-ca-br { left: calc(73.2cqw + 14px); top: calc(38cqh + 13.05cqw + 4px); }
+.p3-ca-texto { position: absolute; left: 26.8cqw; width: 46.4cqw; top: calc(38cqh + 13.05cqw + 44px); display: flex; flex-direction: column; opacity: var(--ft); translate: 0 calc((1 - var(--ft)) * 14px); }
+.p3-ca-texto .p3-cita { margin-top: 28px; }
+
+/* --- 3. B · LA RETÍCULA --- */
+/* Las páginas se apagan y queda la retícula de la portada del manual, tres por tres, con el resultado en la celda del
+   logo y los datos donde la portada pone los suyos */
+.p3-v-b #dec-07 .lf-man-pag { opacity: calc(var(--o, 1) * (1 - var(--fin, 0))); scale: calc(1 - var(--fin, 0) * 0.05); }
+.p3-cb { --fb: clamp(0, calc(var(--fin, 0) * 1.8 - 0.4), 1); --fbt: clamp(0, calc(var(--fin, 0) * 2.5 - 1.5), 1); }
+.p3-cb-lineas { position: absolute; inset: 0; }
+.p3-cb-lineas i { position: absolute; background: rgba(255, 255, 255, 0.26); }
+.p3-cb-v1, .p3-cb-v2 { top: 0; bottom: 0; width: 1px; scale: 1 var(--fb); }
+.p3-cb-v1 { left: 33.333%; } .p3-cb-v2 { left: 66.666%; }
+.p3-cb-h1, .p3-cb-h2 { left: 0; right: 0; height: 1px; scale: var(--fb) 1; }
+.p3-cb-h1 { top: 33.333%; } .p3-cb-h2 { top: 66.666%; }
+.p3-cb-c { position: absolute; color: rgba(255, 255, 255, 0.72); line-height: 1.5; opacity: var(--fbt); }
+.p3-cb-c1 { left: 20px; top: calc(33.333% - 44px); }
+.p3-cb-c2 { left: calc(66.666% + 20px); top: clamp(84px, 11vh, 112px); }
+.p3-cb-c3 { right: 20px; top: calc(33.333% - 44px); text-align: right; }
+.p3-cb-c4 { right: calc(66.666% + 20px); top: calc(66.666% + 16px); text-align: right; }
+.p3-cb-centro { position: absolute; left: calc(33.333% + 24px); width: calc(33.333% - 48px); top: 33.333%; height: 33.333%; display: flex; flex-direction: column; justify-content: center; opacity: var(--fbt); }
+.p3-cb-centro .p3-t-grande { font-size: clamp(26px, 2.5vw, 42px); }
+.p3-cb-cita { position: absolute; left: calc(66.666% + 20px); width: calc(33.333% - 40px); top: calc(66.666% + 16px); opacity: var(--fbt); }
+
+/* --- 4. C · EL NODO --- */
+/* Las páginas se apagan y quedan los días del manual en un eje: una página por día del 15 al 23 sep. El 23 se llena
+   (relleno: hecho, como los nodos de referencia del manual) y el 1 oct queda en contorno (pendiente) */
+.p3-v-c #dec-07 .lf-man-pag { opacity: calc(var(--o, 1) * (1 - var(--fin, 0))); scale: calc(1 - var(--fin, 0) * 0.05); }
+.p3-cc { --fc: clamp(0, calc(var(--fin, 0) * 1.6 - 0.2), 1); --fct: clamp(0, calc(var(--fin, 0) * 2.5 - 1.5), 1); }
+.p3-cc-texto { position: absolute; left: 8%; bottom: calc(50% + 56px); width: 60%; display: flex; flex-direction: column; gap: 10px; opacity: var(--fct); translate: 0 calc((1 - var(--fct)) * 14px); }
+.p3-cc-texto > .mono { color: var(--lf-claro); }
+.p3-cc-eje { position: absolute; left: 8%; right: 8%; top: 50%; height: 0; }
+.p3-cc-linea { position: absolute; left: 0; width: 64%; top: 0; height: 1px; background: rgba(255, 255, 255, 0.32); transform-origin: left; scale: var(--fc) 1; }
+.p3-cc-pendiente { position: absolute; left: 64%; right: 0; top: 0; height: 1px; background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.32) 0 4px, transparent 4px 9px); opacity: var(--fct); }
+.p3-cc-dia { position: absolute; left: calc(var(--j) * 8%); top: 0; --fd: clamp(0, calc(var(--fin, 0) * 2.4 - var(--j) * 0.15), 1); opacity: var(--fd); }
+.p3-cc-dia i { position: absolute; left: 0; top: -5px; width: 1px; height: 10px; background: rgba(255, 255, 255, 0.6); }
+.p3-cc-dia b { position: absolute; left: 0; top: 16px; translate: -50% 0; color: var(--texto-3); font-weight: 400; white-space: nowrap; }
+.p3-cc-hoy i { top: 0; left: 0; width: 13px; height: 13px; border-radius: 50%; background: var(--lf-claro); translate: -50% -50%; scale: clamp(0, calc(var(--fin, 0) * 3 - 2), 1); }
+.p3-cc-hoy b { color: var(--lf-claro); }
+.p3-cc-oct { position: absolute; left: 100%; top: 0; opacity: var(--fct); }
+.p3-cc-oct i { position: absolute; left: 0; top: 0; width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--lf-claro); translate: -50% -50%; }
+.p3-cc-oct b { position: absolute; right: -6px; top: 16px; color: var(--lf-claro); font-weight: 400; white-space: nowrap; }
+.p3-cc-cita { position: absolute; left: 8%; top: calc(50% + 64px); width: 46%; opacity: var(--fct); }
+
+/* --- 5. LA VENTANA: LA PORTADA DEL 03 SUBE CON SU PANEL FIJO --- */
+/* Con el paso, la portada sube 100lvh sobre el final de la 07. En la ventana su panel queda fijo donde lo deja el
+   sticky, sin fondo propio: el degradado entra con --p3-fondo, los textos con --p3-texto y el marco del navegador
+   con --p3-marco. Encima, la capa del paso con lo que viaja */
+.p3-paso #cap-3 { position: relative; z-index: 4; margin-top: -100lvh; }
+.p3-ventana #cap-3 { background: transparent; }
+.p3-ventana #cap-3 > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; }
+.p3-ventana #cap-3 .lf-degradado { opacity: var(--p3-fondo, 0); }
+.p3-ventana #cap-3 :is(.lf-cap-num, .cs-cap-n, .cs-cap-txt) { opacity: var(--p3-texto, 0); }
+.p3-ventana #cap-3 .lf-dom-nav { border-color: rgba(255, 255, 255, calc(0.24 * var(--p3-marco, 0))); background: rgba(10, 20, 21, calc(0.4 * var(--p3-marco, 0))); }
+.p3-ventana #cap-3 :is(.lf-dom-cromo, .lf-dom-carga) { opacity: var(--p3-marco, 0); }
+.p3-capa { display: none; position: fixed; inset: 0; z-index: 6; pointer-events: none; }
+.p3-ventana .p3-capa { display: block; }
+.p3-capa > * { position: fixed; display: none; left: var(--p3-x, 0); top: var(--p3-y, 0); width: var(--p3-w, 0); height: var(--p3-h, 0); }
+
+/* --- 6. A · LA PORTADA VIAJA A LA VENTANA DEL NAVEGADOR --- */
+/* La portada del manual deja la pila y aterriza donde va la pantalla del sitio. Fuera de la ventana queda ahí, bajo el
+   hero, que se dibuja encima cuando carga llegofarma.cl */
+.p3-v-a .p3-vuelo { display: block; object-fit: cover; visibility: hidden; }
+.p3-v-a.p3-vuela .p3-vuelo { visibility: visible; }
+.p3-v-a.p3-vuela #dec-07 .lf-man-pag:first-child { visibility: hidden; }
+.lf-dom-pant .p3-pant-manual { display: none; clip-path: none; }
+.p3-v-a .lf-dom-pant .p3-pant-manual { display: block; }
+.p3-v-a.p3-ventana .lf-dom-pant .p3-pant-manual { visibility: hidden; }
+
+/* --- 7. B · LAS LÍNEAS SE VUELVEN EL MARCO --- */
+.p3-v-b .p3-linea { display: block; background: rgba(255, 255, 255, 0.26); }
+.p3-v-b.p3-ventana #dec-07 .p3-cb-lineas { visibility: hidden; }
+
+/* --- 8. C · EL NODO SE VUELVE EL CURSOR --- */
+/* Se llena (--lleno), viaja y se angosta hasta el cursor (--ne): pierde el contorno y el radio en el camino */
+.p3-v-c .p3-nodo { display: block; border-radius: var(--r, 50%); border: calc(1.5px * (1 - var(--ne, 0))) solid var(--lf-claro); background: color-mix(in srgb, var(--lf-claro) calc(var(--lleno, 0) * 100%), transparent); }
+.p3-v-c.p3-ventana #dec-07 .p3-cc-oct i { visibility: hidden; }
+.p3-v-c.p3-ventana #cap-3 .lf-dom-cursor { visibility: hidden; }
+
+/* =======================================================
+   SOLO DE LA EXPLORACIÓN: CIERRE Y SELECTOR (.p3-)
+   ======================================================= */
+/* --- 1. CIERRE --- */
+.p3-fin { position: relative; z-index: 6; display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.p3-fin .mono { color: var(--texto-3); }
+.p3-fin p { max-width: 40ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
+
+/* --- 2. SELECTOR, ABAJO A LA IZQUIERDA: BAJO EL TEXTO, ASÍ NO TAPA LA PIEZA --- */
+.p3-sel { position: fixed; left: 16px; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; width: max-content; max-width: min(520px, calc(100vw - 32px)); padding: 10px 12px;
+    background: rgba(10, 20, 21, 0.86); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.p3-sel-desc { max-width: 64ch; padding: 0 10px; font: 400 13px / 1.4 var(--cs-f); text-transform: none; letter-spacing: 0; color: rgba(255, 255, 255, 0.74); }
+.p3-sel-fila { display: flex; flex-wrap: wrap; gap: 4px; }
+.p3-sel button { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; background: none; color: rgba(255, 255, 255, 0.6); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.p3-sel button span { color: var(--lf-claro); }
+.p3-sel button[aria-pressed="true"] { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+.p3-sel-otra { margin-left: auto; }
+@media (max-width: 768px) { .p3-sel-desc { display: none; } }
+@media (hover: hover) { .p3-sel button:hover { color: #FFFFFF; } }
