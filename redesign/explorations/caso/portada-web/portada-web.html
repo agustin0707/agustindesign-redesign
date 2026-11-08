@@ -26,7 +26,8 @@
                 <div class="cs-fijo lf-cap-fijo">
                     <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
                     <div class="lf-reticula" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-                    <svg class="lf-cap-traza" aria-hidden="true"><text x="100%" y="100%" text-anchor="end">03</text></svg>
+                    <!-- El 3 de Manrope son tres piezas superpuestas: la máscara borra el trazo que queda dentro de la cifra -->
+                    <svg class="lf-cap-traza lf-traza-limpia" aria-hidden="true"><mask id="lf-traza-03" maskUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%"><rect x="-50%" y="-50%" width="200%" height="200%" fill="#FFFFFF"/><text x="100%" y="100%" text-anchor="end">03</text></mask><text x="100%" y="100%" text-anchor="end" mask="url(#lf-traza-03)">03</text></svg>
                     <div class="cs-grilla lf-cap-in pw-a-in">
                         <div class="cs-cap-n lf-riel">
                         <span class="mono">Capítulo 03 · 1 a 20 oct 2026</span>
