@@ -618,8 +618,10 @@
             pieza.addEventListener('pointerleave', () => abrir(-1));
             /* Con el paso (.lf-paso) la 03 entra con el filo: la línea descubre los diez valores ya puestos, sin pieza vacía */
             const html = document.documentElement;
-            return p => {
-                const puestas = html.classList.contains('lf-paso');
+            /* Si la pista suma la pantalla de un paso (data-pasos-hasta), la pieza termina antes de ella */
+            const hasta = +el.dataset.pasosHasta || 1;
+            return q => {
+                const p = fijar(q / hasta), puestas = html.classList.contains('lf-paso');
                 tiras.forEach((t, k) => fase(t, '--f', puestas ? 1 : tramo(p, 0.02 + k * 0.024, 0.12 + k * 0.024)));
                 const l = tramo(p, 0.38, 0.5), f = tramo(p, 0.68, 0.78);
                 fase(pieza, '--liso', l); fase(pieza, '--filete', f);

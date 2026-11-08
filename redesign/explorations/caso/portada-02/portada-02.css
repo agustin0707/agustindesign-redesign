@@ -1,0 +1,77 @@
+/* =======================================================
+   EXPLORACIÓN · EL PASO DE LA 03 A LA PORTADA DEL CAPÍTULO 02 (.pc)
+   ======================================================= */
+/* Tres versiones del paso de la paleta (papel) a la portada del capítulo 02 (oscura). Todas viven en la misma ventana:
+   la última pantalla de la pista de la 03, con la paleta quieta, mientras la portada sube 100lvh sobre ella.
+   portada-02.js escribe en la portada el avance --pc-t (0 a 1), su curva --pc-e, las medidas del tono Oscuro y lo que entra
+   después (el 02 trazado, la retícula, el título y el índice). Al final la decisión 04 sube encima como hoja */
+
+/* --- 1. LA PORTADA DEL 02, COMO LA DEL 01 (ÍNDICE) --- */
+/* Mismo riel, título, retícula, 02 trazado e índice que la portada del capítulo 01 (llego.css 7 y 7.1) */
+.lf-cap-2 { display: block; padding: 0; }
+@media (min-width: 1101px), (min-width: 769px) and (orientation: landscape) {
+    .lf-cap-2 .cs-cap-txt { grid-column: 4 / span 5; }
+    .lf-cap-2 .lf-reticula i:nth-child(2) { left: calc((100% + var(--medianil)) / 4 - var(--medianil) / 2); }
+    .lf-cap-2 .lf-reticula i:nth-child(3) { left: calc((100% + var(--medianil)) / 2 - var(--medianil) / 2); }
+    .lf-cap-2 .lf-reticula i:nth-child(4) { left: calc((100% + var(--medianil)) * 3 / 4 - var(--medianil) / 2); }
+    .lf-cap-2 .lf-reticula::after { display: none; }
+    .lf-cap-2 .lf-cap-traza { right: var(--margen); font-size: calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35); }
+}
+@media (max-width: 768px), (orientation: portrait) and (max-width: 1100px) {
+    .lf-cap-2 .lf-cap-in { row-gap: 18px; }
+}
+
+/* --- 2. LA PORTADA SUBE SOBRE EL FINAL DE LA 03, Y LA 04 SOBRE EL FINAL DE LA PORTADA --- */
+/* Sin el paso (celular o movimiento reducido) las dos suben como hoja */
+.pc #cap-2 { position: relative; z-index: 4; margin-top: -100lvh; }
+.pc #cap-2 + #dec-04 { position: relative; z-index: 5; margin-top: -100lvh; }
+
+/* --- 3. CON EL PASO: LO QUE ENTRA EN LA PORTADA Y LA HOJA DE LA 04 --- */
+/* Como en el capítulo 01: se traza el 02, crece la retícula, entra el título y en la pausa el índice; al final la 04
+   sube y la portada se hunde debajo */
+.pc-paso #cap-2 .lf-reticula i { scale: 1 var(--lf-pl, 0); }
+.pc-paso #cap-2 .lf-reticula::after { scale: var(--lf-pl, 0) 1; }
+.pc-paso #cap-2 .lf-cap-in { opacity: 1; translate: 0 calc(var(--lf-ps, 0) * -10vh); transition: none; }
+.pc-paso #cap-2 :is(.cs-cap-n, .cs-cap-txt p) { opacity: var(--lf-pt, 0); }
+.pc-paso #cap-2 h2 { opacity: var(--lf-pt, 0); translate: 0 calc((1 - var(--lf-pt, 0)) * 0.35em); }
+.pc-paso #cap-2 .lf-cap-fijo::after { content: ''; position: absolute; inset: 0; z-index: 2; background: var(--lf-negro); opacity: calc(var(--lf-ps, 0) * 0.7); pointer-events: none; }
+
+/* --- 4. EN LA VENTANA, EL PANEL DE LA PORTADA QUEDA FIJO (TODAS MENOS LA HOJA) --- */
+/* Fijo en el mismo lugar donde lo deja el sticky al terminar: el cambio de vuelta no se nota */
+.pc-ventana:not(.pc-v-a) #cap-2 { background: transparent; }
+.pc-ventana:not(.pc-v-a) #cap-2 > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; }
+
+/* --- 5. A · LA HOJA --- */
+/* La portada sube con su borde en sombra y la paleta se apaga un poco debajo, como la 01 sobre la portada del 01 */
+.pc-v-a #cap-2 > .cs-fijo { box-shadow: 0 -24px 72px rgba(10, 20, 21, 0.2); }
+.pc-v-a.pc-ventana #dec-03 > .cs-fijo::after { content: ''; position: absolute; inset: 0; z-index: 10; pointer-events: none; background: var(--lf-negro); opacity: calc(var(--pc-t, 0) * 0.3); }
+
+/* --- 6. B · EL OSCURO SE ABRE --- */
+/* El tono Oscuro de la paleta (#104E56, el del texto) se abre hasta la pantalla. Mientras se abre es liso, del mismo
+   tono; al llegar a los bordes se funde en el degradado de la portada */
+.pc-v-b.pc-ventana #cap-2 > .cs-fijo { clip-path: inset(calc(var(--pc-et) * (1 - var(--pc-e))) calc(var(--pc-er) * (1 - var(--pc-e))) calc(var(--pc-eb) * (1 - var(--pc-e))) calc(var(--pc-el) * (1 - var(--pc-e)))); }
+.pc-v-b #cap-2 > .cs-fijo::before { content: ''; position: absolute; inset: 0; z-index: 1; background: var(--lf-oscuro); opacity: var(--pc-plano, 0); pointer-events: none; }
+
+/* --- 7. C · EL NODO --- */
+/* Como la portada del 01: un punto se llena en el centro del tono Oscuro y crece hasta cubrir la pantalla */
+.pc-v-c.pc-ventana #cap-2 > .cs-fijo { clip-path: circle(var(--pc-r, 0px) at var(--pc-px, 50%) var(--pc-py, 50%)); }
+
+/* =======================================================
+   SOLO DE LA EXPLORACIÓN: CIERRE Y SELECTOR (.pc-)
+   ======================================================= */
+/* --- 1. CIERRE --- */
+.pc-cierre { position: relative; z-index: 6; display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.pc-cierre .mono { color: var(--texto-3); }
+.pc-cierre p { max-width: 40ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
+
+/* --- 2. SELECTOR, ABAJO A LA IZQUIERDA: BAJO EL TEXTO, ASÍ NO TAPA LA PIEZA --- */
+.pc-sel { position: fixed; left: 16px; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; width: max-content; max-width: min(470px, calc(100vw - 32px)); padding: 10px 12px;
+    background: rgba(10, 20, 21, 0.86); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.pc-sel-desc { max-width: 64ch; padding: 0 10px; font: 400 13px / 1.4 var(--cs-f); text-transform: none; letter-spacing: 0; color: rgba(255, 255, 255, 0.74); }
+.pc-sel-fila { display: flex; flex-wrap: wrap; gap: 4px; }
+.pc-sel button { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; background: none; color: rgba(255, 255, 255, 0.6); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.pc-sel button span { color: var(--lf-claro); }
+.pc-sel button[aria-pressed="true"] { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+.pc-sel-otra { margin-left: auto; }
+@media (max-width: 768px) { .pc-sel-desc { display: none; } }
+@media (hover: hover) { .pc-sel button:hover { color: #FFFFFF; } }
