@@ -1,0 +1,93 @@
+/* =======================================================
+   EXPLORACIÓN · EL SITIO EN VIVO, DECISIONES 09 A 12 (.sv)
+   ======================================================= */
+/* Tres formas de mostrar el sitio real. Un solo iframe en .sv-esc: cada versión cambia la caja y sitio-vivo.js la escala
+   y lo que se mira. Las variables son --sv-* a propósito: --w está registrada como número en llego.css */
+
+/* --- 1. EL ESCENARIO --- */
+.sv-pista { height: 900vh; }
+.sv-fijo { --panel: 160px; position: sticky; top: 0; height: 100vh; overflow: hidden; color: #FFFFFF; background: var(--lf-negro); }
+.sv-fijo > .lf-degradado { position: absolute; inset: 0; }
+.sv-esc { position: absolute; overflow: hidden; background: var(--lf-negro); }
+.sv-esc iframe { position: absolute; left: 0; top: 0; border: 0; width: var(--sv-iw, 1440px); height: var(--sv-ih, 900px); transform-origin: 0 0; transform: translate(var(--sv-x, 0px), var(--sv-y, 0px)) scale(var(--sv-e, 1)); pointer-events: none; }
+.sv-tocando .sv-esc iframe { pointer-events: auto; }
+.sv-capa { position: absolute; inset: 0; pointer-events: none; }
+.sv-tocando .sv-capa { display: none; }
+
+/* --- 2. LO QUE SE MARCA SOBRE EL SITIO --- */
+/* La caja se prolonga con cuatro líneas hasta el borde, como la retícula; nunca un velo sobre la pieza */
+.sv-caja { position: absolute; left: 0; top: 0; width: var(--sv-cw, 0px); height: var(--sv-ch, 0px); transform: translate(var(--sv-cx, 0px), var(--sv-cy, 0px)); border: 1px solid var(--lf-claro); opacity: 0; transition: opacity 180ms; }
+.sv-caja.on { opacity: 1; }
+.sv-caja::before, .sv-caja::after { content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; background: var(--lf-claro); }
+.sv-caja::before { left: -4px; top: -4px; } .sv-caja::after { right: -4px; bottom: -4px; }
+.sv-caja span { position: absolute; left: -1px; bottom: 100%; padding: 4px 8px; background: var(--lf-claro); color: var(--lf-negro); white-space: nowrap; }
+.sv-caja.abajo span { bottom: auto; top: 100%; }
+.sv-col { position: absolute; top: 0; bottom: 0; left: var(--sv-lx, 0px); width: 1px; background: var(--lf-claro); transform-origin: top; scale: 1 var(--sv-r, 0); }
+/* La tapa deja una pieza sola en escena; el medidor acota un corte de la retícula */
+.sv-tapa, .sv-med { position: absolute; left: 0; top: 0; transform: translate(var(--sv-cx, 0px), var(--sv-cy, 0px)); opacity: 0; transition: opacity 180ms; }
+.sv-tapa { width: var(--sv-cw, 0px); height: var(--sv-ch, 0px); box-shadow: 0 0 0 200vmax var(--lf-negro); }
+.sv-med { width: 12px; height: var(--sv-ch, 0px); border: solid var(--lf-oscuro); border-width: 1px 1px 1px 0; }
+.sv-med span { position: absolute; left: calc(100% + 6px); top: 50%; translate: 0 -50%; padding: 1px 6px; background: var(--lf-oscuro); color: #FFFFFF; white-space: nowrap; }
+.sv-tapa.on, .sv-med.on { opacity: 1; }
+
+/* --- 3. LA DECISIÓN --- */
+.sv-dec { position: absolute; z-index: 2; display: flex; flex-direction: column; background: var(--lf-negro); }
+.sv-dec h3 { font: 300 clamp(26px, 2.4vw, 38px) / 1.08 var(--cs-f); letter-spacing: -0.03em; text-wrap: balance; }
+.sv-dec-num { font: 200 clamp(44px, 4vw, 64px) / 0.9 var(--cs-f); letter-spacing: -0.05em; color: var(--texto-3); }
+.sv-dec-n { color: var(--lf-claro); }
+.sv-dec-txt { font: 300 16px / 1.42 var(--cs-f); color: var(--texto-2); }
+.sv-dec-por { display: flex; flex-direction: column; gap: 6px; font: 400 15px / 1.4 var(--cs-f); color: #FFFFFF; }
+.sv-dec-por .mono { color: var(--texto-3); }
+.sv-dec-pie { display: flex; flex-direction: column; gap: 16px; }
+.sv-ticks { display: flex; gap: 4px; }
+.sv-ticks i { flex: 1; height: 2px; background: rgba(255, 255, 255, 0.18); transition: background-color 180ms; }
+.sv-ticks i.on { background: var(--lf-claro); }
+.sv-tocar { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; padding: 8px 12px; background: none; border: 1px solid rgba(255, 255, 255, 0.28); color: #FFFFFF; font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: border-color 150ms, background-color 150ms, color 150ms; }
+.sv-tocar i { width: 7px; height: 7px; border-radius: 50%; background: var(--lf-claro); }
+.sv-tocando .sv-tocar { background: var(--lf-claro); border-color: var(--lf-claro); color: var(--lf-negro); }
+.sv-tocando .sv-tocar i { background: var(--lf-negro); }
+@media (hover: hover) { .sv-tocar:hover { border-color: #FFFFFF; } }
+
+/* --- 4. VERSIÓN 1 · A SANGRE --- */
+/* El sitio a tamaño real ocupa la pantalla y la decisión es una franja debajo */
+.sv-va .sv-esc { inset: 0 0 var(--panel) 0; }
+.sv-va .sv-dec { inset: auto 0 0 0; height: var(--panel); display: grid; grid-template-columns: auto minmax(0, 3.2fr) minmax(0, 4fr) minmax(0, 3.4fr) minmax(0, 2.4fr); column-gap: 32px; align-items: start; padding: 22px var(--margen) 0; }
+.sv-va .sv-dec-cab { display: flex; flex-direction: column; gap: 6px; }
+.sv-va .sv-dec-n { display: none; }
+.sv-va .sv-dec h3 { font-size: clamp(22px, 1.9vw, 30px); }
+.sv-va .sv-dec-txt { font-size: 15px; }
+.sv-va .sv-dec-por { font-size: 14px; }
+
+/* --- 5. VERSIONES 2 Y 3: EL RIEL DE LAS LÁMINAS --- */
+.sv-vb .sv-dec, .sv-vc .sv-dec { inset: 0 auto 0 0; width: 28%; gap: 18px; padding: 72px 28px 96px var(--margen); }
+.sv-vb .sv-dec-cab, .sv-vc .sv-dec-cab { display: flex; flex-direction: column; gap: 12px; }
+.sv-vb .sv-dec-pie, .sv-vc .sv-dec-pie { margin-top: auto; }
+.sv-vc .sv-esc { inset: 0 0 0 28%; }
+.sv-vb .sv-esc { left: 28%; right: 0; top: 0; height: 58%; }
+
+/* --- 6. VERSIÓN 2 · REGLA, CÓDIGO, RESULTADO --- */
+.sv-b-bajo { display: none; }
+.sv-vb .sv-b-bajo { display: block; position: absolute; left: 28%; right: 0; top: 58%; bottom: 0; }
+.sv-b-par { position: absolute; inset: 0; display: none; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
+.sv-b-par.on { display: grid; }
+.sv-b-regla { display: flex; flex-direction: column; gap: 12px; padding: 24px 28px; border-right: 1px solid rgba(255, 255, 255, 0.14); }
+.sv-b-regla .mono { color: var(--lf-claro); }
+.sv-b-regla p { font: 300 clamp(17px, 1.4vw, 22px) / 1.3 var(--cs-f); letter-spacing: -0.01em; }
+.sv-b-cod { display: flex; flex-direction: column; min-width: 0; background: rgba(10, 20, 21, 0.62); }
+.sv-b-cod > p { display: flex; justify-content: space-between; gap: 12px; padding: 12px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.14); color: var(--texto-2); }
+.sv-b-cod ol { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 8px 0; list-style: none; font: 400 13px / 1.55 var(--cs-f-mono); color: rgba(255, 255, 255, 0.82); }
+.sv-b-cod li { position: relative; padding: 2px 18px 2px 62px; overflow-wrap: anywhere; }
+.sv-b-cod li::before { content: attr(data-n); position: absolute; left: 0; width: 46px; text-align: right; color: rgba(255, 255, 255, 0.3); }
+.sv-b-cod li.on { background: var(--lf-claro); color: var(--lf-negro); }
+.sv-b-cod li.on::before { color: var(--lf-oscuro); }
+
+/* --- 7. SELECTOR --- */
+.sv-sel { position: fixed; right: 16px; bottom: 14px; z-index: 60; display: flex; gap: 2px; padding: 6px; background: rgba(10, 20, 21, 0.9); border: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.sv-sel button { display: inline-flex; align-items: center; gap: 8px; padding: 5px 10px; border: 1px solid transparent; background: none; color: rgba(255, 255, 255, 0.6); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.sv-sel button span { color: var(--lf-claro); }
+.sv-sel button[aria-pressed="true"] { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+@media (hover: hover) { .sv-sel button:hover { color: #FFFFFF; } }
+/* En las versiones con riel, el selector se recoge dentro del riel para no tapar el sitio */
+:is(.sv-vb, .sv-vc) .sv-sel { left: 16px; right: auto; }
+:is(.sv-vb, .sv-vc) .sv-sel button:not([aria-pressed="true"], .sv-sel-otra) { font-size: 0; gap: 0; }
+:is(.sv-vb, .sv-vc) .sv-sel button:not([aria-pressed="true"], .sv-sel-otra) span { font-size: 11px; }

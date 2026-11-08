@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Las rutas resuelven desde caso/, igual que en llego.html -->
+    <base href="../">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El sitio en vivo · Llegó Farma · Exploración · agustín.design</title>
+    <link rel="icon" href="../works/media/favicon-32.png" sizes="32x32">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&family=Inter:ital,wght@1,200..400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../works/works-base.css">
+    <link rel="stylesheet" href="caso-marco.css">
+    <link rel="stylesheet" href="llego.css">
+    <link rel="stylesheet" href="sitio-vivo/sitio-vivo.css">
+</head>
+<body class="cs lf sv">
+    <main class="sv-pista">
+        <div class="sv-fijo cs-oscuro">
+            <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
+
+            <!-- El sitio real, un solo iframe: cada versión cambia la caja y la escala -->
+            <div class="sv-esc" data-esc>
+                <iframe data-marco title="llegofarma.cl en vivo" tabindex="-1" src="../works/sitios/llego/index.html"></iframe>
+                <div class="sv-capa" aria-hidden="true">
+                    <div class="sv-tapa"></div>
+                    <div class="sv-med"><span class="mono">8 px</span></div><div class="sv-med"><span class="mono">8 px</span></div>
+                    <i class="sv-col"></i><i class="sv-col"></i><i class="sv-col"></i><i class="sv-col"></i><i class="sv-col"></i>
+                    <div class="sv-caja"><span class="mono"></span></div><div class="sv-caja"><span class="mono"></span></div><div class="sv-caja"><span class="mono"></span></div><div class="sv-caja"><span class="mono"></span></div>
+                </div>
+            </div>
+
+            <!-- La decisión: franja abajo (1) o riel a la izquierda (2 y 3) -->
+            <aside class="sv-dec">
+                <div class="sv-dec-cab"><span class="sv-dec-num" data-num>09</span><span class="mono sv-dec-n"><span data-paso>01 / 04</span> · Decisión <span data-num2>09</span></span></div>
+                <h3 data-t></h3>
+                <p class="sv-dec-txt" data-p></p>
+                <p class="sv-dec-por"><span class="mono">Por qué</span><span data-por></span></p>
+                <div class="sv-dec-pie">
+                    <div class="sv-ticks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                    <button type="button" class="sv-tocar mono" data-tocar><i aria-hidden="true"></i><span data-tocar-t>Recórrelo tú</span></button>
+                </div>
+            </aside>
+
+            <!-- Solo en la 2: la regla y el código de cada decisión -->
+            <div class="sv-b-bajo">
+            <article class="sv-b-par" data-k="0">
+                <div class="sv-b-regla"><span class="mono">Del manual</span><p>Las líneas se cortan antes de tocarse. En la web ese corte es una variable: 8 px, y toda la retícula la usa.</p></div>
+                <div class="sv-b-cod"><p class="mono"><span>llegofarma.cl / css / base.css</span><span>Líneas reales</span></p><ol>
+<li class="on" data-n="21">  --corte: 8px;</li>
+<li data-n="161">.fila + .fila::before, .fila.con-linea::before{ top: var(--corte); }</li>
+<li data-n="162">.fila:has(+ .fila)::before{ bottom: var(--corte); }</li>
+                </ol></div>
+            </article>
+            <article class="sv-b-par" data-k="1">
+                <div class="sv-b-regla"><span class="mono">De la feria</span><p>Quien llega desde el QR decide en segundos qué le importa. Por eso, una sola acción y tres atajos.</p></div>
+                <div class="sv-b-cod"><p class="mono"><span>llegofarma.cl / index.html</span><span>Líneas reales</span></p><ol>
+<li class="on" data-n="99">  &lt;a class="cta-grande compacto vidrio" href="#contacto" data-ir="contacto" data-carga="1180"&gt;</li>
+<li data-n="105">&lt;nav class="indice" aria-label="Ir a una sección"&gt;</li>
+<li data-n="107">  &lt;a href="#calidad" data-ir="calidad" data-carga="1400"&gt;&lt;span class="i-num"&gt;03&lt;/span&gt;&lt;span class="i-nom"&gt;Calidad&lt;/span&gt;&lt;span class="flecha" aria-hidden="true"&gt;↓&lt;/span&gt;&lt;/a&gt;</li>
+                </ol></div>
+            </article>
+            <article class="sv-b-par" data-k="2">
+                <div class="sv-b-regla"><span class="mono">Sin foto</span><p>Seis etapas dibujadas en SVG. Pasar el cursor por la lista cambia el paso del panel.</p></div>
+                <div class="sv-b-cod"><p class="mono"><span>llegofarma.cl / js / main.js</span><span>Líneas reales</span></p><ol>
+<li data-n="79">var activar = function (i) {</li>
+<li data-n="80">  panelRuta.dataset.paso = i;</li>
+<li class="on" data-n="87">pasos.forEach(function (p, i) { p.addEventListener('mouseenter', function () { activar(i); }); });</li>
+<li data-n="89">  var obsPasos = new IntersectionObserver(function (es) {</li>
+<li data-n="90">    es.forEach(function (e) { if (e.isIntersecting) activar(pasos.indexOf(e.target)); });</li>
+<li data-n="91">  }, { rootMargin: '-45% 0px -50% 0px' });</li>
+                </ol></div>
+            </article>
+            <article class="sv-b-par" data-k="3">
+                <div class="sv-b-regla"><span class="mono">De la feria</span><p>La meta era levantar contactos. El envío no recarga la página: confirma en el mismo lugar.</p></div>
+                <div class="sv-b-cod"><p class="mono"><span>llegofarma.cl / js / main.js</span><span>Líneas reales</span></p><ol>
+<li data-n="321">form.addEventListener('submit', function (e) {</li>
+<li class="on" data-n="331">  fetch(form.action, { method: 'POST', body: datos, headers: { Accept: 'application/json' } })</li>
+<li data-n="332">    .then(function (r) { if (!r.ok) throw new Error(r.status); mostrarExito(datos.get('nombre')); })</li>
+<li data-n="333">    .catch(mostrarError)</li>
+                </ol></div>
+            </article>
+            </div>
+        </div>
+    </main>
+
+    <nav class="sv-sel mono" data-sel aria-label="Versiones">
+        <button type="button" data-v="a"><span>1</span>A sangre</button>
+        <button type="button" data-v="b"><span>2</span>Regla, código, resultado</button>
+        <button type="button" data-v="c"><span>3</span>Una escena por decisión</button>
+        <button type="button" class="sv-sel-otra" data-otra>Ver <span>R</span></button>
+    </nav>
+    <script src="sitio-vivo/sitio-vivo.js"></script>
+</body>
+</html>
