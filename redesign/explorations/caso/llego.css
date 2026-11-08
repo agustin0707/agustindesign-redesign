@@ -775,27 +775,46 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 
 /* --- 8.7 EL MANUAL: LAS PÁGINAS REALES PASANDO --- */
 /* Las páginas van en fila; --d es la distancia de cada una a la que está al centro (la escribe el JS con una pausa en
-   cada página) y --o su opacidad. Sin sombras: el manual no las usa */
-.lf-man { background: var(--lf-negro); }
+   cada página) y --o su opacidad. Sin sombras: el manual no las usa. En el décimo paso (--fin) se juntan bajo la
+   portada como un mazo (--fp, en el primer 60 % del paso), ordenadas por --i: la pila mide 46,4cqw de ancho y queda
+   centrada en 50cqw y 38cqh */
+.lf-man { background: var(--lf-negro); container-type: size; }
 .lf-man > .lf-degradado { inset: 0; }
 .lf-man-pista { inset: 0; }
-.lf-man-pag { position: absolute; left: 50%; top: 47%; width: 80%; margin: 0; translate: calc(-50% + var(--d, 0) * (100% + 40px)) -50%; opacity: var(--o, 1); will-change: translate; }
+.lf-man-pag { --fp: clamp(0, calc(var(--fin, 0) / 0.6), 1); position: absolute; left: 50%; top: 47%; z-index: calc(20 - var(--i, 0)); width: 80%; margin: 0;
+    translate: calc(-50% + var(--d, 0) * (100% + 40px) * (1 - var(--fp)) + min(var(--i, 0), 3) * 5px * var(--fp)) calc(-50% - var(--fp) * 9cqh + min(var(--i, 0), 3) * 5px * var(--fp));
+    scale: calc(1 - var(--fp) * 0.42); opacity: calc(var(--o, 1) + (1 - var(--o, 1)) * var(--fp)); will-change: translate; }
 .lf-man-pag img { display: block; width: 100%; height: auto; aspect-ratio: 2200 / 1237; object-fit: cover; background: var(--lf-papel); }
-.lf-man-pie { inset: auto 0 0; display: flex; justify-content: space-between; padding: 0 28px 24px; color: var(--texto-2); }
-/* El desenlace: una última hoja del tamaño de las páginas, con el resultado, la cita y lo que vino después */
-.lf-man-fin { aspect-ratio: 2200 / 1237; background: var(--lf-papel); color: var(--lf-oscuro); }
-.lf-man-fin-in { position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr auto auto; row-gap: clamp(10px, 1.5vw, 22px); padding: clamp(18px, 3.8%, 56px) clamp(18px, 4.6%, 80px); }
-.lf-man-fin-cab { display: flex; justify-content: space-between; gap: 16px; color: rgba(16, 78, 86, 0.6); }
-.lf-man-fin-t { align-self: end; max-width: 21ch; font: 200 clamp(22px, 2.6vw, 46px) / 1.05 var(--cs-f); letter-spacing: -0.035em; text-wrap: balance; }
-.lf-man-fin-cita { display: flex; flex-direction: column; gap: 10px; max-width: 44ch; margin: 0; }
-.lf-man-fin-cita p { font: 300 clamp(14px, 1.15vw, 19px) / 1.35 var(--cs-f); }
-.lf-man-fin-cita p::before { content: '“'; } .lf-man-fin-cita p::after { content: '”'; }
-.lf-man-fin-cita footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
-.lf-man-fin-cita cite { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-style: normal; }
-.lf-man-fin-cita cite b { font: 400 14px var(--cs-f); }
-.lf-man-fin-cita :is(cite .mono, .cs-por-aprobar) { color: rgba(16, 78, 86, 0.6); border-color: rgba(16, 78, 86, 0.4); }
-.lf-man-fin-sigue { display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid rgba(16, 78, 86, 0.2); color: var(--lf-turquesa); }
-.lf-man-fin-sigue span { color: rgba(16, 78, 86, 0.6); }
+.lf-man-pie { inset: auto 0 0; display: flex; justify-content: space-between; padding: 0 28px 24px; color: var(--texto-2); opacity: calc(1 - var(--fin, 0)); }
+/* --- 8.7.1 EL DESENLACE: EL MANUAL SE CIERRA --- */
+/* Con la pila hecha, la retícula del manual la mide con cuatro líneas y sus datos en las esquinas (--fa, segunda mitad
+   del paso) y abajo entra el resultado (--ft, último tercio): aprobado, la cita y lo que vino después */
+.lf-cierre { position: absolute; inset: 0; z-index: 3; pointer-events: none; --fa: clamp(0, calc(var(--fin, 0) * 2 - 1), 1); --ft: clamp(0, calc(var(--fin, 0) * 3 - 2), 1); }
+.lf-cierre > i { position: absolute; background: rgba(255, 255, 255, 0.22); }
+.lf-cierre-v { top: 0; bottom: 0; width: 1px; transform-origin: 50% 38%; scale: 1 var(--fa); }
+.lf-cierre-v1 { left: 26.8cqw; } .lf-cierre-v2 { left: 73.2cqw; }
+.lf-cierre-h { left: 0; right: 0; height: 1px; scale: var(--fa) 1; }
+.lf-cierre-h1 { top: calc(38cqh - 13.05cqw - 6px); } .lf-cierre-h2 { top: calc(38cqh + 13.05cqw + 14px); }
+.lf-cierre-dato { position: absolute; color: var(--texto-3); opacity: var(--fa); white-space: nowrap; }
+.lf-cierre-tl { left: calc(26.8cqw + 10px); top: calc(38cqh - 13.05cqw - 30px); }
+.lf-cierre-tr { right: calc(26.8cqw + 10px); top: calc(38cqh - 13.05cqw - 30px); }
+.lf-cierre-bl { right: calc(73.2cqw + 14px); top: calc(38cqh + 13.05cqw + 4px); }
+.lf-cierre-br { left: calc(73.2cqw + 14px); top: calc(38cqh + 13.05cqw + 4px); }
+.lf-cierre-texto { position: absolute; left: 26.8cqw; width: 46.4cqw; top: calc(38cqh + 13.05cqw + 44px); display: flex; flex-direction: column; opacity: var(--ft); translate: 0 calc((1 - var(--ft)) * 14px); }
+.lf-cierre-t { font: 200 clamp(30px, 3vw, 52px) / 1.04 var(--cs-f); letter-spacing: -0.035em; color: #FFFFFF; text-wrap: balance; }
+.lf-cierre-sub { margin-top: 10px; font: 300 clamp(15px, 1.15vw, 18px) / 1.4 var(--cs-f); color: var(--texto-2); }
+.lf-cierre-cita { display: flex; flex-direction: column; gap: 10px; margin: 28px 0 0; }
+.lf-cierre-cita p { font: 300 clamp(14px, 1.05vw, 17px) / 1.4 var(--cs-f); color: var(--texto-2); }
+.lf-cierre-cita p::before { content: '“'; } .lf-cierre-cita p::after { content: '”'; }
+.lf-cierre-cita footer { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.lf-cierre-cita cite { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-style: normal; }
+.lf-cierre-cita cite b { font: 400 13px var(--cs-f); color: var(--texto-2); }
+.lf-cierre-cita cite .mono { color: var(--texto-3); }
+/* El puente al capítulo 03: el único enlace del cierre */
+.lf-cierre-sigue { display: flex; align-items: center; gap: 12px; margin-top: 22px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.16); color: var(--lf-claro); text-decoration: none; pointer-events: auto; }
+.lf-cierre-sigue span { color: var(--texto-3); }
+.lf-cierre-sigue i { font-style: normal; transition: translate 160ms var(--cs-curva); }
+@media (hover: hover) { .lf-cierre-sigue:hover i { translate: 4px 0; } }
 
 /* --- 9. CAPÍTULO 03 Y DECISIÓN 08 · EL DOMINIO --- */
 .lf-dom .cs-fijo { align-content: center; row-gap: 32px; color: #FFFFFF; }
@@ -816,6 +835,26 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-dom-pant { position: relative; flex: 1; overflow: hidden; }
 .lf-dom-pant img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0 0 calc((1 - var(--dibuja, 0)) * 100%) 0); }
 .lf-dom-pant .lf-dom-logo { inset: 8% auto auto 6%; width: 18%; height: auto; object-fit: contain; }
+/* La portada del manual queda en la pantalla, bajo el hero, que la tapa al dibujarse cuando carga llegofarma.cl */
+.lf-dom-pant .lf-dom-manual { clip-path: none; }
+
+/* --- 9.1 EL PASO DESDE LA 07: EL MANUAL SE VUELVE LA WEB --- */
+/* La portada sube sobre la pantalla que la 07 suma a su pista; sin el paso (celular o movimiento reducido), como hoja.
+   Con el paso, en esa ventana (.lf-cierre-on) su panel queda fijo donde lo deja el sticky y sin fondo: entra el
+   degradado (--lf-cf), los textos (--lf-ct) y el marco del navegador (--lf-cm). Mientras, la portada del manual deja la
+   pila y aterriza en la pantalla, en arco y levantando sombra (--lf-alza); llego.js 8 escribe su caja en cada cuadro */
+.lf-dom { position: relative; z-index: 4; margin-top: -100lvh; }
+.lf-paso .lf-dom.lf-cierre-on { background: transparent; }
+.lf-paso .lf-dom.lf-cierre-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; }
+.lf-dom.lf-cierre-on .lf-degradado { opacity: var(--lf-cf, 0); }
+.lf-dom.lf-cierre-on :is(.lf-cap-num, .cs-cap-n, .cs-cap-txt) { opacity: var(--lf-ct, 0); }
+.lf-dom.lf-cierre-on .lf-dom-nav { border-color: rgba(255, 255, 255, calc(0.24 * var(--lf-cm, 0))); background: rgba(10, 20, 21, calc(0.4 * var(--lf-cm, 0))); }
+.lf-dom.lf-cierre-on :is(.lf-dom-cromo, .lf-dom-carga) { opacity: var(--lf-cm, 0); }
+.lf-dom.lf-cierre-on .lf-dom-manual { visibility: hidden; }
+.lf-dom-vuelo { display: none; position: fixed; z-index: 6; left: var(--lf-vx, 0); top: var(--lf-vy, 0); width: var(--lf-vw, 0); height: var(--lf-vh, 0); object-fit: cover; pointer-events: none;
+    box-shadow: 0 calc(var(--lf-alza, 0) * 28px) calc(var(--lf-alza, 0) * 72px) rgba(4, 12, 13, calc(var(--lf-alza, 0) * 0.55)); }
+.lf-vuela .lf-dom-vuelo { display: block; }
+.lf-vuela .lf-man-pag:first-child { visibility: hidden; }
 
 /* --- 10. EVIDENCIA: LLEGOFARMA.CL, MARCADO --- */
 .lf-ev { --foco: var(--lf-claro); --foco-txt: var(--lf-negro); }
@@ -935,7 +974,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-cam-criterios li { font-size: 15px; }
     :is(.lf-regla-cab, .lf-fotos-regla dl) { grid-column: 1 / -1; }
     .lf-fotos-regla dl { grid-template-columns: 1fr 1fr; row-gap: 18px; }
-    .lf-man-fin { aspect-ratio: 3 / 4; }
+    .lf-cierre-dato { display: none; }
+    .lf-cierre-texto { left: 20px; width: calc(100cqw - 40px); }
     /* Dominio: el navegador arriba, el capítulo y la decisión abajo */
     .lf-dom .cs-fijo { align-content: start; padding-top: 80px; row-gap: 18px; }
     .lf-dom-nav { grid-row: 1; aspect-ratio: 16 / 11; }

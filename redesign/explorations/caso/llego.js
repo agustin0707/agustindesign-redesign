@@ -686,7 +686,7 @@
                 actual = c;
                 const g = pags[c].dataset;
                 /* La última hoja no es una página: es el desenlace */
-                sec.textContent = g.sec; num.textContent = g.pag === 'Portada' ? 'Portada' : g.pag === 'fin' ? 'Aprobado' : `Pág. ${g.pag} / 36`;
+                sec.textContent = g.sec; num.textContent = g.pag === 'Portada' ? 'Portada' : `Pág. ${g.pag} / 36`;
             };
             /* Seguimiento con inercia: se acerca al objetivo con una constante de 110 ms, sin pasarse */
             const seguir = ahora => {
@@ -858,6 +858,40 @@
         window.addEventListener('scroll', pedir, { passive: true });
         window.addEventListener('resize', () => { medido = false; pedir(); });
         activar();
+    })();
+
+    /* --- 8. PASO A LA PORTADA DEL CAPÍTULO 03: EL MANUAL SE VUELVE LA WEB --- */
+    /* t cuenta cuánto subió la portada del 03 sobre la pantalla que la 07 suma a su pista, con el manual cerrado. Con el
+       paso (.lf-paso), de 0 a 1 es la ventana (.lf-cierre-on): entran el degradado, los textos y el marco del navegador, y
+       la portada del manual sale de la pila (medida en cada cuadro: la inercia del manual puede seguir asentándola) y
+       aterriza en la pantalla del navegador, medida al entrar, en un arco que la levanta 6vh con su sombra. La del manual
+       se esconde solo cuando el vuelo ya partió (.lf-vuela). Después el dominio se escribe y el sitio la tapa (llego.css 9.1) */
+    (() => {
+        const cap = document.querySelector('.lf-dom'), d7 = document.getElementById('dec-07');
+        const vuelo = cap && cap.querySelector('.lf-dom-vuelo'), pant = cap && cap.querySelector('.lf-dom-pant'), portada = d7 && d7.querySelector('.lf-man-pag');
+        if (!vuelo || !pant || !portada) return;
+        const html = document.documentElement, lineal = (v, a, b) => fijar((v - a) / (b - a)), px = v => v.toFixed(1) + 'px';
+        let destino = null, pedido = 0;
+        const cuadro = () => {
+            pedido = 0;
+            const H = window.innerHeight, t = fijar(1 - cap.getBoundingClientRect().top / H);
+            const ventana = html.classList.contains('lf-paso') && t > 0 && t < 1;
+            cap.classList.toggle('lf-cierre-on', ventana);
+            if (!ventana) { destino = null; html.classList.remove('lf-vuela'); return; }
+            if (!destino) destino = pant.getBoundingClientRect();
+            fase(cap, '--lf-cf', lineal(t, 0.05, 0.5)); fase(cap, '--lf-ct', tramo(t, 0.55, 0.95)); fase(cap, '--lf-cm', lineal(t, 0.72, 1));
+            const e = tramo(t, 0.12, 0.88), a = portada.getBoundingClientRect(), b = destino, alza = Math.sin(Math.PI * e);
+            vuelo.style.setProperty('--lf-vx', px(a.left + (b.left - a.left) * e));
+            vuelo.style.setProperty('--lf-vy', px(a.top + (b.top - a.top) * e - alza * H * 0.06));
+            vuelo.style.setProperty('--lf-vw', px(a.width + (b.width - a.width) * e));
+            vuelo.style.setProperty('--lf-vh', px(a.height + (b.height - a.height) * e));
+            fase(vuelo, '--lf-alza', alza);
+            html.classList.toggle('lf-vuela', e > 0);
+        };
+        const pedir = () => { if (!pedido) pedido = requestAnimationFrame(cuadro); };
+        window.addEventListener('scroll', pedir, { passive: true });
+        window.addEventListener('resize', () => { destino = null; pedir(); });
+        pedir();
     })();
 })();
 /* =======================================================

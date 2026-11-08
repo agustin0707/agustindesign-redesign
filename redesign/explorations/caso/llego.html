@@ -490,7 +490,8 @@
 
         <!-- --- DECISIÓN 07 · UN MANUAL QUE OTROS PUEDEN USAR --- -->
         <!-- La 06 corre con el scroll, no queda quieta: aquí el filo va en el borde de la 07 mientras sube -->
-        <section class="cs-lam lf-filo-borde cs-oscuro" id="dec-07" data-escena="manual" data-pasos="10" style="--pista:530">
+        <!-- La pista suma una pantalla a la de sus diez pasos (data-pasos-hasta): con el manual cerrado y quieto, la portada del 03 sube encima -->
+        <section class="cs-lam lf-filo-borde cs-oscuro" id="dec-07" data-escena="manual" data-pasos="10" data-pasos-hasta="0.8113" style="--pista:630">
             <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 07 · Un manual que otros pueden usar</span></div>
             <div class="cs-fijo cs-grilla">
                 <div class="cs-lam-riel">
@@ -506,27 +507,32 @@
                 <div class="cs-lam-pieza lf-man">
                     <div class="lf-degradado lf-degradado-hondo lf-grano" aria-hidden="true"></div>
                     <div class="lf-man-pista">
-                        <figure class="lf-man-pag" data-pag="Portada" data-sec="Brandbook"><img src="media/lf-portada-manual.jpg" alt="Portada del brandbook de Llegó Farma" decoding="async"></figure>
-                        <figure class="lf-man-pag" data-pag="05" data-sec="Logotipo"><img src="media/lf-isotipo.jpg" alt="Página del isotipo" decoding="async"></figure>
-                        <figure class="lf-man-pag" data-pag="11" data-sec="Color"><img src="media/lf-paleta.jpg" alt="Página de la paleta de marca" decoding="async"></figure>
-                        <figure class="lf-man-pag" data-pag="18" data-sec="Tipografía y elementos gráficos"><img src="media/lf-tipografia.jpg" alt="Página de la tipografía de farma" decoding="async"></figure>
-                        <figure class="lf-man-pag" data-pag="27" data-sec="Aplicaciones y usos"><img src="media/lf-usos-incorrectos.jpg" alt="Página de usos incorrectos: seis errores, cada uno con su regla" decoding="async"></figure>
-                        <figure class="lf-man-pag" data-pag="28" data-sec="Aplicaciones y usos"><img src="media/lf-fondos.jpg" alt="Página de fondos" decoding="async"></figure>
-                        <figure class="lf-man-pag" data-pag="29" data-sec="Aplicaciones y usos"><img src="media/lf-direccion-foto.jpg" alt="Página de dirección fotográfica" decoding="async"></figure>
-                        <figure class="lf-man-pag" data-pag="32" data-sec="Aplicaciones y usos"><img src="media/lf-papeleria.jpg" alt="Página de papelería" decoding="async"></figure>
-                        <figure class="lf-man-pag" data-pag="33" data-sec="Aplicaciones y usos"><img src="media/lf-uniforme.jpg" alt="Página del uniforme" decoding="async"></figure>
-                        <!-- El desenlace del capítulo: el manual aprobado, y lo que vino después -->
-                        <figure class="lf-man-pag lf-man-fin" data-pag="fin" data-sec="Presentado el 23 sep">
-                            <div class="lf-man-fin-in">
-                                <p class="lf-man-fin-cab mono"><span>Llegó Farma · Brandbook</span><span>23 sep 2026</span></p>
-                                <p class="lf-man-fin-t">Aprobado casi sin cambios. Un mes después, otros ya producían piezas con él.</p>
-                                <blockquote class="lf-man-fin-cita">
-                                    <p>El documento está tan robusto que no creo que tenga ajustes.</p>
-                                    <footer><cite><b>Pamela Vargas</b><span class="mono">Jefe de Marketing y Comunicaciones de Llegó</span></cite><span class="mono cs-por-aprobar">Cita por aprobar</span></footer>
-                                </blockquote>
-                                <p class="lf-man-fin-sigue mono"><span>1 oct</span>Pidieron la web<i aria-hidden="true">→</i></p>
-                            </div>
-                        </figure>
+                        <figure class="lf-man-pag" style="--i:0" data-pag="Portada" data-sec="Brandbook"><img src="media/lf-portada-manual.jpg" alt="Portada del brandbook de Llegó Farma" decoding="async"></figure>
+                        <figure class="lf-man-pag" style="--i:1" data-pag="05" data-sec="Logotipo"><img src="media/lf-isotipo.jpg" alt="Página del isotipo" decoding="async"></figure>
+                        <figure class="lf-man-pag" style="--i:2" data-pag="11" data-sec="Color"><img src="media/lf-paleta.jpg" alt="Página de la paleta de marca" decoding="async"></figure>
+                        <figure class="lf-man-pag" style="--i:3" data-pag="18" data-sec="Tipografía y elementos gráficos"><img src="media/lf-tipografia.jpg" alt="Página de la tipografía de farma" decoding="async"></figure>
+                        <figure class="lf-man-pag" style="--i:4" data-pag="27" data-sec="Aplicaciones y usos"><img src="media/lf-usos-incorrectos.jpg" alt="Página de usos incorrectos: seis errores, cada uno con su regla" decoding="async"></figure>
+                        <figure class="lf-man-pag" style="--i:5" data-pag="28" data-sec="Aplicaciones y usos"><img src="media/lf-fondos.jpg" alt="Página de fondos" decoding="async"></figure>
+                        <figure class="lf-man-pag" style="--i:6" data-pag="29" data-sec="Aplicaciones y usos"><img src="media/lf-direccion-foto.jpg" alt="Página de dirección fotográfica" decoding="async"></figure>
+                        <figure class="lf-man-pag" style="--i:7" data-pag="32" data-sec="Aplicaciones y usos"><img src="media/lf-papeleria.jpg" alt="Página de papelería" decoding="async"></figure>
+                        <figure class="lf-man-pag" style="--i:8" data-pag="33" data-sec="Aplicaciones y usos"><img src="media/lf-uniforme.jpg" alt="Página del uniforme" decoding="async"></figure>
+                    </div>
+                    <!-- El desenlace del capítulo: el manual se cierra, la retícula mide la pila y entra el resultado -->
+                    <div class="lf-cierre">
+                        <i class="lf-cierre-v lf-cierre-v1" aria-hidden="true"></i><i class="lf-cierre-v lf-cierre-v2" aria-hidden="true"></i><i class="lf-cierre-h lf-cierre-h1" aria-hidden="true"></i><i class="lf-cierre-h lf-cierre-h2" aria-hidden="true"></i>
+                        <span class="lf-cierre-dato lf-cierre-tl mono" aria-hidden="true">Brandbook · 36 páginas</span>
+                        <span class="lf-cierre-dato lf-cierre-tr mono" aria-hidden="true">4 secciones</span>
+                        <span class="lf-cierre-dato lf-cierre-bl mono" aria-hidden="true">15 a 23 sep 2026</span>
+                        <span class="lf-cierre-dato lf-cierre-br mono" aria-hidden="true">Presentado el 23 sep</span>
+                        <div class="lf-cierre-texto">
+                            <p class="lf-cierre-t">Aprobado casi sin cambios.</p>
+                            <p class="lf-cierre-sub">Un mes después, otros ya producían piezas con él.</p>
+                            <blockquote class="lf-cierre-cita">
+                                <p>El documento está tan robusto que no creo que tenga ajustes.</p>
+                                <footer><cite><b>Pamela Vargas</b><span class="mono">Jefe de Marketing y Comunicaciones de Llegó</span></cite><span class="mono cs-por-aprobar">Cita por aprobar</span></footer>
+                            </blockquote>
+                            <a class="lf-cierre-sigue mono" href="#cap-3"><span>1 oct</span>Pidieron la web<i aria-hidden="true">→</i></a>
+                        </div>
                     </div>
                     <div class="lf-man-pie mono" aria-hidden="true"><span data-man-sec>Brandbook</span><span data-man-pag>Portada</span></div>
                 </div>
@@ -551,8 +557,10 @@
                 <div class="lf-dom-nav" aria-hidden="true">
                     <div class="lf-dom-cromo"><span class="cs-ev-luces"><i></i><i></i><i></i></span><span class="lf-dom-url"><span class="lf-dom-candado"></span><span data-url></span><i class="lf-dom-cursor"></i></span></div>
                     <span class="lf-dom-carga"></span>
-                    <div class="lf-dom-pant"><picture><source type="image/avif" srcset="../works/sitios/llego/img/fotos/hero-cenital-1600.avif"><img src="../works/sitios/llego/img/fotos/hero-cenital-1600.jpg" alt="" loading="lazy" decoding="async"></picture><img class="lf-dom-logo" src="media/lf-logo-vertical-blanco.svg" alt=""></div>
+                    <div class="lf-dom-pant"><img class="lf-dom-manual" src="media/lf-portada-manual.jpg" alt="" decoding="async"><picture><source type="image/avif" srcset="../works/sitios/llego/img/fotos/hero-cenital-1600.avif"><img src="../works/sitios/llego/img/fotos/hero-cenital-1600.jpg" alt="" loading="lazy" decoding="async"></picture><img class="lf-dom-logo" src="media/lf-logo-vertical-blanco.svg" alt=""></div>
                 </div>
+                <!-- La portada del manual en vuelo, de la pila de la 07 a la pantalla del navegador (llego.js 8) -->
+                <img class="lf-dom-vuelo" src="media/lf-portada-manual.jpg" alt="" aria-hidden="true" decoding="async">
             </div>
         </section>
 
