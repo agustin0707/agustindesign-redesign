@@ -149,15 +149,15 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .llega .lf-lg-f + .lf-lg-f { animation-delay: 2920ms; }
 
 /* --- 5.6 EL HOVER: ECO CON EL MOUSE --- */
-/* En la lógica del hero de Tap In. El JS mueve tres resortes por pieza y escribe sus valores en línea: --w, el grado
+/* En la lógica del hero de Tap In. El JS mueve tres resortes por pieza y escribe sus valores en línea: --lf-gw, el grado
    en que la pieza se rebobina hacia su partida en la entrada (0 a 1), y --px --py, un tirón suave hacia el cursor en
    unidades del dibujo. Sin transiciones de CSS: el resorte ya trae la suavidad. Cada pieza declara su gesto (--gx --gy
    desplazamiento, --gs --gsy escala) y nada se apaga ni se recorta. En reposo los tres valores son 0 */
-@property --w { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --lf-gw { syntax: '<number>'; inherits: false; initial-value: 0; }
 .lf-lg-p {
     --gx: 0px; --gy: 0px; --gs: 0; --gsy: var(--gs);
-    translate: calc(var(--px, 0) * 1px + var(--w) * var(--gx)) calc(var(--py, 0) * 1px + var(--w) * var(--gy));
-    scale: calc(1 - var(--w) * var(--gs)) calc(1 - var(--w) * var(--gsy));
+    translate: calc(var(--px, 0) * 1px + var(--lf-gw) * var(--gx)) calc(var(--py, 0) * 1px + var(--lf-gw) * var(--gy));
+    scale: calc(1 - var(--lf-gw) * var(--gs)) calc(1 - var(--lf-gw) * var(--gsy));
 }
 .lf-lg-cuerpo { --gs: 0.05; }
 .lf-lg-n1 { --gy: -6px; --gs: 0.1; }

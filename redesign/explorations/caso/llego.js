@@ -176,7 +176,7 @@
 
         /* --- 2.5 EL LOGO: ECO CON EL MOUSE --- */
         /* Como las letras del hero de Tap In, pero con resortes. Cada pieza mide su distancia al cursor y saca dos metas de
-           una campana ancha (σ igual al 20 % del ancho del logo): el grado --w (la campana) y un tirón hacia el cursor (la
+           una campana ancha (σ igual al 20 % del ancho del logo): el grado --lf-gw (la campana) y un tirón hacia el cursor (la
            campana por la distancia, que crece, toca techo a un σ y se apaga, así nunca salta al cruzar la pieza). Tres
            resortes por pieza persiguen esas metas en el cuadro de la cinta. Los centros salen del dibujo (getBBox), que no
            se mueve con los gestos; se miden la primera vez que el logo tiene tamaño. Solo con mouse */
@@ -209,7 +209,7 @@
         };
         const apagar = () => {
             resortes.forEach(r => Object.assign(r, { w: 0, vw: 0, px: 0, vpx: 0, py: 0, vpy: 0, mw: 0, mx: 0, my: 0, golpe: 0 }));
-            piezas.forEach(p => ['--w', '--px', '--py'].forEach(v => p.style.removeProperty(v)));
+            piezas.forEach(p => ['--lf-gw', '--px', '--py'].forEach(v => p.style.removeProperty(v)));
             enReposo = true;
         };
         /* Un paso de los resortes, casi críticos para que no se sientan de gelatina: el grado firme (ω 13, ζ 0,85, se
@@ -225,7 +225,7 @@
                 if (r.golpe && ahora >= r.golpe) { r.vw += GOLPE; r.golpe = 0; }
                 resorte(r, 'w', 'mw', 13, 0.85, s); resorte(r, 'px', 'mx', 10, 0.95, s); resorte(r, 'py', 'my', 10, 0.95, s);
                 const p = piezas[i].style;
-                p.setProperty('--w', r.w.toFixed(4)); p.setProperty('--px', r.px.toFixed(3)); p.setProperty('--py', r.py.toFixed(3));
+                p.setProperty('--lf-gw', r.w.toFixed(4)); p.setProperty('--px', r.px.toFixed(3)); p.setProperty('--py', r.py.toFixed(3));
                 if (!r.golpe && r.mw < 0.002 && Math.abs(r.w) + Math.abs(r.vw) + Math.abs(r.px) + Math.abs(r.vpx) + Math.abs(r.py) + Math.abs(r.vpy) < 0.002) quietas++;
             });
             if (quietas === piezas.length) apagar();
