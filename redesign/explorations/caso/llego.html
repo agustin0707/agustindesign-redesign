@@ -192,7 +192,8 @@
         <!-- La pieza cuenta la construcción real en cuatro pasos sobre una misma trama: los puntos de la madre, hoy
              decorativos; dos puntos y un conector forman el nodo; la gramática del nodo arma el isotipo; y la misma
              gramática deja el espacio de las verticales que vienen. La geometría la mide llego.js (escena taller) -->
-        <section class="lf-dsec lf-taller-sec cs-oscuro" id="dec-02" data-escena="taller" data-pasos="4" style="--pista:380">
+        <!-- La pista suma una pantalla a la de sus pasos (data-pasos-hasta): con la familia quieta, la 03 sube sobre ella -->
+        <section class="lf-dsec lf-taller-sec lf-filo-sec cs-oscuro" id="dec-02" data-escena="taller" data-pasos="4" data-pasos-hasta="0.737" style="--pista:480">
             <!-- El filo del paso desde la 01: una línea que sube con el nombre de la decisión (llego.css 8.1.6) -->
             <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 02 · Un sistema gráfico</span></div>
             <div class="cs-fijo cs-grilla">
@@ -253,7 +254,9 @@
         </section>
 
         <!-- --- DECISIÓN 03 · UN TURQUESA CON PARENTESCO --- -->
-        <section class="cs-lam cs-claro" id="dec-03" data-escena="valores" data-pasos="3" style="--pista:320">
+        <section class="cs-lam lf-filo-sec cs-claro" id="dec-03" data-escena="valores" data-pasos="3" style="--pista:320">
+            <!-- El filo del paso desde la 02: sobre el papel de la 03, el nombre va bajo la línea (llego.css 8.1.6) -->
+            <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 03 · Un turquesa con parentesco</span></div>
             <div class="cs-fijo cs-grilla">
                 <div class="cs-lam-riel">
                     <aside class="cs-dec" data-revela>

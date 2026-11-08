@@ -548,6 +548,8 @@
         taller: (el, h) => {
             const pieza = el.querySelector('.lf-taller'), mesa = el.querySelector('[data-taller]'), trama = el.querySelector('[data-trama]');
             if (!pieza || !mesa || !trama) return null;
+            /* Los cuatro pasos terminan antes del final de la pista: la última pantalla es la del filo a la 03 */
+            const hasta = +el.dataset.pasosHasta || 1;
             const azar = (i, j, s) => { const x = Math.sin(i * 12.9898 + j * 78.233 + s * 37.719) * 43758.5453; return x - Math.floor(x); };
             /* Los campos de puntos, en fracciones de la mesa: arriba a la izquierda, arriba al centro, a la derecha y abajo */
             const campos = [[0, 0, 0.34, 0.3], [0.56, 0, 0.8, 0.18], [0.86, 0.3, 1, 1], [0.18, 0.82, 0.36, 1]];
@@ -587,7 +589,7 @@
             window.addEventListener('resize', () => { cancelAnimationFrame(espera); espera = requestAnimationFrame(medir); });
             let actual = -1;
             return p => {
-                const k = Math.min(Math.floor(h.fijar(p) * 4), 3);
+                const k = Math.min(Math.floor(h.fijar(p / hasta) * 4), 3);
                 if (k === actual) return;
                 actual = k; pieza.dataset.k = k;
                 /* Si la mesa se midió oculta, se mide al llegar */
@@ -614,8 +616,11 @@
             };
             pieza.addEventListener('pointermove', e => { if (!mide || e.pointerType === 'touch') return; const r = pieza.getBoundingClientRect(); abrir(Math.min(Math.floor(((e.clientX - r.left) / r.width) * 10), 9)); });
             pieza.addEventListener('pointerleave', () => abrir(-1));
+            /* Con el paso (.lf-paso) la 03 entra con el filo: la línea descubre los diez valores ya puestos, sin pieza vacía */
+            const html = document.documentElement;
             return p => {
-                tiras.forEach((t, k) => fase(t, '--f', tramo(p, 0.02 + k * 0.024, 0.12 + k * 0.024)));
+                const puestas = html.classList.contains('lf-paso');
+                tiras.forEach((t, k) => fase(t, '--f', puestas ? 1 : tramo(p, 0.02 + k * 0.024, 0.12 + k * 0.024)));
                 const l = tramo(p, 0.38, 0.5), f = tramo(p, 0.68, 0.78);
                 fase(pieza, '--liso', l); fase(pieza, '--filete', f);
                 bloques.forEach((b, k) => fase(b, '--f', tramo(p, 0.74 + k * 0.04, 0.84 + k * 0.04)));
@@ -730,26 +735,32 @@
         ev.preventDefault();
         /* Con el paso, la portada del capítulo 01 empieza bajo el resumen: data-ancla dice en qué parte de su pista ya está abierta */
         const f = document.documentElement.classList.contains('lf-paso') ? +destino.dataset.ancla || 0 : 0;
-        window.scrollTo({ top: destino.getBoundingClientRect().top + window.scrollY + f * (destino.offsetHeight - window.innerHeight), behavior: quieto ? 'auto' : 'smooth' });
+        /* Una decisión que entra con el filo empieza una pantalla bajo la anterior: se llega con ella ya arriba */
+        const filo = destino.classList.contains('lf-filo-sec') ? window.innerHeight : 0;
+        window.scrollTo({ top: destino.getBoundingClientRect().top + window.scrollY + filo + f * (destino.offsetHeight - window.innerHeight), behavior: quieto ? 'auto' : 'smooth' });
     }));
     /* Arriba el turquesa del hero, abajo el morado de Tap In: el estirón del scroll nunca muestra un color ajeno */
     let abajo = null;
     const fondo = () => { const b = window.scrollY > document.documentElement.scrollHeight / 2; if (b !== abajo) { abajo = b; document.documentElement.classList.toggle('lf-abajo', b); } };
     window.addEventListener('scroll', fondo, { passive: true }); fondo();
 
-    /* --- 6. PASO DE LA DECISIÓN 01 A LA 02: EL FILO --- */
-    /* Con el paso (.lf-paso), mientras la 02 sube su primera pantalla sobre el mapa quieto, --lf-filo dice cuánto subió
-       (0 a 1) y .lf-filo-on deja su panel fijo para descubrirlo en su lugar (llego.css 8.1.6). Una sola lectura por cuadro */
+    /* --- 6. PASO ENTRE DECISIONES: EL FILO --- */
+    /* Con el paso (.lf-paso), mientras una decisión .lf-filo-sec sube su primera pantalla sobre la anterior quieta,
+       --lf-filo dice cuánto subió (0 a 1) y .lf-filo-on deja su panel fijo para descubrirlo en su lugar (llego.css 8.1.6).
+       Una sola lectura por cuadro y por sección */
     (() => {
-        const d2 = document.querySelector('.lf-mapa-sec + .lf-taller-sec');
-        if (!d2) return;
+        const secs = [...document.querySelectorAll('.lf-filo-sec')].map(el => ({ el, ultimo: -1 }));
+        if (!secs.length) return;
         const html = document.documentElement;
-        let ultimo = -1, pedido = 0;
+        let pedido = 0;
         const cuadro = () => {
             pedido = 0;
-            const t = html.classList.contains('lf-paso') ? fijar(1 - d2.getBoundingClientRect().top / window.innerHeight) : 1;
-            html.classList.toggle('lf-filo-on', t > 0 && t < 1);
-            if (t !== ultimo) { ultimo = t; html.style.setProperty('--lf-filo', t.toFixed(4)); }
+            const paso = html.classList.contains('lf-paso'), vh = window.innerHeight;
+            secs.forEach(s => {
+                const t = paso ? fijar(1 - s.el.getBoundingClientRect().top / vh) : 1;
+                s.el.classList.toggle('lf-filo-on', t > 0 && t < 1);
+                if (t !== s.ultimo) { s.ultimo = t; s.el.style.setProperty('--lf-filo', t.toFixed(4)); }
+            });
         };
         const pedir = () => { if (!pedido) pedido = requestAnimationFrame(cuadro); };
         window.addEventListener('scroll', pedir, { passive: true }); window.addEventListener('resize', pedir); cuadro();

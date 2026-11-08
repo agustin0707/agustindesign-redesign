@@ -505,17 +505,20 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-mapa-logo { padding-top: 12px; padding-bottom: 12px; }
 }
 
-/* --- 8.1.6 EL PASO A LA 02: EL FILO --- */
-/* La pista de la 01 tiene una pantalla más que sus pasos (data-pasos-hasta): con el mapa quieto, la 02 sube sobre ella.
-   Sin el paso (celular o movimiento reducido) sube como hoja. Con el paso (.lf-paso), mientras sube su panel queda fijo
-   (.lf-filo-on, llego.js sección 6) y se descubre en su lugar desde abajo, al ritmo del scroll, con una línea turquesa y
-   su nombre en el borde. Al terminar vuelve a ser sticky en el mismo lugar. Exploración en explorations/caso/paso-02/ */
-.lf-mapa-sec + .lf-taller-sec { position: relative; z-index: 4; margin-top: -100lvh; }
+/* --- 8.1.6 EL PASO ENTRE DECISIONES: EL FILO --- */
+/* La decisión que sale tiene en su pista una pantalla más que sus pasos (data-pasos-hasta): quieta, la que entra
+   (.lf-filo-sec) sube sobre ella. Sin el paso (celular o movimiento reducido) sube como hoja. Con el paso (.lf-paso),
+   mientras sube su panel queda fijo (.lf-filo-on, llego.js sección 6) y se descubre en su lugar desde abajo, al ritmo
+   del scroll, con una línea turquesa y su nombre en el borde. Al terminar vuelve a ser sticky en el mismo lugar.
+   Hoy lo usan la 01 a la 02 y la 02 a la 03. Exploración en explorations/caso/paso-02/ */
+.lf-filo-sec { position: relative; z-index: 4; margin-top: -100lvh; }
 .lf-filo { display: none; position: fixed; left: 0; right: 0; top: calc((1 - var(--lf-filo, 0)) * 100lvh); z-index: 6; height: 1px; background: var(--lf-turquesa); pointer-events: none; }
 .lf-filo span { position: absolute; right: var(--margen); bottom: 0; padding: 4px 8px 6px; font-size: 11px; color: var(--lf-turquesa); white-space: nowrap; background: var(--lf-papel); }
-.lf-paso.lf-filo-on .lf-filo { display: block; }
-.lf-paso.lf-filo-on .lf-taller-sec { background: transparent; }
-.lf-paso.lf-filo-on .lf-taller-sec > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; clip-path: inset(calc((1 - var(--lf-filo)) * 100%) 0 0 0); }
+/* El nombre siempre va del lado del papel: sobre la línea si entra una oscura, bajo ella si entra una clara */
+.cs-claro > .lf-filo span { top: 0; bottom: auto; padding: 6px 8px 4px; }
+.lf-paso .lf-filo-sec.lf-filo-on > .lf-filo { display: block; }
+.lf-paso .lf-filo-sec.lf-filo-on { background: transparent; }
+.lf-paso .lf-filo-sec.lf-filo-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; background: var(--fondo); clip-path: inset(calc((1 - var(--lf-filo)) * 100%) 0 0 0); }
 
 /* --- 8.2 UN SISTEMA, NO UN LOGO: EL TALLER DEL NODO --- */
 /* La pieza cuenta la construcción real sobre una sola trama, en cuatro pasos: los puntos de la madre, hoy decorativos
