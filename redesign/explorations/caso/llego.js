@@ -723,7 +723,8 @@
             };
         },
 
-        /* Teléfono: llegofarma.cl real a 390 px de ancho, montado en reposo y bajando con el scroll de la página */
+        /* Teléfono: llegofarma.cl real a 390 px de ancho, montado en reposo y bajando con el scroll de la página. En
+           escritorio y con movimiento, antes lee el QR del stand y la mira se abre sobre el sitio (llego.css 9.2) */
         telefono: (el, h) => {
             const tel = el.querySelector('[data-tel]'), pant = tel.querySelector('.lf-tel-pant');
             let marco = null, win = null, e = 1, H = 844, y = 0, meta = 0, bucle = null, ultimoP = 0;
@@ -743,6 +744,8 @@
             const ir = p => {
                 ultimoP = p;
                 if (!win) return;
+                /* La nota acompaña a la barra real del sitio, que decide cuándo se ve */
+                tel.classList.toggle('con-barra', !!win.document.querySelector('.barra-cta.visible'));
                 const max = Math.max(win.document.documentElement.scrollHeight - H, 0);
                 meta = fijar((p - 0.08) / 0.84) * max;
                 if (!bucle) bucle = requestAnimationFrame(pintar);
@@ -761,7 +764,15 @@
             };
             new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) ('requestIdleCallback' in window ? requestIdleCallback : setTimeout)(montar); }), { rootMargin: '150% 0px' }).observe(el);
             window.addEventListener('resize', () => { medir(); ir(ultimoP); });
-            return ir;
+            const conQR = window.matchMedia('(min-width: 769px) and (prefers-reduced-motion: no-preference)');
+            const hasta = +el.dataset.pasosHasta || 1, lineal = (v, a, b) => fijar((v - a) / (b - a));
+            return q => {
+                if (!conQR.matches) { ir(q); return; }
+                const p = fijar(q / hasta);
+                fase(el, '--lf-qe', tramo(p, 0.12, 0.36)); fase(el, '--lf-qf', lineal(p, 0.32, 0.4)); fase(el, '--lf-qs', tramo(p, 0.36, 0.44));
+                fase(el, '--lf-ql', lineal(p, 0.42, 0.46)); fase(el, '--lf-qv', tramo(p, 0.48, 0.58));
+                ir(lineal(p, 0.58, 1));
+            };
         }
     };
 

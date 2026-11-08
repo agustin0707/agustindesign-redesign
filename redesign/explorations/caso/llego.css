@@ -873,6 +873,32 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-tel.listo iframe { opacity: 1; }
 .lf-tel-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
 .lf-tel-isla { position: absolute; z-index: 2; top: 10px; left: 50%; translate: -50% 0; width: 30%; height: 22px; border-radius: 20px; background: #050A0B; }
+/* --- 9.2 DECISIÓN 08: EL QR DEL STAND SE VUELVE EL SITIO --- */
+/* Solo en escritorio y con movimiento; sin eso queda el teléfono con el sitio, como antes. llego.js (escena telefono)
+   escribe las fases: el teléfono sube (--lf-qe), el QR grande se va (--lf-qf), la mira se cierra (--lf-qs), aparece la
+   dirección (--lf-ql) y el visor se abre hacia arriba (--lf-qv) sobre el sitio real */
+.lf-qr, .lf-tel-visor, .lf-tel-nota { display: none; }
+.lf-datos b small { margin-left: 3px; font-size: 0.42em; letter-spacing: 0; }
+@media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+    .lf-tel-sec .cs-dec, .lf-tel-sec .lf-tel, .lf-qr { grid-row: 1; }
+    .lf-qr { display: block; grid-column: 7 / -1; justify-self: center; align-self: center; width: min(100%, 70vh); margin: 0; background: var(--lf-papel); color: var(--lf-oscuro); scale: calc(1 - var(--lf-qe, 0) * 0.08); opacity: calc(1 - var(--lf-qf, 0)); }
+    .lf-qr svg { display: block; width: 100%; height: auto; fill: currentColor; }
+    .lf-qr figcaption { display: flex; justify-content: space-between; gap: 16px; padding: 12px 18px; border-top: 1px solid rgba(16, 78, 86, 0.2); }
+    .lf-tel-sec .lf-tel { z-index: 2; align-self: center; translate: 0 calc((1 - var(--lf-qe, 0)) * 112vh); }
+    .lf-tel-visor { display: flex; position: absolute; inset: 0; z-index: 1; align-items: center; justify-content: center; background: var(--lf-negro); clip-path: inset(0 0 calc(var(--lf-qv, 0) * 100%) 0); }
+    .lf-tel-visor svg { width: 70%; background: var(--lf-papel); fill: var(--lf-oscuro); }
+    .lf-tel-mira { position: absolute; left: 50%; top: 50%; width: 84%; aspect-ratio: 1; translate: -50% -50%; scale: calc(1.14 - var(--lf-qs, 0) * 0.14); }
+    .lf-tel-mira i { position: absolute; width: 22%; aspect-ratio: 1; border: 2px solid var(--lf-claro); }
+    .lf-tel-mira i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; }
+    .lf-tel-mira i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; }
+    .lf-tel-mira i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; }
+    .lf-tel-mira i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; }
+    .lf-tel-link { position: absolute; left: 50%; bottom: 16%; translate: -50% 0; padding: 7px 12px; background: var(--lf-claro); color: var(--lf-negro); white-space: nowrap; opacity: var(--lf-ql, 0); }
+    /* La nota sale cuando la barra real del sitio está visible: la decide el propio sitio */
+    .lf-tel-nota { display: block; position: absolute; left: calc(100% + 16px); bottom: 7%; width: 15ch; color: var(--texto-2); opacity: 0; transition: opacity 180ms; }
+    .lf-tel-nota::before { content: ''; position: absolute; right: 100%; top: 0.6em; width: 16px; height: 1px; margin-right: 0; background: var(--lf-claro); }
+    .lf-tel.con-barra .lf-tel-nota { opacity: 1; }
+}
 .lf-datos { list-style: none; display: flex; gap: 28px; padding-top: 6px; text-transform: none; letter-spacing: 0; color: var(--texto-2); }
 .lf-datos li { display: flex; flex-direction: column; gap: 6px; max-width: 18ch; }
 .lf-datos b { font: 200 48px / 0.9 var(--cs-f); letter-spacing: -0.04em; color: #FFFFFF; }
