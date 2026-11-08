@@ -254,7 +254,8 @@
         </section>
 
         <!-- --- DECISIÓN 03 · UN TURQUESA CON PARENTESCO --- -->
-        <section class="cs-lam lf-filo-sec cs-claro" id="dec-03" data-escena="valores" data-pasos="3" style="--pista:320">
+        <!-- La pista suma una pantalla a la de su pieza (data-pasos-hasta): con la paleta quieta, la portada del 02 sube sobre ella -->
+        <section class="cs-lam lf-filo-sec cs-claro" id="dec-03" data-escena="valores" data-pasos="3" data-pasos-hasta="0.6875" style="--pista:420">
             <!-- El filo del paso desde la 02: sobre el papel de la 03, el nombre va bajo la línea (llego.css 8.1.6) -->
             <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 03 · Un turquesa con parentesco</span></div>
             <div class="cs-fijo cs-grilla">
@@ -286,14 +287,32 @@
         <!-- =======================================================
              CAPÍTULO 02 · LA MARCA
              ======================================================= -->
-        <section class="lf-cap cs-oscuro" id="cap-2">
-            <div class="lf-degradado lf-grano" aria-hidden="true"></div>
-            <div class="lf-reticula" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-            <div class="cs-grilla lf-cap-in" data-revela>
-                <span class="cs-cap-n mono">Capítulo 02 · Sep 2026</span>
-                <div class="cs-cap-txt"><h2>La marca</h2><p>Un isotipo que se lee como salud sin explicarlo, y 36 páginas de reglas para que otros lo usen.</p></div>
+        <!-- La portada, como la del capítulo 01 (Índice): el riel con su dato, el título, el 02 trazado y el índice de sus
+             cuatro decisiones. Sube sobre la última pantalla de la 03; con el paso, el tono Oscuro de la paleta se abre
+             hasta la pantalla y se vuelve su fondo (llego.css 7.2, llego.js sección 7). Las fechas salen de la ruta del
+             resumen: del pitch (28 ago) al manual aprobado (23 sep) -->
+        <section class="lf-cap lf-cap-2 cs-oscuro" id="cap-2" data-escena="portada" data-ancla="0.375" style="--pista:200">
+            <div class="cs-fijo lf-cap-fijo" data-cap>
+                <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
+                <div class="lf-reticula" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                <svg class="lf-cap-traza" aria-hidden="true"><text x="100%" y="100%" text-anchor="end">02</text></svg>
+                <div class="cs-grilla lf-cap-in">
+                    <div class="cs-cap-n lf-riel">
+                        <span class="mono">Capítulo 02 · 28 ago a 23 sep 2026</span>
+                        <b class="lf-dato">26 días</b>
+                        <span class="mono">Del pitch al manual aprobado</span>
+                    </div>
+                    <div class="cs-cap-txt"><h2>La marca</h2><p>Un isotipo que se lee como salud sin explicarlo, y 36 páginas de reglas para que otros lo usen.</p></div>
+                    <!-- El índice del capítulo: sus cuatro decisiones, que entran en la pausa antes de que suba la primera -->
+                    <nav class="lf-indice" aria-label="Decisiones del capítulo 02">
+                        <span class="mono">En este capítulo</span>
+                        <a href="#dec-04" style="--k:0"><span class="mono">04</span>La madre no se toca<i aria-hidden="true">→</i></a>
+                        <a href="#dec-05" style="--k:1"><span class="mono">05</span>Tres caminos, la decisión del cliente<i aria-hidden="true">→</i></a>
+                        <a href="#dec-06" style="--k:2"><span class="mono">06</span>Fotos de la operación, no de banco<i aria-hidden="true">→</i></a>
+                        <a href="#dec-07" style="--k:3"><span class="mono">07</span>Un manual que otros pueden usar<i aria-hidden="true">→</i></a>
+                    </nav>
+                </div>
             </div>
-            <span class="lf-cap-num" aria-hidden="true">02</span>
         </section>
 
         <!-- --- DECISIÓN 04 · LA MADRE NO SE TOCA --- -->
@@ -395,7 +414,7 @@
         </section>
 
         <!-- --- DECISIÓN 06 · FOTOS DE LA OPERACIÓN, NO DE BANCO --- -->
-        <section class="lf-fotos cs-claro">
+        <section class="lf-fotos cs-claro" id="dec-06">
             <figure class="cs-pliego-sangre" data-par>
                 <picture><source type="image/avif" srcset="../works/sitios/llego/img/fotos/hero-cenital.avif"><img src="../works/sitios/llego/img/fotos/hero-cenital.jpg" alt="Vista cenital de un furgón de Llegó Farma cargándose en el patio, con dos repartidores" loading="lazy" decoding="async"></picture>
                 <div class="cs-pliego-arriba mono"><span>Decisión 06</span><span>Dirección fotográfica del manual</span></div>
@@ -419,7 +438,7 @@
         </section>
 
         <!-- --- DECISIÓN 07 · UN MANUAL QUE OTROS PUEDEN USAR --- -->
-        <section class="cs-lam cs-oscuro" data-escena="manual" data-pasos="9" style="--pista:480">
+        <section class="cs-lam cs-oscuro" id="dec-07" data-escena="manual" data-pasos="9" style="--pista:480">
             <div class="cs-fijo cs-grilla">
                 <div class="cs-lam-riel">
                     <aside class="cs-dec" data-revela>

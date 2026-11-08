@@ -737,9 +737,9 @@
         ev.preventDefault();
         /* Con el paso, la portada del capítulo 01 empieza bajo el resumen: data-ancla dice en qué parte de su pista ya está abierta */
         const f = document.documentElement.classList.contains('lf-paso') ? +destino.dataset.ancla || 0 : 0;
-        /* Una decisión que entra con el filo empieza una pantalla bajo la anterior: se llega con ella ya arriba */
-        const filo = destino.classList.contains('lf-filo-sec') ? window.innerHeight : 0;
-        window.scrollTo({ top: destino.getBoundingClientRect().top + window.scrollY + filo + f * (destino.offsetHeight - window.innerHeight), behavior: quieto ? 'auto' : 'smooth' });
+        /* Lo que sube sobre la anterior (las decisiones con filo y la portada del 02) ya está arriba cuando su borde llega
+           al techo: basta llegar a su inicio */
+        window.scrollTo({ top: destino.getBoundingClientRect().top + window.scrollY + f * (destino.offsetHeight - window.innerHeight), behavior: quieto ? 'auto' : 'smooth' });
     }));
     /* Arriba el turquesa del hero, abajo el morado de Tap In: el estirón del scroll nunca muestra un color ajeno */
     let abajo = null;
@@ -766,6 +766,63 @@
         };
         const pedir = () => { if (!pedido) pedido = requestAnimationFrame(cuadro); };
         window.addEventListener('scroll', pedir, { passive: true }); window.addEventListener('resize', pedir); cuadro();
+    })();
+
+    /* --- 7. PASO A LA PORTADA DEL CAPÍTULO 02: EL OSCURO SE ABRE --- */
+    /* u cuenta cuántas pantallas subió la portada sobre la 03. Con el paso (.lf-paso) la pista crece de 200 a 340: de 0 a 1
+       es la ventana (.lf-oscuro-on), en que el panel se abre desde el tono Oscuro de la paleta, medido al entrar; de 0,55
+       a 1,85 entra lo de la portada, como en el 01; y en la última pantalla sube la 04 (--lf-ps). La tinta de la barra se
+       decide aquí: clara apenas la portada tapa su franja, otra vez oscura cuando la 04 llega arriba (llego.css 7.2) */
+    (() => {
+        const cap = document.querySelector('.lf-cap-2'), d3 = document.getElementById('dec-03');
+        if (!cap || !d3) return;
+        const html = document.documentElement, oscuro = d3.querySelectorAll('.lf-val-tono')[2];
+        const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
+        const PISTA = 340, BASE = 200;
+        const VARS = ['--lf-oe', '--lf-plano', '--lf-pl', '--lf-pd', '--lf-pt', '--lf-pi', '--lf-ps'];
+        let on = false, medido = false, ultimo = -1, pedido = 0;
+        const px = v => v.toFixed(1) + 'px';
+        const medir = () => {
+            if (!oscuro) return;
+            const W = window.innerWidth, H = window.innerHeight, r = oscuro.getBoundingClientRect();
+            cap.style.setProperty('--lf-ot', px(r.top)); cap.style.setProperty('--lf-or', px(W - r.right));
+            cap.style.setProperty('--lf-ob', px(H - r.bottom)); cap.style.setProperty('--lf-ol', px(r.left));
+        };
+        const cuadro = () => {
+            pedido = 0;
+            const H = window.innerHeight, u = 1 - cap.getBoundingClientRect().top / H, t = fijar(u), e = curva(t);
+            const pista = on ? PISTA : BASE, ps = fijar(u - (pista / 100 - 1));
+            if (on && t > 0 && t < 1 && !medido) { medir(); medido = true; }
+            if (!(t > 0 && t < 1)) medido = false;
+            cap.classList.toggle('lf-oscuro-on', on && t > 0 && t < 1);
+            if ((on ? e > 0.67 : u > 1 - 32 / H) && ps <= 1 - 32 / H) d3.dataset.claro = '0'; else delete d3.dataset.claro;
+            if (ps > 1 - 32 / H) cap.dataset.claro = '1'; else delete cap.dataset.claro;
+            if (!on || u === ultimo) return;
+            ultimo = u;
+            fase(cap, '--lf-oe', e);
+            /* Liso mientras se abre; al llegar a los bordes se funde en el degradado de la portada */
+            fase(cap, '--lf-plano', 1 - tramo(t, 0.45, 0.95));
+            /* Lo de la portada empieza antes de terminar de abrir, así nunca queda vacía */
+            fase(cap, '--lf-pl', tramo(u, 0.55, 1.2));
+            fase(cap, '--lf-pd', tramo(u, 0.6, 1.5));
+            fase(cap, '--lf-pt', tramo(u, 0.8, 1.3));
+            fase(cap, '--lf-pi', tramo(u, 1.25, 1.85));
+            fase(cap, '--lf-ps', ps);
+        };
+        const pedir = () => { if (!pedido) pedido = requestAnimationFrame(cuadro); };
+        /* El paso del hero decide .lf-paso con la misma consulta y escucha antes: aquí solo se sigue. Corre antes que
+           caso-motor.js, así el motor mide la pista ya decidida */
+        const activar = () => {
+            on = html.classList.contains('lf-paso');
+            cap.style.setProperty('--pista', String(on ? PISTA : BASE));
+            cap.dataset.ancla = on ? '0.375' : '0';
+            if (!on) { VARS.forEach(v => cap.style.removeProperty(v)); cap.classList.remove('lf-oscuro-on'); }
+            ultimo = -1; medido = false; pedir();
+        };
+        movil.addEventListener('change', activar);
+        window.addEventListener('scroll', pedir, { passive: true });
+        window.addEventListener('resize', () => { medido = false; pedir(); });
+        activar();
     })();
 })();
 /* =======================================================
