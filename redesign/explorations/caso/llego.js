@@ -711,8 +711,11 @@
         dominio: el => {
             const url = el.querySelector('[data-url]'), viejo = 'llego.cl/farma', nuevo = 'llegofarma.cl';
             const lineal = (p, a, b) => fijar((p - a) / (b - a));
+            /* La pista suma la pantalla en que sube la 10: todo termina antes de ella */
+            const hasta = +el.dataset.pasosHasta || 1;
             let previo = '';
-            return p => {
+            return q => {
+                const p = fijar(q / hasta);
                 const quedan = 1 - lineal(p, 0.32, 0.42), escrito = lineal(p, 0.44, 0.58);
                 const html = p < 0.43
                     ? `<span class="lf-dom-viejo">${viejo.slice(0, Math.round(quedan * viejo.length))}</span>`
@@ -727,6 +730,136 @@
                 fase(el, '--lf-dm', 1 - tramo(p, 0.64, 0.84));
                 fase(el, '--lf-dc', lineal(p, 0.82, 0.9));
             };
+        },
+
+        /* Una página, una acción: el sitio real en la ventana que dejó la 09. El velo abre huecos a opacidad completa sobre
+           lo que actúa y lo que navega; la página baja entera con el botón de la cabecera siempre marcado; la cámara se
+           acerca al formulario, los seis campos se escriben y aparece la confirmación real. El avance solo mueve la cámara:
+           nada se envía, ni desde el teclado (llego.css 9.1) */
+        accion: el => {
+            const pant = el.querySelector('.lf-ac-pant'), velo = el.querySelector('.lf-ac-velo'), hueco = velo.firstElementChild;
+            const cajas = [...el.querySelectorAll('.lf-ac-caja')], datos = [...el.querySelectorAll('[data-ac-dato]')];
+            const vistaMovil = window.matchMedia('(max-width: 768px)');
+            const CAMPOS = [['f-nombre', 'Javiera Soto'], ['f-empresa', 'Laboratorio Ejemplo'], ['f-cargo', 'Jefa de logística'], ['f-email', 'javiera@ejemplo.cl'], ['f-tel', '+56 9 1234 5678'], ['f-msg', 'Necesitamos llevar cadena de frío a regiones.']];
+            const TIEMPO = { velo: [0.05, 0.1], actuar: [0.07, 0.12], cabecera: [0.13, 0.18], navegar: [0.22, 0.27], sale: [0.35, 0.39], baja: [0.38, 0.6], acerca: [0.6, 0.67], forma: [0.65, 0.69], campos: [0.69, 0.9], envia: 0.93 };
+            const PAD = 10;
+            const lineal = (p, a, b) => fijar((p - a) / (b - a));
+            const mezcla = (a, b, t) => a + (b - a) * t;
+            const rectangulo = r => `M${r.x.toFixed(1)} ${r.y.toFixed(1)}h${r.w.toFixed(1)}v${r.h.toFixed(1)}h${(-r.w).toFixed(1)}z`;
+            let marco = null, win = null, doc = null, avance = 0, bucle = 0, escrito = false, W = 1440, H = 900, A = 742, B = 528;
+            const cam = { e: 0, x: 0, y: 0, sy: 0 };
+
+            /* --- El sitio se monta en reposo y no puede enviar nada --- */
+            const medir = () => {
+                W = vistaMovil.matches ? 390 : 1440;
+                A = pant.clientWidth; B = pant.clientHeight; H = Math.round(B / (A / W));
+                if (marco) { marco.style.setProperty('--lf-iw', W + 'px'); marco.style.setProperty('--lf-ih', H + 'px'); }
+                cam.e = 0;
+            };
+            const montar = () => {
+                if (marco) return;
+                marco = document.createElement('iframe');
+                marco.title = 'llegofarma.cl'; marco.setAttribute('tabindex', '-1'); marco.inert = true;
+                marco.onload = () => {
+                    try { win = marco.contentWindow; doc = marco.contentDocument; } catch (err) { return; }
+                    /* El formulario real manda a la cuenta de Llegó: desde el portafolio no sale ningún envío ni enlace externo */
+                    win.addEventListener('submit', e => { e.preventDefault(); e.stopImmediatePropagation(); }, true);
+                    win.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[href]'); if (a && !a.getAttribute('href').startsWith('#')) e.preventDefault(); }, true);
+                    /* La cámara salta: cada sección tiene que estar armada y con sus fotos antes de que pase */
+                    doc.documentElement.classList.remove('m-titulos', 'm-entradas', 'm-reticula', 'm-imagenes', 'm-carga', 'cargado');
+                    doc.querySelectorAll('img[loading="lazy"]').forEach(i => { i.loading = 'eager'; });
+                    medir(); pedir();
+                    setTimeout(() => { pant.classList.add('listo'); pedir(); }, 400);
+                };
+                medir();
+                marco.src = el.dataset.ev;
+                pant.appendChild(marco);
+            };
+            new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) ('requestIdleCallback' in window ? requestIdleCallback : setTimeout)(montar); }), { rootMargin: '200% 0px' }).observe(el);
+
+            /* --- Los seis campos, de vacíos a la confirmación --- */
+            const formulario = (fo, p) => {
+                if (p < TIEMPO.acerca[0]) {
+                    if (escrito) { fo.classList.remove('enviado'); CAMPOS.forEach(([id]) => { doc.getElementById(id).value = ''; }); doc.getElementById('f-ok').checked = false; escrito = false; }
+                    return 'Campo 1 de 6';
+                }
+                escrito = true;
+                const [a, b] = TIEMPO.campos, tramoCampo = (b - a) / CAMPOS.length;
+                let actual = 0;
+                CAMPOS.forEach(([id, v], i) => {
+                    const t = lineal(p, a + i * tramoCampo, a + (i + 0.92) * tramoCampo), n = doc.getElementById(id), texto = v.slice(0, Math.round(t * v.length));
+                    if (n.value !== texto) n.value = texto;
+                    if (t > 0) actual = i;
+                });
+                doc.getElementById('f-ok').checked = p >= b;
+                const enviado = p >= TIEMPO.envia;
+                if (enviado && !fo.classList.contains('enviado')) {
+                    doc.querySelector('.exito-titulo').textContent = 'Gracias, Javiera.';
+                    doc.querySelector('.exito-texto').textContent = 'Recibimos tu mensaje. Nuestro equipo te contactará pronto para conversar sobre tu operación.';
+                }
+                fo.classList.toggle('enviado', enviado);
+                return enviado ? 'Enviado, sin recargar' : p >= b ? 'Enviar' : `Campo ${actual + 1} de 6`;
+            };
+
+            /* --- Cuadro a cuadro: cámara, velo, huecos y marcas --- */
+            const marcar = (caja, r, g, txt) => {
+                const on = !!r && g > 0;
+                caja.classList.toggle('on', on);
+                if (!on) return;
+                caja.style.setProperty('--lf-cx', r.x.toFixed(1) + 'px'); caja.style.setProperty('--lf-cy', r.y.toFixed(1) + 'px');
+                caja.style.setProperty('--lf-cw', (r.w * g).toFixed(1) + 'px'); caja.style.setProperty('--lf-ch', r.h.toFixed(1) + 'px');
+                caja.classList.toggle('abajo', r.y < 30);
+                caja.classList.toggle('der', r.x + r.w > A * 0.75 && r.w < A * 0.5);
+                const s = caja.firstElementChild;
+                if (s.textContent !== txt) s.textContent = txt;
+            };
+            const pintar = () => {
+                bucle = 0;
+                if (!doc || !doc.body) return;
+                const p = avance, T = TIEMPO, fo = doc.getElementById('formulario');
+                if (!fo) return;
+                /* Adónde va la cámara: al ancho en el hero, de cerca en el formulario */
+                const fr = fo.getBoundingClientRect(), max = Math.max(doc.documentElement.scrollHeight - H, 0);
+                const base = A / W, cerca = Math.min(A * 0.86 / fr.width, B * 0.82 / fr.height);
+                const fin = fijar(fr.top + win.scrollY + fr.height / 2 - H / 2, 0, max);
+                const z = tramo(p, T.acerca[0], T.acerca[1]);
+                const ex = fijar(A / 2 - (fr.left + fr.width / 2) * cerca, Math.min(A - W * cerca, 0), 0), ey = fijar(B / 2 - (H / 2) * cerca, Math.min(B - H * cerca, 0), 0);
+                /* Con el velo ya cerrado el borde del iframe no se ve: recién ahí el formulario se centra del todo */
+                const centrado = mezcla(ex, A / 2 - (fr.left + fr.width / 2) * cerca, tramo(p, T.forma[1] - 0.02, T.forma[1] + 0.02));
+                const meta = { e: mezcla(base, cerca, z), x: mezcla(0, centrado, z), y: mezcla(0, ey, z), sy: fin * tramo(p, T.baja[0], T.baja[1]) };
+                const a = quieto || cam.e === 0 ? 1 : 0.2;
+                let sigue = false;
+                Object.keys(cam).forEach(k => { const d = meta[k] - cam[k]; if (Math.abs(d) > (k === 'e' ? 0.0004 : 0.4)) { cam[k] += d * a; sigue = true; } else cam[k] = meta[k]; });
+                win.scrollTo({ top: cam.sy, behavior: 'instant' });
+                marco.style.setProperty('--lf-ie', cam.e.toFixed(4)); marco.style.setProperty('--lf-ix', cam.x.toFixed(1) + 'px'); marco.style.setProperty('--lf-iy', cam.y.toFixed(1) + 'px');
+                /* Lo que está marcado, medido en la pantalla del navegador */
+                const medida = (sel, m = PAD) => {
+                    const n = doc.querySelector(sel);
+                    if (!n) return null;
+                    const r = n.getBoundingClientRect();
+                    return r.width ? { x: (r.left - m) * cam.e + cam.x, y: (r.top - m) * cam.e + cam.y, w: (r.width + m * 2) * cam.e, h: (r.height + m * 2) * cam.e } : null;
+                };
+                const texto = formulario(fo, p);
+                const fuera = 1 - lineal(p, T.sale[0], T.sale[1]);
+                const huecos = [
+                    { r: medida('.s-hero .cta-grande'), g: lineal(p, T.actuar[0], T.actuar[1]) * (fuera > 0 ? 1 : 0), caja: 0, txt: 'Actuar' },
+                    { r: medida(vistaMovil.matches ? '.barra-cta' : '.pildora.accion'), g: lineal(p, T.cabecera[0], T.cabecera[1]) * (p < T.acerca[0] + 0.02 ? 1 : 0), caja: 1, txt: p < T.sale[0] ? 'Actuar' : 'Siempre a la vista' },
+                    p < T.sale[1]
+                        ? { r: medida('.s-hero .indice'), g: lineal(p, T.navegar[0], T.navegar[1]) * (fuera > 0 ? 1 : 0), caja: 2, txt: 'Navegar' }
+                        : { r: medida('.s-cta .campos', 0), g: lineal(p, T.forma[0], T.forma[1]), caja: 2, txt: texto }
+                ];
+                huecos.forEach(u => marcar(cajas[u.caja], u.r, u.g, u.txt));
+                /* El velo cae dos veces: sobre el hero, con el resto a la vista, y sobre el formulario, cerrado para dejarlo solo */
+                velo.style.setProperty('--lf-av', Math.max(Math.min(lineal(p, T.velo[0], T.velo[1]), fuera), lineal(p, T.forma[0], T.forma[1])).toFixed(3));
+                velo.style.setProperty('--lf-avo', mezcla(0.5, 1, lineal(p, T.forma[0], T.forma[1])).toFixed(3));
+                const abiertos = huecos.filter(u => u.r && u.g > 0).map(u => rectangulo({ x: u.r.x, y: u.r.y, w: u.r.w * u.g, h: u.r.h }));
+                hueco.setAttribute('d', rectangulo({ x: 0, y: 0, w: A, h: B }) + abiertos.join(''));
+                datos.forEach((d, i) => d.classList.toggle('on', p >= [T.actuar[0], T.navegar[0], T.forma[0]][i]));
+                if (sigue) pedir();
+            };
+            const pedir = () => { if (!bucle) bucle = requestAnimationFrame(pintar); };
+            window.addEventListener('resize', () => { medir(); pedir(); });
+            return p => { avance = p; pedir(); };
         },
 
         /* Teléfono: llegofarma.cl real a 390 px de ancho, montado en reposo y bajando con el scroll de la página. En
