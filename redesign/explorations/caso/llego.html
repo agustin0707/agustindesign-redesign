@@ -542,12 +542,36 @@
         <!-- =======================================================
              CAPÍTULO 03 · LA WEB (Y DECISIÓN 08 · UN DOMINIO PROPIO)
              ======================================================= -->
-        <section class="lf-dom cs-oscuro" id="cap-3" data-escena="dominio" style="--pista:280">
+        <section class="lf-cap lf-cap-3 cs-oscuro" id="cap-3" data-escena="portada" data-ancla="0.375" style="--pista:200">
+            <div class="cs-fijo lf-cap-fijo" data-cap>
+                <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
+                <div class="lf-reticula" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                <!-- El 3 de Manrope son tres piezas superpuestas: la máscara borra el trazo que queda dentro de la cifra -->
+                <svg class="lf-cap-traza lf-traza-limpia" aria-hidden="true"><mask id="lf-traza-03" maskUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%"><rect x="-50%" y="-50%" width="200%" height="200%" fill="#FFFFFF"/><text x="100%" y="100%" text-anchor="end">03</text></mask><text x="100%" y="100%" text-anchor="end" mask="url(#lf-traza-03)">03</text></svg>
+                <div class="cs-grilla lf-cap-in">
+                    <div class="cs-cap-n lf-riel">
+                        <span class="mono">Capítulo 03 · 1 a 20 oct 2026</span>
+                        <b class="lf-dato">19 días</b>
+                        <span class="mono">Del pedido al sitio final</span>
+                    </div>
+                    <div class="cs-cap-txt"><h2>La web</h2><p>Pidieron una sola página, para una feria. El temor era que quedara bonita, pero plana.</p></div>
+                    <nav class="lf-indice" aria-label="Decisiones del capítulo 03">
+                        <span class="mono">En este capítulo</span>
+                        <a href="#dec-08" style="--k:0"><span class="mono">08</span>Todo parte en un QR<i aria-hidden="true">→</i></a>
+                        <a href="#dec-09" style="--k:1"><span class="mono">09</span>Un dominio propio<i aria-hidden="true">→</i></a>
+                        <a href="#dec-10" style="--k:2"><span class="mono">10</span>Una página, una acción<i aria-hidden="true">→</i></a>
+                        <a href="#dec-11" style="--k:3"><span class="mono">11</span>La retícula del manual, como estructura<i aria-hidden="true">→</i></a>
+                        <a href="#dec-12" style="--k:4"><span class="mono">12</span>56 cambios al texto, ninguno inventado<i aria-hidden="true">→</i></a>
+                        <a href="#dec-13" style="--k:5"><span class="mono">13</span>La trazabilidad, en código<i aria-hidden="true">→</i></a>
+                        <a href="#dec-14" style="--k:6"><span class="mono">14</span>Que nada dependa de mí<i aria-hidden="true">→</i></a>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section class="lf-dom cs-oscuro" id="dec-09" data-escena="dominio" style="--pista:280">
             <div class="cs-fijo cs-grilla">
                 <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
-                <span class="lf-cap-num" aria-hidden="true">03</span>
-                <span class="cs-cap-n mono">Capítulo 03 · Oct 2026</span>
-                <div class="cs-cap-txt"><h2>La web</h2><p>Diseñada y programada por mí, aplicando mi propio manual.</p></div>
                 <aside class="cs-dec lf-dom-dec" data-rango="0.35-1.1">
                     <span class="cs-dec-n mono">Decisión 08</span>
                     <h3>Un dominio propio</h3>
@@ -559,13 +583,11 @@
                     <span class="lf-dom-carga"></span>
                     <div class="lf-dom-pant"><img class="lf-dom-manual" src="media/lf-portada-manual.jpg" alt="" decoding="async"><picture><source type="image/avif" srcset="../works/sitios/llego/img/fotos/hero-cenital-1600.avif"><img src="../works/sitios/llego/img/fotos/hero-cenital-1600.jpg" alt="" loading="lazy" decoding="async"></picture><img class="lf-dom-logo" src="media/lf-logo-vertical-blanco.svg" alt=""></div>
                 </div>
-                <!-- La portada del manual en vuelo, de la pila de la 07 a la pantalla del navegador (llego.js 8) -->
-                <img class="lf-dom-vuelo" src="media/lf-portada-manual.jpg" alt="" aria-hidden="true" decoding="async">
             </div>
         </section>
 
         <!-- --- DECISIONES 09 A 12 · EL SITIO REAL, MARCADO --- -->
-        <section class="cs-ev lf-ev cs-claro" data-escena="evidencia" data-ev="../works/sitios/llego/index.html" data-ev-titulo="llegofarma.cl en vivo" style="--pista:520">
+        <section class="cs-ev lf-ev cs-claro" id="dec-10" data-escena="evidencia" data-ev="../works/sitios/llego/index.html" data-ev-titulo="llegofarma.cl en vivo" style="--pista:520">
             <div class="cs-fijo cs-grilla">
                 <div class="cs-ev-nav">
                     <div class="cs-ev-cromo"><span class="cs-ev-luces"><i></i><i></i><i></i></span><span class="cs-ev-url mono"><span class="lf-dom-candado"></span>llegofarma.cl</span><span class="mono lf-ev-vivo"><i></i>En vivo</span></div>
@@ -582,7 +604,7 @@
         </section>
 
         <!-- --- DECISIÓN 13 · PENSADO PARA EL QR DE LA FERIA --- -->
-        <section class="lf-dsec lf-tel-sec cs-oscuro" data-escena="telefono" style="--pista:300">
+        <section class="lf-dsec lf-tel-sec cs-oscuro" id="dec-08" data-escena="telefono" style="--pista:300">
             <div class="cs-fijo cs-grilla">
                 <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
                 <aside class="cs-dec">

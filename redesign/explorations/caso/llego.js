@@ -766,7 +766,7 @@
     };
 
     /* --- 5. ENLACES A LOS CAPÍTULOS Y A LAS DECISIONES, Y FONDO DEL ESTIRÓN --- */
-    document.querySelectorAll('.lf-etapas a, .lf-indice a, .lf-mapa-libre a').forEach(a => a.addEventListener('click', ev => {
+    document.querySelectorAll('.lf-etapas a, .lf-indice a, .lf-mapa-libre a, .lf-cierre-sigue').forEach(a => a.addEventListener('click', ev => {
         const destino = document.querySelector(a.getAttribute('href'));
         if (!destino) return;
         ev.preventDefault();
@@ -860,38 +860,55 @@
         activar();
     })();
 
-    /* --- 8. PASO A LA PORTADA DEL CAPÍTULO 03: EL MANUAL SE VUELVE LA WEB --- */
-    /* t cuenta cuánto subió la portada del 03 sobre la pantalla que la 07 suma a su pista, con el manual cerrado. Con el
-       paso (.lf-paso), de 0 a 1 es la ventana (.lf-cierre-on): entran el degradado, los textos y el marco del navegador, y
-       la portada del manual sale de la pila (medida en cada cuadro: la inercia del manual puede seguir asentándola) y
-       aterriza en la pantalla del navegador, medida al entrar, en un arco que la levanta 6vh con su sombra. La del manual
-       se esconde solo cuando el vuelo ya partió (.lf-vuela). Después el dominio se escribe y el sitio la tapa (llego.css 9.1) */
+    /* --- 8. PASO A LA PORTADA DEL CAPÍTULO 03: EL PUENTE SE ABRE --- */
+    /* u cuenta cuántas pantallas subió la portada sobre la que la 07 suma a su pista, con el manual cerrado. Con el paso
+       (.lf-paso) la pista crece de 200 a 340: de 0 a 1 es la ventana (.lf-circulo-on), en que el panel se abre en círculo
+       desde la flecha de "Pidieron la web", medida al entrar; de 0,55 a 1,85 entra lo de la portada, como en el 01 y el
+       02; y en la última pantalla sube la decisión siguiente (--lf-ps) */
     (() => {
-        const cap = document.querySelector('.lf-dom'), d7 = document.getElementById('dec-07');
-        const vuelo = cap && cap.querySelector('.lf-dom-vuelo'), pant = cap && cap.querySelector('.lf-dom-pant'), portada = d7 && d7.querySelector('.lf-man-pag');
-        if (!vuelo || !pant || !portada) return;
-        const html = document.documentElement, lineal = (v, a, b) => fijar((v - a) / (b - a)), px = v => v.toFixed(1) + 'px';
-        let destino = null, pedido = 0;
+        const cap = document.querySelector('.lf-cap-3'), d7 = document.getElementById('dec-07');
+        const flecha = d7 && d7.querySelector('.lf-cierre-sigue i');
+        if (!cap || !flecha) return;
+        const html = document.documentElement, px = v => v.toFixed(1) + 'px';
+        const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
+        const PISTA = 340, BASE = 200;
+        const VARS = ['--lf-cr', '--lf-plano', '--lf-pl', '--lf-pd', '--lf-pt', '--lf-pi', '--lf-ps'];
+        let on = false, radio = 0, ultimo = -1, pedido = 0;
+        const medir = () => {
+            const W = window.innerWidth, H = window.innerHeight, r = flecha.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+            cap.style.setProperty('--lf-cx', px(x)); cap.style.setProperty('--lf-cy', px(y));
+            radio = Math.hypot(Math.max(x, W - x), Math.max(y, H - y));
+        };
         const cuadro = () => {
             pedido = 0;
-            const H = window.innerHeight, t = fijar(1 - cap.getBoundingClientRect().top / H);
-            const ventana = html.classList.contains('lf-paso') && t > 0 && t < 1;
-            cap.classList.toggle('lf-cierre-on', ventana);
-            if (!ventana) { destino = null; html.classList.remove('lf-vuela'); return; }
-            if (!destino) destino = pant.getBoundingClientRect();
-            fase(cap, '--lf-cf', lineal(t, 0.05, 0.5)); fase(cap, '--lf-ct', tramo(t, 0.55, 0.95)); fase(cap, '--lf-cm', lineal(t, 0.72, 1));
-            const e = tramo(t, 0.12, 0.88), a = portada.getBoundingClientRect(), b = destino, alza = Math.sin(Math.PI * e);
-            vuelo.style.setProperty('--lf-vx', px(a.left + (b.left - a.left) * e));
-            vuelo.style.setProperty('--lf-vy', px(a.top + (b.top - a.top) * e - alza * H * 0.06));
-            vuelo.style.setProperty('--lf-vw', px(a.width + (b.width - a.width) * e));
-            vuelo.style.setProperty('--lf-vh', px(a.height + (b.height - a.height) * e));
-            fase(vuelo, '--lf-alza', alza);
-            html.classList.toggle('lf-vuela', e > 0);
+            const u = 1 - cap.getBoundingClientRect().top / window.innerHeight, t = fijar(u), ventana = on && t > 0 && t < 1;
+            if (ventana && !radio) medir();
+            if (!ventana) radio = 0;
+            cap.classList.toggle('lf-circulo-on', ventana);
+            if (!on || u === ultimo) return;
+            ultimo = u;
+            if (radio) cap.style.setProperty('--lf-cr', px(radio * curva(t)));
+            /* Liso mientras se abre; al llegar a los bordes se funde en el degradado de la portada */
+            fase(cap, '--lf-plano', 1 - tramo(t, 0.45, 0.95));
+            fase(cap, '--lf-pl', tramo(u, 0.55, 1.2));
+            fase(cap, '--lf-pd', tramo(u, 0.6, 1.5));
+            fase(cap, '--lf-pt', tramo(u, 0.8, 1.3));
+            fase(cap, '--lf-pi', tramo(u, 1.25, 1.85));
+            fase(cap, '--lf-ps', fijar(u - (PISTA / 100 - 1)));
         };
         const pedir = () => { if (!pedido) pedido = requestAnimationFrame(cuadro); };
+        /* Como en el 7: corre antes que caso-motor.js, así el motor mide la pista ya decidida */
+        const activar = () => {
+            on = html.classList.contains('lf-paso');
+            cap.style.setProperty('--pista', String(on ? PISTA : BASE));
+            cap.dataset.ancla = on ? '0.375' : '0';
+            if (!on) { VARS.forEach(v => cap.style.removeProperty(v)); cap.classList.remove('lf-circulo-on'); }
+            ultimo = -1; radio = 0; pedir();
+        };
+        movil.addEventListener('change', activar);
         window.addEventListener('scroll', pedir, { passive: true });
-        window.addEventListener('resize', () => { destino = null; pedir(); });
-        pedir();
+        window.addEventListener('resize', () => { radio = 0; pedir(); });
+        activar();
     })();
 })();
 /* =======================================================

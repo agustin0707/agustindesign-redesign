@@ -329,7 +329,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-cap-num, .lf-dom .lf-cap-num, .lf-cap-traza { position: absolute; right: calc(var(--margen) - 0.06em); top: clamp(80px, 12vh, 140px); z-index: 0; font: 200 clamp(220px, 40vw, 680px) / 0.8 var(--cs-f); letter-spacing: -0.07em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3); pointer-events: none; }
 /* Los capítulos 01 y 02 son escenas: su portada va en un panel fijo (en la vista móvil la pista mide una pantalla y queda
    igual que las otras). El 01 va en SVG para poder trazarlo; sin el paso queda dibujado entero */
-:is(.lf-cap-1, .lf-cap-2) { display: block; padding: 0; }
+:is(.lf-cap-1, .lf-cap-2, .lf-cap-3) { display: block; padding: 0; }
 .lf-cap-fijo { display: flex; align-items: end; padding: 0 var(--margen) clamp(56px, 10vh, 120px); }
 .lf-cap-traza { width: 1.15em; height: 0.8em; overflow: visible; -webkit-text-stroke: 0; }
 .lf-cap-traza text { font: inherit; letter-spacing: -0.07em; fill: none; stroke: rgba(255, 255, 255, 0.3); stroke-width: 1px; stroke-dasharray: 3200; stroke-dashoffset: calc((1 - var(--lf-pd, 1)) * 3200); }
@@ -354,13 +354,13 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 /* En escritorio el título deja lugar al índice, la retícula va en los medianiles de la grilla de 12 (el título queda a
    medio medianil de su línea) y el 01 calza en el último tramo: su caja mide 0,8 em y llega justo a la línea del borde */
 @media (min-width: 1101px), (min-width: 769px) and (orientation: landscape) {
-    :is(.lf-cap-1, .lf-cap-2) .cs-cap-txt { grid-column: 4 / span 5; }
+    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .cs-cap-txt { grid-column: 4 / span 5; }
     .lf-indice { grid-column: 9 / span 4; align-self: end; padding-bottom: 0.4em; }
-    :is(.lf-cap-1, .lf-cap-2) .lf-reticula i:nth-child(2) { left: calc((100% + var(--medianil)) / 4 - var(--medianil) / 2); }
-    :is(.lf-cap-1, .lf-cap-2) .lf-reticula i:nth-child(3) { left: calc((100% + var(--medianil)) / 2 - var(--medianil) / 2); }
-    :is(.lf-cap-1, .lf-cap-2) .lf-reticula i:nth-child(4) { left: calc((100% + var(--medianil)) * 3 / 4 - var(--medianil) / 2); }
-    :is(.lf-cap-1, .lf-cap-2) .lf-reticula::after { display: none; }
-    :is(.lf-cap-1, .lf-cap-2) .lf-cap-traza { right: var(--margen); font-size: calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35); }
+    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i:nth-child(2) { left: calc((100% + var(--medianil)) / 4 - var(--medianil) / 2); }
+    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i:nth-child(3) { left: calc((100% + var(--medianil)) / 2 - var(--medianil) / 2); }
+    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i:nth-child(4) { left: calc((100% + var(--medianil)) * 3 / 4 - var(--medianil) / 2); }
+    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula::after { display: none; }
+    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-cap-traza { right: var(--margen); font-size: calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35); }
 }
 
 /* --- 7.2 EL PASO A LA PORTADA DEL CAPÍTULO 02: EL OSCURO SE ABRE --- */
@@ -371,17 +371,29 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
    la retícula, entra el título y en la pausa el índice; al final la 04 sube y la portada se hunde.
    Exploración en explorations/caso/portada-02/ */
 /* Todo lo que sube sobre la anterior comparte el z-index 4: a igual nivel, la que viene después queda encima */
-.lf-cap-2 { z-index: 4; margin-top: -100lvh; }
+:is(.lf-cap-2, .lf-cap-3) { z-index: 4; margin-top: -100lvh; }
 .lf-cap-2 + .cs-lam { position: relative; z-index: 4; margin-top: -100lvh; }
-.lf-cap-2 > .cs-fijo::before { content: ''; position: absolute; inset: 0; z-index: 1; background: var(--lf-oscuro); opacity: var(--lf-plano, 0); pointer-events: none; }
-.lf-paso .lf-cap-2 .lf-reticula i { scale: 1 var(--lf-pl, 0); }
-.lf-paso .lf-cap-2 .lf-reticula::after { scale: var(--lf-pl, 0) 1; }
-.lf-paso .lf-cap-2 .lf-cap-in { opacity: 1; translate: 0 calc(var(--lf-ps, 0) * -10vh); transition: none; }
-.lf-paso .lf-cap-2 :is(.cs-cap-n, .cs-cap-txt p) { opacity: var(--lf-pt, 0); }
-.lf-paso .lf-cap-2 h2 { opacity: var(--lf-pt, 0); translate: 0 calc((1 - var(--lf-pt, 0)) * 0.35em); }
+:is(.lf-cap-2, .lf-cap-3) > .cs-fijo::before { content: ''; position: absolute; inset: 0; z-index: 1; background: var(--lf-oscuro); opacity: var(--lf-plano, 0); pointer-events: none; }
+.lf-paso :is(.lf-cap-2, .lf-cap-3) .lf-reticula i { scale: 1 var(--lf-pl, 0); }
+.lf-paso :is(.lf-cap-2, .lf-cap-3) .lf-reticula::after { scale: var(--lf-pl, 0) 1; }
+.lf-paso :is(.lf-cap-2, .lf-cap-3) .lf-cap-in { opacity: 1; translate: 0 calc(var(--lf-ps, 0) * -10vh); transition: none; }
+.lf-paso :is(.lf-cap-2, .lf-cap-3) :is(.cs-cap-n, .cs-cap-txt p) { opacity: var(--lf-pt, 0); }
+.lf-paso :is(.lf-cap-2, .lf-cap-3) h2 { opacity: var(--lf-pt, 0); translate: 0 calc((1 - var(--lf-pt, 0)) * 0.35em); }
 .lf-paso .lf-cap-2.lf-oscuro-on { background: transparent; }
 .lf-paso .lf-cap-2.lf-oscuro-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5;
     clip-path: inset(calc(var(--lf-ot) * (1 - var(--lf-oe))) calc(var(--lf-or) * (1 - var(--lf-oe))) calc(var(--lf-ob) * (1 - var(--lf-oe))) calc(var(--lf-ol) * (1 - var(--lf-oe)))); }
+
+/* --- 7.3 EL PASO A LA PORTADA DEL CAPÍTULO 03: EL PUENTE SE ABRE --- */
+/* La portada sube sobre la pantalla que la 07 suma a su pista. Con el paso, en esa ventana (.lf-circulo-on) el panel queda
+   fijo y se abre en círculo desde la flecha de "Pidieron la web" (llego.js 8), la misma familia del hito del pitch en
+   el 01. Después, igual que en las otras portadas: se traza el 03, crece la retícula, entra el título y el índice */
+.lf-paso .lf-cap-3.lf-circulo-on { background: transparent; }
+.lf-paso .lf-cap-3.lf-circulo-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; clip-path: circle(var(--lf-cr, 0px) at var(--lf-cx, 50%) var(--lf-cy, 50%)); }
+/* Son siete decisiones: el índice las reparte en toda su entrada */
+.lf-cap-3 .lf-indice a { --v: clamp(0, calc(var(--lf-pi, 1) * 7 - var(--k, 0)), 1); padding: 11px 0; }
+/* El 3 de Manrope son tres piezas superpuestas: la máscara corta lo que el trazo dibujaría por dentro */
+.lf-traza-limpia > text { stroke-width: 2px; }
+.lf-traza-limpia mask text { fill: #000000; stroke: none; }
 
 /* --- 8. ESCENAS DE DECISIÓN --- */
 .lf-dsec .cs-fijo { padding-top: 64px; }
@@ -838,23 +850,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 /* La portada del manual queda en la pantalla, bajo el hero, que la tapa al dibujarse cuando carga llegofarma.cl */
 .lf-dom-pant .lf-dom-manual { clip-path: none; }
 
-/* --- 9.1 EL PASO DESDE LA 07: EL MANUAL SE VUELVE LA WEB --- */
-/* La portada sube sobre la pantalla que la 07 suma a su pista; sin el paso (celular o movimiento reducido), como hoja.
-   Con el paso, en esa ventana (.lf-cierre-on) su panel queda fijo donde lo deja el sticky y sin fondo: entra el
-   degradado (--lf-cf), los textos (--lf-ct) y el marco del navegador (--lf-cm). Mientras, la portada del manual deja la
-   pila y aterriza en la pantalla, en arco y levantando sombra (--lf-alza); llego.js 8 escribe su caja en cada cuadro */
+/* --- 9.1 DOMINIO: SUBE SOBRE LA PORTADA DEL 03 --- */
 .lf-dom { position: relative; z-index: 4; margin-top: -100lvh; }
-.lf-paso .lf-dom.lf-cierre-on { background: transparent; }
-.lf-paso .lf-dom.lf-cierre-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; }
-.lf-dom.lf-cierre-on .lf-degradado { opacity: var(--lf-cf, 0); }
-.lf-dom.lf-cierre-on :is(.lf-cap-num, .cs-cap-n, .cs-cap-txt) { opacity: var(--lf-ct, 0); }
-.lf-dom.lf-cierre-on .lf-dom-nav { border-color: rgba(255, 255, 255, calc(0.24 * var(--lf-cm, 0))); background: rgba(10, 20, 21, calc(0.4 * var(--lf-cm, 0))); }
-.lf-dom.lf-cierre-on :is(.lf-dom-cromo, .lf-dom-carga) { opacity: var(--lf-cm, 0); }
-.lf-dom.lf-cierre-on .lf-dom-manual { visibility: hidden; }
-.lf-dom-vuelo { display: none; position: fixed; z-index: 6; left: var(--lf-vx, 0); top: var(--lf-vy, 0); width: var(--lf-vw, 0); height: var(--lf-vh, 0); object-fit: cover; pointer-events: none;
-    box-shadow: 0 calc(var(--lf-alza, 0) * 28px) calc(var(--lf-alza, 0) * 72px) rgba(4, 12, 13, calc(var(--lf-alza, 0) * 0.55)); }
-.lf-vuela .lf-dom-vuelo { display: block; }
-.lf-vuela .lf-man-pag:first-child { visibility: hidden; }
 
 /* --- 10. EVIDENCIA: LLEGOFARMA.CL, MARCADO --- */
 .lf-ev { --foco: var(--lf-claro); --foco-txt: var(--lf-negro); }
@@ -925,7 +922,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf .cs-cap-txt h2 { font-size: 18vw; }
     .lf-cap-num, .lf-cap-traza { font-size: 70vw; top: 96px; }
     /* Portadas de los capítulos 01 y 02: aire entre rótulo, título e índice; el dato queda para escritorio, así cabe en una pantalla */
-    :is(.lf-cap-1, .lf-cap-2) .lf-cap-in { row-gap: 18px; }
+    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-cap-in { row-gap: 18px; }
     .lf-riel .lf-dato, .lf-riel .lf-dato + .mono { display: none; }
     .lf-indice a { padding: 12px 0; }
     /* Decisiones: el texto arriba y la pieza abajo, en el mismo panel */
