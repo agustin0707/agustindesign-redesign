@@ -638,10 +638,12 @@
             const nombres = ['Principal', 'Construcción', 'Área de protección', 'Mínimos'], paginas = ['03', '06', '08', '09'];
             /* Si la pista suma la pantalla del filo (data-pasos-hasta), la pieza termina antes de ella */
             const hasta = +el.dataset.pasosHasta || 1;
+            /* Con el paso (.lf-paso) la 05 entra con el filo: la línea descubre el logo ya compuesto, sin pieza vacía */
+            const html = document.documentElement;
             let paso = -1;
             return q => {
                 const p = fijar(q / hasta);
-                const c1 = tramo(p, 0.02, 0.16);
+                const c1 = html.classList.contains('lf-paso') ? 1 : tramo(p, 0.02, 0.16);
                 fase(pieza, '--c1', c1); fase(pieza, '--c1o', c1 * (1 - tramo(p, 0.24, 0.29)));
                 fase(pieza, '--c2', tramo(p, 0.27, 0.45)); fase(pieza, '--cx', tramo(p, 0.42, 0.48));
                 fase(pieza, '--c3', tramo(p, 0.52, 0.68)); fase(pieza, '--c4', tramo(p, 0.76, 0.86));
@@ -650,16 +652,16 @@
             };
         },
 
-        /* Caminos: entran los isotipos, suben sus aplicaciones, se leen los criterios y se marca el elegido */
+        /* Caminos, en cinco pasos: el encargo con sus cuatro criterios, entran los isotipos, suben sus aplicaciones, se
+           comparan en adjetivos y se marca el elegido */
         caminos: el => {
-            const pieza = el.querySelector('.lf-cam'), cols = [...el.querySelectorAll('.lf-cam-col')];
+            const pieza = el.querySelector('.lf-cam'), cols = [...el.querySelectorAll('.lf-cam-col')], encargo = el.querySelector('.lf-cam-encargo');
             const hasta = +el.dataset.pasosHasta || 1;
-            /* Con el paso (.lf-paso) la 05 entra con el filo: la línea descubre los tres isotipos ya puestos, como en la 03 */
-            const html = document.documentElement;
             return q => {
-                const p = fijar(q / hasta), puestos = html.classList.contains('lf-paso');
-                cols.forEach((c, k) => { fase(c, '--ci', puestos ? 1 : tramo(p, 0.02 + k * 0.05, 0.12 + k * 0.05)); fase(c, '--fo', tramo(p, 0.27 + k * 0.05, 0.37 + k * 0.05)); });
-                fase(pieza, '--cr', tramo(p, 0.52, 0.68)); fase(pieza, '--el', tramo(p, 0.77, 0.87));
+                const p = fijar(q / hasta);
+                if (encargo) { fase(encargo, '--ec', tramo(p, 0.01, 0.12)); fase(encargo, '--en', 1 - tramo(p, 0.17, 0.23)); }
+                cols.forEach((c, k) => { fase(c, '--ci', tramo(p, 0.21 + k * 0.04, 0.29 + k * 0.04)); fase(c, '--fo', tramo(p, 0.42 + k * 0.04, 0.5 + k * 0.04)); });
+                fase(pieza, '--cr', tramo(p, 0.62, 0.74)); fase(pieza, '--el', tramo(p, 0.82, 0.9));
             };
         },
 
@@ -675,7 +677,8 @@
                 if (c === actual) return;
                 actual = c;
                 const g = pags[c].dataset;
-                sec.textContent = g.sec; num.textContent = g.pag === 'Portada' ? 'Portada' : `Pág. ${g.pag} / 36`;
+                /* La última hoja no es una página: es el desenlace */
+                sec.textContent = g.sec; num.textContent = g.pag === 'Portada' ? 'Portada' : g.pag === 'fin' ? 'Aprobado' : `Pág. ${g.pag} / 36`;
             };
         },
 

@@ -727,8 +727,15 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-lock-pie { inset: auto 0 0; display: flex; justify-content: space-between; padding: 0 28px 24px; color: var(--texto-3); }
 
 /* --- 8.5 TRES CAMINOS, UNO AL LADO DEL OTRO --- */
-/* Tres columnas de alto completo: entra cada isotipo (--ci por columna), sube su aplicación desde abajo (--fo), la foto
-   se apaga para leer los cuatro criterios (--cr) y al final las dos no elegidas se velan (--el) */
+/* Primero el encargo (--en): el pedido de la gerencia y los cuatro criterios (--ec), antes de cualquier forma. Después
+   tres columnas de alto completo: entra cada isotipo (--ci por columna), sube su aplicación desde abajo (--fo), la foto
+   se apaga para leer la comparación en adjetivos (--cr) y al final las dos no elegidas se velan (--el) */
+.lf-cam-encargo { inset: 0; z-index: 4; display: grid; grid-template-rows: auto 1fr auto; padding: clamp(84px, 11vh, 112px) clamp(24px, 3vw, 48px) clamp(56px, 9vh, 96px); background: #FFFFFF; opacity: var(--en, 1); translate: 0 calc((1 - var(--en, 1)) * -3vh); pointer-events: none; }
+.lf-cam-enc-cab { display: flex; justify-content: space-between; gap: 24px; color: var(--texto-3); }
+.lf-cam-pide { align-self: center; max-width: 15ch; font: 200 clamp(36px, 4.2vw, 76px) / 1.02 var(--cs-f); letter-spacing: -0.035em; color: var(--texto); text-wrap: balance; }
+.lf-cam-criterios { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--medianil); margin: 0; padding: 0; list-style: none; }
+.lf-cam-criterios li { display: flex; flex-direction: column; gap: 12px; padding-top: 14px; border-top: 1px solid var(--linea); font: 300 clamp(15px, 1.15vw, 19px) / 1.35 var(--cs-f); color: var(--texto-2); text-wrap: pretty; opacity: clamp(0, calc(var(--ec, 0) * 2.2 - var(--j) * 0.35), 1); translate: 0 calc((1 - clamp(0, calc(var(--ec, 0) * 2.2 - var(--j) * 0.35), 1)) * 10px); }
+.lf-cam-criterios .mono { color: var(--lf-turquesa); }
 .lf-cam { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: #FFFFFF; }
 .lf-cam-col { display: flex; flex-direction: column; align-items: center; padding: clamp(84px, 11vh, 112px) 24px 0; border-left: 1px solid var(--linea); overflow: clip; }
 .lf-cam-col:first-child { border-left: 0; }
@@ -758,6 +765,13 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-porque-ancho .mono::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
 .lf-fotos .cs-tira figure { width: auto; display: grid; grid-template-columns: min-content; }
 .lf-fotos .cs-tira img { width: auto; height: clamp(240px, 40vh, 440px); aspect-ratio: auto; max-width: 84vw; }
+/* La regla antes que las fotos: la dirección fotográfica del manual en cinco datos; la tira de abajo la prueba */
+.lf-fotos-regla { padding: clamp(48px, 6vw, 88px) var(--margen) 0; row-gap: 18px; }
+.lf-regla-cab { grid-column: 4 / -1; display: flex; justify-content: space-between; gap: 24px; color: var(--texto-3); }
+.lf-fotos-regla dl { grid-column: 4 / -1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--medianil); margin: 0; }
+.lf-fotos-regla dl div { display: flex; flex-direction: column; gap: 10px; padding-top: 12px; border-top: 1px solid var(--linea); }
+.lf-fotos-regla dt { color: var(--lf-turquesa); }
+.lf-fotos-regla dd { margin: 0; font: 300 clamp(15px, 1.15vw, 19px) / 1.35 var(--cs-f); color: var(--texto); text-wrap: pretty; }
 
 /* --- 8.7 EL MANUAL: LAS PÁGINAS REALES PASANDO --- */
 /* Las páginas van en fila; --d es la distancia de cada una a la que está al centro (la escribe el JS con una pausa en
@@ -768,6 +782,20 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-man-pag { position: absolute; left: 50%; top: 47%; width: 80%; margin: 0; translate: calc(-50% + var(--d, 0) * (100% + 40px)) -50%; opacity: var(--o, 1); will-change: translate; }
 .lf-man-pag img { display: block; width: 100%; height: auto; aspect-ratio: 2200 / 1237; object-fit: cover; background: var(--lf-papel); }
 .lf-man-pie { inset: auto 0 0; display: flex; justify-content: space-between; padding: 0 28px 24px; color: var(--texto-2); }
+/* El desenlace: una última hoja del tamaño de las páginas, con el resultado, la cita y lo que vino después */
+.lf-man-fin { aspect-ratio: 2200 / 1237; background: var(--lf-papel); color: var(--lf-oscuro); }
+.lf-man-fin-in { position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr auto auto; row-gap: clamp(10px, 1.5vw, 22px); padding: clamp(18px, 3.8%, 56px) clamp(18px, 4.6%, 80px); }
+.lf-man-fin-cab { display: flex; justify-content: space-between; gap: 16px; color: rgba(16, 78, 86, 0.6); }
+.lf-man-fin-t { align-self: end; max-width: 21ch; font: 200 clamp(22px, 2.6vw, 46px) / 1.05 var(--cs-f); letter-spacing: -0.035em; text-wrap: balance; }
+.lf-man-fin-cita { display: flex; flex-direction: column; gap: 10px; max-width: 44ch; margin: 0; }
+.lf-man-fin-cita p { font: 300 clamp(14px, 1.15vw, 19px) / 1.35 var(--cs-f); }
+.lf-man-fin-cita p::before { content: '“'; } .lf-man-fin-cita p::after { content: '”'; }
+.lf-man-fin-cita footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.lf-man-fin-cita cite { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-style: normal; }
+.lf-man-fin-cita cite b { font: 400 14px var(--cs-f); }
+.lf-man-fin-cita :is(cite .mono, .cs-por-aprobar) { color: rgba(16, 78, 86, 0.6); border-color: rgba(16, 78, 86, 0.4); }
+.lf-man-fin-sigue { display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid rgba(16, 78, 86, 0.2); color: var(--lf-turquesa); }
+.lf-man-fin-sigue span { color: rgba(16, 78, 86, 0.6); }
 
 /* --- 9. CAPÍTULO 03 Y DECISIÓN 08 · EL DOMINIO --- */
 .lf-dom .cs-fijo { align-content: center; row-gap: 32px; color: #FFFFFF; }
@@ -901,6 +929,13 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-taller-reserva { grid-template-columns: 1fr; row-gap: 4px; font-size: 12px; }
     .lf-taller-pie b { display: block; margin: 0 0 2px; }
     .lf-porque-ancho { grid-column: 1 / -1; font-size: 19px; }
+    /* El encargo, la regla de las fotos y el cierre del manual, a lo angosto */
+    .lf-cam-encargo { padding: 72px 20px 40px; }
+    .lf-cam-criterios { grid-template-columns: 1fr 1fr; row-gap: 18px; }
+    .lf-cam-criterios li { font-size: 15px; }
+    :is(.lf-regla-cab, .lf-fotos-regla dl) { grid-column: 1 / -1; }
+    .lf-fotos-regla dl { grid-template-columns: 1fr 1fr; row-gap: 18px; }
+    .lf-man-fin { aspect-ratio: 3 / 4; }
     /* Dominio: el navegador arriba, el capítulo y la decisión abajo */
     .lf-dom .cs-fijo { align-content: start; padding-top: 80px; row-gap: 18px; }
     .lf-dom-nav { grid-row: 1; aspect-ratio: 16 / 11; }
