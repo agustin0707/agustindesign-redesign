@@ -886,6 +886,31 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-ac-ficha li { opacity: 0.3; transition: opacity 160ms; }
 .lf-ac-ficha li.on { opacity: 1; }
 
+/* --- 9.3 PUENTE Y DECISIÓN 11: LA RETÍCULA, DEL MANUAL A LA WEB --- */
+/* El área del sitio va a sangre y sobre el mismo papel del sitio. llego.js (escena reticula) da la cámara del impreso
+   (--lf-m, --lf-mx, --lf-my), la del iframe y las fases. La cruz en alta está colocada en sus coordenadas de la portada */
+.lf-rt .cs-fijo { overflow: hidden; }
+.lf-rt-puente { grid-column: 1 / span 5; grid-row: 1; align-self: center; font: 200 clamp(36px, 4.1vw, 72px) / 1.06 var(--cs-f); letter-spacing: -0.035em; text-wrap: balance; color: var(--lf-oscuro); opacity: var(--lf-rp, 1); pointer-events: none; }
+.lf-rt-puente b { font-weight: 500; }
+.lf-rt .cs-dec { grid-row: 1; opacity: var(--lf-rd, 0); }
+.lf-rt-esc { position: absolute; top: 0; bottom: 0; right: 0; left: calc(var(--margen) + (100% - 2 * var(--margen) + var(--medianil)) * 5 / 12); overflow: hidden; background: var(--lf-papel); }
+.lf-rt-esc iframe { position: absolute; left: 0; top: 0; z-index: 1; border: 0; width: var(--lf-iw, 1440px); height: var(--lf-ih, 900px); transform-origin: 0 0; transform: translate3d(var(--lf-ix, 0px), var(--lf-iy, 0px), 0) scale(var(--lf-ie, 1)); pointer-events: none; }
+.lf-rt-impreso { position: absolute; inset: 0; z-index: 2; background: var(--lf-papel); opacity: var(--lf-mo, 1); pointer-events: none; }
+.lf-rt-manual { position: absolute; left: 0; top: 0; width: calc(var(--lf-m, 0.4) * 1920px); height: calc(var(--lf-m, 0.4) * 1080px); max-width: none; transform: translate3d(var(--lf-mx, 0px), var(--lf-my, 0px), 0); }
+.lf-rt-cruce { position: absolute; left: 0; top: 0; width: calc(var(--lf-m, 0.4) * 250px); height: calc(var(--lf-m, 0.4) * 260px); max-width: none; transform: translate3d(calc(var(--lf-mx, 0px) + var(--lf-m, 0.4) * 529.5px), calc(var(--lf-my, 0px) + var(--lf-m, 0.4) * 228.7px), 0); opacity: var(--lf-co, 0); }
+.lf-rt-bandas { position: absolute; inset: 0; z-index: 2; opacity: var(--lf-bo, 1); pointer-events: none; }
+.lf-rt-bandas i { position: absolute; top: 0; bottom: 0; left: calc(var(--lf-bx, 0px) + var(--i) * var(--lf-bw, 0px)); width: var(--lf-bw, 0px); background: rgba(112, 202, 199, calc(0.34 - var(--i) * 0.06)); transform-origin: top; scale: 1 clamp(0, calc(var(--lf-bv, 0) * 4 - var(--i)), 1); }
+.lf-rt-bandas span { position: absolute; left: 10px; bottom: 14px; color: var(--lf-oscuro); }
+.lf-rt-esc .lf-ac-velo, .lf-rt-esc .lf-ac-caja { z-index: 3; }
+.lf-rt-med { position: absolute; z-index: 4; left: calc(50% + 16px); top: calc(50% - var(--lf-rh, 28px)); width: 12px; height: var(--lf-rh, 28px); border: solid var(--lf-oscuro); border-width: 1px 1px 1px 0; opacity: 0; transition: opacity 160ms, height 160ms, top 160ms; pointer-events: none; }
+.lf-rt-med.on { opacity: 1; }
+.lf-rt-med span { position: absolute; left: calc(100% + 8px); top: 50%; translate: 0 -50%; padding: 4px 8px; background: var(--lf-claro); color: var(--lf-negro); white-space: nowrap; }
+.lf-datos.lf-rt-ficha { margin-top: auto; }
+.lf-rt-ficha b { color: var(--lf-oscuro); }
+.lf-rt-ficha li { opacity: 0.3; transition: opacity 160ms; }
+.lf-rt-ficha li.on { opacity: 1; }
+@media (min-width: 769px) { .lf-rt .cs-dec { min-height: 504px; } }
+
 /* --- 10. EVIDENCIA: LLEGOFARMA.CL, MARCADO --- */
 .lf-ev { --foco: var(--lf-claro); --foco-txt: var(--lf-negro); }
 .lf-ev .cs-fijo { padding-top: 56px; }

@@ -390,6 +390,46 @@
         return p => { ultimoP = p; cuadro(p); };
     })();
 
+    /* --- 3.9 EL SITIO REAL DENTRO DE UNA ESCENA --- */
+    /* Lo usan las decisiones 10 y 11. Se monta en reposo y no puede enviar nada: el formulario real manda a la cuenta de
+       Llegó, así que desde el portafolio no sale ningún envío ni enlace externo */
+    const sitioEnEscena = (el, pant, listo, opciones = {}) => {
+        let marco = null;
+        const montar = () => {
+            if (marco) return;
+            marco = document.createElement('iframe');
+            marco.title = 'llegofarma.cl'; marco.setAttribute('tabindex', '-1'); marco.inert = true;
+            marco.onload = () => {
+                let win, doc;
+                try { win = marco.contentWindow; doc = marco.contentDocument; } catch (err) { return; }
+                win.addEventListener('submit', e => { e.preventDefault(); e.stopImmediatePropagation(); }, true);
+                win.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[href]'); if (a && !a.getAttribute('href').startsWith('#')) e.preventDefault(); }, true);
+                /* La cámara salta: cada sección tiene que estar armada antes de que pase */
+                doc.documentElement.classList.remove('m-titulos', 'm-entradas', 'm-reticula', 'm-imagenes', 'm-carga', 'cargado');
+                if (opciones.fotos) doc.querySelectorAll('img[loading="lazy"]').forEach(i => { i.loading = 'eager'; });
+                listo(marco, win, doc);
+                setTimeout(() => pant.classList.add('listo'), 400);
+            };
+            if (opciones.alMontar) opciones.alMontar(marco);
+            marco.src = el.dataset.ev;
+            pant.appendChild(marco);
+        };
+        new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) ('requestIdleCallback' in window ? requestIdleCallback : setTimeout)(montar); }), { rootMargin: '200% 0px' }).observe(el);
+    };
+    /* El velo es un solo trazado con huecos: lo marcado queda a opacidad completa y el resto, velado */
+    const trazoRect = r => `M${r.x.toFixed(1)} ${r.y.toFixed(1)}h${r.w.toFixed(1)}v${r.h.toFixed(1)}h${(-r.w).toFixed(1)}z`;
+    const marcarCaja = (caja, r, g, txt, ancho) => {
+        const on = !!r && g > 0;
+        caja.classList.toggle('on', on);
+        if (!on) return;
+        caja.style.setProperty('--lf-cx', r.x.toFixed(1) + 'px'); caja.style.setProperty('--lf-cy', r.y.toFixed(1) + 'px');
+        caja.style.setProperty('--lf-cw', (r.w * g).toFixed(1) + 'px'); caja.style.setProperty('--lf-ch', r.h.toFixed(1) + 'px');
+        caja.classList.toggle('abajo', r.y < 30);
+        caja.classList.toggle('der', r.x + r.w > ancho * 0.75 && r.w < ancho * 0.5);
+        const s = caja.firstElementChild;
+        if (s.textContent !== txt) s.textContent = txt;
+    };
+
     /* --- 4. ESCENAS PROPIAS --- */
     window.CASO_ESCENAS = {
         /* Hero: el avance de su pista endereza la cinta y la hace aterrizar */
@@ -745,37 +785,16 @@
             const PAD = 10;
             const lineal = (p, a, b) => fijar((p - a) / (b - a));
             const mezcla = (a, b, t) => a + (b - a) * t;
-            const rectangulo = r => `M${r.x.toFixed(1)} ${r.y.toFixed(1)}h${r.w.toFixed(1)}v${r.h.toFixed(1)}h${(-r.w).toFixed(1)}z`;
             let marco = null, win = null, doc = null, avance = 0, bucle = 0, escrito = false, W = 1440, H = 900, A = 742, B = 528;
             const cam = { e: 0, x: 0, y: 0, sy: 0 };
 
-            /* --- El sitio se monta en reposo y no puede enviar nada --- */
             const medir = () => {
                 W = vistaMovil.matches ? 390 : 1440;
                 A = pant.clientWidth; B = pant.clientHeight; H = Math.round(B / (A / W));
                 if (marco) { marco.style.setProperty('--lf-iw', W + 'px'); marco.style.setProperty('--lf-ih', H + 'px'); }
                 cam.e = 0;
             };
-            const montar = () => {
-                if (marco) return;
-                marco = document.createElement('iframe');
-                marco.title = 'llegofarma.cl'; marco.setAttribute('tabindex', '-1'); marco.inert = true;
-                marco.onload = () => {
-                    try { win = marco.contentWindow; doc = marco.contentDocument; } catch (err) { return; }
-                    /* El formulario real manda a la cuenta de Llegó: desde el portafolio no sale ningún envío ni enlace externo */
-                    win.addEventListener('submit', e => { e.preventDefault(); e.stopImmediatePropagation(); }, true);
-                    win.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[href]'); if (a && !a.getAttribute('href').startsWith('#')) e.preventDefault(); }, true);
-                    /* La cámara salta: cada sección tiene que estar armada y con sus fotos antes de que pase */
-                    doc.documentElement.classList.remove('m-titulos', 'm-entradas', 'm-reticula', 'm-imagenes', 'm-carga', 'cargado');
-                    doc.querySelectorAll('img[loading="lazy"]').forEach(i => { i.loading = 'eager'; });
-                    medir(); pedir();
-                    setTimeout(() => { pant.classList.add('listo'); pedir(); }, 400);
-                };
-                medir();
-                marco.src = el.dataset.ev;
-                pant.appendChild(marco);
-            };
-            new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) ('requestIdleCallback' in window ? requestIdleCallback : setTimeout)(montar); }), { rootMargin: '200% 0px' }).observe(el);
+            sitioEnEscena(el, pant, (m, w, d) => { win = w; doc = d; medir(); pedir(); setTimeout(pedir, 420); }, { fotos: true, alMontar: m => { marco = m; medir(); } });
 
             /* --- Los seis campos, de vacíos a la confirmación --- */
             const formulario = (fo, p) => {
@@ -802,17 +821,6 @@
             };
 
             /* --- Cuadro a cuadro: cámara, velo, huecos y marcas --- */
-            const marcar = (caja, r, g, txt) => {
-                const on = !!r && g > 0;
-                caja.classList.toggle('on', on);
-                if (!on) return;
-                caja.style.setProperty('--lf-cx', r.x.toFixed(1) + 'px'); caja.style.setProperty('--lf-cy', r.y.toFixed(1) + 'px');
-                caja.style.setProperty('--lf-cw', (r.w * g).toFixed(1) + 'px'); caja.style.setProperty('--lf-ch', r.h.toFixed(1) + 'px');
-                caja.classList.toggle('abajo', r.y < 30);
-                caja.classList.toggle('der', r.x + r.w > A * 0.75 && r.w < A * 0.5);
-                const s = caja.firstElementChild;
-                if (s.textContent !== txt) s.textContent = txt;
-            };
             const pintar = () => {
                 bucle = 0;
                 if (!doc || !doc.body) return;
@@ -848,17 +856,123 @@
                         ? { r: medida('.s-hero .indice'), g: lineal(p, T.navegar[0], T.navegar[1]) * (fuera > 0 ? 1 : 0), caja: 2, txt: 'Navegar' }
                         : { r: medida('.s-cta .campos', 0), g: lineal(p, T.forma[0], T.forma[1]), caja: 2, txt: texto }
                 ];
-                huecos.forEach(u => marcar(cajas[u.caja], u.r, u.g, u.txt));
+                huecos.forEach(u => marcarCaja(cajas[u.caja], u.r, u.g, u.txt, A));
                 /* El velo cae dos veces: sobre el hero, con el resto a la vista, y sobre el formulario, cerrado para dejarlo solo */
                 velo.style.setProperty('--lf-av', Math.max(Math.min(lineal(p, T.velo[0], T.velo[1]), fuera), lineal(p, T.forma[0], T.forma[1])).toFixed(3));
                 velo.style.setProperty('--lf-avo', mezcla(0.5, 1, lineal(p, T.forma[0], T.forma[1])).toFixed(3));
-                const abiertos = huecos.filter(u => u.r && u.g > 0).map(u => rectangulo({ x: u.r.x, y: u.r.y, w: u.r.w * u.g, h: u.r.h }));
-                hueco.setAttribute('d', rectangulo({ x: 0, y: 0, w: A, h: B }) + abiertos.join(''));
+                const abiertos = huecos.filter(u => u.r && u.g > 0).map(u => trazoRect({ x: u.r.x, y: u.r.y, w: u.r.w * u.g, h: u.r.h }));
+                hueco.setAttribute('d', trazoRect({ x: 0, y: 0, w: A, h: B }) + abiertos.join(''));
                 datos.forEach((d, i) => d.classList.toggle('on', p >= [T.actuar[0], T.navegar[0], T.forma[0]][i]));
                 if (sigue) pedir();
             };
             const pedir = () => { if (!bucle) bucle = requestAnimationFrame(pintar); };
             window.addEventListener('resize', () => { medir(); pedir(); });
+            /* La pista suma la pantalla en que sube la 11: todo termina antes de ella */
+            const hasta = +el.dataset.pasosHasta || 1;
+            return q => { avance = fijar(q / hasta); pedir(); };
+        },
+
+        /* La retícula: de la portada del manual (1920 × 1080) a un cruce de sus líneas y, en ese mismo punto de la pantalla, al
+           cruce de la web. Al alejarse se encienden las líneas reales del sitio, se miden sus cuatro columnas, las fotos ocupan
+           módulos y la cámara termina en un título, la única excepción (llego.css 9.3). Medido en el PDF: 7,6 px; en la web, 8 */
+        reticula: el => {
+            const esc = el.querySelector('.lf-rt-esc'), velo = el.querySelector('.lf-ac-velo'), hueco = velo.firstElementChild, cajas = [...el.querySelectorAll('.lf-ac-caja')];
+            const med = el.querySelector('.lf-rt-med'), bandas = el.querySelector('.lf-rt-bandas'), datos = [...el.querySelectorAll('[data-rt-dato]')];
+            const CRUCE = { x: 654.5, y: 358.7 }, CAMPO = 218, W = 1440;
+            const T = { lee: 0.13, entra: [0.14, 0.27], texto: [0.17, 0.25], mide: [0.25, 0.28], cambia: [0.31, 0.36], aleja: [0.39, 0.5], lineas: [0.42, 0.5], columnas: [0.5, 0.55], llega: [0.56, 0.6], sale: [0.6, 0.63], modulos: [0.62, 0.76], titulo: [0.78, 0.86], marca: [0.86, 0.9] };
+            const lineal = (p, a, b) => fijar((p - a) / (b - a));
+            const mezcla = (a, b, t) => a + (b - a) * t;
+            /* Zoom natural entre dos vistas: la escala avanza en proporción y todo gira en torno a un punto fijo */
+            const zoom = (a, b, t) => {
+                const rel = b.e / a.e, r = Math.pow(rel, t);
+                if (Math.abs(rel - 1) < 0.001) return { e: a.e, x: mezcla(a.x, b.x, t), y: mezcla(a.y, b.y, t) };
+                const fx = (b.x - a.x * rel) / (1 - rel), fy = (b.y - a.y * rel) / (1 - rel);
+                return { e: a.e * r, x: fx + (a.x - fx) * r, y: fy + (a.y - fy) * r };
+            };
+            let marco = null, win = null, doc = null, avance = 0, suave = 0, bucle = 0, A = 818, B = 900, H = 1584, sy = -1, contenido = [], opacidad = '';
+            const medir = () => {
+                A = esc.clientWidth; B = esc.clientHeight; H = Math.round(B / (A / W));
+                if (marco) { marco.style.setProperty('--lf-iw', W + 'px'); marco.style.setProperty('--lf-ih', H + 'px'); }
+                sy = -1;
+            };
+            sitioEnEscena(el, esc, (m, w, d) => { win = w; doc = d; medir(); pedir(); setTimeout(() => { sy = -1; pedir(); }, 500); }, { alMontar: m => { marco = m; medir(); } });
+            const pedir = () => { if (!bucle) bucle = requestAnimationFrame(pintar); };
+
+            const pintarSitio = p => {
+                const sec = doc.querySelector('.s-quees'), filas = doc.querySelectorAll('.s-quees .fila');
+                if (!sec || filas.length < 4) return;
+                /* El sitio queda quieto en la sección; solo se mueve la cámara */
+                if (sy < 0) {
+                    opacidad = '';
+                    sy = Math.max(sec.getBoundingClientRect().top + win.scrollY, 0); win.scrollTo({ top: sy, behavior: 'instant' });
+                    /* La cabecera, el indicador y la sección siguiente no son el tema: acá manda la retícula */
+                    [...doc.querySelectorAll('header, .recorrido'), sec.nextElementSibling].forEach(n => { n.style.visibility = 'hidden'; });
+                    contenido = [...doc.querySelectorAll('.s-quees .fila > *')];
+                }
+                const f = filas[2].getBoundingClientRect(), borde = Math.max(48, (f.width - 1440) / 2 + 48), col = (f.width - 2 * borde) / 4;
+                const cx = borde + col * 3 + 0.5, cy = f.top + 0.5;
+                const eZ = A / CAMPO, lejos = { e: A / W, x: 0, y: 0 };
+                const cerca = { e: eZ, x: A / 2 - cx * eZ, y: B / 2 - cy * eZ };
+                /* Primero solo las líneas; el contenido llega a ocupar la retícula después de medirla */
+                const o = lineal(p, T.llega[0], T.llega[1]).toFixed(3);
+                if (o !== opacidad) { opacidad = o; contenido.forEach(n => { n.style.opacity = o; }); }
+                const lin = doc.querySelector('.s-quees h2 .linea'), fuerte = lin.querySelector('strong');
+                /* El título se mide por su texto, no por su caja, que ocupa todo el ancho */
+                const rango = doc.createRange(); rango.selectNodeContents(lin);
+                const tr = rango.getBoundingClientRect(), eT = Math.min(A * 0.86 / tr.width, 1.1);
+                const titulo = { e: eT, x: (A - tr.width * eT) / 2 - tr.left * eT, y: B / 2 - (tr.top + tr.height / 2) * eT };
+                const t2 = tramo(p, T.titulo[0], T.titulo[1]);
+                const c = t2 > 0 ? zoom(lejos, titulo, t2) : zoom(cerca, lejos, tramo(p, T.aleja[0], T.aleja[1]));
+                marco.style.setProperty('--lf-ie', c.e.toFixed(4)); marco.style.setProperty('--lf-ix', c.x.toFixed(1) + 'px'); marco.style.setProperty('--lf-iy', c.y.toFixed(1) + 'px');
+                /* Las líneas de verdad del sitio se encienden */
+                const alfa = mezcla(0.18, 0.95, Math.min(lineal(p, T.lineas[0], T.lineas[1]), 1 - lineal(p, T.sale[0], T.sale[1])));
+                sec.style.setProperty('--linea', `rgba(16, 78, 86, ${alfa.toFixed(3)})`);
+                fase(bandas, '--lf-bv', lineal(p, T.columnas[0], T.columnas[1]));
+                fase(bandas, '--lf-bo', 1 - lineal(p, T.llega[0], T.llega[1]));
+                bandas.style.setProperty('--lf-bx', ((borde * c.e) + c.x).toFixed(1) + 'px'); bandas.style.setProperty('--lf-bw', (col * c.e).toFixed(1) + 'px');
+                const medida = (n, m = 0) => { const r = n.getBoundingClientRect(); return { x: (r.left - m) * c.e + c.x, y: (r.top - m) * c.e + c.y, w: (r.width + m * 2) * c.e, h: (r.height + m * 2) * c.e }; };
+                let huecos = [];
+                if (p < T.titulo[0]) {
+                    const piezas = ['.b-a', '.b-b', '.b-c', '.b-d'].map(s => doc.querySelector('.s-quees ' + s)), n = piezas.length, [a, b] = T.modulos, largo = (b - a) / n;
+                    huecos = piezas.map((pz, i) => ({ r: medida(pz), g: lineal(p, a + i * largo, a + (i + 0.55) * largo), txt: ['2 columnas, 2 filas', '2 columnas', '1 columna', '1 columna'][i] }));
+                    fase(velo, '--lf-av', Math.min(lineal(p, T.sale[0], T.sale[1]), 1 - lineal(p, T.modulos[1], T.titulo[0])));
+                } else {
+                    const g = lineal(p, T.marca[0], T.marca[1]), rf = medida(fuerte), fin = (tr.right * c.e + c.x);
+                    const y = rf.y - 6, h = rf.h + 12, luz = rf.x + rf.w + 10;
+                    huecos = [{ r: { x: rf.x - 6, y, w: rf.w + 12, h }, g, txt: 'Medium' }, { r: { x: luz, y, w: fin + 6 - luz, h }, g, txt: 'Light' }];
+                    fase(velo, '--lf-av', g);
+                }
+                huecos.forEach((u, i) => marcarCaja(cajas[i], u.r, u.g, u.txt, A));
+                cajas.slice(huecos.length).forEach(x => x.classList.remove('on'));
+                hueco.setAttribute('d', trazoRect({ x: 0, y: 0, w: A, h: B }) + huecos.filter(u => u.g > 0).map(u => trazoRect({ x: u.r.x, y: u.r.y, w: u.r.w * u.g, h: u.r.h })).join(''));
+            };
+            const pintar = () => {
+                bucle = 0;
+                const d = avance - suave;
+                suave = quieto || Math.abs(d) < 0.0002 ? avance : suave + d * 0.18;
+                const p = suave;
+                /* El impreso: de la portada completa al cruce */
+                const m0 = A / 1920, mZ = A / CAMPO;
+                const v = zoom({ e: m0, x: 0, y: (B - 1080 * m0) / 2 }, { e: mZ, x: A / 2 - CRUCE.x * mZ, y: B / 2 - CRUCE.y * mZ }, tramo(p, T.entra[0], T.entra[1]));
+                esc.style.setProperty('--lf-m', v.e.toFixed(4)); esc.style.setProperty('--lf-mx', v.x.toFixed(1) + 'px'); esc.style.setProperty('--lf-my', v.y.toFixed(1) + 'px');
+                const cambio = lineal(p, T.cambia[0], T.cambia[1]);
+                fase(esc, '--lf-mo', 1 - cambio);
+                fase(esc, '--lf-co', lineal(p, T.entra[0] + 0.07, T.entra[1]));
+                /* El puente deja su lugar a la decisión */
+                fase(el, '--lf-rp', 1 - lineal(p, T.texto[0], T.texto[0] + 0.04));
+                fase(el, '--lf-rd', lineal(p, T.texto[1] - 0.04, T.texto[1]));
+                /* La medida del corte, en los dos soportes */
+                const sale = 1 - lineal(p, T.aleja[0], T.aleja[0] + 0.02);
+                med.classList.toggle('on', p >= T.mide[0] && sale > 0);
+                med.style.setProperty('--lf-rh', (mezcla(7.6, 8, cambio > 0.5 ? 1 : 0) * mZ).toFixed(1) + 'px');
+                const txt = cambio > 0.5 ? 'En la web: 8 px' : 'En el manual: 7,6 px';
+                if (med.firstElementChild.textContent !== txt) med.firstElementChild.textContent = txt;
+                datos.forEach((n, i) => n.classList.toggle('on', p >= [T.mide[0], T.columnas[0], T.marca[0]][i]));
+                if (doc && doc.body) pintarSitio(p);
+                if (suave !== avance) pedir();
+            };
+            window.addEventListener('resize', () => { medir(); pedir(); });
+            medir();
             return p => { avance = p; pedir(); };
         },
 
