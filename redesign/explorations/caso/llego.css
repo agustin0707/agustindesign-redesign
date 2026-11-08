@@ -680,25 +680,31 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-val-madre i { width: 34px; height: 12px; background: linear-gradient(90deg, #84187C 0 50%, var(--lf-turquesa) 50% 100%); }
 
 /* --- 8.4 LA MADRE NO SE TOCA --- */
-/* Todo en un SVG con las medidas del logotipo oficial: las cotas (--c1), la retícula de construcción que se dibuja
-   (--c2), el módulo X (--cx), el área de protección (--c3) y, al final, los mínimos a tamaño real (--c4) */
+/* Todo en un SVG con la geometría del manual (llego.html la detalla): el logo y sus cotas (--c1), la construcción de
+   la pág. 06 que se dibuja (--c2) con la ó como módulo, Llegó en espejo y sus cotas x (--cx), el área de protección de
+   la pág. 08 (--c3) y, al final, los mínimos a tamaño real de la pág. 09 (--c4) */
 .lf-lock { background: #FFFFFF; }
 .lf-lock-lienzo { inset: 0; width: 100%; height: 100%; overflow: visible; opacity: calc(1 - var(--c4, 0)); }
 .lf-lock-lienzo text { font: 400 6.4px var(--cs-f-mono); letter-spacing: 0.04em; fill: var(--lf-oscuro); }
 /* Trazo de 1 px a esta escala, en unidades del SVG: el non-scaling-stroke rompe el dibujo con pathLength */
-.lf-lock-lienzo line, .lf-lock-borde { fill: none; stroke-width: 0.62; stroke-dasharray: 1; }
+.lf-lock-lienzo :is(line, rect) { fill: none; stroke-width: 0.62; stroke-dasharray: 1; }
 .lf-lock-logo { opacity: var(--c1, 0); transform: translateY(calc((1 - var(--c1, 0)) * 5px)); }
 .lf-lock-cotas { opacity: var(--c1o, 0); }
 .lf-lock-cotas line { stroke: var(--lf-turquesa); stroke-dashoffset: calc(1 - var(--c1, 0)); }
 .lf-lock-cotas circle { fill: var(--lf-turquesa); }
-.lf-lock-reticula { opacity: calc(1 - var(--c3, 0) * 0.55); }
-.lf-lock-reticula line { stroke: rgba(16, 78, 86, 0.24); stroke-dashoffset: calc(1 - clamp(0, var(--c2, 0) * 1.5 - var(--i) * 0.12, 1)); }
-.lf-lock-modulo { opacity: calc(var(--cx, 0) * (1 - var(--c3, 0))); }
-.lf-lock-modulo rect { fill: rgba(23, 129, 129, 0.14); }
-.lf-lock-modulo text, .lf-lock-x text { fill: var(--lf-turquesa); }
+/* Construcción: se dibuja con --c2 y se va cuando entra el área de protección */
+.lf-lock-cons { opacity: calc(1 - var(--c3, 0)); }
+.lf-lock-cons :is(line, rect) { stroke: rgba(16, 78, 86, 0.24); stroke-dashoffset: calc(1 - clamp(0, var(--c2, 0) * 1.5 - var(--i, 0) * 0.12, 1)); }
+/* Las formas fantasma (la ó módulo y Llegó en espejo) van solo en contorno, como en el manual */
+.lf-lock-fantasma { opacity: var(--cx, 0); }
+.lf-lock-lienzo use { fill: none; stroke: rgba(23, 129, 129, 0.5); stroke-width: 0.5; }
+.lf-lock-cotax line { stroke: rgba(23, 129, 129, 0.6); stroke-width: 0.5; stroke-dasharray: none; }
+.lf-lock-cotax text { font-size: 7px; fill: var(--lf-turquesa); }
+.lf-lock-cons .lf-lock-cotax { opacity: var(--cx, 0); }
+/* Área de protección: el borde y su retícula se dibujan con --c3; la ó de la esquina y las cotas llegan al final */
+.lf-lock-proteccion line { stroke: rgba(16, 78, 86, 0.24); stroke-dashoffset: calc(1 - clamp(0, var(--c3, 0) * 1.5 - var(--i, 0) * 0.12, 1)); }
 .lf-lock-borde { stroke: var(--lf-turquesa); stroke-dashoffset: calc(1 - var(--c3, 0)); }
-.lf-lock-x { opacity: clamp(0, calc(var(--c3, 0) * 5 - 2.6 - var(--i) * 0.4), 1); }
-.lf-lock-x rect { fill: rgba(23, 129, 129, 0.1); stroke: rgba(23, 129, 129, 0.5); stroke-width: 0.62; }
+.lf-lock-proteccion :is(.lf-lock-esquina, .lf-lock-cotax) { opacity: clamp(0, calc(var(--c3, 0) * 3 - 2), 1); }
 .lf-lock-nota { left: 28px; bottom: 68px; display: grid; color: var(--lf-turquesa); }
 .lf-lock-nota span { grid-area: 1 / 1; }
 .lf-lock-nota-x { opacity: calc(var(--cx, 0) * (1 - var(--c3, 0))); }
@@ -712,6 +718,12 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-lock-minimos figcaption { display: flex; align-items: baseline; gap: 8px; color: var(--texto-3); }
 .lf-lock-minimos figcaption b { font: 300 20px var(--cs-f); letter-spacing: -0.02em; color: var(--texto); text-transform: none; }
 .lf-lock-minimos p { position: absolute; left: 0; right: 0; top: calc(50% + 72px); color: var(--texto-3); text-align: center; }
+/* En celular los tres rótulos con cm no caben en una fila: se apilan, y la nota baja con ellos */
+@media (max-width: 768px), (orientation: portrait) and (max-width: 1100px) {
+    .lf-lock-minimos { flex-direction: column; gap: 32px; }
+    .lf-lock-minimos figure { gap: 12px; }
+    .lf-lock-minimos p { position: static; padding: 0 28px; }
+}
 .lf-lock-pie { inset: auto 0 0; display: flex; justify-content: space-between; padding: 0 28px 24px; color: var(--texto-3); }
 
 /* --- 8.5 TRES CAMINOS, UNO AL LADO DEL OTRO --- */

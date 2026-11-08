@@ -631,10 +631,11 @@
             };
         },
 
-        /* Logo: composición, construcción con el módulo X, área de protección y mínimos */
+        /* Logo, como en el manual: composición, construcción con el módulo X, área de protección y mínimos */
         lockup: el => {
-            const pieza = el.querySelector('.lf-lock'), pie = el.querySelector('[data-lock-pie]');
-            const nombres = ['Principal', 'Construcción', 'Área de protección', 'Mínimos'];
+            const pieza = el.querySelector('.lf-lock'), pie = el.querySelector('[data-lock-pie]'), pag = el.querySelector('[data-lock-pag]');
+            /* Cada paso con su página del brandbook */
+            const nombres = ['Principal', 'Construcción', 'Área de protección', 'Mínimos'], paginas = ['03', '06', '08', '09'];
             /* Si la pista suma la pantalla del filo (data-pasos-hasta), la pieza termina antes de ella */
             const hasta = +el.dataset.pasosHasta || 1;
             let paso = -1;
@@ -645,7 +646,7 @@
                 fase(pieza, '--c2', tramo(p, 0.27, 0.45)); fase(pieza, '--cx', tramo(p, 0.42, 0.48));
                 fase(pieza, '--c3', tramo(p, 0.52, 0.68)); fase(pieza, '--c4', tramo(p, 0.76, 0.86));
                 const k = Math.min(Math.floor(p * 4), 3);
-                if (k !== paso) { paso = k; pie.textContent = nombres[k]; }
+                if (k !== paso) { paso = k; pie.textContent = nombres[k]; if (pag) pag.textContent = `Logotipo · Brandbook, pág. ${paginas[k]}`; }
             };
         },
 
