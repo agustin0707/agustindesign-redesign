@@ -706,24 +706,26 @@
             };
         },
 
-        /* Dominio: se escribe llego.cl/farma y carga el morado de la madre; se tacha y se borra; se escribe llegofarma.cl
-           y carga el sitio real (llego.css sección 9) */
+        /* Dominio: parte en llego.cl/farma, con Farma encerrada en el morado de la madre. Se tacha y se borra, se escribe
+           llegofarma.cl, carga y el morado se retira hasta que Farma llena la ventana (llego.css sección 9) */
         dominio: el => {
             const url = el.querySelector('[data-url]'), viejo = 'llego.cl/farma', nuevo = 'llegofarma.cl';
             const lineal = (p, a, b) => fijar((p - a) / (b - a));
             let previo = '';
             return p => {
-                const quedan = p < 0.42 ? lineal(p, 0.03, 0.16) : 1 - lineal(p, 0.42, 0.5);
-                const html = p < 0.51
+                const quedan = 1 - lineal(p, 0.32, 0.42), escrito = lineal(p, 0.44, 0.58);
+                const html = p < 0.43
                     ? `<span class="lf-dom-viejo">${viejo.slice(0, Math.round(quedan * viejo.length))}</span>`
-                    : nuevo.slice(0, Math.round(lineal(p, 0.52, 0.63) * nuevo.length));
+                    : nuevo.slice(0, Math.round(escrito * nuevo.length));
                 if (html !== previo) { url.innerHTML = html; previo = html; }
-                el.classList.toggle('lf-dom-listo', p >= 0.63);
-                fase(el, '--lf-dt', lineal(p, 0.36, 0.4));
-                fase(el, '--carga', Math.max(lineal(p, 0.16, 0.21) * (1 - lineal(p, 0.38, 0.42)), lineal(p, 0.63, 0.69)));
-                fase(el, '--lf-dm', tramo(p, 0.19, 0.28) * (1 - tramo(p, 0.42, 0.5)));
-                fase(el, '--dibuja', tramo(p, 0.67, 0.82));
-                fase(el, '--lf-dc', lineal(p, 0.8, 0.84));
+                el.classList.toggle('lf-dom-listo', p >= 0.58);
+                el.classList.toggle('lf-dom-ficha-on', p >= 0.82);
+                fase(el, '--lf-dt', lineal(p, 0.22, 0.3));
+                fase(el, '--lf-qo', quedan);
+                fase(el, '--lf-qn', escrito);
+                fase(el, '--carga', lineal(p, 0.58, 0.66));
+                fase(el, '--lf-dm', 1 - tramo(p, 0.64, 0.84));
+                fase(el, '--lf-dc', lineal(p, 0.82, 0.9));
             };
         },
 

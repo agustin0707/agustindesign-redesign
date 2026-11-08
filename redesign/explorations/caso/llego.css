@@ -828,9 +828,9 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 
 /* --- 9. CAPÍTULO 03 Y DECISIÓN 08 · EL DOMINIO --- */
 .lf-dom .cs-fijo { color: #FFFFFF; }
-/* La dirección es la protagonista: la barra va a escala de titular y debajo carga lo que cada dirección significa.
-   llego.js (escena dominio) escribe el texto y las fases: tachado (--lf-dt), carga (--carga), morado (--lf-dm),
-   sitio (--dibuja) y la nota final (--lf-dc) */
+/* La dirección es la protagonista: la barra va a escala de titular y debajo está siempre la misma página. llego.js
+   (escena dominio) escribe el texto y las fases: tachado (--lf-dt), QR viejo y nuevo (--lf-qo, --lf-qn), carga (--carga),
+   cuánto la encierra el morado (--lf-dm, de 1 a 0) y la ficha final (--lf-dc) */
 .lf-dom-nav { grid-column: 6 / -1; align-self: center; display: flex; flex-direction: column; height: min(72vh, 680px); border: 1px solid rgba(255, 255, 255, 0.24); background: rgba(10, 20, 21, 0.55); }
 .lf-dom-cromo { display: flex; align-items: center; gap: 18px; padding: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); }
 .lf-dom-url { flex: 1; display: flex; align-items: center; gap: 14px; height: clamp(52px, 5.4vw, 88px); padding: 0 20px; background: rgba(255, 255, 255, 0.08); font: 200 clamp(26px, 3.6vw, 60px) / 1 var(--cs-f); letter-spacing: -0.03em; white-space: nowrap; }
@@ -842,15 +842,28 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-dom-cursor { flex: none; width: 2px; height: 1em; margin-left: -12px; background: currentColor; animation: lf-cursor 1s steps(1) infinite; }
 .lf-dom-listo .lf-dom-cursor { display: none; }
 @keyframes lf-cursor { 50% { opacity: 0; } }
-.lf-dom-carga { height: 2px; background: var(--lf-claro); transform-origin: left; scale: var(--carga, 0) 1; }
+/* El QR de la barra: cada dirección tiene el suyo, y se va o se dibuja con las letras */
+.lf-dom-qr { position: relative; flex: none; align-self: center; height: calc(100% - 12px); aspect-ratio: 1; margin-left: auto; margin-right: -14px; background: var(--lf-papel); }
+.lf-dom-qr svg { position: absolute; inset: 0; width: 100%; height: 100%; fill: var(--lf-oscuro); }
+.lf-dom-qr-viejo { clip-path: inset(0 0 calc((1 - var(--lf-qo, 1)) * 100%) 0); }
+.lf-dom-qr-nuevo { clip-path: inset(0 0 calc((1 - var(--lf-qn, 0)) * 100%) 0); }
+.lf-dom-carga { height: 2px; background: var(--lf-claro); transform-origin: left; scale: var(--carga, 0) 1; opacity: calc(1 - var(--lf-dc, 0)); }
 .lf-dom-pant { position: relative; flex: 1; overflow: hidden; }
-.lf-dom-pant img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0 0 calc((1 - var(--dibuja, 0)) * 100%) 0); }
-.lf-dom-pant .lf-dom-logo { inset: 8% auto auto 6%; width: 18%; height: auto; object-fit: contain; }
-/* El morado de la madre con su logotipo: lo que habría sido llego.cl/farma */
-.lf-dom-madre { position: absolute; inset: 0; display: grid; place-items: center; background: var(--lf-madre); clip-path: inset(0 0 calc((1 - var(--lf-dm, 0)) * 100%) 0); }
-.lf-dom-madre i { width: 26%; aspect-ratio: 1.38; background: #FFFFFF; -webkit-mask: url("media/lf-llego-logotipo.svg") center / contain no-repeat; mask: url("media/lf-llego-logotipo.svg") center / contain no-repeat; }
-.lf-dom-nota { position: absolute; left: 16px; bottom: 16px; padding: 6px 10px; background: var(--lf-negro); color: #FFFFFF; }
-.lf-dom-nota-fin { opacity: var(--lf-dc, 0); }
+/* El morado rodea a la página de Farma: la cabecera arriba y un margen a los lados. Al retirarse, la página crece desde abajo */
+.lf-dom-madre { position: absolute; inset: 0; background: var(--lf-madre); }
+.lf-dom-madre-cab { position: absolute; left: 8%; right: 8%; top: 0; height: 16%; display: flex; align-items: center; justify-content: space-between; gap: 16px; color: #FFFFFF; }
+.lf-dom-madre-cab i { height: 46%; aspect-ratio: 200 / 77; background: #FFFFFF; -webkit-mask: url("media/lf-llego-logotipo.svg") left center / contain no-repeat; mask: url("media/lf-llego-logotipo.svg") left center / contain no-repeat; }
+.lf-dom-sitio { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; transform-origin: 50% 100%; scale: calc(1 - var(--lf-dm, 1) * 0.16); will-change: scale; }
+/* La ficha ocupa el lugar de las cifras de la 08 y aparece cuando la dirección ya es la propia */
+.lf-datos.lf-dom-ficha { margin-top: auto; gap: 24px; opacity: var(--lf-dc, 0); }
+.lf-datos.lf-dom-ficha li { max-width: none; }
+.lf-datos.lf-dom-ficha b { font: 300 clamp(18px, 1.55vw, 24px) / 1.1 var(--cs-f); letter-spacing: -0.02em; text-transform: none; white-space: nowrap; transition: color 160ms; }
+.lf-dom-ficha a { display: flex; flex-direction: column; gap: 6px; color: inherit; text-decoration: none; pointer-events: none; }
+.lf-dom-ficha-on .lf-dom-ficha a { pointer-events: auto; }
+.lf-dom-ficha:focus-within { opacity: 1; }
+/* El alto de la columna de la 08: al pasar de una a otra el texto no salta */
+@media (min-width: 769px) { .lf-dom .cs-dec { min-height: 504px; } }
+@media (hover: hover) { .lf-dom-ficha a:hover b { color: var(--lf-claro); } }
 
 /* --- 10. EVIDENCIA: LLEGOFARMA.CL, MARCADO --- */
 .lf-ev { --foco: var(--lf-claro); --foco-txt: var(--lf-negro); }
@@ -1004,6 +1017,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-dom-cromo { padding: 8px; }
     .lf-dom-cromo .cs-ev-luces { display: none; }
     .lf-dom-url { padding: 0 12px; gap: 10px; }
+    .lf-dom-qr, .lf-dom-madre-cab span { display: none; }
     /* Teléfono */
     .lf-tel-sec .cs-dec { grid-row: 1; }
     .lf-tel { grid-row: 2; width: min(50vw, 25vh); padding: 6px; border-radius: 30px; }
