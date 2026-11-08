@@ -706,20 +706,24 @@
             };
         },
 
-        /* Dominio: se escribe llego.cl/farma, se tacha y se borra; se escribe llegofarma.cl y el sitio carga */
+        /* Dominio: se escribe llego.cl/farma y carga el morado de la madre; se tacha y se borra; se escribe llegofarma.cl
+           y carga el sitio real (llego.css sección 9) */
         dominio: el => {
             const url = el.querySelector('[data-url]'), viejo = 'llego.cl/farma', nuevo = 'llegofarma.cl';
+            const lineal = (p, a, b) => fijar((p - a) / (b - a));
             let previo = '';
-            const tramo = (p, a, b) => fijar((p - a) / (b - a));
             return p => {
-                let html;
-                if (p < 0.3) html = viejo.slice(0, Math.round(tramo(p, 0.08, 0.26) * viejo.length));
-                else if (p < 0.36) html = `<s>${viejo}</s>`;
-                else if (p < 0.42) html = `<s>${viejo.slice(0, Math.round((1 - tramo(p, 0.36, 0.42)) * viejo.length))}</s>`;
-                else html = nuevo.slice(0, Math.round(tramo(p, 0.44, 0.56) * nuevo.length));
+                const quedan = p < 0.42 ? lineal(p, 0.03, 0.16) : 1 - lineal(p, 0.42, 0.5);
+                const html = p < 0.51
+                    ? `<span class="lf-dom-viejo">${viejo.slice(0, Math.round(quedan * viejo.length))}</span>`
+                    : nuevo.slice(0, Math.round(lineal(p, 0.52, 0.63) * nuevo.length));
                 if (html !== previo) { url.innerHTML = html; previo = html; }
-                el.style.setProperty('--carga', tramo(p, 0.56, 0.66).toFixed(3));
-                el.style.setProperty('--dibuja', tramo(p, 0.62, 0.8).toFixed(3));
+                el.classList.toggle('lf-dom-listo', p >= 0.63);
+                fase(el, '--lf-dt', lineal(p, 0.36, 0.4));
+                fase(el, '--carga', Math.max(lineal(p, 0.16, 0.21) * (1 - lineal(p, 0.38, 0.42)), lineal(p, 0.63, 0.69)));
+                fase(el, '--lf-dm', tramo(p, 0.19, 0.28) * (1 - tramo(p, 0.42, 0.5)));
+                fase(el, '--dibuja', tramo(p, 0.67, 0.82));
+                fase(el, '--lf-dc', lineal(p, 0.8, 0.84));
             };
         },
 
