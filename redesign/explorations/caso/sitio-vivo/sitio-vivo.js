@@ -22,7 +22,7 @@
         b: [{ cruce: true, modo: 'pieza', max: 3.2 }, { sel: '.s-hero .pie', modo: 'ancho', pie: true }, { sel: '.s-tecno .ruta', modo: 'ancho', pasos: true }, { sel: '#formulario', modo: 'ancho' }],
         c: [{ sel: '.s-quees .bento', modo: 'ancho', reticula: true, celdas: true }, { sel: '.s-hero .pie', modo: 'ancho', arriba: true, cajas: [['.s-hero .cta-grande', 'Actuar', 0.1], ['.s-hero .indice', 'Navegar', 0.45]] }, { sel: '.s-tecno .ruta', modo: 'pieza', max: 1.55, pasos: true, aisla: true }, { sel: '#formulario', modo: 'pieza', max: 1.05, escribe: true, aisla: true }]
     };
-    let version = 'a', win = null, doc = null, tocando = false, k = -1, f = 0;
+    let version = 'a', win = null, doc = null, tocando = false, k = -1, kv = 0, f = 0, corteT = 0, salto = false;
     const est = { e: 0, x: 0, y: 0, sy: 0 };
 
     /* --- 1. EL SITIO: SE MONTA Y NO PUEDE ENVIAR NADA --- */
@@ -34,8 +34,10 @@
     };
     const montar = () => {
         const d = marco.contentDocument;
-        if (!d || d.location.href === 'about:blank' || marco.dataset.montado === d.location.href) return;
-        win = marco.contentWindow; doc = d; marco.dataset.montado = d.location.href;
+        if (!d || d.location.href === 'about:blank' || d === doc) return;
+        win = marco.contentWindow; doc = d;
+        /* Las entradas del sitio se disparan una vez, al ritmo de quien baja: aquí la cámara salta, y cada sección tiene que estar ya armada */
+        d.documentElement.classList.remove('m-titulos', 'm-entradas', 'm-reticula', 'm-imagenes', 'm-carga', 'cargado');
         /* En window y en captura: corren antes que cualquier oyente del propio sitio */
         win.addEventListener('submit', e => { e.preventDefault(); e.stopImmediatePropagation(); if (e.target.checkValidity()) exito(e.target); }, true);
         win.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[href]'); if (a && !a.getAttribute('href').startsWith('#')) e.preventDefault(); }, true);
@@ -48,8 +50,8 @@
     let S = { w: 1440, h: 900 }, W = 1440, H = 900;
     const medir = () => {
         const r = esc.getBoundingClientRect(); S = { w: r.width, h: r.height };
-        W = version === 'a' ? Math.round(S.w) : 1440;
-        H = version === 'a' ? Math.round(S.h) : Math.max(900, Math.round(S.h / (S.w / 1440)));
+        W = version === 'a' ? Math.max(Math.round(S.w), 1280) : 1440;
+        H = version === 'a' ? Math.round(S.h / (S.w / W)) : Math.max(900, Math.round(S.h / (S.w / 1440)));
         esc.style.setProperty('--sv-iw', W + 'px'); esc.style.setProperty('--sv-ih', H + 'px');
     };
     /* El cruce de la retícula entre la primera y la segunda fila, a una columna del borde: donde se ve el corte */
@@ -91,7 +93,7 @@
         escrito = true;
         CAMPOS.forEach(([id, v], i) => { doc.getElementById(id).value = v.slice(0, Math.round(tramo(f, 0.06 + i * 0.2, 0.24 + i * 0.2) * v.length)); });
         doc.getElementById('f-ok').checked = f > 0.68;
-        if (f > 0.8) exito(fo); else fo.classList.remove('enviado');
+        if (f <= 0.8) fo.classList.remove('enviado'); else if (!fo.classList.contains('enviado')) exito(fo);
     };
     const ubicar = (el, r) => {
         const x = r.left * est.e + est.x, y = r.top * est.e + est.y;
@@ -134,17 +136,28 @@
         requestAnimationFrame(cuadro);
         const r = pista.getBoundingClientRect(), p = fijar(-r.top / (r.height - window.innerHeight)), t = Math.min(p * 4, 3.999);
         const i = Math.floor(t); f = t - i;
-        if (i !== k) { k = i; pasoSitio = -1; texto(i); }
+        if (i !== k) {
+            const inicio = k < 0;
+            k = i; texto(i);
+            /* Entre paradas el sitio no se cruza entero: la cámara funde, salta y vuelve */
+            if (inicio) kv = i;
+            else {
+                clearTimeout(corteT);
+                html.classList.add('sv-corte');
+                corteT = setTimeout(() => { kv = k; pasoSitio = -1; salto = true; }, quieto ? 0 : 130);
+            }
+        }
         if (!doc || !doc.body) return;
-        const c = CFG[version][k];
+        const c = CFG[version][kv];
         const obj = c.cruce ? rectCruce() : doc.querySelector(c.sel);
         const rect = obj && (obj.getBoundingClientRect ? obj.getBoundingClientRect() : obj);
         if (!rect) return;
-        const m = meta(c, rect), a = quieto || est.e === 0 ? 1 : 0.14;
+        const m = meta(c, rect), a = quieto || est.e === 0 || salto ? 1 : 0.14;
         ['e', 'x', 'y'].forEach(q => { est[q] += (m[q] - est[q]) * a; });
         if (!tocando) { est.sy += (m.sy - est.sy) * a; win.scrollTo({ top: est.sy, behavior: 'instant' }); }
         esc.style.setProperty('--sv-e', est.e.toFixed(4)); esc.style.setProperty('--sv-x', est.x.toFixed(1) + 'px'); esc.style.setProperty('--sv-y', est.y.toFixed(1) + 'px');
         pasos(c); form(tocando ? null : c); capa(c);
+        if (salto) { salto = false; html.classList.remove('sv-corte'); }
     };
 
     /* --- 6. RECÓRRELO TÚ: EL SITIO RECIBE EL CURSOR Y LA RUEDA --- */

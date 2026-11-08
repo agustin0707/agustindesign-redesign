@@ -8,7 +8,8 @@
 .sv-pista { height: 900vh; }
 .sv-fijo { --panel: 160px; position: sticky; top: 0; height: 100vh; overflow: hidden; color: #FFFFFF; background: var(--lf-negro); }
 .sv-fijo > .lf-degradado { position: absolute; inset: 0; }
-.sv-esc { position: absolute; overflow: hidden; background: var(--lf-negro); }
+.sv-esc { position: absolute; overflow: hidden; background: var(--lf-negro); transition: opacity 120ms; }
+.sv-corte .sv-esc { opacity: 0; }
 .sv-esc iframe { position: absolute; left: 0; top: 0; border: 0; width: var(--sv-iw, 1440px); height: var(--sv-ih, 900px); transform-origin: 0 0; transform: translate(var(--sv-x, 0px), var(--sv-y, 0px)) scale(var(--sv-e, 1)); pointer-events: none; }
 .sv-tocando .sv-esc iframe { pointer-events: auto; }
 .sv-capa { position: absolute; inset: 0; pointer-events: none; }
@@ -91,3 +92,18 @@
 :is(.sv-vb, .sv-vc) .sv-sel { left: 16px; right: auto; }
 :is(.sv-vb, .sv-vc) .sv-sel button:not([aria-pressed="true"], .sv-sel-otra) { font-size: 0; gap: 0; }
 :is(.sv-vb, .sv-vc) .sv-sel button:not([aria-pressed="true"], .sv-sel-otra) span { font-size: 11px; }
+
+/* --- 8. VENTANA ANGOSTA O BAJA (COMO EL PANEL DEL ARTIFACT) --- */
+@media (max-width: 1180px), (max-height: 760px) {
+    .sv-fijo { --panel: 196px; }
+    .sv-va .sv-dec { grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.1fr); gap: 12px 24px; padding-top: 16px; align-content: start; }
+    .sv-va .sv-dec-pie { grid-column: 1 / span 2; flex-direction: row; align-items: center; }
+    .sv-va .sv-dec-pie .sv-ticks { flex: 1; }
+    .sv-va .sv-sel button:not([aria-pressed="true"], .sv-sel-otra) { font-size: 0; gap: 0; }
+    .sv-va .sv-sel button:not([aria-pressed="true"], .sv-sel-otra) span { font-size: 11px; }
+    :is(.sv-vb, .sv-vc) .sv-dec { gap: 12px; padding: 36px 20px 68px var(--margen); }
+    .sv-dec-num { font-size: 40px; }
+    .sv-dec h3, .sv-va .sv-dec h3 { font-size: 22px; }
+    .sv-dec-txt, .sv-va .sv-dec-txt { font-size: 14px; }
+    .sv-dec-por, .sv-va .sv-dec-por { font-size: 13px; }
+}
