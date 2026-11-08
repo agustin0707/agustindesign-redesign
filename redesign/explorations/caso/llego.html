@@ -256,8 +256,8 @@
         <!-- --- DECISIÓN 03 · UN TURQUESA CON PARENTESCO --- -->
         <!-- La pista suma una pantalla a la de su pieza (data-pasos-hasta): con la paleta quieta, la portada del 02 sube sobre ella -->
         <section class="cs-lam lf-filo-sec cs-claro" id="dec-03" data-escena="valores" data-pasos="3" data-pasos-hasta="0.6875" style="--pista:420">
-            <!-- El filo del paso desde la 02: sobre el papel de la 03, el nombre va bajo la línea (llego.css 8.1.6) -->
-            <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 03 · Un turquesa con parentesco</span></div>
+            <!-- El filo del paso desde la 02: el nombre va bajo la línea, sobre el papel de la 03 (llego.css 8.1.6) -->
+            <div class="lf-filo lf-filo-bajo" aria-hidden="true"><span class="mono">Decisión 03 · Un turquesa con parentesco</span></div>
             <div class="cs-fijo cs-grilla">
                 <div class="cs-lam-riel">
                     <aside class="cs-dec" data-revela>
@@ -316,7 +316,8 @@
         </section>
 
         <!-- --- DECISIÓN 04 · LA MADRE NO SE TOCA --- -->
-        <section class="cs-lam cs-claro" id="dec-04" data-escena="lockup" data-pasos="4" style="--pista:360">
+        <!-- La pista suma una pantalla a la de sus pasos (data-pasos-hasta): con el lockup quieto, la 05 sube sobre ella -->
+        <section class="cs-lam cs-claro" id="dec-04" data-escena="lockup" data-pasos="4" data-pasos-hasta="0.7222" style="--pista:460">
             <div class="cs-fijo cs-grilla">
                 <div class="cs-lam-riel">
                     <aside class="cs-dec" data-revela>
@@ -374,7 +375,9 @@
         </section>
 
         <!-- --- DECISIÓN 05 · TRES CAMINOS, LA DECISIÓN DEL CLIENTE --- -->
-        <section class="cs-lam cs-claro" id="dec-05" data-escena="caminos" data-pasos="4" style="--pista:400">
+        <!-- Entra con el filo desde la 04; su pista suma la pantalla del filo a la 06 -->
+        <section class="cs-lam lf-filo-sec cs-claro" id="dec-05" data-escena="caminos" data-pasos="4" data-pasos-hasta="0.75" style="--pista:500">
+            <div class="lf-filo lf-filo-bajo" aria-hidden="true"><span class="mono">Decisión 05 · Tres caminos, la decisión del cliente</span></div>
             <div class="cs-fijo cs-grilla">
                 <div class="cs-lam-riel">
                     <aside class="cs-dec" data-revela>
@@ -414,7 +417,9 @@
         </section>
 
         <!-- --- DECISIÓN 06 · FOTOS DE LA OPERACIÓN, NO DE BANCO --- -->
-        <section class="lf-fotos cs-claro" id="dec-06">
+        <!-- Entra con el filo desde la 05: la línea descubre la foto a sangre en su lugar -->
+        <section class="lf-fotos lf-filo-sec cs-claro" id="dec-06">
+            <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 06 · Fotos de la operación, no de banco</span></div>
             <figure class="cs-pliego-sangre" data-par>
                 <picture><source type="image/avif" srcset="../works/sitios/llego/img/fotos/hero-cenital.avif"><img src="../works/sitios/llego/img/fotos/hero-cenital.jpg" alt="Vista cenital de un furgón de Llegó Farma cargándose en el patio, con dos repartidores" loading="lazy" decoding="async"></picture>
                 <div class="cs-pliego-arriba mono"><span>Decisión 06</span><span>Dirección fotográfica del manual</span></div>
@@ -438,7 +443,9 @@
         </section>
 
         <!-- --- DECISIÓN 07 · UN MANUAL QUE OTROS PUEDEN USAR --- -->
-        <section class="cs-lam cs-oscuro" id="dec-07" data-escena="manual" data-pasos="9" style="--pista:480">
+        <!-- La 06 corre con el scroll, no queda quieta: aquí el filo va en el borde de la 07 mientras sube -->
+        <section class="cs-lam lf-filo-borde cs-oscuro" id="dec-07" data-escena="manual" data-pasos="9" style="--pista:480">
+            <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 07 · Un manual que otros pueden usar</span></div>
             <div class="cs-fijo cs-grilla">
                 <div class="cs-lam-riel">
                     <aside class="cs-dec" data-revela>

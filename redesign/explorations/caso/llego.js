@@ -635,8 +635,11 @@
         lockup: el => {
             const pieza = el.querySelector('.lf-lock'), pie = el.querySelector('[data-lock-pie]');
             const nombres = ['Principal', 'Construcción', 'Área de protección', 'Mínimos'];
+            /* Si la pista suma la pantalla del filo (data-pasos-hasta), la pieza termina antes de ella */
+            const hasta = +el.dataset.pasosHasta || 1;
             let paso = -1;
-            return p => {
+            return q => {
+                const p = fijar(q / hasta);
                 const c1 = tramo(p, 0.02, 0.16);
                 fase(pieza, '--c1', c1); fase(pieza, '--c1o', c1 * (1 - tramo(p, 0.24, 0.29)));
                 fase(pieza, '--c2', tramo(p, 0.27, 0.45)); fase(pieza, '--cx', tramo(p, 0.42, 0.48));
@@ -649,8 +652,12 @@
         /* Caminos: entran los isotipos, suben sus aplicaciones, se leen los criterios y se marca el elegido */
         caminos: el => {
             const pieza = el.querySelector('.lf-cam'), cols = [...el.querySelectorAll('.lf-cam-col')];
-            return p => {
-                cols.forEach((c, k) => { fase(c, '--ci', tramo(p, 0.02 + k * 0.05, 0.12 + k * 0.05)); fase(c, '--fo', tramo(p, 0.27 + k * 0.05, 0.37 + k * 0.05)); });
+            const hasta = +el.dataset.pasosHasta || 1;
+            /* Con el paso (.lf-paso) la 05 entra con el filo: la línea descubre los tres isotipos ya puestos, como en la 03 */
+            const html = document.documentElement;
+            return q => {
+                const p = fijar(q / hasta), puestos = html.classList.contains('lf-paso');
+                cols.forEach((c, k) => { fase(c, '--ci', puestos ? 1 : tramo(p, 0.02 + k * 0.05, 0.12 + k * 0.05)); fase(c, '--fo', tramo(p, 0.27 + k * 0.05, 0.37 + k * 0.05)); });
                 fase(pieza, '--cr', tramo(p, 0.52, 0.68)); fase(pieza, '--el', tramo(p, 0.77, 0.87));
             };
         },

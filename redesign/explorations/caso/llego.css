@@ -370,8 +370,9 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
    Oscuro de la paleta (#104E56) hasta la pantalla, liso mientras se abre; después, como en el 01, se traza el 02, crece
    la retícula, entra el título y en la pausa el índice; al final la 04 sube y la portada se hunde.
    Exploración en explorations/caso/portada-02/ */
-.lf-cap-2 { z-index: 5; margin-top: -100lvh; }
-.lf-cap-2 + .cs-lam { position: relative; z-index: 6; margin-top: -100lvh; }
+/* Todo lo que sube sobre la anterior comparte el z-index 4: a igual nivel, la que viene después queda encima */
+.lf-cap-2 { z-index: 4; margin-top: -100lvh; }
+.lf-cap-2 + .cs-lam { position: relative; z-index: 4; margin-top: -100lvh; }
 .lf-cap-2 > .cs-fijo::before { content: ''; position: absolute; inset: 0; z-index: 1; background: var(--lf-oscuro); opacity: var(--lf-plano, 0); pointer-events: none; }
 .lf-paso .lf-cap-2 .lf-reticula i { scale: 1 var(--lf-pl, 0); }
 .lf-paso .lf-cap-2 .lf-reticula::after { scale: var(--lf-pl, 0) 1; }
@@ -529,15 +530,19 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
    (.lf-filo-sec) sube sobre ella. Sin el paso (celular o movimiento reducido) sube como hoja. Con el paso (.lf-paso),
    mientras sube su panel queda fijo (.lf-filo-on, llego.js sección 6) y se descubre en su lugar desde abajo, al ritmo
    del scroll, con una línea turquesa y su nombre en el borde. Al terminar vuelve a ser sticky en el mismo lugar.
-   Hoy lo usan la 01 a la 02 y la 02 a la 03. Exploración en explorations/caso/paso-02/ */
+   El panel que queda fijo es el .cs-fijo de la escena o, en la 06, su foto a sangre. Cuando la anterior no queda quieta
+   (la 06 corre con el scroll), la que entra lleva .lf-filo-borde: la línea va en su borde mientras sube.
+   Lo usan los pasos entre decisiones de los capítulos 01 y 02. Exploración en explorations/caso/paso-02/ */
 .lf-filo-sec { position: relative; z-index: 4; margin-top: -100lvh; }
 .lf-filo { display: none; position: fixed; left: 0; right: 0; top: calc((1 - var(--lf-filo, 0)) * 100lvh); z-index: 6; height: 1px; background: var(--lf-turquesa); pointer-events: none; }
 .lf-filo span { position: absolute; right: var(--margen); bottom: 0; padding: 4px 8px 6px; font-size: 11px; color: var(--lf-turquesa); white-space: nowrap; background: var(--lf-papel); }
-/* El nombre siempre va del lado del papel: sobre la línea si entra una oscura, bajo ella si entra una clara */
-.cs-claro > .lf-filo span { top: 0; bottom: auto; padding: 6px 8px 4px; }
+/* El nombre va del lado del papel: sobre la línea, o bajo ella (.lf-filo-bajo) cuando el papel es el de la que entra */
+.lf-filo-bajo span { top: 0; bottom: auto; padding: 6px 8px 4px; }
 .lf-paso .lf-filo-sec.lf-filo-on > .lf-filo { display: block; }
 .lf-paso .lf-filo-sec.lf-filo-on { background: transparent; }
-.lf-paso .lf-filo-sec.lf-filo-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; background: var(--fondo); clip-path: inset(calc((1 - var(--lf-filo)) * 100%) 0 0 0); }
+.lf-filo-borde { z-index: 4; }
+.lf-paso .lf-filo-borde > .lf-filo { display: block; position: absolute; top: 0; }
+.lf-paso .lf-filo-sec.lf-filo-on > :is(.cs-fijo, .cs-pliego-sangre) { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; background: var(--fondo); clip-path: inset(calc((1 - var(--lf-filo)) * 100%) 0 0 0); }
 
 /* --- 8.2 UN SISTEMA, NO UN LOGO: EL TALLER DEL NODO --- */
 /* La pieza cuenta la construcción real sobre una sola trama, en cuatro pasos: los puntos de la madre, hoy decorativos
