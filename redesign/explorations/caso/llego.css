@@ -906,7 +906,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-rt-med.on { opacity: 1; }
 .lf-rt-med span { position: absolute; left: calc(100% + 8px); top: 50%; translate: 0 -50%; padding: 4px 8px; background: var(--lf-claro); color: var(--lf-negro); white-space: nowrap; }
 .lf-datos.lf-rt-ficha { margin-top: auto; }
-.lf-rt-ficha b { color: var(--lf-oscuro); }
+.lf-datos.lf-rt-ficha b { color: var(--lf-oscuro); }
 .lf-rt-ficha li { opacity: 0.3; transition: opacity 160ms; }
 .lf-rt-ficha li.on { opacity: 1; }
 @media (min-width: 769px) { .lf-rt .cs-dec { min-height: 504px; } }

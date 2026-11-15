@@ -917,10 +917,13 @@
                 const o = lineal(p, T.llega[0], T.llega[1]).toFixed(3);
                 if (o !== opacidad) { opacidad = o; contenido.forEach(n => { n.style.opacity = o; }); }
                 const lin = doc.querySelector('.s-quees h2 .linea'), fuerte = lin.querySelector('strong');
-                /* El título se mide por su texto, no por su caja, que ocupa todo el ancho */
+                /* El título se mide por su texto, no por su caja, que ocupa todo el ancho. La cámara encuadra las tres líneas
+                   completas; las cajas marcan solo la primera */
                 const rango = doc.createRange(); rango.selectNodeContents(lin);
-                const tr = rango.getBoundingClientRect(), eT = Math.min(A * 0.86 / tr.width, 1.1);
-                const titulo = { e: eT, x: (A - tr.width * eT) / 2 - tr.left * eT, y: B / 2 - (tr.top + tr.height / 2) * eT };
+                const tr = rango.getBoundingClientRect();
+                rango.selectNodeContents(lin.parentElement);
+                const tt = rango.getBoundingClientRect(), eT = Math.min(A * 0.92 / tt.width, B * 0.6 / tt.height, 1.1);
+                const titulo = { e: eT, x: (A - tt.width * eT) / 2 - tt.left * eT, y: B / 2 - (tt.top + tt.height / 2) * eT };
                 const t2 = tramo(p, T.titulo[0], T.titulo[1]);
                 const c = t2 > 0 ? zoom(lejos, titulo, t2) : zoom(cerca, lejos, tramo(p, T.aleja[0], T.aleja[1]));
                 marco.style.setProperty('--lf-ie', c.e.toFixed(4)); marco.style.setProperty('--lf-ix', c.x.toFixed(1) + 'px'); marco.style.setProperty('--lf-iy', c.y.toFixed(1) + 'px');
