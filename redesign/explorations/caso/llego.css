@@ -360,7 +360,14 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i:nth-child(3) { left: calc((100% + var(--medianil)) / 2 - var(--medianil) / 2); }
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i:nth-child(4) { left: calc((100% + var(--medianil)) * 3 / 4 - var(--medianil) / 2); }
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula::after { display: none; }
-    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-cap-traza { right: var(--margen); font-size: calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35); }
+    /* Sin línea horizontal no hay cruce que cortar: cada línea baja entera y se corta 8 px antes del contenido que
+       tocaría (--fin, lo mide llego.js sección 5.1) */
+    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i { background: linear-gradient(var(--l), var(--l)) 0 0 / 1px calc(100% - var(--fin, 0px)) no-repeat; }
+    /* La cifra termina 8 px antes de la línea del borde: cada dígito tiene su propio blanco a la derecha (--lf-tz) */
+    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-cap-traza { right: calc(var(--margen) + var(--lf-tz, 0) * 1em); font-size: calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35); }
+    .lf-cap-1 .lf-cap-traza { --lf-tz: -0.028; }
+    .lf-cap-2 .lf-cap-traza { --lf-tz: 0.046; }
+    .lf-cap-3 .lf-cap-traza { --lf-tz: 0.033; }
 }
 
 /* --- 7.2 EL PASO A LA PORTADA DEL CAPÍTULO 02: EL OSCURO SE ABRE --- */
@@ -388,7 +395,13 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
    fijo y se abre en círculo desde la flecha de "Pidieron la web" (llego.js 8), la misma familia del hito del pitch en
    el 01. Después, igual que en las otras portadas: se traza el 03, crece la retícula, entra el título y el índice */
 .lf-paso .lf-cap-3.lf-circulo-on { background: transparent; }
-.lf-paso .lf-cap-3.lf-circulo-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; clip-path: circle(var(--lf-cr, 0px) at var(--lf-cx, 50%) var(--lf-cy, 50%)); }
+.lf-paso .lf-cap-3.lf-circulo-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; clip-path: inset(var(--lf-wt, 50%) var(--lf-wr, 50%) var(--lf-wb, 50%) var(--lf-wl, 50%) round var(--lf-wq, 0px)); }
+/* El capítulo de la web se abre como una ventana de navegador vacía, con el cursor esperando en la barra; al llenar la
+   pantalla, el marco y la barra se van y queda la portada */
+.lf-cap-ventana { display: none; }
+.lf-paso .lf-cap-3.lf-circulo-on .lf-cap-ventana { display: block; position: absolute; z-index: 3; top: var(--lf-wt); right: var(--lf-wr); bottom: var(--lf-wb); left: var(--lf-wl); border: 1px solid rgba(255, 255, 255, 0.24); border-radius: var(--lf-wq, 0px); opacity: var(--lf-wo, 1); pointer-events: none; }
+.lf-cap-cromo { display: grid; grid-template-columns: 1fr minmax(0, 400px) 1fr; align-items: center; gap: 14px; padding: 9px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); background: rgba(10, 20, 21, 0.55); color: #FFFFFF; }
+.lf-cap-cromo .lf-dom-url { justify-content: flex-start; }
 /* Son siete decisiones: el índice las reparte en toda su entrada */
 .lf-cap-3 .lf-indice a { --v: clamp(0, calc(var(--lf-pi, 1) * 7 - var(--k, 0)), 1); padding: 11px 0; }
 /* El 3 de Manrope son tres piezas superpuestas: la máscara corta lo que el trazo dibujaría por dentro */
@@ -554,6 +567,15 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-filo-borde { z-index: 4; }
 .lf-paso .lf-filo-borde > .lf-filo { display: block; position: absolute; top: 0; }
 .lf-paso .lf-filo-sec.lf-filo-on > :is(.cs-fijo, .cs-pliego-sangre) { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; background: var(--fondo); clip-path: inset(calc((1 - var(--lf-filo)) * 100%) 0 0 0); }
+/* Fundido (.lf-funde): en el capítulo 03 la ventana no cambia de lugar entre decisiones. La que entra no se descubre
+   desde abajo: su panel aparece encima, todavía sin texto, y después llega su decisión. Si trae [data-crece], esa pieza
+   se abre desde la que señala data-desde en la anterior (llego.js sección 6) */
+.lf-paso .lf-funde.lf-filo-on > .lf-filo { display: none; }
+.lf-paso .lf-funde.lf-filo-on > .cs-fijo { clip-path: none; opacity: clamp(0, calc((var(--lf-filo) - 0.05) * 5), 1); }
+.lf-paso .lf-funde.lf-filo-on .cs-dec { opacity: clamp(0, calc((var(--lf-filo) - 0.5) * 3.3333), 1); }
+/* Cuando la que entra cambia de fondo (10 oscura a 11 papel), su ventana llega vacía y el contenido aparece después: así no se mezclan dos páginas a media opacidad */
+.lf-paso .lf-funde.lf-filo-on .lf-rt-esc::after { content: ""; position: absolute; inset: 0; z-index: 6; background: var(--lf-papel); pointer-events: none; opacity: clamp(0, calc((0.42 - var(--lf-filo)) * 6), 1); }
+.lf-paso .lf-funde.lf-filo-on [data-crece] { clip-path: inset(var(--lf-vt, 0px) var(--lf-vr, 0px) var(--lf-vb, 0px) var(--lf-vl, 0px) round var(--lf-vq, 0px)); }
 
 /* --- 8.2 UN SISTEMA, NO UN LOGO: EL TALLER DEL NODO --- */
 /* La pieza cuenta la construcción real sobre una sola trama, en cuatro pasos: los puntos de la madre, hoy decorativos
@@ -828,25 +850,33 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 
 /* --- 9. CAPÍTULO 03 Y DECISIÓN 08 · EL DOMINIO --- */
 .lf-dom .cs-fijo { color: #FFFFFF; }
-/* La dirección es la protagonista: la barra va a escala de titular y debajo está siempre la misma página. llego.js
-   (escena dominio) escribe el texto y las fases: tachado (--lf-dt), QR viejo y nuevo (--lf-qo, --lf-qn), carga (--carga),
-   cuánto la encierra el morado (--lf-dm, de 1 a 0) y la ficha final (--lf-dc) */
-.lf-dom-nav { grid-column: 6 / -1; align-self: center; display: flex; flex-direction: column; height: min(72vh, 680px); border: 1px solid rgba(255, 255, 255, 0.24); background: rgba(10, 20, 21, 0.55); }
-.lf-dom-cromo { display: flex; align-items: center; gap: 18px; padding: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); }
-.lf-dom-url { flex: 1; display: flex; align-items: center; gap: 14px; height: clamp(52px, 5.4vw, 88px); padding: 0 20px; background: rgba(255, 255, 255, 0.08); font: 200 clamp(26px, 3.6vw, 60px) / 1 var(--cs-f); letter-spacing: -0.03em; white-space: nowrap; }
+/* La barra es la de un navegador real; la dirección se lee en la lupa que cuelga de ella, donde se tacha y se reescribe.
+   El QR del stand va en una placa sobre la esquina de la ventana. llego.js (escena dominio) escribe el texto y las fases:
+   lupa (--lf-dl), tachado (--lf-dt), QR viejo y nuevo (--lf-qo, --lf-qn), carga (--carga), cuánto la encierra el morado
+   (--lf-dm, de 1 a 0), la placa (--lf-dpo) y la ficha final (--lf-dc) */
+.lf-dom-nav { position: relative; grid-column: 6 / -1; align-self: center; display: flex; flex-direction: column; height: min(72vh, 680px); border: 1px solid rgba(255, 255, 255, 0.24); background: rgba(10, 20, 21, 0.55); }
+.lf-dom-cromo { display: grid; grid-template-columns: 1fr minmax(0, 400px) 1fr; align-items: center; gap: 14px; padding: 9px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); }
+.lf-dom-url { display: flex; align-items: center; justify-content: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 8px; background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 0 1px rgba(112, 202, 199, var(--lf-dl, 0)); font: 400 14px / 1 var(--cs-f); white-space: nowrap; }
 .lf-dom-candado { display: inline-block; width: 8px; height: 9px; border: 1px solid currentColor; border-radius: 1px; position: relative; opacity: 0.7; }
 .lf-dom-candado::before { content: ''; position: absolute; left: 1px; right: 1px; bottom: 100%; height: 4px; border: 1px solid currentColor; border-bottom: 0; border-radius: 3px 3px 0 0; }
-.lf-dom-url .lf-dom-candado { scale: 1.8; margin: 4px 6px 0 4px; flex: none; }
+.lf-dom-url .lf-dom-candado { flex: none; margin-top: 3px; }
 .lf-dom-viejo { position: relative; display: inline-block; opacity: calc(1 - var(--lf-dt, 0) * 0.45); }
-.lf-dom-viejo::after { content: ''; position: absolute; left: -2px; right: -2px; top: 56%; height: 2px; background: var(--lf-claro); transform-origin: left; scale: var(--lf-dt, 0) 1; }
-.lf-dom-cursor { flex: none; width: 2px; height: 1em; margin-left: -12px; background: currentColor; animation: lf-cursor 1s steps(1) infinite; }
+.lf-dom-viejo::after { content: ''; position: absolute; left: -2px; right: -2px; top: 56%; height: max(1px, 0.04em); background: var(--lf-claro); transform-origin: left; scale: var(--lf-dt, 0) 1; }
+/* La lupa: cuelga del campo de la barra con un hilo, a escala de titular */
+.lf-dom-lupa { position: absolute; z-index: 3; left: 50%; top: 172px; translate: -50% 0; display: flex; flex-direction: column; gap: 12px; padding: 16px 24px 20px; border: 1px solid var(--lf-claro); background: rgba(8, 16, 17, 0.88); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); opacity: var(--lf-dl, 0); scale: calc(0.8 + var(--lf-dl, 0) * 0.2); transform-origin: 50% -40px; pointer-events: none; }
+.lf-dom-lupa::before { content: ''; position: absolute; left: 50%; bottom: 100%; width: 1px; height: 131px; background: var(--lf-claro); }
+.lf-dom-lupa-tit { color: var(--lf-claro); }
+.lf-dom-lupa-url { display: flex; align-items: center; min-width: 7.4em; font: 200 clamp(30px, 3.3vw, 54px) / 1 var(--cs-f); letter-spacing: -0.03em; white-space: nowrap; }
+.lf-dom-cursor { flex: none; width: 2px; height: 1em; margin-left: 3px; background: currentColor; animation: lf-cursor 1s steps(1) infinite; }
 .lf-dom-listo .lf-dom-cursor { display: none; }
 @keyframes lf-cursor { 50% { opacity: 0; } }
-/* El QR de la barra: cada dirección tiene el suyo, y se va o se dibuja con las letras */
-.lf-dom-qr { position: relative; flex: none; align-self: center; height: calc(100% - 12px); aspect-ratio: 1; margin-left: auto; margin-right: -14px; background: var(--lf-papel); }
+/* La placa del stand: cada dirección tiene su QR, y se va o se dibuja con las letras */
+.lf-dom-placa { position: absolute; z-index: 3; left: -64px; bottom: -32px; width: 128px; margin: 0; background: var(--lf-papel); color: var(--lf-oscuro); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35); opacity: var(--lf-dpo, 1); }
+.lf-dom-qr { position: relative; display: block; width: 100%; aspect-ratio: 1; }
 .lf-dom-qr svg { position: absolute; inset: 0; width: 100%; height: 100%; fill: var(--lf-oscuro); }
 .lf-dom-qr-viejo { clip-path: inset(0 0 calc((1 - var(--lf-qo, 1)) * 100%) 0); }
 .lf-dom-qr-nuevo { clip-path: inset(0 0 calc((1 - var(--lf-qn, 0)) * 100%) 0); }
+.lf-dom-placa figcaption { padding: 7px 10px; border-top: 1px solid rgba(16, 78, 86, 0.2); }
 .lf-dom-carga { height: 2px; background: var(--lf-claro); transform-origin: left; scale: var(--carga, 0) 1; opacity: calc(1 - var(--lf-dc, 0)); }
 .lf-dom-pant { position: relative; flex: 1; overflow: hidden; }
 /* El morado rodea a la página de Farma: la cabecera arriba y un margen a los lados. Al retirarse, la página crece desde abajo */
@@ -890,13 +920,12 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 /* El área del sitio va a sangre y sobre el mismo papel del sitio. llego.js (escena reticula) da la cámara del impreso
    (--lf-m, --lf-mx, --lf-my), la del iframe y las fases. La cruz en alta está colocada en sus coordenadas de la portada */
 .lf-rt .cs-fijo { overflow: hidden; }
-.lf-rt-puente { grid-column: 1 / span 5; grid-row: 1; align-self: center; font: 200 clamp(36px, 4.1vw, 72px) / 1.06 var(--cs-f); letter-spacing: -0.035em; text-wrap: balance; color: var(--lf-oscuro); opacity: var(--lf-rp, 1); pointer-events: none; }
-.lf-rt-puente b { font-weight: 500; }
-.lf-rt .cs-dec { grid-row: 1; opacity: var(--lf-rd, 0); }
-.lf-rt-esc { position: absolute; top: 0; bottom: 0; right: 0; left: calc(var(--margen) + (100% - 2 * var(--margen) + var(--medianil)) * 5 / 12); overflow: hidden; background: var(--lf-papel); }
+.lf-rt .cs-dec { grid-row: 1; }
+/* La escena ocupa el mismo rectángulo que la ventana de la 10: el paso es un fundido y el marco no se mueve */
+.lf-rt-esc { position: relative; grid-column: 6 / -1; grid-row: 1; align-self: center; height: min(72vh, 680px); overflow: hidden; border: 1px solid rgba(16, 78, 86, 0.24); background: var(--lf-papel); }
 .lf-rt-esc iframe { position: absolute; left: 0; top: 0; z-index: 1; border: 0; width: var(--lf-iw, 1440px); height: var(--lf-ih, 900px); transform-origin: 0 0; transform: translate3d(var(--lf-ix, 0px), var(--lf-iy, 0px), 0) scale(var(--lf-ie, 1)); pointer-events: none; }
 .lf-rt-impreso { position: absolute; inset: 0; z-index: 2; background: var(--lf-papel); opacity: var(--lf-mo, 1); pointer-events: none; }
-.lf-rt-manual { position: absolute; left: 0; top: 0; width: calc(var(--lf-m, 0.4) * 1920px); height: calc(var(--lf-m, 0.4) * 1080px); max-width: none; transform: translate3d(var(--lf-mx, 0px), var(--lf-my, 0px), 0); }
+.lf-rt-manual { position: absolute; left: 0; top: 0; width: calc(var(--lf-m, 0.4) * 1920px); height: calc(var(--lf-m, 0.4) * 1080px); max-width: none; box-shadow: 0 22px 50px rgba(16, 78, 86, 0.22); transform: translate3d(var(--lf-mx, 0px), var(--lf-my, 0px), 0); }
 .lf-rt-cruce { position: absolute; left: 0; top: 0; width: calc(var(--lf-m, 0.4) * 250px); height: calc(var(--lf-m, 0.4) * 260px); max-width: none; transform: translate3d(calc(var(--lf-mx, 0px) + var(--lf-m, 0.4) * 529.5px), calc(var(--lf-my, 0px) + var(--lf-m, 0.4) * 228.7px), 0); opacity: var(--lf-co, 0); }
 .lf-rt-bandas { position: absolute; inset: 0; z-index: 2; opacity: var(--lf-bo, 1); pointer-events: none; }
 .lf-rt-bandas i { position: absolute; top: 0; bottom: 0; left: calc(var(--lf-bx, 0px) + var(--i) * var(--lf-bw, 0px)); width: var(--lf-bw, 0px); background: rgba(112, 202, 199, calc(0.34 - var(--i) * 0.06)); transform-origin: top; scale: 1 clamp(0, calc(var(--lf-bv, 0) * 4 - var(--i)), 1); }
@@ -933,25 +962,31 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-tel-isla { position: absolute; z-index: 2; top: 10px; left: 50%; translate: -50% 0; width: 30%; height: 22px; border-radius: 20px; background: #050A0B; }
 /* --- 9.2 DECISIÓN 08: EL QR DEL STAND SE VUELVE EL SITIO --- */
 /* Solo en escritorio y con movimiento; sin eso queda el teléfono con el sitio, como antes. llego.js (escena telefono)
-   escribe las fases: el teléfono sube (--lf-qe), el QR grande se va (--lf-qf), la mira se cierra (--lf-qs), aparece la
-   dirección (--lf-ql) y el visor se abre hacia arriba (--lf-qv) sobre el sitio real */
+   escribe las fases: el teléfono sube girando y se asienta delante de la pantalla del stand (--lf-qe), la cámara enfoca
+   y la mira se cierra sobre el código (--lf-qs), sale la dirección (--lf-ql), un toque la abre (--lf-qt), el sitio real
+   se abre desde ese punto (--lf-qv) y la pantalla del stand queda atrás (--lf-qf) */
 .lf-qr, .lf-tel-visor, .lf-tel-nota { display: none; }
 .lf-datos b small { margin-left: 3px; font-size: 0.42em; letter-spacing: 0; }
 @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
     .lf-tel-sec .cs-dec, .lf-tel-sec .lf-tel, .lf-qr { grid-row: 1; }
-    .lf-qr { display: block; grid-column: 7 / -1; justify-self: center; align-self: center; width: min(100%, 70vh); margin: 0; background: var(--lf-papel); color: var(--lf-oscuro); scale: calc(1 - var(--lf-qe, 0) * 0.08); opacity: calc(1 - var(--lf-qf, 0)); }
+    /* La pantalla del stand, a escala de un monitor detrás del teléfono: se ve entera alrededor de él */
+    .lf-qr { display: block; grid-column: 7 / -1; justify-self: center; align-self: center; width: min(100%, 50vh); margin: 0; background: var(--lf-papel); color: var(--lf-oscuro); scale: calc(1 - var(--lf-qe, 0) * 0.06 - var(--lf-qf, 0) * 0.06); opacity: calc(1 - var(--lf-qf, 0) * 0.85); }
     .lf-qr svg { display: block; width: 100%; height: auto; fill: currentColor; }
-    .lf-qr figcaption { display: flex; justify-content: space-between; gap: 16px; padding: 12px 18px; border-top: 1px solid rgba(16, 78, 86, 0.2); }
-    .lf-tel-sec .lf-tel { z-index: 2; align-self: center; translate: 0 calc((1 - var(--lf-qe, 0)) * 112vh); }
-    .lf-tel-visor { display: flex; position: absolute; inset: 0; z-index: 1; align-items: center; justify-content: center; background: var(--lf-negro); clip-path: inset(0 0 calc(var(--lf-qv, 0) * 100%) 0); }
-    .lf-tel-visor svg { width: 70%; background: var(--lf-papel); fill: var(--lf-oscuro); }
-    .lf-tel-mira { position: absolute; left: 50%; top: 50%; width: 84%; aspect-ratio: 1; translate: -50% -50%; scale: calc(1.14 - var(--lf-qs, 0) * 0.14); }
-    .lf-tel-mira i { position: absolute; width: 22%; aspect-ratio: 1; border: 2px solid var(--lf-claro); }
-    .lf-tel-mira i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; }
-    .lf-tel-mira i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; }
-    .lf-tel-mira i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; }
-    .lf-tel-mira i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; }
-    .lf-tel-link { position: absolute; left: 50%; bottom: 16%; translate: -50% 0; padding: 7px 12px; background: var(--lf-claro); color: var(--lf-negro); white-space: nowrap; opacity: var(--lf-ql, 0); }
+    .lf-qr figcaption { display: flex; justify-content: space-between; gap: 16px; padding: 10px 16px; border-top: 1px solid rgba(16, 78, 86, 0.2); }
+    .lf-tel-sec .lf-tel { z-index: 2; align-self: center; translate: calc((1 - var(--lf-qe, 0)) * 6vw) calc((1 - var(--lf-qe, 0)) * 112vh); rotate: calc((1 - var(--lf-qe, 0)) * 9deg); }
+    /* La cámara: el mismo código, más cerca y desenfocado hasta que la mira lo toma */
+    .lf-tel-visor { display: flex; position: absolute; inset: 0; z-index: 1; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 46%, #DCE3E2, #9FAEAD 120%); -webkit-mask: radial-gradient(circle at 50% 84%, transparent calc(var(--lf-qv, 0) * 110vh), #000 calc(var(--lf-qv, 0) * 110vh + 1px)); mask: radial-gradient(circle at 50% 84%, transparent calc(var(--lf-qv, 0) * 110vh), #000 calc(var(--lf-qv, 0) * 110vh + 1px)); }
+    .lf-tel-visor svg { width: 74%; padding: 3%; background: var(--lf-papel); fill: var(--lf-oscuro); filter: blur(calc((1 - var(--lf-qs, 0)) * 5px)); scale: calc(1.12 - var(--lf-qs, 0) * 0.12); }
+    .lf-tel-mira { position: absolute; left: 50%; top: 50%; width: 82%; aspect-ratio: 1; translate: -50% -50%; scale: calc(1.3 - var(--lf-qs, 0) * 0.3); opacity: calc(0.4 + var(--lf-qs, 0) * 0.6); }
+    .lf-tel-mira i { position: absolute; width: 20%; aspect-ratio: 1; border: 3px solid var(--lf-claro); }
+    .lf-tel-mira i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 10px; }
+    .lf-tel-mira i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 10px; }
+    .lf-tel-mira i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 10px; }
+    .lf-tel-mira i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 10px; }
+    /* La dirección aparece como en la cámara del teléfono: una píldora bajo el código */
+    .lf-tel-link { position: absolute; left: 50%; top: 84%; translate: -50% calc(-50% + (1 - var(--lf-ql, 0)) * 10px); display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; background: rgba(5, 10, 11, 0.82); color: #FFFFFF; white-space: nowrap; opacity: var(--lf-ql, 0); }
+    .lf-tel-link::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--lf-claro); }
+    .lf-tel-toque { position: absolute; left: 50%; top: 84%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); opacity: calc(min(var(--lf-qt, 0) * 4, 1) * (1 - var(--lf-qt, 0))); scale: calc(0.4 + var(--lf-qt, 0) * 0.9); pointer-events: none; }
     /* La nota sale cuando la barra real del sitio está visible: la decide el propio sitio */
     .lf-tel-nota { display: block; position: absolute; left: calc(100% + 16px); bottom: 7%; width: 15ch; color: var(--texto-2); opacity: 0; transition: opacity 180ms; }
     .lf-tel-nota::before { content: ''; position: absolute; right: 100%; top: 0.6em; width: 16px; height: 1px; margin-right: 0; background: var(--lf-claro); }
@@ -1063,7 +1098,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-dom-cromo { padding: 8px; }
     .lf-dom-cromo .cs-ev-luces { display: none; }
     .lf-dom-url { padding: 0 12px; gap: 10px; }
-    .lf-dom-qr, .lf-dom-madre-cab span { display: none; }
+    .lf-dom-placa, .lf-dom-madre-cab span { display: none; }
     /* Teléfono */
     .lf-tel-sec .cs-dec { grid-row: 1; }
     .lf-tel { grid-row: 2; width: min(50vw, 25vh); padding: 6px; border-radius: 30px; }

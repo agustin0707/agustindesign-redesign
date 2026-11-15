@@ -749,7 +749,7 @@
         /* Dominio: parte en llego.cl/farma, con Farma encerrada en el morado de la madre. Se tacha y se borra, se escribe
            llegofarma.cl, carga y el morado se retira hasta que Farma llena la ventana (llego.css sección 9) */
         dominio: el => {
-            const url = el.querySelector('[data-url]'), viejo = 'llego.cl/farma', nuevo = 'llegofarma.cl';
+            const url = el.querySelector('[data-url]'), chica = el.querySelector('[data-url-chica]'), viejo = 'llego.cl/farma', nuevo = 'llegofarma.cl';
             const lineal = (p, a, b) => fijar((p - a) / (b - a));
             /* La pista suma la pantalla en que sube la 10: todo termina antes de ella */
             const hasta = +el.dataset.pasosHasta || 1;
@@ -760,7 +760,7 @@
                 const html = p < 0.43
                     ? `<span class="lf-dom-viejo">${viejo.slice(0, Math.round(quedan * viejo.length))}</span>`
                     : nuevo.slice(0, Math.round(escrito * nuevo.length));
-                if (html !== previo) { url.innerHTML = html; previo = html; }
+                if (html !== previo) { url.innerHTML = html; chica.innerHTML = html; previo = html; }
                 el.classList.toggle('lf-dom-listo', p >= 0.58);
                 el.classList.toggle('lf-dom-ficha-on', p >= 0.82);
                 fase(el, '--lf-dt', lineal(p, 0.22, 0.3));
@@ -769,6 +769,8 @@
                 fase(el, '--carga', lineal(p, 0.58, 0.66));
                 fase(el, '--lf-dm', 1 - tramo(p, 0.64, 0.84));
                 fase(el, '--lf-dc', lineal(p, 0.82, 0.9));
+                fase(el, '--lf-dl', Math.min(lineal(p, 0.03, 0.09), 1 - lineal(p, 0.84, 0.9)));
+                fase(el, '--lf-dpo', 1 - lineal(p, 0.86, 0.92));
             };
         },
 
@@ -954,16 +956,13 @@
                 const d = avance - suave;
                 suave = quieto || Math.abs(d) < 0.0002 ? avance : suave + d * 0.18;
                 const p = suave;
-                /* El impreso: de la portada completa al cruce */
-                const m0 = A / 1920, mZ = A / CAMPO;
-                const v = zoom({ e: m0, x: 0, y: (B - 1080 * m0) / 2 }, { e: mZ, x: A / 2 - CRUCE.x * mZ, y: B / 2 - CRUCE.y * mZ }, tramo(p, T.entra[0], T.entra[1]));
+                /* El impreso: de la portada completa, como una hoja sobre la mesa, al cruce */
+                const m0 = A * 0.84 / 1920, mZ = A / CAMPO;
+                const v = zoom({ e: m0, x: (A - 1920 * m0) / 2, y: (B - 1080 * m0) / 2 }, { e: mZ, x: A / 2 - CRUCE.x * mZ, y: B / 2 - CRUCE.y * mZ }, tramo(p, T.entra[0], T.entra[1]));
                 esc.style.setProperty('--lf-m', v.e.toFixed(4)); esc.style.setProperty('--lf-mx', v.x.toFixed(1) + 'px'); esc.style.setProperty('--lf-my', v.y.toFixed(1) + 'px');
                 const cambio = lineal(p, T.cambia[0], T.cambia[1]);
                 fase(esc, '--lf-mo', 1 - cambio);
                 fase(esc, '--lf-co', lineal(p, T.entra[0] + 0.07, T.entra[1]));
-                /* El puente deja su lugar a la decisión */
-                fase(el, '--lf-rp', 1 - lineal(p, T.texto[0], T.texto[0] + 0.04));
-                fase(el, '--lf-rd', lineal(p, T.texto[1] - 0.04, T.texto[1]));
                 /* La medida del corte, en los dos soportes */
                 const sale = 1 - lineal(p, T.aleja[0], T.aleja[0] + 0.02);
                 med.classList.toggle('on', p >= T.mide[0] && sale > 0);
@@ -1025,8 +1024,9 @@
             return q => {
                 if (!conQR.matches) { ir(q); return; }
                 const p = fijar(q / hasta);
-                fase(el, '--lf-qe', tramo(p, 0.12, 0.36)); fase(el, '--lf-qf', lineal(p, 0.32, 0.4)); fase(el, '--lf-qs', tramo(p, 0.36, 0.44));
-                fase(el, '--lf-ql', lineal(p, 0.42, 0.46)); fase(el, '--lf-qv', tramo(p, 0.48, 0.58));
+                fase(el, '--lf-qe', tramo(p, 0.1, 0.32)); fase(el, '--lf-qs', tramo(p, 0.3, 0.4));
+                fase(el, '--lf-ql', tramo(p, 0.4, 0.44)); fase(el, '--lf-qt', lineal(p, 0.45, 0.5));
+                fase(el, '--lf-qv', tramo(p, 0.48, 0.58)); fase(el, '--lf-qf', lineal(p, 0.55, 0.65));
                 ir(lineal(p, 0.58, 1));
             };
         }
@@ -1048,12 +1048,44 @@
     const fondo = () => { const b = window.scrollY > document.documentElement.scrollHeight / 2; if (b !== abajo) { abajo = b; document.documentElement.classList.toggle('lf-abajo', b); } };
     window.addEventListener('scroll', fondo, { passive: true }); fondo();
 
+    /* --- 5.1 LA RETÍCULA DE LAS PORTADAS SE CORTA ANTES DEL CONTENIDO --- */
+    /* En escritorio las líneas de las portadas bajan enteras; la que toparía con el título, el texto o el índice se corta
+       8 px antes. Se mide sin transformaciones (offsetTop), así el paso que sube el contenido no la mueve (llego.css 7.1) */
+    (() => {
+        const caps = [...document.querySelectorAll('.lf-cap')];
+        if (!caps.length) return;
+        const CORTE = 8;
+        const caja = (n, raiz) => { let x = 0, y = 0, e = n; while (e && e !== raiz) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return { x, y, w: n.offsetWidth, h: n.offsetHeight }; };
+        const cortar = () => caps.forEach(cap => {
+            const raiz = cap.querySelector('.lf-cap-fijo'), ret = cap.querySelector('.lf-reticula');
+            if (!raiz || !ret) return;
+            const alto = raiz.offsetHeight;
+            const bloques = [...cap.querySelectorAll('.cs-cap-txt h2, .cs-cap-txt p, .lf-indice, .cs-cap-n')].map(n => caja(n, raiz));
+            ret.querySelectorAll('i').forEach(l => {
+                const x = caja(l, raiz).x;
+                const tope = Math.min(...bloques.filter(b => b.x - CORTE <= x && x <= b.x + b.w + CORTE).map(b => b.y), alto + CORTE);
+                l.style.setProperty('--fin', Math.max(alto - (tope - CORTE), 0) + 'px');
+            });
+        });
+        window.addEventListener('resize', cortar);
+        (document.fonts ? document.fonts.ready : Promise.resolve()).then(cortar);
+        cortar();
+    })();
+
     /* --- 6. PASO ENTRE DECISIONES: EL FILO --- */
     /* Con el paso (.lf-paso), mientras una decisión .lf-filo-sec sube su primera pantalla sobre la anterior quieta,
        --lf-filo dice cuánto subió (0 a 1) y .lf-filo-on deja su panel fijo para descubrirlo en su lugar (llego.css 8.1.6).
        Una sola lectura por cuadro y por sección */
     (() => {
-        const secs = [...document.querySelectorAll('.lf-filo-sec')].map(el => ({ el, ultimo: -1 }));
+        const secs = [...document.querySelectorAll('.lf-filo-sec')].map(el => ({ el, ultimo: -1, crece: el.querySelector('[data-crece]'), desde: el.dataset.desde && document.querySelector(el.dataset.desde) }));
+        const px = v => v.toFixed(1) + 'px';
+        /* La pieza que crece se recorta al rectángulo de la que deja la anterior y se abre hasta el suyo */
+        const crecer = (s, t) => {
+            const a = s.desde.getBoundingClientRect(), b = s.crece.getBoundingClientRect(), k = 1 - curva(fijar((t - 0.12) / 0.7));
+            s.el.style.setProperty('--lf-vt', px(Math.max(a.top - b.top, 0) * k)); s.el.style.setProperty('--lf-vr', px(Math.max(b.right - a.right, 0) * k));
+            s.el.style.setProperty('--lf-vb', px(Math.max(b.bottom - a.bottom, 0) * k)); s.el.style.setProperty('--lf-vl', px(Math.max(a.left - b.left, 0) * k));
+            s.el.style.setProperty('--lf-vq', px(38 * k));
+        };
         if (!secs.length) return;
         const html = document.documentElement;
         let pedido = 0;
@@ -1063,7 +1095,7 @@
             secs.forEach(s => {
                 const t = paso ? fijar(1 - s.el.getBoundingClientRect().top / vh) : 1;
                 s.el.classList.toggle('lf-filo-on', t > 0 && t < 1);
-                if (t !== s.ultimo) { s.ultimo = t; s.el.style.setProperty('--lf-filo', t.toFixed(4)); }
+                if (t !== s.ultimo) { s.ultimo = t; s.el.style.setProperty('--lf-filo', t.toFixed(4)); if (s.crece && s.desde && t > 0 && t < 1) crecer(s, t); }
             });
         };
         const pedir = () => { if (!pedido) pedido = requestAnimationFrame(cuadro); };
@@ -1129,8 +1161,8 @@
 
     /* --- 8. PASO A LA PORTADA DEL CAPÍTULO 03: EL PUENTE SE ABRE --- */
     /* u cuenta cuántas pantallas subió la portada sobre la que la 07 suma a su pista, con el manual cerrado. Con el paso
-       (.lf-paso) la pista crece de 200 a 340: de 0 a 1 es la ventana (.lf-circulo-on), en que el panel se abre en círculo
-       desde la flecha de "Pidieron la web", medida al entrar; de 0,55 a 1,85 entra lo de la portada, como en el 01 y el
+       (.lf-paso) la pista crece de 200 a 340: de 0 a 1 es la ventana (.lf-circulo-on), en que el panel se abre como una
+       ventana de navegador desde la flecha de "Pidieron la web", medida al entrar; de 0,55 a 1,85 entra lo de la portada, como en el 01 y el
        02; y en la última pantalla sube la decisión siguiente (--lf-ps) */
     (() => {
         const cap = document.querySelector('.lf-cap-3'), d7 = document.getElementById('dec-07');
@@ -1139,22 +1171,26 @@
         const html = document.documentElement, px = v => v.toFixed(1) + 'px';
         const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
         const PISTA = 340, BASE = 200;
-        const VARS = ['--lf-cr', '--lf-plano', '--lf-pl', '--lf-pd', '--lf-pt', '--lf-pi', '--lf-ps'];
-        let on = false, radio = 0, ultimo = -1, pedido = 0;
-        const medir = () => {
-            const W = window.innerWidth, H = window.innerHeight, r = flecha.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
-            cap.style.setProperty('--lf-cx', px(x)); cap.style.setProperty('--lf-cy', px(y));
-            radio = Math.hypot(Math.max(x, W - x), Math.max(y, H - y));
-        };
+        const VARS = ['--lf-wt', '--lf-wr', '--lf-wb', '--lf-wl', '--lf-wq', '--lf-wo', '--lf-plano', '--lf-pl', '--lf-pd', '--lf-pt', '--lf-pi', '--lf-ps'];
+        let on = false, punto = null, ultimo = -1, pedido = 0;
+        const medir = () => { const r = flecha.getBoundingClientRect(); punto = { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
         const cuadro = () => {
             pedido = 0;
             const u = 1 - cap.getBoundingClientRect().top / window.innerHeight, t = fijar(u), ventana = on && t > 0 && t < 1;
-            if (ventana && !radio) medir();
-            if (!ventana) radio = 0;
+            if (ventana && !punto) medir();
+            if (!ventana) punto = null;
             cap.classList.toggle('lf-circulo-on', ventana);
             if (!on || u === ultimo) return;
             ultimo = u;
-            if (radio) cap.style.setProperty('--lf-cr', px(radio * curva(t)));
+            if (punto) {
+                /* Una ventana de 200 × 128 nace en la flecha y crece hasta la pantalla */
+                const W = window.innerWidth, H = window.innerHeight, k = 1 - curva(t);
+                const x = Math.min(Math.max(punto.x, 100), W - 100), y = Math.min(Math.max(punto.y, 64), H - 64);
+                cap.style.setProperty('--lf-wt', px((y - 64) * k)); cap.style.setProperty('--lf-wb', px((H - y - 64) * k));
+                cap.style.setProperty('--lf-wl', px((x - 100) * k)); cap.style.setProperty('--lf-wr', px((W - x - 100) * k));
+                cap.style.setProperty('--lf-wq', px(10 * k));
+                fase(cap, '--lf-wo', 1 - tramo(t, 0.72, 0.96));
+            }
             /* Liso mientras se abre; al llegar a los bordes se funde en el degradado de la portada */
             fase(cap, '--lf-plano', 1 - tramo(t, 0.45, 0.95));
             fase(cap, '--lf-pl', tramo(u, 0.55, 1.2));
@@ -1170,11 +1206,11 @@
             cap.style.setProperty('--pista', String(on ? PISTA : BASE));
             cap.dataset.ancla = on ? '0.375' : '0';
             if (!on) { VARS.forEach(v => cap.style.removeProperty(v)); cap.classList.remove('lf-circulo-on'); }
-            ultimo = -1; radio = 0; pedir();
+            ultimo = -1; punto = null; pedir();
         };
         movil.addEventListener('change', activar);
         window.addEventListener('scroll', pedir, { passive: true });
-        window.addEventListener('resize', () => { radio = 0; pedir(); });
+        window.addEventListener('resize', () => { punto = null; pedir(); });
         activar();
     })();
 })();

@@ -545,6 +545,7 @@
         <section class="lf-cap lf-cap-3 cs-oscuro" id="cap-3" data-escena="portada" data-ancla="0.375" style="--pista:200">
             <div class="cs-fijo lf-cap-fijo" data-cap>
                 <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
+                <div class="lf-cap-ventana" aria-hidden="true"><div class="lf-cap-cromo"><span class="cs-ev-luces"><i></i><i></i><i></i></span><span class="lf-dom-url"><span class="lf-dom-candado"></span><i class="lf-dom-cursor"></i></span></div></div>
                 <div class="lf-reticula" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
                 <!-- El 3 de Manrope son tres piezas superpuestas: la máscara borra el trazo que queda dentro de la cifra -->
                 <svg class="lf-cap-traza lf-traza-limpia" aria-hidden="true"><mask id="lf-traza-03" maskUnits="userSpaceOnUse" x="-50%" y="-50%" width="200%" height="200%"><rect x="-50%" y="-50%" width="200%" height="200%" fill="#FFFFFF"/><text x="100%" y="100%" text-anchor="end">03</text></mask><text x="100%" y="100%" text-anchor="end" mask="url(#lf-traza-03)">03</text></svg>
@@ -595,6 +596,7 @@
                             <svg viewBox="0 0 33 33"><use href="#lf-qr-modulos"/></svg>
                             <div class="lf-tel-mira"><i></i><i></i><i></i><i></i></div>
                             <span class="lf-tel-link mono">llegofarma.cl</span>
+                            <span class="lf-tel-toque"></span>
                         </div>
                         <span class="lf-tel-isla"></span>
                     </div>
@@ -607,7 +609,7 @@
         <!-- Sube como hoja sobre la 08. La misma página con dos direcciones: con llego.cl/farma, Farma queda encerrada en una
              cabecera morada (un esquema, no el sitio de la madre); la dirección se tacha y se reescribe, y Farma crece hasta
              llenar la ventana. El QR de la barra es real en las dos y cambia con ella (llego.js, escena dominio) -->
-        <section class="lf-dsec lf-dom lf-filo-sec cs-oscuro" id="dec-09" data-escena="dominio" data-pasos-hasta="0.7059" style="--pista:440">
+        <section class="lf-dsec lf-dom lf-filo-sec lf-funde cs-oscuro" id="dec-09" data-desde="#dec-08 .lf-tel-pant" data-escena="dominio" data-pasos-hasta="0.7059" style="--pista:440">
             <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 09 · Un dominio propio</span></div>
             <div class="cs-fijo cs-grilla">
                 <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
@@ -619,8 +621,10 @@
                     <p class="cs-porque"><span class="mono">Por qué</span>El sitio morado de la madre no convive con el estilo de Farma, y el nombre queda protegido</p>
                     <ul class="lf-datos lf-dom-ficha mono"><li><b>Llegó</b>titular</li><li><b>NIC Chile</b>registro</li><li><a href="https://llegofarma.cl" target="_blank" rel="noopener"><b>llegofarma.cl ↗</b>en vivo</a></li></ul>
                 </aside>
-                <div class="lf-dom-nav" aria-hidden="true">
-                    <div class="lf-dom-cromo"><span class="cs-ev-luces"><i></i><i></i><i></i></span><span class="lf-dom-url"><span class="lf-dom-candado"></span><span data-url><span class="lf-dom-viejo">llego.cl/farma</span></span><i class="lf-dom-cursor"></i><span class="lf-dom-qr"><svg class="lf-dom-qr-viejo" viewBox="0 0 33 33"><path d="M4 4h7v1h-7zM13 4h1v1h-1zM16 4h1v1h-1zM20 4h1v1h-1zM22 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM13 5h2v1h-2zM16 5h5v1h-5zM22 5h1v1h-1zM28 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM12 6h2v1h-2zM16 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h3v1h-3zM28 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM16 7h3v1h-3zM22 7h1v1h-1zM24 7h3v1h-3zM28 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM12 8h5v1h-5zM22 8h1v1h-1zM24 8h3v1h-3zM28 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM12 9h3v1h-3zM16 9h1v1h-1zM19 9h1v1h-1zM22 9h1v1h-1zM28 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h7v1h-7zM12 11h1v1h-1zM15 11h1v1h-1zM18 11h3v1h-3zM4 12h1v1h-1zM6 12h5v1h-5zM14 12h1v1h-1zM16 12h3v1h-3zM22 12h5v1h-5zM5 13h2v1h-2zM9 13h1v1h-1zM12 13h1v1h-1zM15 13h1v1h-1zM18 13h1v1h-1zM20 13h1v1h-1zM23 13h1v1h-1zM27 13h1v1h-1zM4 14h3v1h-3zM10 14h1v1h-1zM12 14h2v1h-2zM15 14h1v1h-1zM17 14h1v1h-1zM19 14h3v1h-3zM25 14h1v1h-1zM27 14h2v1h-2zM5 15h2v1h-2zM8 15h1v1h-1zM13 15h2v1h-2zM22 15h3v1h-3zM28 15h1v1h-1zM4 16h1v1h-1zM6 16h1v1h-1zM8 16h3v1h-3zM12 16h1v1h-1zM14 16h2v1h-2zM17 16h3v1h-3zM21 16h2v1h-2zM24 16h1v1h-1zM26 16h3v1h-3zM4 17h1v1h-1zM6 17h1v1h-1zM8 17h1v1h-1zM12 17h2v1h-2zM16 17h2v1h-2zM20 17h1v1h-1zM23 17h1v1h-1zM25 17h1v1h-1zM27 17h1v1h-1zM4 18h1v1h-1zM6 18h1v1h-1zM8 18h3v1h-3zM18 18h2v1h-2zM21 18h5v1h-5zM27 18h2v1h-2zM4 19h1v1h-1zM6 19h1v1h-1zM8 19h1v1h-1zM13 19h1v1h-1zM16 19h1v1h-1zM18 19h1v1h-1zM20 19h5v1h-5zM28 19h1v1h-1zM4 20h1v1h-1zM6 20h2v1h-2zM9 20h2v1h-2zM13 20h1v1h-1zM16 20h3v1h-3zM20 20h5v1h-5zM26 20h1v1h-1zM12 21h3v1h-3zM19 21h2v1h-2zM24 21h2v1h-2zM4 22h7v1h-7zM14 22h3v1h-3zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM26 22h3v1h-3zM4 23h1v1h-1zM10 23h1v1h-1zM12 23h1v1h-1zM14 23h2v1h-2zM18 23h3v1h-3zM24 23h2v1h-2zM4 24h1v1h-1zM6 24h3v1h-3zM10 24h1v1h-1zM12 24h4v1h-4zM19 24h6v1h-6zM26 24h3v1h-3zM4 25h1v1h-1zM6 25h3v1h-3zM10 25h1v1h-1zM12 25h1v1h-1zM14 25h1v1h-1zM16 25h2v1h-2zM20 25h3v1h-3zM24 25h5v1h-5zM4 26h1v1h-1zM6 26h3v1h-3zM10 26h1v1h-1zM12 26h3v1h-3zM17 26h2v1h-2zM20 26h1v1h-1zM25 26h2v1h-2zM28 26h1v1h-1zM4 27h1v1h-1zM10 27h1v1h-1zM13 27h1v1h-1zM16 27h2v1h-2zM19 27h7v1h-7zM28 27h1v1h-1zM4 28h7v1h-7zM12 28h2v1h-2zM16 28h1v1h-1zM18 28h1v1h-1zM21 28h1v1h-1zM23 28h6v1h-6z"/></svg><svg class="lf-dom-qr-nuevo" viewBox="0 0 33 33"><use href="#lf-qr-modulos"/></svg></span></span></div>
+                <div class="lf-dom-nav" data-crece aria-hidden="true">
+                    <div class="lf-dom-cromo"><span class="cs-ev-luces"><i></i><i></i><i></i></span><span class="lf-dom-url"><span class="lf-dom-candado"></span><span data-url-chica>llego.cl/farma</span></span></div>
+                    <div class="lf-dom-lupa"><span class="lf-dom-lupa-tit mono">La dirección del QR</span><span class="lf-dom-lupa-url"><span data-url><span class="lf-dom-viejo">llego.cl/farma</span></span><i class="lf-dom-cursor"></i></span></div>
+                    <figure class="lf-dom-placa"><span class="lf-dom-qr"><svg class="lf-dom-qr-viejo" viewBox="0 0 33 33"><path d="M4 4h7v1h-7zM13 4h1v1h-1zM16 4h1v1h-1zM20 4h1v1h-1zM22 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM13 5h2v1h-2zM16 5h5v1h-5zM22 5h1v1h-1zM28 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM12 6h2v1h-2zM16 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h3v1h-3zM28 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM16 7h3v1h-3zM22 7h1v1h-1zM24 7h3v1h-3zM28 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM12 8h5v1h-5zM22 8h1v1h-1zM24 8h3v1h-3zM28 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM12 9h3v1h-3zM16 9h1v1h-1zM19 9h1v1h-1zM22 9h1v1h-1zM28 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h7v1h-7zM12 11h1v1h-1zM15 11h1v1h-1zM18 11h3v1h-3zM4 12h1v1h-1zM6 12h5v1h-5zM14 12h1v1h-1zM16 12h3v1h-3zM22 12h5v1h-5zM5 13h2v1h-2zM9 13h1v1h-1zM12 13h1v1h-1zM15 13h1v1h-1zM18 13h1v1h-1zM20 13h1v1h-1zM23 13h1v1h-1zM27 13h1v1h-1zM4 14h3v1h-3zM10 14h1v1h-1zM12 14h2v1h-2zM15 14h1v1h-1zM17 14h1v1h-1zM19 14h3v1h-3zM25 14h1v1h-1zM27 14h2v1h-2zM5 15h2v1h-2zM8 15h1v1h-1zM13 15h2v1h-2zM22 15h3v1h-3zM28 15h1v1h-1zM4 16h1v1h-1zM6 16h1v1h-1zM8 16h3v1h-3zM12 16h1v1h-1zM14 16h2v1h-2zM17 16h3v1h-3zM21 16h2v1h-2zM24 16h1v1h-1zM26 16h3v1h-3zM4 17h1v1h-1zM6 17h1v1h-1zM8 17h1v1h-1zM12 17h2v1h-2zM16 17h2v1h-2zM20 17h1v1h-1zM23 17h1v1h-1zM25 17h1v1h-1zM27 17h1v1h-1zM4 18h1v1h-1zM6 18h1v1h-1zM8 18h3v1h-3zM18 18h2v1h-2zM21 18h5v1h-5zM27 18h2v1h-2zM4 19h1v1h-1zM6 19h1v1h-1zM8 19h1v1h-1zM13 19h1v1h-1zM16 19h1v1h-1zM18 19h1v1h-1zM20 19h5v1h-5zM28 19h1v1h-1zM4 20h1v1h-1zM6 20h2v1h-2zM9 20h2v1h-2zM13 20h1v1h-1zM16 20h3v1h-3zM20 20h5v1h-5zM26 20h1v1h-1zM12 21h3v1h-3zM19 21h2v1h-2zM24 21h2v1h-2zM4 22h7v1h-7zM14 22h3v1h-3zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM26 22h3v1h-3zM4 23h1v1h-1zM10 23h1v1h-1zM12 23h1v1h-1zM14 23h2v1h-2zM18 23h3v1h-3zM24 23h2v1h-2zM4 24h1v1h-1zM6 24h3v1h-3zM10 24h1v1h-1zM12 24h4v1h-4zM19 24h6v1h-6zM26 24h3v1h-3zM4 25h1v1h-1zM6 25h3v1h-3zM10 25h1v1h-1zM12 25h1v1h-1zM14 25h1v1h-1zM16 25h2v1h-2zM20 25h3v1h-3zM24 25h5v1h-5zM4 26h1v1h-1zM6 26h3v1h-3zM10 26h1v1h-1zM12 26h3v1h-3zM17 26h2v1h-2zM20 26h1v1h-1zM25 26h2v1h-2zM28 26h1v1h-1zM4 27h1v1h-1zM10 27h1v1h-1zM13 27h1v1h-1zM16 27h2v1h-2zM19 27h7v1h-7zM28 27h1v1h-1zM4 28h7v1h-7zM12 28h2v1h-2zM16 28h1v1h-1zM18 28h1v1h-1zM21 28h1v1h-1zM23 28h6v1h-6z"/></svg><svg class="lf-dom-qr-nuevo" viewBox="0 0 33 33"><use href="#lf-qr-modulos"/></svg></span><figcaption class="mono">QR del stand</figcaption></figure>
                     <span class="lf-dom-carga"></span>
                     <div class="lf-dom-pant">
                         <div class="lf-dom-madre"><div class="lf-dom-madre-cab"><i></i><span class="mono">Una carpeta dentro del sitio morado</span></div></div>
@@ -634,7 +638,7 @@
         <!-- Sube como hoja sobre la 09, con la misma ventana y el mismo hero. Dentro va el sitio real: el velo deja a opacidad
              completa lo que actúa y lo que navega, la página baja entera con su botón siempre a la vista y el formulario se
              llena solo hasta su confirmación real. Ningún envío sale desde aquí (llego.js, escena accion) -->
-        <section class="lf-dsec lf-dom lf-ac lf-filo-sec cs-oscuro" id="dec-10" data-escena="accion" data-ev="../works/sitios/llego/index.html" data-pasos-hasta="0.8214" style="--pista:660">
+        <section class="lf-dsec lf-dom lf-ac lf-filo-sec lf-funde cs-oscuro" id="dec-10" data-escena="accion" data-ev="../works/sitios/llego/index.html" data-pasos-hasta="0.8214" style="--pista:660">
             <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 10 · Una página, una acción</span></div>
             <div class="cs-fijo cs-grilla">
                 <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
@@ -647,7 +651,7 @@
                     <ul class="lf-datos lf-ac-ficha mono"><li data-ac-dato><b>1</b>llamado</li><li data-ac-dato><b>3</b>atajos</li><li data-ac-dato><b>6</b>campos</li></ul>
                 </aside>
                 <div class="lf-dom-nav" aria-hidden="true">
-                    <div class="lf-dom-cromo"><span class="cs-ev-luces"><i></i><i></i><i></i></span><span class="lf-dom-url"><span class="lf-dom-candado"></span>llegofarma.cl<span class="lf-dom-qr"><svg class="lf-dom-qr-nuevo" viewBox="0 0 33 33"><use href="#lf-qr-modulos"/></svg></span></span></div>
+                    <div class="lf-dom-cromo"><span class="cs-ev-luces"><i></i><i></i><i></i></span><span class="lf-dom-url"><span class="lf-dom-candado"></span>llegofarma.cl</span></div>
                     <div class="lf-dom-pant lf-ac-pant">
                         <img class="lf-dom-sitio" src="media/lf-sitio-hero.jpg" alt="" loading="lazy" decoding="async">
                         <svg class="lf-ac-velo"><path fill-rule="evenodd"/></svg>
@@ -663,15 +667,14 @@
         <!-- Sube como hoja de papel sobre la 10. Parte en la portada del manual (dice septiembre), la cámara entra a un cruce de
              sus líneas y en ese mismo punto aparece el cruce de la web; al alejarse se ve la retícula entera, sus columnas, las
              fotos ocupando módulos y la única excepción al manual (llego.js, escena reticula) -->
-        <section class="lf-dsec lf-rt lf-filo-sec cs-claro" id="dec-11" data-escena="reticula" data-ev="../works/sitios/llego/index.html" style="--pista:680">
+        <section class="lf-dsec lf-rt lf-filo-sec lf-funde cs-claro" id="dec-11" data-escena="reticula" data-ev="../works/sitios/llego/index.html" style="--pista:680">
             <div class="lf-filo lf-filo-bajo" aria-hidden="true"><span class="mono">Decisión 11 · La retícula del manual, como estructura</span></div>
             <div class="cs-fijo cs-grilla">
-                <p class="lf-rt-puente">El manual lo escribí en septiembre. En octubre me tocó <b>cumplirlo</b>.</p>
                 <aside class="cs-dec">
                     <span class="cs-dec-num" aria-hidden="true">11</span>
                     <span class="cs-dec-n mono">Decisión 11</span>
                     <h3>La retícula del manual, como estructura</h3>
-                    <p>Las líneas del manual cruzan cada sección y se cortan 8 px antes de tocarse. Las fotos ocupan módulos. Me aparté en una sola cosa: los títulos van en Light con una palabra en Medium, decidido mirándolos en el navegador.</p>
+                    <p>El manual lo escribí en septiembre y en octubre me tocó cumplirlo. Sus líneas cruzan cada sección y se cortan 8 px antes de tocarse. Las fotos ocupan módulos. Me aparté en una sola cosa: los títulos van en Light con una palabra en Medium, decidido mirándolos en el navegador.</p>
                     <p class="cs-porque"><span class="mono">Por qué</span>La precisión que promete la marca se ve en cómo está armada la página</p>
                     <ul class="lf-datos lf-rt-ficha mono"><li data-rt-dato><b>8<small>px</small></b>de corte</li><li data-rt-dato><b>4</b>columnas</li><li data-rt-dato><b>1</b>excepción</li></ul>
                 </aside>
