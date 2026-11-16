@@ -746,32 +746,71 @@
             };
         },
 
-        /* Dominio: parte en llego.cl/farma, con Farma encerrada en el morado de la madre. Se tacha y se borra, se escribe
-           llegofarma.cl, carga y el morado se retira hasta que Farma llena la ventana (llego.css sección 9) */
+        /* Dominio: parte en llego.cl/farma, con Farma encerrada en el morado de la madre. Sobre ella, la dirección en grande:
+           el QR apunta a ella y las llaves nombran sus partes; /farma se tacha, farma salta sobre .cl y queda llegofarma.cl
+           mientras la barra se borra y se reescribe. Carga, y el morado se retira hasta que Farma llena la ventana
+           (llego.css secciones 9 y 9.0) */
         dominio: el => {
-            const url = el.querySelector('[data-url]'), chica = el.querySelector('[data-url-chica]'), viejo = 'llego.cl/farma', nuevo = 'llegofarma.cl';
+            const chica = el.querySelector('[data-url-chica]'), dir = el.querySelector('.lf-dom-dir'), pant = el.querySelector('.lf-dom-pant');
+            const viejo = 'llego.cl/farma', nuevo = 'llegofarma.cl';
             const lineal = (p, a, b) => fijar((p - a) / (b - a));
+            const pz = {};
+            dir.querySelectorAll('[data-pz]').forEach(n => { pz[n.dataset.pz] = n; });
+            const llave = n => dir.querySelector(`[data-ll="${n}"]`);
             /* La pista suma la pantalla en que sube la 10: todo termina antes de ella */
             const hasta = +el.dataset.pasosHasta || 1;
-            let previo = '';
-            return q => {
+            let previo = '', w = null, salto = -1, ultimo = 0;
+
+            /* --- Anchos de cada pieza, en px y sin escala: de ahí salen el tachado, las llaves y el salto --- */
+            const medir = () => {
+                w = {};
+                Object.keys(pz).forEach(k => { w[k] = pz[k].offsetWidth; });
+                const dirCl = w.llego + w.cl, total = dirCl + w.barra + w.farma;
+                dir.style.setProperty('--dw', total);
+                dir.style.setProperty('--tx', dirCl); dir.style.setProperty('--tw', w.barra + w.farma);
+                [['madre', 0, dirCl], ['carpeta', dirCl, w.barra + w.farma], ['propio', 0, w.llego + w.farma + w.cl]].forEach(([n, x, a]) => {
+                    const l = llave(n); l.style.setProperty('--lx', x); l.style.setProperty('--lw', a);
+                });
+                salto = -1;
+            };
+            /* --- El salto: farma pasa por encima de .cl en arco, y .cl le cede el lugar con un leve hundimiento --- */
+            const saltar = k => {
+                const antes = { llego: 0, cl: w.llego, barra: w.llego + w.cl, farma: w.llego + w.cl + w.barra };
+                const despues = { llego: 0, farma: w.llego, cl: w.llego + w.farma, barra: w.llego + w.farma };
+                const arco = Math.sin(Math.PI * k);
+                Object.keys(pz).forEach(n => { pz[n].style.setProperty('--x', (antes[n] + (despues[n] - antes[n]) * k).toFixed(1)); });
+                pz.farma.style.setProperty('--y', (-0.62 * arco).toFixed(3));
+                pz.cl.style.setProperty('--y', (0.1 * arco).toFixed(3));
+                salto = k;
+            };
+            if ('ResizeObserver' in window) new ResizeObserver(() => { medir(); pintar(ultimo); }).observe(pant);
+            if (document.fonts) document.fonts.ready.then(() => { medir(); pintar(ultimo); });
+
+            const pintar = q => {
+                ultimo = q;
                 const p = fijar(q / hasta);
-                const quedan = 1 - lineal(p, 0.32, 0.42), escrito = lineal(p, 0.44, 0.58);
-                const html = p < 0.43
-                    ? `<span class="lf-dom-viejo">${viejo.slice(0, Math.round(quedan * viejo.length))}</span>`
-                    : nuevo.slice(0, Math.round(escrito * nuevo.length));
-                if (html !== previo) { url.innerHTML = html; chica.innerHTML = html; previo = html; }
-                el.classList.toggle('lf-dom-listo', p >= 0.58);
+                if (!w) medir();
+                const quedan = 1 - lineal(p, 0.34, 0.42), escrito = lineal(p, 0.46, 0.58);
+                const html = p < 0.44 ? viejo.slice(0, Math.round(quedan * viejo.length)) : nuevo.slice(0, Math.round(escrito * nuevo.length));
+                if (html !== previo) { chica.textContent = html; previo = html; }
+                el.classList.toggle('lf-dom-escribe', p > 0.3 && p < 0.58);
                 el.classList.toggle('lf-dom-ficha-on', p >= 0.82);
-                fase(el, '--lf-dt', lineal(p, 0.22, 0.3));
+                fase(el, '--lf-dv', Math.min(lineal(p, 0.04, 0.12), 1 - lineal(p, 0.6, 0.68)));
+                fase(el, '--lf-da', Math.min(lineal(p, 0.1, 0.18), 1 - lineal(p, 0.26, 0.31)));
+                fase(el, '--lf-dt', lineal(p, 0.19, 0.26));
+                fase(el, '--lf-dx', lineal(p, 0.27, 0.3));
+                const k = tramo(p, 0.3, 0.44);
+                fase(el, '--lf-dmz', k);
+                if (k !== salto) saltar(k);
+                fase(el, '--lf-db', lineal(p, 0.44, 0.52));
                 fase(el, '--lf-qo', quedan);
                 fase(el, '--lf-qn', escrito);
+                fase(el, '--lf-dl', Math.min(lineal(p, 0.28, 0.32), 1 - lineal(p, 0.6, 0.66)));
                 fase(el, '--carga', lineal(p, 0.58, 0.66));
                 fase(el, '--lf-dm', 1 - tramo(p, 0.64, 0.84));
                 fase(el, '--lf-dc', lineal(p, 0.82, 0.9));
-                fase(el, '--lf-dl', Math.min(lineal(p, 0.03, 0.09), 1 - lineal(p, 0.84, 0.9)));
-                fase(el, '--lf-dpo', 1 - lineal(p, 0.86, 0.92));
             };
+            return pintar;
         },
 
         /* Una página, una acción: el sitio real en la ventana que dejó la 09. El velo abre huecos a opacidad completa sobre
