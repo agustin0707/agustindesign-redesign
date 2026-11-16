@@ -406,7 +406,7 @@
     })();
 
     /* --- 3.9 EL SITIO REAL DENTRO DE UNA ESCENA --- */
-    /* Lo usan las decisiones 10 y 11. Se monta en reposo y no puede enviar nada: el formulario real manda a la cuenta de
+    /* Lo usan las decisiones 10, 11, 12 y 13. Se monta en reposo y no puede enviar nada: el formulario real manda a la cuenta de
        Llegó, así que desde el portafolio no sale ningún envío ni enlace externo */
     const sitioEnEscena = (el, pant, listo, opciones = {}) => {
         let marco = null;
@@ -1034,6 +1034,71 @@
                 if (suave !== avance) pedir();
             };
             window.addEventListener('resize', () => { medir(); pedir(); });
+            medir();
+            return p => { avance = p; pedir(); };
+        },
+
+        /* Texto: el Word del cliente con control de cambios. La hoja ya subió con la 12; el scroll aplica los cambios del
+           hero uno por uno, cada uno con su globo y su fila del registro (data-tx dice cuándo). El rollo pasa a Propuesta de
+           valor, se marcan las dos frases del propio texto y con ellas se escribe el titular nuevo. Al final la barra vuelve
+           a llegofarma.cl, el Word se va y queda la sección publicada con su titular marcado. La ficha acompaña: los 56 al
+           empezar, los 23 textos nuevos con el titular y el cero con la marca final */
+        texto: el => {
+            const pant = el.querySelector('.lf-tx-pant'), rollo = el.querySelector('.lf-tx-rollo'), hojas = [...el.querySelectorAll('.lf-tx-hoja')];
+            const cambios = [...el.querySelectorAll('[data-tx]')].map(n => ({ n, en: +n.dataset.tx, on: null }));
+            const velo = el.querySelector('.lf-ac-velo'), hueco = velo.firstElementChild, caja = el.querySelector('.lf-ac-caja'), datos = [...el.querySelectorAll('[data-tx-dato]')];
+            const T = { pasa: [0.38, 0.46], arma: [0.6, 0.68], vuelve: [0.74, 0.8], marca: [0.81, 0.86] };
+            const W = 1440, PAD = 10;
+            const lineal = (p, a, b) => fijar((p - a) / (b - a));
+            let marco = null, win = null, doc = null, avance = 0, suave = 0, bucle = 0, A = 744, B = 595, H = 1152, armado = false, salto = 0;
+            const medir = () => {
+                A = pant.clientWidth; B = pant.clientHeight; H = Math.round(B / (A / W));
+                const angosto = A < 500, ancho = angosto ? 480 : 760;
+                pant.classList.toggle('angosto', angosto);
+                pant.style.setProperty('--lf-tl', ancho + 'px'); fase(pant, '--lf-te', A / ancho);
+                /* El rollo sube lo justo para dejar la segunda hoja donde estaba la primera */
+                salto = hojas[1].offsetTop - hojas[0].offsetTop;
+                if (marco) { marco.style.setProperty('--lf-iw', W + 'px'); marco.style.setProperty('--lf-ih', H + 'px'); }
+                armado = false;
+            };
+            const pedir = () => { if (!bucle) bucle = requestAnimationFrame(pintar); };
+            sitioEnEscena(el, pant, (m, w, d) => { win = w; doc = d; medir(); pedir(); setTimeout(() => { armado = false; pedir(); }, 500); }, { alMontar: m => { marco = m; medir(); } });
+
+            /* --- El sitio quieto en Propuesta de valor, a lo ancho de la ventana --- */
+            const pintarSitio = p => {
+                const sec = doc.querySelector('.s-valor'), tit = sec && sec.querySelector('h2');
+                if (!tit) return;
+                if (!armado) {
+                    win.scrollTo({ top: Math.max(sec.getBoundingClientRect().top + win.scrollY, 0), behavior: 'instant' });
+                    [...doc.querySelectorAll('header, .recorrido'), sec.previousElementSibling].forEach(n => { if (n) n.style.visibility = 'hidden'; });
+                    armado = true;
+                }
+                const e = A / W;
+                marco.style.setProperty('--lf-ie', e.toFixed(4)); marco.style.setProperty('--lf-ix', '0px'); marco.style.setProperty('--lf-iy', '0px');
+                /* El titular se mide por su texto, no por su caja */
+                const rango = doc.createRange(); rango.selectNodeContents(tit);
+                const t = rango.getBoundingClientRect(), g = lineal(p, T.marca[0], T.marca[1]);
+                const r = { x: (t.left - PAD) * e, y: (t.top - PAD) * e, w: (t.width + PAD * 2) * e, h: (t.height + PAD * 2) * e };
+                marcarCaja(caja, r, g, '10 · Nuevo, con palabras del cliente', A);
+                fase(velo, '--lf-av', g);
+                hueco.setAttribute('d', trazoRect({ x: 0, y: 0, w: A, h: B }) + (g > 0 ? trazoRect({ x: r.x, y: r.y, w: r.w * g, h: r.h }) : ''));
+            };
+            const pintar = () => {
+                bucle = 0;
+                const d = avance - suave;
+                suave = quieto || Math.abs(d) < 0.0002 ? avance : suave + d * 0.18;
+                const p = suave;
+                /* Los cambios se aplican en su punto, de una vez, como en el Word; el estado sigue al scroll en las dos direcciones */
+                cambios.forEach(c => { const on = p >= c.en; if (on !== c.on) { c.on = on; c.n.classList.toggle('on', on); } });
+                rollo.style.setProperty('--lf-ty', (-salto * tramo(p, T.pasa[0], T.pasa[1])).toFixed(1) + 'px');
+                fase(el, '--lf-tw', lineal(p, T.arma[0], T.arma[1]));
+                fase(el, '--lf-ro', lineal(p, T.vuelve[0], T.vuelve[1]));
+                datos.forEach((n, i) => n.classList.toggle('on', p >= [0.06, T.arma[0], T.marca[0]][i]));
+                if (doc && doc.body && marco) pintarSitio(p);
+                if (suave !== avance) pedir();
+            };
+            window.addEventListener('resize', () => { medir(); pedir(); });
+            (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { medir(); pedir(); });
             medir();
             return p => { avance = p; pedir(); };
         },
