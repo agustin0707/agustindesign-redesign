@@ -594,10 +594,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-paso .lf-funde.lf-filo-on > .lf-filo { display: none; }
 .lf-paso .lf-funde.lf-filo-on > .cs-fijo { clip-path: none; opacity: clamp(0, calc((var(--lf-filo) - 0.05) * 5), 1); }
 .lf-paso .lf-funde.lf-filo-on .cs-dec { opacity: clamp(0, calc((var(--lf-filo) - 0.5) * 3.3333), 1); }
-/* Cuando la que entra cambia de fondo (10 oscura a 11 papel), su ventana llega vacía y el contenido aparece después: así no se mezclan dos páginas a media opacidad */
-.lf-paso .lf-funde.lf-filo-on .lf-rt-esc::after { content: ""; position: absolute; inset: 0; z-index: 6; background: var(--lf-papel); pointer-events: none; opacity: clamp(0, calc((0.42 - var(--lf-filo)) * 6), 1); }
 .lf-paso .lf-funde.lf-filo-on [data-crece] { clip-path: inset(var(--lf-vt, 0px) var(--lf-vr, 0px) var(--lf-vb, 0px) var(--lf-vl, 0px) round var(--lf-vq, 0px)); }
-/* Relevo (.lf-relevo): cuando la ventana y el fondo son los mismos que en la anterior (09 a 10), no se funde nada. El panel
+/* Relevo (.lf-relevo): cuando la ventana y el fondo son los mismos que en la anterior (09 a 10 y 10 a 11), no se funde nada. El panel
    que entra queda encima, transparente salvo su ventana, idéntica a la de abajo; solo cambia la decisión: la que sale
    sube y se apaga línea a línea (.lf-sale-on, --lf-sale de llego.js sección 6) y la que entra llega desde abajo, con el
    número rodando de 09 a 10 como un contador */
@@ -1011,17 +1009,45 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-ac-ficha li { opacity: 0.3; transition: opacity 160ms; }
 .lf-ac-ficha li.on { opacity: 1; }
 
-/* --- 9.3 PUENTE Y DECISIÓN 11: LA RETÍCULA, DEL MANUAL A LA WEB --- */
-/* El área del sitio va a sangre y sobre el mismo papel del sitio. llego.js (escena reticula) da la cámara del impreso
-   (--lf-m, --lf-mx, --lf-my), la del iframe y las fases. La cruz en alta está colocada en sus coordenadas de la portada */
+/* --- 9.3 DECISIÓN 11: LA RETÍCULA, DEL MANUAL A LA WEB --- */
+/* Relevo sobre la 10: la misma ventana en el mismo lugar. En la barra, llegofarma.cl rueda al PDF del manual y vuelve
+   cuando la cámara pasa del cruce impreso al de la web. llego.js (escena reticula) da la cámara del impreso (--lf-m,
+   --lf-mx, --lf-my), la del iframe, la vuelta de la barra (--lf-ro) y las fases. La cruz en alta está colocada en sus
+   coordenadas de la portada */
 .lf-rt .cs-fijo { overflow: hidden; }
 .lf-rt .cs-dec { grid-row: 1; }
-/* La escena ocupa el mismo rectángulo que la ventana de la 10: el paso es un fundido y el marco no se mueve */
-.lf-rt-esc { position: relative; grid-column: 6 / -1; grid-row: 1; align-self: center; height: min(72vh, 680px); overflow: hidden; border: 1px solid rgba(16, 78, 86, 0.24); background: var(--lf-papel); }
+.lf-rt { --lf-avo: 0.42; }
+@media (min-width: 769px) { .lf-rt-nav { grid-row: 1; } }
+/* --- 9.3.1 LA BARRA QUE RUEDA --- */
+/* Dos direcciones apiladas en el campo: sube la del PDF al entrar la 11 (--lf-filo) y baja otra vez al llegar a la web */
+.lf-rt-url { display: grid; align-items: stretch; overflow: clip; }
+.lf-rt-url > span { grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; gap: 8px; --r: calc(clamp(0, (var(--lf-filo, 1) - 0.18) * 4, 1) * (1 - var(--lf-ro, 0))); }
+.lf-rt-url > span:first-child { translate: 0 calc(var(--r) * -100%); opacity: calc(1 - var(--r)); }
+.lf-rt-url > span:last-child { translate: 0 calc((1 - var(--r)) * 100%); opacity: var(--r); }
+.lf-rt-doc { flex: none; position: relative; width: 8px; height: 10px; border: 1px solid currentColor; border-radius: 1px; opacity: 0.7; }
+.lf-rt-doc::before { content: ''; position: absolute; left: 1px; right: 1px; top: 2px; height: 3px; border-block: 1px solid currentColor; }
+/* Al cambiar de documento corre la carga, como en la 09 */
+.lf-rt-nav .lf-dom-carga { --carga: clamp(0, (var(--lf-filo, 1) - 0.18) * 2.6, 1); opacity: clamp(0, (0.78 - var(--lf-filo, 1)) * 8, 1); }
+/* --- 9.3.2 EL VISOR DEL PDF --- */
+/* El manual se abre en la ventana: fondo de visor, la portada como una hoja y su barra con la página, 1 de 36 */
+.lf-rt-esc { background: var(--lf-papel); }
 .lf-rt-esc iframe { position: absolute; left: 0; top: 0; z-index: 1; border: 0; width: var(--lf-iw, 1440px); height: var(--lf-ih, 900px); transform-origin: 0 0; transform: translate3d(var(--lf-ix, 0px), var(--lf-iy, 0px), 0) scale(var(--lf-ie, 1)); pointer-events: none; }
-.lf-rt-impreso { position: absolute; inset: 0; z-index: 2; background: var(--lf-papel); opacity: var(--lf-mo, 1); pointer-events: none; }
-.lf-rt-manual { position: absolute; left: 0; top: 0; width: calc(var(--lf-m, 0.4) * 1920px); height: calc(var(--lf-m, 0.4) * 1080px); max-width: none; box-shadow: 0 22px 50px rgba(16, 78, 86, 0.22); transform: translate3d(var(--lf-mx, 0px), var(--lf-my, 0px), 0); }
+.lf-rt-impreso { position: absolute; inset: 0; z-index: 2; background: color-mix(in srgb, var(--lf-negro) 82%, #FFFFFF); opacity: var(--lf-mo, 1); pointer-events: none; }
+.lf-rt-pdf { position: absolute; left: 0; right: 0; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; height: 36px; padding: 0 14px; background: rgba(10, 20, 21, 0.6); color: rgba(255, 255, 255, 0.7); opacity: var(--lf-po, 1); }
+.lf-rt-manual { position: absolute; left: 0; top: 0; width: calc(var(--lf-m, 0.4) * 1920px); height: calc(var(--lf-m, 0.4) * 1080px); max-width: none; box-shadow: 0 22px 50px rgba(0, 0, 0, 0.4); transform: translate3d(var(--lf-mx, 0px), var(--lf-my, 0px), 0); }
 .lf-rt-cruce { position: absolute; left: 0; top: 0; width: calc(var(--lf-m, 0.4) * 250px); height: calc(var(--lf-m, 0.4) * 260px); max-width: none; transform: translate3d(calc(var(--lf-mx, 0px) + var(--lf-m, 0.4) * 529.5px), calc(var(--lf-my, 0px) + var(--lf-m, 0.4) * 228.7px), 0); opacity: var(--lf-co, 0); }
+/* Mientras sube la 11, el visor sube dentro de la ventana y tapa la confirmación de la 10, como la hoja que entra: un
+   borde en verde claro, sin fundido, así no se mezclan las dos pantallas. La portada llega un poco después */
+@media (min-width: 769px) {
+    /* Solo el cromo tapa al de la 10; la pantalla deja ver la confirmación hasta que llega el visor */
+    .lf-paso .lf-relevo.lf-filo-on .lf-rt-nav { background: transparent; }
+    .lf-paso .lf-relevo.lf-filo-on .lf-rt-nav .lf-dom-cromo { background: color-mix(in srgb, var(--lf-negro) 70%, var(--lf-profundo)); }
+    .lf-paso .lf-relevo.lf-filo-on .lf-rt-esc { background: transparent; }
+    .lf-paso .lf-relevo.lf-filo-on .lf-rt-impreso { --k: clamp(0, (var(--lf-filo) - 0.3) * 2.2, 1); --e: calc(1 - (1 - var(--k)) * (1 - var(--k)) * (1 - var(--k)));
+        clip-path: inset(calc((1 - var(--e)) * 100%) 0 0 0); box-shadow: inset 0 1px 0 var(--lf-claro); }
+    .lf-paso .lf-relevo.lf-filo-on .lf-rt-manual { translate: 0 calc((1 - clamp(0, (var(--lf-filo) - 0.42) * 2, 1)) * 60px); }
+    .lf-paso .lf-relevo.lf-filo-on :is(iframe, .lf-rt-bandas, .lf-ac-velo, .lf-ac-caja) { visibility: hidden; }
+}
 .lf-rt-bandas { position: absolute; inset: 0; z-index: 2; opacity: var(--lf-bo, 1); pointer-events: none; }
 .lf-rt-bandas i { position: absolute; top: 0; bottom: 0; left: calc(var(--lf-bx, 0px) + var(--i) * var(--lf-bw, 0px)); width: var(--lf-bw, 0px); background: rgba(112, 202, 199, calc(0.34 - var(--i) * 0.06)); transform-origin: top; scale: 1 clamp(0, calc(var(--lf-bv, 0) * 4 - var(--i)), 1); }
 .lf-rt-bandas span { position: absolute; left: 10px; bottom: 14px; color: var(--lf-oscuro); }
@@ -1030,7 +1056,6 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-rt-med.on { opacity: 1; }
 .lf-rt-med span { position: absolute; left: calc(100% + 8px); top: 50%; translate: 0 -50%; padding: 4px 8px; background: var(--lf-claro); color: var(--lf-negro); white-space: nowrap; }
 .lf-datos.lf-rt-ficha { margin-top: auto; }
-.lf-datos.lf-rt-ficha b { color: var(--lf-oscuro); }
 .lf-rt-ficha li { opacity: 0.3; transition: opacity 160ms; }
 .lf-rt-ficha li.on { opacity: 1; }
 @media (min-width: 769px) { .lf-rt .cs-dec { min-height: 504px; } }

@@ -913,14 +913,16 @@
             return q => { avance = fijar(q / hasta); pedir(); };
         },
 
-        /* La retícula: de la portada del manual (1920 × 1080) a un cruce de sus líneas y, en ese mismo punto de la pantalla, al
-           cruce de la web. Al alejarse se encienden las líneas reales del sitio, se miden sus cuatro columnas, las fotos ocupan
+        /* La retícula: llega en la ventana de la 10 con el PDF del manual abierto (llego.css 9.3.2). De su portada
+           (1920 × 1080) a un cruce de sus líneas y, en ese mismo punto de la pantalla, al cruce de la web, con la barra de
+           vuelta en llegofarma.cl. Al alejarse se encienden las líneas reales del sitio, se miden sus cuatro columnas, las fotos ocupan
            módulos y la cámara termina en un título, la única excepción (llego.css 9.3). Medido en el PDF: 7,6 px; en la web, 8 */
         reticula: el => {
             const esc = el.querySelector('.lf-rt-esc'), velo = el.querySelector('.lf-ac-velo'), hueco = velo.firstElementChild, cajas = [...el.querySelectorAll('.lf-ac-caja')];
             const med = el.querySelector('.lf-rt-med'), bandas = el.querySelector('.lf-rt-bandas'), datos = [...el.querySelectorAll('[data-rt-dato]')];
             const CRUCE = { x: 654.5, y: 358.7 }, CAMPO = 218, W = 1440;
-            const T = { lee: 0.13, entra: [0.14, 0.27], texto: [0.17, 0.25], mide: [0.25, 0.28], cambia: [0.31, 0.36], aleja: [0.39, 0.5], lineas: [0.42, 0.5], columnas: [0.5, 0.55], llega: [0.56, 0.6], sale: [0.6, 0.63], modulos: [0.62, 0.76], titulo: [0.78, 0.86], marca: [0.86, 0.9] };
+            /* Sin tramos quietos: el PDF ya se abrió mientras subía la 11, así que la cámara entra apenas queda fija */
+            const T = { entra: [0.03, 0.17], mide: [0.15, 0.18], cambia: [0.21, 0.26], aleja: [0.29, 0.41], lineas: [0.3, 0.4], columnas: [0.41, 0.47], llega: [0.49, 0.54], sale: [0.53, 0.56], modulos: [0.56, 0.71], titulo: [0.74, 0.83], marca: [0.83, 0.87] };
             const lineal = (p, a, b) => fijar((p - a) / (b - a));
             const mezcla = (a, b, t) => a + (b - a) * t;
             /* Zoom natural entre dos vistas: la escala avanza en proporción y todo gira en torno a un punto fijo */
@@ -1001,6 +1003,9 @@
                 esc.style.setProperty('--lf-m', v.e.toFixed(4)); esc.style.setProperty('--lf-mx', v.x.toFixed(1) + 'px'); esc.style.setProperty('--lf-my', v.y.toFixed(1) + 'px');
                 const cambio = lineal(p, T.cambia[0], T.cambia[1]);
                 fase(esc, '--lf-mo', 1 - cambio);
+                /* La barra del visor se va al empezar a entrar; la de la dirección vuelve a llegofarma.cl con el cruce web */
+                fase(esc, '--lf-po', 1 - lineal(p, T.entra[0], T.entra[0] + 0.04));
+                fase(el, '--lf-ro', cambio);
                 fase(esc, '--lf-co', lineal(p, T.entra[0] + 0.07, T.entra[1]));
                 /* La medida del corte, en los dos soportes */
                 const sale = 1 - lineal(p, T.aleja[0], T.aleja[0] + 0.02);
