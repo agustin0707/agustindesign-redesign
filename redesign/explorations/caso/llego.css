@@ -929,13 +929,23 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-dom-url .lf-dom-cursor { display: none; flex: none; width: 1px; height: 15px; margin-left: -7px; background: currentColor; animation: lf-cursor 1s steps(1) infinite; }
 .lf-dom-escribe .lf-dom-url .lf-dom-cursor { display: block; }
 @keyframes lf-cursor { 50% { opacity: 0; } }
-.lf-dom-carga { height: 2px; background: var(--lf-claro); transform-origin: left; scale: var(--carga, 0) 1; opacity: calc(1 - var(--lf-dc, 0)); }
+.lf-dom-carga { position: relative; z-index: 3; height: 2px; margin-bottom: -2px; background: var(--lf-claro); transform-origin: left; scale: var(--carga, 0) 1; opacity: calc(1 - var(--lf-dc, 0)); }
 .lf-dom-pant { position: relative; flex: 1; overflow: hidden; }
-/* El morado rodea a la página de Farma: la cabecera arriba y un margen a los lados. Al retirarse, la página crece desde abajo */
+/* El morado rodea a la página de Farma: una cabecera esquemática (el logotipo y un menú de barras, no el sitio real de la
+   madre) y Farma como una carpeta, con su pestaña /farma. Al retirarse el morado, la página crece desde abajo; la cabecera
+   y la pestaña se van en la primera mitad, antes de que la página las alcance */
 .lf-dom-madre { position: absolute; inset: 0; background: var(--lf-madre); }
-.lf-dom-madre-cab { position: absolute; left: 8%; right: 8%; top: 0; height: 16%; display: flex; align-items: center; justify-content: space-between; gap: 16px; color: #FFFFFF; }
-.lf-dom-madre-cab i { height: 46%; aspect-ratio: 200 / 77; background: #FFFFFF; -webkit-mask: url("media/lf-llego-logotipo.svg") left center / contain no-repeat; mask: url("media/lf-llego-logotipo.svg") left center / contain no-repeat; }
-.lf-dom-sitio { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; transform-origin: 50% 100%; scale: calc(1 - var(--lf-dm, 1) * 0.16); will-change: scale; }
+.lf-dom-madre-cab { position: absolute; left: 8%; right: 8%; top: 0; height: 10.5%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    opacity: clamp(0, calc(var(--lf-dm, 1) * 2.5 - 1.5), 1); translate: 0 calc((1 - var(--lf-dm, 1)) * -40%); }
+.lf-dom-madre-cab i { height: 44%; aspect-ratio: 200 / 77; background: #FFFFFF; -webkit-mask: url("media/lf-llego-logotipo.svg") left center / contain no-repeat; mask: url("media/lf-llego-logotipo.svg") left center / contain no-repeat; }
+.lf-dom-madre-nav { display: flex; align-items: center; gap: 2.4cqi; }
+.lf-dom-madre-nav b { width: 4.4cqi; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, 0.42); }
+.lf-dom-madre-nav b:nth-child(2) { width: 3.4cqi; }
+.lf-dom-madre-nav b:nth-child(3) { width: 5.2cqi; }
+.lf-dom-madre-nav em { width: 9cqi; height: 3.2cqi; border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 99px; }
+.lf-dom-pestana { position: absolute; z-index: 1; left: calc(var(--lf-dm, 1) * 8%); bottom: calc((1 - var(--lf-dm, 1) * 0.16) * 100%); display: flex; align-items: center; height: 24px; padding: 0 12px;
+    border-radius: 6px 6px 0 0; background: var(--lf-claro); color: var(--lf-negro); opacity: clamp(0, calc(var(--lf-dm, 1) * 2.5 - 1.5), 1); }
+.lf-dom-sitio { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; transform-origin: 50% 100%; scale: calc(1 - var(--lf-dm, 1) * 0.16); box-shadow: 0 24px 60px rgba(0, 0, 0, calc(var(--lf-dm, 1) * 0.35)); will-change: scale; }
 
 /* --- 9.0 LA ANATOMÍA DE LA DIRECCIÓN --- */
 /* Un velo sobre la página con la dirección a escala de titular. Mide en unidades del contenedor: se ve igual en cualquier
@@ -1183,7 +1193,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-dom-cromo { padding: 8px; }
     .lf-dom-cromo .cs-ev-luces { display: none; }
     .lf-dom-url { padding: 0 12px; gap: 10px; }
-    .lf-dom-madre-cab span, .lf-dom-placa figcaption { display: none; }
+    .lf-dom-madre-nav, .lf-dom-placa figcaption { display: none; }
     /* Teléfono */
     .lf-tel-sec .cs-dec { grid-row: 1; }
     .lf-tel { grid-row: 2; width: min(50vw, 25vh); padding: 6px; border-radius: 30px; }
