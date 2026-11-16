@@ -406,7 +406,7 @@
     })();
 
     /* --- 3.9 EL SITIO REAL DENTRO DE UNA ESCENA --- */
-    /* Lo usan las decisiones 10, 11, 12 y 13. Se monta en reposo y no puede enviar nada: el formulario real manda a la cuenta de
+    /* Lo usan las decisiones 10 a la 14. Se monta en reposo y no puede enviar nada: el formulario real manda a la cuenta de
        Llegó, así que desde el portafolio no sale ningún envío ni enlace externo */
     const sitioEnEscena = (el, pant, listo, opciones = {}) => {
         let marco = null;
@@ -1101,6 +1101,78 @@
             (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { medir(); pedir(); });
             medir();
             return p => { avance = p; pedir(); };
+        },
+
+        /* Entrega: la carpeta que se le entregó a Llegó, en dos columnas, lo que estaba conmigo y lo que está en sus cuentas.
+           El panel ya subió con la 14; el scroll hace entrar los archivos uno a uno (data-en), el formulario cruza, la
+           carpeta se recoge en una tarjeta y cruza también, y con ella aparece la guía, que marca sus cuatro pasos. Al final
+           la barra vuelve a llegofarma.cl, el panel se recoge y queda el sitio en su dominio, marcado. La ficha acompaña:
+           los archivos con la carpeta, los pasos con la guía y el cero con la marca final. Si la pista suma la pantalla de
+           la cita (data-pasos-hasta), todo termina antes de ella */
+        entrega: el => {
+            const pant = el.querySelector('.lf-en-pant'), lienzo = el.querySelector('.lf-en-lienzo'), carpeta = el.querySelector('.lf-en-carpeta'), guia = el.querySelector('.lf-en-guia');
+            const pasos = [...el.querySelectorAll('[data-en]')].map(n => ({ n, en: +n.dataset.en, on: null }));
+            const velo = el.querySelector('.lf-ac-velo'), hueco = velo.firstElementChild, caja = el.querySelector('.lf-ac-caja'), datos = [...el.querySelectorAll('[data-en-dato]')];
+            const T = { forma: [0.3, 0.4], recoge: 0.46, carpeta: [0.48, 0.6], guia: [0.6, 0.64], vuelve: [0.82, 0.9], marca: [0.91, 0.97] };
+            const hasta = +el.dataset.pasosHasta || 1, W = 1440, PAD = 12;
+            const lineal = (p, a, b) => fijar((p - a) / (b - a));
+            /* Cada tarjeta que cruza: sale de su lugar en mi columna y llega a su hueco en la de Llegó */
+            const llaves = [...el.querySelectorAll('[data-en-va]')].map(n => ({ n, desde: el.querySelector(`[data-en-desde="${n.dataset.enVa}"]`), hasta: el.querySelector(`[data-en-hasta="${n.dataset.enVa}"]`) }));
+            const [forma, carp] = llaves;
+            let marco = null, win = null, doc = null, avance = 0, suave = 0, bucle = 0, A = 744, B = 595, H = 1152, armado = false;
+            const medir = () => {
+                A = pant.clientWidth; B = pant.clientHeight; H = Math.round(B / (A / W));
+                const angosto = A < 500, ancho = angosto ? 480 : 760, e = A / ancho;
+                pant.classList.toggle('angosto', angosto);
+                pant.style.setProperty('--lf-tl', ancho + 'px'); pant.style.setProperty('--lf-th', (B / e).toFixed(1) + 'px'); fase(pant, '--lf-te', e);
+                llaves.forEach(l => {
+                    const s = l.n.style;
+                    s.setProperty('--lf-w', l.hasta.offsetWidth + 'px');
+                    s.setProperty('--lf-x0', l.desde.offsetLeft + 'px'); s.setProperty('--lf-y0', l.desde.offsetTop + 'px');
+                    s.setProperty('--lf-x1', l.hasta.offsetLeft + 'px'); s.setProperty('--lf-y1', l.hasta.offsetTop + 'px');
+                });
+                if (marco) { marco.style.setProperty('--lf-iw', W + 'px'); marco.style.setProperty('--lf-ih', H + 'px'); }
+                armado = false;
+            };
+            const pedir = () => { if (!bucle) bucle = requestAnimationFrame(pintar); };
+            sitioEnEscena(el, pant, (m, w, d) => { win = w; doc = d; medir(); pedir(); setTimeout(() => { armado = false; pedir(); }, 500); }, { alMontar: m => { marco = m; medir(); } });
+
+            /* --- El sitio en su dominio: el hero, a lo ancho de la ventana, con el titular marcado --- */
+            const pintarSitio = p => {
+                const tit = doc.querySelector('.s-hero h1');
+                if (!tit) return;
+                if (!armado) { win.scrollTo({ top: 0, behavior: 'instant' }); armado = true; }
+                const e = A / W;
+                marco.style.setProperty('--lf-ie', e.toFixed(4)); marco.style.setProperty('--lf-ix', '0px'); marco.style.setProperty('--lf-iy', '0px');
+                const rango = doc.createRange(); rango.selectNodeContents(tit);
+                const t = rango.getBoundingClientRect(), g = lineal(p, T.marca[0], T.marca[1]);
+                const r = { x: (t.left - PAD) * e, y: (t.top - PAD) * e, w: (t.width + PAD * 2) * e, h: (t.height + PAD * 2) * e };
+                marcarCaja(caja, r, g, 'En su dominio y en sus cuentas', A);
+                fase(velo, '--lf-av', g);
+                hueco.setAttribute('d', trazoRect({ x: 0, y: 0, w: A, h: B }) + (g > 0 ? trazoRect({ x: r.x, y: r.y, w: r.w * g, h: r.h }) : ''));
+            };
+            const pintar = () => {
+                bucle = 0;
+                const d = avance - suave;
+                suave = quieto || Math.abs(d) < 0.0002 ? avance : suave + d * 0.18;
+                const p = suave;
+                pasos.forEach(c => { const on = p >= c.en; if (on !== c.on) { c.on = on; c.n.classList.toggle('on', on); } });
+                /* El formulario está en mi columna desde el principio; la carpeta se recoge en su tarjeta antes de cruzar */
+                forma.n.classList.add('on');
+                fase(forma.n, '--lf-k', curva(lineal(p, T.forma[0], T.forma[1])));
+                const recogida = p >= T.recoge;
+                carpeta.classList.toggle('ida', recogida); carp.n.classList.toggle('on', recogida);
+                fase(carp.n, '--lf-k', curva(lineal(p, T.carpeta[0], T.carpeta[1])));
+                fase(guia, '--lf-go', lineal(p, T.guia[0], T.guia[1]));
+                fase(el, '--lf-ro', lineal(p, T.vuelve[0], T.vuelve[1]));
+                datos.forEach((n, i) => n.classList.toggle('on', p >= [0.23, 0.76, T.marca[0]][i]));
+                if (doc && doc.body && marco) pintarSitio(p);
+                if (suave !== avance) pedir();
+            };
+            window.addEventListener('resize', () => { medir(); pedir(); });
+            (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { medir(); pedir(); });
+            medir();
+            return p => { avance = fijar(p / hasta); pedir(); };
         },
 
         /* Seguimiento: la sección Tecnología del sitio real. Primero entera, con la lista de seis capacidades y el panel

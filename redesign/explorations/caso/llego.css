@@ -1037,7 +1037,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-rt-doc { flex: none; position: relative; width: 8px; height: 10px; border: 1px solid currentColor; border-radius: 1px; opacity: 0.7; }
 .lf-rt-doc::before { content: ''; position: absolute; left: 1px; right: 1px; top: 2px; height: 3px; border-block: 1px solid currentColor; }
 /* Al cambiar de documento corre la carga, como en la 09 */
-.lf-rt-nav .lf-dom-carga, .lf-tx-nav .lf-dom-carga { --carga: clamp(0, (var(--lf-filo, 1) - 0.18) * 2.6, 1); opacity: clamp(0, (0.78 - var(--lf-filo, 1)) * 8, 1); }
+.lf-rt-nav .lf-dom-carga, .lf-tx-nav .lf-dom-carga, .lf-en-nav .lf-dom-carga { --carga: clamp(0, (var(--lf-filo, 1) - 0.18) * 2.6, 1); opacity: clamp(0, (0.78 - var(--lf-filo, 1)) * 8, 1); }
 /* --- 9.3.2 EL VISOR DEL PDF --- */
 /* El manual se abre en la ventana: fondo de visor, la portada como una hoja y su barra con la página, 1 de 36 */
 .lf-rt-esc { background: var(--lf-papel); }
@@ -1050,8 +1050,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
    borde en verde claro, sin fundido, así no se mezclan las dos pantallas. La portada llega un poco después */
 @media (min-width: 769px) {
     /* Solo el cromo tapa al de la anterior; la pantalla la deja ver hasta que llega la hoja (también en la 13, sección 10) */
-    .lf-paso .lf-relevo.lf-filo-on :is(.lf-rt-nav, .lf-tx-nav, .lf-sg-nav) { background: transparent; }
-    .lf-paso .lf-relevo.lf-filo-on :is(.lf-rt-nav, .lf-tx-nav, .lf-sg-nav) .lf-dom-cromo { background: color-mix(in srgb, var(--lf-negro) 70%, var(--lf-profundo)); }
+    .lf-paso .lf-relevo.lf-filo-on :is(.lf-rt-nav, .lf-tx-nav, .lf-sg-nav, .lf-en-nav) { background: transparent; }
+    .lf-paso .lf-relevo.lf-filo-on :is(.lf-rt-nav, .lf-tx-nav, .lf-sg-nav, .lf-en-nav) .lf-dom-cromo { background: color-mix(in srgb, var(--lf-negro) 70%, var(--lf-profundo)); }
     .lf-paso .lf-relevo.lf-filo-on .lf-rt-esc { background: transparent; }
     .lf-paso .lf-relevo.lf-filo-on .lf-rt-impreso { --k: clamp(0, (var(--lf-filo) - 0.3) * 2.2, 1); --e: calc(1 - (1 - var(--k)) * (1 - var(--k)) * (1 - var(--k)));
         clip-path: inset(calc((1 - var(--e)) * 100%) 0 0 0); box-shadow: inset 0 1px 0 var(--lf-claro); }
@@ -1167,6 +1167,93 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-paso .lf-relevo.lf-filo-on .lf-sg-pant::after { content: ''; position: absolute; left: 0; right: 0; top: calc((1 - var(--e)) * 100%); z-index: 5; height: 1px; background: var(--lf-claro); }
 }
 
+/* --- 10.1 DECISIÓN 14: QUE NADA DEPENDA DE MÍ --- */
+/* Relevo sobre la 13: la misma ventana. La barra rueda a la carpeta entregada (la de la 11, .lf-rt-url) y su panel sube
+   como hoja, con dos columnas: lo que estaba conmigo y lo que está en cuentas de Llegó. llego.js (escena entrega) enciende
+   filas y pasos con .on según data-en, cruza las tarjetas (--lf-k por tarjeta, con su salida y su llegada medidas en el
+   lienzo), devuelve la barra (--lf-ro) y marca el sitio en su dominio. El lienzo se arma a un ancho fijo y se escala a la
+   ventana (--lf-te), como el Word de la 12 */
+.lf-en .cs-fijo { overflow: hidden; }
+.lf-en .cs-dec { grid-row: 1; }
+.lf-en { --lf-avo: 0.42; --lf-en-tinta: #1E2526; --lf-en-gris: #6B7576; --lf-en-linea: #D5DBDB; }
+@media (min-width: 769px) { .lf-en-nav { grid-row: 1; } .lf-en .cs-dec { min-height: 504px; } }
+.lf-datos.lf-en-ficha { margin-top: auto; }
+.lf-en-ficha li { opacity: 0.3; transition: opacity 160ms; }
+.lf-en-ficha li.on { opacity: 1; }
+.lf-en-ficha li:last-child b { color: var(--lf-claro); }
+.lf-en-pant { background: var(--lf-papel); }
+.lf-en-pant iframe { position: absolute; left: 0; top: 0; z-index: 1; border: 0; width: var(--lf-iw, 1440px); height: var(--lf-ih, 900px); transform-origin: 0 0; transform: translate3d(var(--lf-ix, 0px), var(--lf-iy, 0px), 0) scale(var(--lf-ie, 1)); pointer-events: none; }
+/* El ícono de la barra es una carpeta, no una hoja */
+.lf-en-ic { border-top-width: 2px; border-radius: 1px 1px 0 0; }
+.lf-en-ic::before { display: none; }
+
+/* --- 10.1.1 EL PANEL: DOS COLUMNAS SOBRE EL SITIO --- */
+/* Encima del sitio hasta que la barra vuelve; se recoge hacia arriba con su borde claro, como el Word */
+.lf-en-panel { position: absolute; inset: 0; z-index: 4; overflow: hidden; background: #F4F5F5; pointer-events: none;
+    --v: var(--lf-ro, 0); clip-path: inset(0 0 calc(var(--v) * 100%) 0); }
+.lf-en-panel::after { content: ""; position: absolute; left: 0; right: 0; bottom: calc(var(--v) * 100%); height: 1px; background: var(--lf-claro); opacity: clamp(0, calc(var(--v) * 40), 1); }
+.lf-en-lienzo { position: absolute; left: 0; top: 0; width: var(--lf-tl, 760px); height: var(--lf-th, 600px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); transform-origin: 0 0; transform: scale(var(--lf-te, 1));
+    color: var(--lf-en-tinta); font: 400 13px / 1.45 var(--cs-f); }
+.lf-en-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 28px 28px 24px; }
+.lf-en-col + .lf-en-col { border-left: 1px solid var(--lf-en-linea); }
+.lf-en-rot, .lf-en-nada, .lf-en-cab, .lf-en-pie, .lf-en-fila > span:last-child, .lf-en-llave em { font-family: var(--cs-f-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+.lf-en-rot { color: var(--lf-en-gris); margin-bottom: 4px; }
+
+/* --- 10.1.2 LA CARPETA: LAS FILAS ENTRAN UNA A UNA --- */
+.lf-en-carpeta { display: flex; flex-direction: column; transition: opacity 240ms; }
+.lf-en-carpeta.ida { opacity: 0; }
+.lf-en-fila { display: grid; grid-template-columns: 118px minmax(0, 1fr) 60px; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--lf-en-linea); }
+.lf-en-fila > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lf-en-fila > span:nth-child(2) { color: var(--lf-en-gris); }
+.lf-en-fila > span:last-child { text-align: right; color: var(--lf-en-gris); }
+.lf-en-fila[data-en] { opacity: 0; translate: 0 6px; transition: opacity 200ms, translate 200ms var(--cs-curva), background-color 200ms; }
+.lf-en-fila[data-en].on { opacity: 1; translate: 0 0; }
+.lf-en-cab { color: var(--lf-en-gris); padding-top: 0; }
+.lf-en-leeme.on { background: rgba(112, 202, 199, 0.35); }
+.lf-en-pie { grid-template-columns: auto auto; justify-content: space-between; border-bottom: 0; color: var(--lf-en-gris); }
+.lf-en-a, .lf-en-c { display: inline-block; width: 10px; height: 9px; margin-right: 8px; vertical-align: -1px; border: 1px solid var(--lf-en-gris); border-radius: 1px; }
+.lf-en-c { border-color: var(--lf-turquesa); border-top-width: 2px; background: rgba(23, 129, 129, 0.12); }
+
+/* --- 10.1.3 LAS LLAVES: CADA TARJETA CRUZA A LA COLUMNA DE LLEGÓ --- */
+.lf-en-llave { display: flex; justify-content: space-between; align-items: center; gap: 12px; height: 42px; padding: 0 14px; background: #FFFFFF; border: 1px solid var(--lf-en-linea); }
+.lf-en-llave b { font-weight: 500; }
+.lf-en-llave em { font-style: normal; color: var(--lf-en-gris); }
+.lf-en-vacia { background: transparent; border-style: dashed; }
+.lf-en-hueco { height: 42px; }
+/* La que cruza va del lugar de salida (--lf-x0, --lf-y0) al de llegada (--lf-x1, --lf-y1) con --lf-k; mientras cruza lleva el borde turquesa */
+.lf-en-va { position: absolute; left: 0; top: 0; width: var(--lf-w, 300px); opacity: 0; transition: opacity 240ms;
+    transform: translate3d(calc(var(--lf-x0, 0px) + (var(--lf-x1, 0px) - var(--lf-x0, 0px)) * var(--lf-k, 0)), calc(var(--lf-y0, 0px) + (var(--lf-y1, 0px) - var(--lf-y0, 0px)) * var(--lf-k, 0)), 0);
+    box-shadow: inset 2px 0 0 rgba(23, 129, 129, calc(var(--lf-k, 0) * (1 - var(--lf-k, 0)) * 4)); }
+.lf-en-va.on { opacity: 1; }
+.lf-en-nada { margin-top: auto; color: var(--lf-turquesa); opacity: 0; transition: opacity 240ms; }
+.lf-en-nada.on { opacity: 1; }
+
+/* --- 10.1.4 LA GUÍA: CUATRO PASOS QUE SE MARCAN --- */
+/* Antes de que la carpeta llegue, la guía no se ve: es parte de lo que se entrega (--lf-go) */
+.lf-en-guia { margin: 6px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; opacity: var(--lf-go, 0); }
+.lf-en-guia li { display: grid; grid-template-columns: 14px minmax(0, 1fr); column-gap: 10px; color: var(--lf-en-gris); font-size: 12px; opacity: 0.35; transition: opacity 200ms; }
+.lf-en-guia li b { grid-column: 2; color: var(--lf-en-tinta); font-weight: 500; font-size: 13px; }
+.lf-en-guia li i { grid-row: 1 / span 2; position: relative; width: 12px; height: 12px; margin-top: 3px; border: 1px solid #9AA4A5; border-radius: 2px; transition: background-color 160ms, border-color 160ms; }
+.lf-en-guia li.on { opacity: 1; }
+.lf-en-guia li.on i { border-color: var(--lf-turquesa); background: var(--lf-turquesa); }
+.lf-en-guia li.on i::after { content: ''; position: absolute; left: 3px; top: 0; width: 3px; height: 7px; border: solid #FFFFFF; border-width: 0 1.5px 1.5px 0; rotate: 45deg; }
+
+/* --- 10.1.5 ANGOSTO, MOVIMIENTO REDUCIDO Y PASO --- */
+.lf-en-pant.angosto .lf-en-fila { grid-template-columns: minmax(0, 1fr) 64px; }
+/* En lo angosto la carpeta queda en nombre y archivos, y la guía en sus cuatro títulos */
+.lf-en-pant.angosto .lf-en-fila > span:nth-child(2):not(:last-child) { display: none; }
+.lf-en-pant.angosto .lf-en-guia li { font-size: 0; row-gap: 0; }
+.lf-en-pant.angosto .lf-en-col { padding: 20px 16px; }
+@media (prefers-reduced-motion: reduce) { .lf-en-panel * { transition: none !important; } }
+/* Mientras sube la 14, el panel sube dentro de la ventana con su borde y tapa a la 13 sin fundido */
+@media (min-width: 769px) {
+    .lf-paso .lf-relevo.lf-filo-on .lf-en-pant { background: transparent; }
+    .lf-paso .lf-relevo.lf-filo-on .lf-en-panel { --k: clamp(0, (var(--lf-filo) - 0.3) * 2.2, 1); --e: calc(1 - (1 - var(--k)) * (1 - var(--k)) * (1 - var(--k)));
+        clip-path: inset(calc((1 - var(--e)) * 100%) 0 0 0); box-shadow: inset 0 1px 0 var(--lf-claro); }
+    .lf-paso .lf-relevo.lf-filo-on .lf-en-lienzo { translate: 0 calc((1 - clamp(0, (var(--lf-filo) - 0.42) * 2, 1)) * 60px); }
+    .lf-paso .lf-relevo.lf-filo-on .lf-en-pant :is(iframe, .lf-ac-velo, .lf-ac-caja) { visibility: hidden; }
+}
+
 /* --- 11. DECISIÓN 13 · EL TELÉFONO --- */
 .lf-tel-sec .cs-fijo { color: #FFFFFF; }
 .lf-tel { grid-column: 8 / span 4; justify-self: center; width: min(100%, 340px, 37vh); aspect-ratio: 390 / 844; padding: 10px; border-radius: 48px; background: #050A0B; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); }
@@ -1212,7 +1299,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-datos b { font: 200 48px / 0.9 var(--cs-f); letter-spacing: -0.04em; color: #FFFFFF; }
 
 /* --- 12. LA CITA: QUE NO QUEDARA PLANA --- */
-/* Sube como hoja oscura sobre la 13, con el filo en verde claro y sin nombre. Mientras sube, la 13 (.lf-baja-on, --lf-sale
+/* Sube como hoja oscura sobre la 14, con el filo en verde claro y sin nombre. Mientras sube, la 14 (.lf-baja-on, --lf-sale
    de llego.js sección 6) se va hacia arriba y se oscurece. La hoja trae impresa la retícula del manual (cuatro módulos,
    cortes a 8 px de cada cruce y de la tinta), que dibuja llego.js en la escena cita. Con el paso, la escena reparte el
    avance en variables: la comilla se entinta (--lf-k1, --lf-k2), cada línea entra (--e) después de que su corte se abre,
