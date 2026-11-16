@@ -1410,10 +1410,10 @@
        --lf-filo dice cuánto subió (0 a 1) y .lf-filo-on deja su panel fijo para descubrirlo en su lugar (llego.css 8.1.6).
        Una sola lectura por cuadro y por sección */
     (() => {
-        /* En el relevo (.lf-relevo) la anterior recibe --lf-sale y .lf-sale-on para que su decisión se vaya mientras llega la nueva.
+        /* En el relevo (.lf-relevo) y en el fundido (.lf-funde) la anterior recibe --lf-sale y .lf-sale-on para que su decisión se vaya mientras llega la nueva.
            Bajo la hoja oscura (.lf-hoja) recibe --lf-sale y .lf-baja-on: sube entera y se oscurece (llego.css 12) */
         const secs = [...document.querySelectorAll('.lf-filo-sec')].map(el => ({ el, ultimo: -1, crece: el.querySelector('[data-crece]'), desde: el.dataset.desde && document.querySelector(el.dataset.desde),
-            sale: (el.classList.contains('lf-relevo') || el.classList.contains('lf-hoja')) && el.previousElementSibling && el.previousElementSibling.closest('section'),
+            sale: (el.classList.contains('lf-relevo') || el.classList.contains('lf-funde') || el.classList.contains('lf-hoja')) && el.previousElementSibling && el.previousElementSibling.closest('section'),
             claseSale: el.classList.contains('lf-hoja') ? 'lf-baja-on' : 'lf-sale-on' }));
         const px = v => v.toFixed(1) + 'px';
         /* La pieza que crece se recorta al rectángulo de la que deja la anterior y se abre hasta el suyo */

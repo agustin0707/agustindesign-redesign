@@ -588,13 +588,21 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-filo-borde { z-index: 4; }
 .lf-paso .lf-filo-borde > .lf-filo { display: block; position: absolute; top: 0; }
 .lf-paso .lf-filo-sec.lf-filo-on > :is(.cs-fijo, .cs-pliego-sangre) { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; background: var(--fondo); clip-path: inset(calc((1 - var(--lf-filo)) * 100%) 0 0 0); }
-/* Fundido (.lf-funde): en el capítulo 03 la ventana no cambia de lugar entre decisiones. La que entra no se descubre
-   desde abajo: su panel aparece encima, todavía sin texto, y después llega su decisión. Si trae [data-crece], esa pieza
-   se abre desde la que señala data-desde en la anterior (llego.js sección 6) */
+/* Fundido (.lf-funde, 08 a 09): el fondo es el mismo, así que no se funde el panel entero. Queda encima, transparente
+   salvo su ventana, que nace en la pantalla del teléfono y se abre hasta su lugar (data-desde, llego.js sección 6).
+   El teléfono suelta su marco cuando la ventana ya lo cubre; la barra de la ventana carga la nueva dirección y su
+   contenido llega después: primero el morado de la madre y al final el sitio, así el recorte del principio nunca lo muestra a medias. La decisión se releva como
+   en .lf-relevo: la 08 sube y se apaga (.lf-sale-on), la 09 llega desde abajo */
 .lf-paso .lf-funde.lf-filo-on > .lf-filo { display: none; }
-.lf-paso .lf-funde.lf-filo-on > .cs-fijo { clip-path: none; opacity: clamp(0, calc((var(--lf-filo) - 0.05) * 5), 1); }
-.lf-paso .lf-funde.lf-filo-on .cs-dec { opacity: clamp(0, calc((var(--lf-filo) - 0.5) * 3.3333), 1); }
-.lf-paso .lf-funde.lf-filo-on [data-crece] { clip-path: inset(var(--lf-vt, 0px) var(--lf-vr, 0px) var(--lf-vb, 0px) var(--lf-vl, 0px) round var(--lf-vq, 0px)); }
+.lf-paso .lf-funde.lf-filo-on > .cs-fijo { clip-path: none; background: transparent; }
+.lf-paso .lf-funde.lf-filo-on .lf-degradado { opacity: 0; }
+.lf-paso .lf-funde.lf-filo-on [data-crece] { opacity: clamp(0, calc(var(--lf-filo) * 10), 1); clip-path: inset(var(--lf-vt, 0px) var(--lf-vr, 0px) var(--lf-vb, 0px) var(--lf-vl, 0px) round var(--lf-vq, 0px)); }
+.lf-paso .lf-funde.lf-filo-on .lf-dom-carga { --carga: clamp(0, (var(--lf-filo) - 0.12) * 2.6, 1); opacity: clamp(0, (0.62 - var(--lf-filo)) * 8, 1); }
+.lf-paso .lf-funde.lf-filo-on .lf-dom-pant { opacity: clamp(0, calc((var(--lf-filo) - 0.26) * 5), 1); }
+.lf-paso .lf-funde.lf-filo-on .lf-dom-sitio { opacity: clamp(0, calc((var(--lf-filo) - 0.46) * 4), 1); }
+.lf-paso .lf-funde.lf-filo-on .cs-dec > .lf-dom-ficha { opacity: 0; }
+.lf-paso .lf-tel-sec.lf-sale-on .lf-tel { opacity: clamp(0, calc(1 - (var(--lf-sale, 0) - 0.12) * 6), 1); }
+.lf-paso .lf-tel-sec.lf-sale-on .lf-tel-pant > * { opacity: clamp(0, calc(1 - var(--lf-sale, 0) * 10), 1); }
 /* Relevo (.lf-relevo): cuando la ventana y el fondo son los mismos que en la anterior (09 a 10 y 10 a 11), no se funde nada. El panel
    que entra queda encima, transparente salvo su ventana, idéntica a la de abajo; solo cambia la decisión: la que sale
    sube y se apaga línea a línea (.lf-sale-on, --lf-sale de llego.js sección 6) y la que entra llega desde abajo, con el
@@ -602,15 +610,15 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-paso .lf-relevo.lf-filo-on > .lf-filo { display: none; }
 .lf-paso .lf-relevo.lf-filo-on > .cs-fijo { clip-path: none; background: transparent; }
 .lf-paso .lf-relevo.lf-filo-on .lf-degradado { opacity: 0; }
-.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > * { --i: 5; --d: 14px; }
-.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(1) { --i: 0; --d: 40px; }
-.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(2) { --i: 1; }
-.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(3) { --i: 2; }
-.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(4) { --i: 3; }
-.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(5) { --i: 4; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-funde.lf-filo-on, .lf-sale-on) .cs-dec > * { --i: 5; --d: 14px; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-funde.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(1) { --i: 0; --d: 40px; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-funde.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(2) { --i: 1; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-funde.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(3) { --i: 2; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-funde.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(4) { --i: 3; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-funde.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(5) { --i: 4; }
 .lf-paso .lf-sale-on .cs-dec > * { --s: clamp(0, calc((var(--lf-sale, 0) - var(--i) * 0.045) * 3.5), 1); --e: calc(var(--s) * var(--s) * (3 - 2 * var(--s)));
     opacity: calc(1 - var(--e)); translate: 0 calc(var(--e) * var(--d) * -1); }
-.lf-paso .lf-relevo.lf-filo-on .cs-dec > * { --s: clamp(0, calc((var(--lf-filo, 0) - 0.3 - var(--i) * 0.05) * 4), 1); --e: calc(var(--s) * var(--s) * (3 - 2 * var(--s)));
+.lf-paso :is(.lf-relevo, .lf-funde).lf-filo-on .cs-dec > * { --s: clamp(0, calc((var(--lf-filo, 0) - 0.3 - var(--i) * 0.05) * 4), 1); --e: calc(var(--s) * var(--s) * (3 - 2 * var(--s)));
     opacity: var(--e); translate: 0 calc((1 - var(--e)) * var(--d)); }
 
 /* --- 8.2 UN SISTEMA, NO UN LOGO: EL TALLER DEL NODO --- */
