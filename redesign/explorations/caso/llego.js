@@ -1175,6 +1175,40 @@
             return p => { avance = fijar(p / hasta); pedir(); };
         },
 
+        /* Feria: el cierre del capítulo, en un calendario de octubre y noviembre. Al subir solo está el 1 de octubre; el
+           scroll llena los días de trabajo hasta el 20, con sus hitos, y después cuenta en punteado los 14 de margen hasta
+           que la feria se enciende con el QR de la 08. El rótulo lleva la cuenta y la ficha se enciende con cada tramo. Los
+           días se encienden enteros, sin suavizado: un calendario no se llena a medias. Si la pista suma la pantalla de la
+           cita (data-pasos-hasta), todo termina antes de ella */
+        feria: el => {
+            const cal = el.querySelector('.lf-fe-cal'), n = el.querySelector('[data-fe-n]'), que = el.querySelector('[data-fe-que]'), feria = el.querySelector('.lf-fe-feria');
+            const trabajo = [...el.querySelectorAll('[data-fe-t]')], margen = [...el.querySelectorAll('[data-fe-m]')], datos = [...el.querySelectorAll('[data-fe-dato]')];
+            const T = { trabajo: [0.04, 0.5], margen: [0.56, 0.84], feria: 0.88 };
+            const HITOS = ['1 oct · Pidieron la web', , , , , , , , '9 oct · Contenido final', , , , , '14 oct · Entrega', , '16 oct · Carpeta entregada', , , , '20 oct · En línea en llegofarma.cl'];
+            const hasta = +el.dataset.pasosHasta || 1;
+            const cuantos = (p, [a, b], total) => Math.floor(fijar((p - a) / (b - a)) * total);
+            let ultimo = '', hoy = null;
+            const pintar = p => {
+                const t = Math.max(1, cuantos(p, T.trabajo, trabajo.length)), m = t < trabajo.length ? 0 : cuantos(p, T.margen, margen.length), f = p >= T.feria;
+                const clave = t + '|' + m + '|' + f;
+                if (clave === ultimo) return;
+                ultimo = clave;
+                trabajo.forEach((c, i) => c.classList.toggle('on', i < t));
+                margen.forEach((c, i) => c.classList.toggle('on', i < m));
+                feria.classList.toggle('on', f);
+                const nuevo = f ? null : m ? margen[m - 1] : trabajo[t - 1];
+                if (hoy !== nuevo) { if (hoy) hoy.classList.remove('lf-fe-hoy'); if (nuevo) nuevo.classList.add('lf-fe-hoy'); hoy = nuevo; }
+                /* El rótulo: los días desde el pedido, después los que faltan y al final el margen entero */
+                const dias = k => k + (k === 1 ? ' día' : ' días');
+                cal.classList.toggle('lf-fe-margen', t === trabajo.length && (m > 0 || f));
+                if (f) { n.textContent = 'En línea 14 días antes'; que.textContent = '3 y 4 nov · Feria del sector'; }
+                else if (m) { n.textContent = 'Faltan ' + dias(margen.length + 1 - m); que.textContent = 'Margen'; }
+                else { n.textContent = dias(t - 1); que.textContent = HITOS.slice(0, t).filter(Boolean).pop(); }
+                datos.forEach((d, i) => d.classList.toggle('on', [t === trabajo.length, f, f][i]));
+            };
+            return p => pintar(fijar(p / hasta));
+        },
+
         /* Seguimiento: la sección Tecnología del sitio real. Primero entera, con la lista de seis capacidades y el panel
            marcados uno después del otro; la lista se apaga mientras la cámara se acerca al panel y el scroll lleva un pedido
            por las seis etapas, más lentas las dos primeras. Cada etapa se activa como en el sitio (el mismo evento que el

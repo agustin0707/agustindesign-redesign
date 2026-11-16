@@ -1298,8 +1298,53 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-datos li { display: flex; flex-direction: column; gap: 6px; max-width: 18ch; }
 .lf-datos b { font: 200 48px / 0.9 var(--cs-f); letter-spacing: -0.04em; color: #FFFFFF; }
 
+/* --- 11.1 CIERRE: LA FERIA --- */
+/* El desenlace del capítulo, sin número. Sube como hoja oscura sobre la 14, con el filo claro, igual que la cita (12).
+   El calendario va donde estaba la ventana; llego.js (escena feria) enciende cada día con .on: los de trabajo en
+   turquesa con su hito, los de margen en punteado y la feria en verde claro con el QR real de la 08. El rótulo de
+   arriba cuenta los días y la ficha acompaña el relato */
+.lf-fe { --lf-fe-t: 160ms; --lf-fe-linea: rgba(255, 255, 255, 0.18); }
+.lf-fe .lf-datos.lf-fe-ficha { margin-top: auto; }
+.lf-fe-ficha li { opacity: 0.3; transition: opacity var(--lf-fe-t); }
+.lf-fe-ficha li.on { opacity: 1; }
+.lf-fe-ficha li:nth-child(2) b { color: var(--lf-claro); }
+.lf-fe-cal { position: relative; grid-column: 6 / -1; align-self: center; display: flex; flex-direction: column; gap: 12px; height: min(72vh, 680px); }
+.lf-fe-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.24); color: var(--texto-3); }
+.lf-fe-cont { display: flex; gap: 14px; align-items: baseline; color: var(--texto-2); }
+.lf-fe-cont b { font-weight: 400; color: #FFFFFF; font-variant-numeric: tabular-nums; }
+.lf-fe-cal.lf-fe-margen .lf-fe-cont b { color: var(--lf-claro); }
+.lf-fe-sem, .lf-fe-grilla { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.lf-fe-sem { color: var(--texto-3); }
+.lf-fe-sem span { padding-left: 10px; }
+.lf-fe-grilla { flex: 1; min-height: 0; grid-template-rows: repeat(6, minmax(0, 1fr)); }
+
+/* --- 11.1.1 LOS DÍAS --- */
+/* Cada día es una celda con su número arriba y su hito abajo. El día en curso lleva el contorno claro (.lf-fe-hoy) */
+.lf-fe-d { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; min-width: 0; overflow: hidden; padding: 8px 10px; border-top: 1px solid var(--lf-fe-linea); font-style: normal;
+    transition: background-color var(--lf-fe-t), border-color var(--lf-fe-t); }
+.lf-fe-d b { font-weight: 400; color: var(--texto-2); }
+.lf-fe-d em { font-style: normal; color: var(--lf-claro); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity var(--lf-fe-t); }
+.lf-fe-fds b { color: var(--texto-3); }
+.lf-fe-vacio { border-top-color: transparent; }
+.lf-fe-d[data-fe-t].on { background: color-mix(in srgb, var(--lf-turquesa) 42%, transparent); border-top-color: var(--lf-claro); }
+.lf-fe-d[data-fe-t].on b { color: #FFFFFF; }
+.lf-fe-d.on em { opacity: 1; }
+.lf-fe-fer em { color: var(--texto-3); }
+.lf-fe-d[data-fe-m].on { border-top: 1px dashed var(--lf-claro); background-image: radial-gradient(color-mix(in srgb, var(--lf-claro) 45%, transparent) 1px, transparent 1.5px); background-size: 8px 8px; }
+.lf-fe-d.lf-fe-hoy { outline: 1px solid var(--lf-claro); outline-offset: -1px; }
+
+/* --- 11.1.2 LA FERIA: DOS DÍAS EN UNA CELDA, CON EL QR DE LA 08 --- */
+.lf-fe-feria { grid-column: span 2; }
+.lf-fe-feria svg { position: absolute; right: 8px; top: 8px; height: calc(100% - 16px); width: auto; aspect-ratio: 1; padding: 3px; background: var(--lf-papel); fill: var(--lf-oscuro); opacity: 0; scale: 0.9; transform-origin: right top;
+    transition: opacity var(--lf-fe-t), scale var(--lf-fe-t) var(--curva); }
+.lf-fe-feria.on { background: var(--lf-claro); border-top-color: var(--lf-claro); }
+.lf-fe-feria.on :is(b, em) { color: var(--lf-negro); }
+.lf-fe-feria.on svg { opacity: 1; scale: 1; }
+@media (min-width: 769px) { .lf-fe .cs-dec { min-height: 504px; } }
+@media (prefers-reduced-motion: reduce) { .lf-fe-cal * { transition: none !important; } }
+
 /* --- 12. LA CITA: QUE NO QUEDARA PLANA --- */
-/* Sube como hoja oscura sobre la 14, con el filo en verde claro y sin nombre. Mientras sube, la 14 (.lf-baja-on, --lf-sale
+/* Sube como hoja oscura sobre el cierre, con el filo en verde claro y sin nombre. Mientras sube, el cierre (.lf-baja-on, --lf-sale
    de llego.js sección 6) se va hacia arriba y se oscurece. La hoja trae impresa la retícula del manual (cuatro módulos,
    cortes a 8 px de cada cruce y de la tinta), que dibuja llego.js en la escena cita. Con el paso, la escena reparte el
    avance en variables: la comilla se entinta (--lf-k1, --lf-k2), cada línea entra (--e) después de que su corte se abre,
@@ -1509,6 +1554,16 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-tel-pant { border-radius: 25px; }
     .lf-tel-sec .cs-dec p:not(.cs-porque) { -webkit-line-clamp: 2; }
     .lf-datos { display: none; }
+    /* Cierre: la decisión arriba, entera, y el calendario abajo, a lo ancho; las celdas solo con su número y el QR abajo */
+    .lf-fe .cs-dec { grid-row: 1; }
+    .lf-fe-cal { grid-row: 2; grid-column: 1 / -1; height: 44vh; gap: 8px; }
+    .lf-fe-cab > span:first-child { display: none; }
+    .lf-fe-sem span { padding-left: 4px; }
+    .lf-fe-grilla { gap: 2px; }
+    .lf-fe-d { padding: 4px; font-size: 10px; }
+    .lf-fe-d em { display: none; }
+    .lf-fe-feria svg { right: 4px; top: auto; bottom: 4px; height: 55%; padding: 2px; transform-origin: right bottom; }
+    .lf-fe .cs-dec p:not(.cs-porque) { display: block; overflow: visible; }
     /* Trazabilidad: la bajada entera y la ficha a la vista, más chica; la cámara parte en el panel (llego.js) */
     .lf-sg .cs-dec p:not(.cs-porque) { display: block; overflow: visible; }
     .lf-sg .lf-datos { display: flex; gap: 18px; }
