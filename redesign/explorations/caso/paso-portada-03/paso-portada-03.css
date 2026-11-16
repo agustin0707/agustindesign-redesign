@@ -1,0 +1,65 @@
+/* =======================================================
+   EXPLORACIÓN · PASO DE LA DECISIÓN 07 A LA PORTADA DEL CAPÍTULO 03 (.pp3)
+   ======================================================= */
+/* Corre sobre llego.css y llego.js sin tocarlos: llego.js sigue fijando la portada en la pantalla del paso
+   (.lf-circulo-on) y midiendo la entrada de su contenido (--lf-pd, --lf-pt, --lf-pi). Aquí se apaga su ventana y la
+   retícula del cierre del manual pasa a ser la de la portada, con lo que viaja en .pp3-capa (paso-portada-03.js).
+   Solo en escritorio: en el celular la portada entra como siempre */
+
+/* --- 1. LO COMÚN: SIN LA VENTANA ACTUAL, CAPA ENCIMA --- */
+.pp3 .lf-cap-3 .lf-cap-ventana, .pp3 .lf-cap-3.lf-circulo-on .lf-cap-ventana { display: none; }
+.pp3-capa, .pp3-velo { display: none; }
+@media (min-width: 769px) {
+    .pp3-on.pp3-dentro :is(.pp3-capa, .pp3-velo) { display: block; }
+    .pp3-capa > *, .pp3-velo { position: fixed; left: 0; top: 0; pointer-events: none; }
+    /* La portada aparece por opacidad, debajo de las líneas */
+    .pp3-on .lf-cap-3.lf-circulo-on > .cs-fijo { clip-path: none; opacity: var(--pp3-f, 0); }
+    /* Su retícula queda entera y escondida mientras dura el paso: la dibujan las líneas que llegan */
+    .pp3-on.lf-paso .lf-cap-3 .lf-reticula i { scale: 1 1; }
+    .pp3-on.lf-paso .lf-cap-3.lf-circulo-on .lf-reticula { opacity: 0; }
+}
+
+/* --- 2. LAS LÍNEAS QUE VIAJAN --- */
+/* Una línea de 1 px que se mueve y se estira; --k mezcla el verde claro (1) con el blanco de la retícula (0) */
+@media (min-width: 769px) {
+    .pp3-l { z-index: 7; width: var(--w, 1px); height: var(--h, 1px); translate: var(--x, 0) var(--y, 0); opacity: var(--a, 0.22);
+        background: color-mix(in srgb, var(--lf-claro) calc(var(--k, 0) * 100%), #FFFFFF); }
+}
+
+/* --- 3. LA RETÍCULA, MEJORADA --- */
+/* Cuatro tiempos: la 07 se apaga bajo sus líneas, que se encienden con las marcas de corte en las esquinas; el marco se
+   abre hasta la pantalla y el rótulo pasa de 36 páginas a una; las tres columnas interiores se dibujan de arriba abajo;
+   y todo se asienta en el gris de la retícula mientras debajo aparece la portada */
+@media (min-width: 769px) {
+    .pp3-v-a .pp3-velo { z-index: 4; inset: 0; background: var(--lf-profundo); opacity: var(--pp3-vo, 0); }
+    /* Sin el liso de llego.css: bajo las líneas aparece directo el degradado */
+    .pp3-v-a .lf-cap-3 > .cs-fijo::before { opacity: 0; }
+    /* Marcas de corte: una escuadra de 12 px a 8 px de cada esquina, hacia adentro, como las del logo */
+    .pp3-corte { z-index: 7; width: 12px; height: 12px; translate: var(--x, 0) var(--y, 0); opacity: var(--pp3-co, 0);
+        border: 0 solid var(--lf-claro); }
+    .pp3-v-antes :is(.pp3-corte, .pp3-rot) { display: none; }
+    .pp3-corte[data-c="tl"] { border-width: 1px 0 0 1px; } .pp3-corte[data-c="tr"] { border-width: 1px 1px 0 0; }
+    .pp3-corte[data-c="bl"] { border-width: 0 0 1px 1px; } .pp3-corte[data-c="br"] { border-width: 0 1px 1px 0; }
+    /* El rótulo de la esquina del marco: Brandbook · 36 páginas, y al abrirse, llegofarma.cl · 1 página */
+    /* El cambio rueda hacia arriba dentro de una línea, como un contador: no se cruzan los dos textos */
+    .pp3-rot { z-index: 7; display: grid; overflow: clip; translate: var(--pp3-rx, 0) var(--pp3-ry, 0); opacity: var(--pp3-ro, 0); color: var(--texto-2); white-space: nowrap; }
+    .pp3-rot > span { grid-area: 1 / 1; }
+    .pp3-rot > span:first-child { translate: 0 calc(var(--pp3-rc, 0) * -100%); }
+    .pp3-rot > span:last-child { translate: 0 calc((1 - var(--pp3-rc, 0)) * 100%); color: var(--lf-claro); }
+}
+
+/* --- 4. FIN Y SELECTOR --- */
+.pp3-fin { position: relative; z-index: 6; display: grid; align-content: center; gap: 24px; min-height: 70svh; padding: 0 var(--margen); }
+.pp3-fin .mono { color: var(--texto-3); }
+.pp3-fin p { max-width: 40ch; font: 300 clamp(22px, 2vw, 32px) / 1.25 var(--cs-f); letter-spacing: -0.02em; color: var(--texto-2); }
+/* Abajo a la izquierda, bajo el texto de la decisión, así no tapa la pieza */
+.pp3-sel { position: fixed; left: 16px; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; width: max-content; max-width: min(540px, calc(100vw - 32px)); padding: 10px 12px;
+    background: rgba(10, 20, 21, 0.86); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.14); color: #FFFFFF; }
+.pp3-sel-desc { max-width: 64ch; padding: 0 10px; font: 400 13px / 1.4 var(--cs-f); text-transform: none; letter-spacing: 0; color: rgba(255, 255, 255, 0.74); }
+.pp3-sel-fila { display: flex; flex-wrap: wrap; gap: 4px; }
+.pp3-sel button { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; background: none; color: rgba(255, 255, 255, 0.6); font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 150ms, border-color 150ms; }
+.pp3-sel button span { color: var(--lf-claro); }
+.pp3-sel button[aria-pressed="true"] { color: #FFFFFF; border-color: rgba(255, 255, 255, 0.4); }
+.pp3-sel-otra { margin-left: auto; }
+@media (max-width: 768px) { .pp3-sel-desc { display: none; } }
+@media (hover: hover) { .pp3-sel button:hover { color: #FFFFFF; } }

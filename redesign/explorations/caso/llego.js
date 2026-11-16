@@ -1159,41 +1159,79 @@
         activar();
     })();
 
-    /* --- 8. PASO A LA PORTADA DEL CAPÍTULO 03: EL PUENTE SE ABRE --- */
+    /* --- 8. PASO A LA PORTADA DEL CAPÍTULO 03: LA RETÍCULA PASA --- */
     /* u cuenta cuántas pantallas subió la portada sobre la que la 07 suma a su pista, con el manual cerrado. Con el paso
-       (.lf-paso) la pista crece de 200 a 340: de 0 a 1 es la ventana (.lf-circulo-on), en que el panel se abre como una
-       ventana de navegador desde la flecha de "Pidieron la web", medida al entrar; de 0,55 a 1,85 entra lo de la portada, como en el 01 y el
-       02; y en la última pantalla sube la decisión siguiente (--lf-ps) */
+       (.lf-paso) la pista crece de 200 a 340: de 0 a 1 es el paso (.lf-pasa-on), en que las líneas del cierre de la 07
+       pasan a ser la retícula de la portada (llego.css 7.3), medidas al entrar; de 0,6 a 1,85 entra lo de la portada,
+       como en el 01 y el 02; y en la última pantalla sube la decisión siguiente (--lf-ps) */
     (() => {
-        const cap = document.querySelector('.lf-cap-3'), d7 = document.getElementById('dec-07');
-        const flecha = d7 && d7.querySelector('.lf-cierre-sigue i');
-        if (!cap || !flecha) return;
-        const html = document.documentElement, px = v => v.toFixed(1) + 'px';
+        const cap = document.querySelector('.lf-cap-3'), d7 = document.getElementById('dec-07'), capa = document.querySelector('.lf-p3-capa');
+        if (!cap || !d7 || !capa) return;
+        const html = document.documentElement, px = v => v.toFixed(1) + 'px', mezcla = (a, b, e) => a + (b - a) * e;
+        const lineas = {}, cortes = [...capa.querySelectorAll('[data-c]')];
+        capa.querySelectorAll('[data-l]').forEach(l => { lineas[l.dataset.l] = l; });
         const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
         const PISTA = 340, BASE = 200;
-        const VARS = ['--lf-wt', '--lf-wr', '--lf-wb', '--lf-wl', '--lf-wq', '--lf-wo', '--lf-plano', '--lf-pl', '--lf-pd', '--lf-pt', '--lf-pi', '--lf-ps'];
-        let on = false, punto = null, ultimo = -1, pedido = 0;
-        const medir = () => { const r = flecha.getBoundingClientRect(); punto = { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
+        const VARS = ['--lf-pd', '--lf-pt', '--lf-pi', '--lf-ps'], VARS_HTML = ['--lf-p3f', '--lf-p3v', '--lf-p3c', '--lf-p3x', '--lf-p3y', '--lf-p3r', '--lf-p3o'];
+        let on = false, m = null, ultimo = -1, pedido = 0;
+        /* Las cuatro líneas del cierre y su rótulo de arriba a la izquierda; las cinco de la retícula, cada una cortada
+           donde la corta su --fin (8 px antes del contenido, sección 5.1), medidas desde su panel, que queda arriba */
+        const caja = el => { const r = el.getBoundingClientRect(); return { l: r.left, t: r.top, w: r.width, h: r.height }; };
+        const medir = () => {
+            const c = s => caja(d7.querySelector(s)), panel = caja(cap.querySelector('.lf-cap-fijo'));
+            const ret = [...cap.querySelectorAll('.lf-reticula i')].map(i => { const r = caja(i), fin = parseFloat(getComputedStyle(i).getPropertyValue('--fin')) || 0; return { l: r.l - panel.l, t: r.t - panel.t, w: 1, h: r.h - fin }; });
+            const v1 = c('.lf-cierre-v1');
+            m = ret.length === 5 && v1.h > 0 ? { v1, v2: c('.lf-cierre-v2'), h1: c('.lf-cierre-h1'), h2: c('.lf-cierre-h2'), rot: c('.lf-cierre-tl'), ret } : null;
+        };
+        const linea = (k, r, alfa, verde) => {
+            const el = lineas[k];
+            el.style.setProperty('--x', px(r.l)); el.style.setProperty('--y', px(r.t)); el.style.setProperty('--w', px(r.w)); el.style.setProperty('--h', px(r.h));
+            fase(el, '--a', alfa); fase(el, '--k', verde);
+        };
+        const entre = (a, b, e) => ({ l: mezcla(a.l, b.l, e), t: mezcla(a.t, b.t, e), w: mezcla(a.w, b.w, e), h: mezcla(a.h, b.h, e) });
+        const pasar = t => {
+            const W = window.innerWidth, H = window.innerHeight, R = m.ret;
+            /* 1 · La 07 se apaga bajo sus líneas, que se encienden en verde claro; la portada aparece al final, debajo */
+            fase(html, '--lf-p3v', curva(tramo(t, 0, 0.3)));
+            fase(html, '--lf-p3f', tramo(t, 0.5, 0.88));
+            const luz = tramo(t, 0, 0.14), asienta = tramo(t, 0.72, 0.96);
+            const alfa = mezcla(mezcla(0.22, 0.6, luz), 0.16, asienta), verde = luz * (1 - asienta);
+            /* 2 · El marco del manual se abre hasta la pantalla: sus verticales van a los bordes de la retícula y sus
+               horizontales a 96 px de arriba y de abajo, donde se apagan */
+            const e = curva(tramo(t, 0.14, 0.56));
+            const x0 = mezcla(m.v1.l, R[0].l, e), x1 = mezcla(m.v2.l, R[4].l, e), y0 = mezcla(m.h1.t, 96, e), y1 = mezcla(m.h2.t, H - 96, e);
+            linea('v1', entre(m.v1, R[0], e), alfa, verde);
+            linea('v5', entre(m.v2, R[4], e), alfa, verde);
+            const fuera = 1 - tramo(t, 0.62, 0.82);
+            linea('h1', { l: mezcla(m.h1.l, 0, e), t: y0, w: mezcla(m.h1.w, W, e), h: 1 }, alfa * fuera, verde);
+            linea('h2', { l: mezcla(m.h2.l, 0, e), t: y1, w: mezcla(m.h2.w, W, e), h: 1 }, alfa * fuera, verde);
+            /* 3 · Las tres columnas interiores se dibujan de arriba abajo, una tras otra, como en las portadas 01 y 02 */
+            ['v2', 'v3', 'v4'].forEach((k, i) => {
+                const d = curva(tramo(t, 0.46 + 0.07 * i, 0.74 + 0.07 * i)), r = R[i + 1];
+                linea(k, { l: r.l, t: r.t, w: 1, h: r.h * d }, alfa, verde);
+            });
+            /* Las marcas de corte, a 8 px de cada esquina hacia adentro: aparecen con la luz y se van al abrirse, porque
+               la pantalla no se corta */
+            fase(html, '--lf-p3c', tramo(t, 0.03, 0.14) * (1 - tramo(t, 0.4, 0.56)));
+            const esquina = { tl: [x0 + 8, y0 + 8], tr: [x1 - 20, y0 + 8], bl: [x0 + 8, y1 - 20], br: [x1 - 20, y1 - 20] };
+            cortes.forEach(c => { const [x, y] = esquina[c.dataset.c]; c.style.setProperty('--x', px(x)); c.style.setProperty('--y', px(y)); });
+            /* 4 · El rótulo viaja con la esquina: de 36 páginas a una */
+            html.style.setProperty('--lf-p3x', px(x0 + m.rot.l - m.v1.l)); html.style.setProperty('--lf-p3y', px(y0 + m.rot.t - m.h1.t));
+            fase(html, '--lf-p3r', curva(tramo(t, 0.3, 0.4)));
+            fase(html, '--lf-p3o', 1 - tramo(t, 0.7, 0.86));
+        };
         const cuadro = () => {
             pedido = 0;
-            const u = 1 - cap.getBoundingClientRect().top / window.innerHeight, t = fijar(u), ventana = on && t > 0 && t < 1;
-            if (ventana && !punto) medir();
-            if (!ventana) punto = null;
-            cap.classList.toggle('lf-circulo-on', ventana);
+            const u = 1 - cap.getBoundingClientRect().top / window.innerHeight, t = fijar(u), dentro = on && t > 0 && t < 1;
+            cap.classList.toggle('lf-pasa-on', dentro);
+            html.classList.toggle('lf-p3-dentro', dentro);
+            if (!dentro) m = null;
             if (!on || u === ultimo) return;
             ultimo = u;
-            if (punto) {
-                /* Una ventana de 200 × 128 nace en la flecha y crece hasta la pantalla */
-                const W = window.innerWidth, H = window.innerHeight, k = 1 - curva(t);
-                const x = Math.min(Math.max(punto.x, 100), W - 100), y = Math.min(Math.max(punto.y, 64), H - 64);
-                cap.style.setProperty('--lf-wt', px((y - 64) * k)); cap.style.setProperty('--lf-wb', px((H - y - 64) * k));
-                cap.style.setProperty('--lf-wl', px((x - 100) * k)); cap.style.setProperty('--lf-wr', px((W - x - 100) * k));
-                cap.style.setProperty('--lf-wq', px(10 * k));
-                fase(cap, '--lf-wo', 1 - tramo(t, 0.72, 0.96));
+            if (dentro) {
+                if (!m) medir();
+                if (m) pasar(t); else { ultimo = -1; pedir(); }
             }
-            /* Liso mientras se abre; al llegar a los bordes se funde en el degradado de la portada */
-            fase(cap, '--lf-plano', 1 - tramo(t, 0.45, 0.95));
-            fase(cap, '--lf-pl', tramo(u, 0.55, 1.2));
             fase(cap, '--lf-pd', tramo(u, 0.6, 1.5));
             fase(cap, '--lf-pt', tramo(u, 0.8, 1.3));
             fase(cap, '--lf-pi', tramo(u, 1.25, 1.85));
@@ -1205,12 +1243,12 @@
             on = html.classList.contains('lf-paso');
             cap.style.setProperty('--pista', String(on ? PISTA : BASE));
             cap.dataset.ancla = on ? '0.375' : '0';
-            if (!on) { VARS.forEach(v => cap.style.removeProperty(v)); cap.classList.remove('lf-circulo-on'); }
-            ultimo = -1; punto = null; pedir();
+            if (!on) { VARS.forEach(v => cap.style.removeProperty(v)); VARS_HTML.forEach(v => html.style.removeProperty(v)); cap.classList.remove('lf-pasa-on'); html.classList.remove('lf-p3-dentro'); }
+            ultimo = -1; m = null; pedir();
         };
         movil.addEventListener('change', activar);
         window.addEventListener('scroll', pedir, { passive: true });
-        window.addEventListener('resize', () => { punto = null; pedir(); });
+        window.addEventListener('resize', () => { m = null; ultimo = -1; pedir(); });
         activar();
     })();
 })();

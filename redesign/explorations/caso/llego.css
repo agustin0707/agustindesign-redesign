@@ -381,8 +381,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 :is(.lf-cap-2, .lf-cap-3) { z-index: 4; margin-top: -100lvh; }
 .lf-cap-2 + .cs-lam { position: relative; z-index: 4; margin-top: -100lvh; }
 :is(.lf-cap-2, .lf-cap-3) > .cs-fijo::before { content: ''; position: absolute; inset: 0; z-index: 1; background: var(--lf-oscuro); opacity: var(--lf-plano, 0); pointer-events: none; }
-.lf-paso :is(.lf-cap-2, .lf-cap-3) .lf-reticula i { scale: 1 var(--lf-pl, 0); }
-.lf-paso :is(.lf-cap-2, .lf-cap-3) .lf-reticula::after { scale: var(--lf-pl, 0) 1; }
+.lf-paso .lf-cap-2 .lf-reticula i { scale: 1 var(--lf-pl, 0); }
+.lf-paso .lf-cap-2 .lf-reticula::after { scale: var(--lf-pl, 0) 1; }
 .lf-paso :is(.lf-cap-2, .lf-cap-3) .lf-cap-in { opacity: 1; translate: 0 calc(var(--lf-ps, 0) * -10vh); transition: none; }
 .lf-paso :is(.lf-cap-2, .lf-cap-3) :is(.cs-cap-n, .cs-cap-txt p) { opacity: var(--lf-pt, 0); }
 .lf-paso :is(.lf-cap-2, .lf-cap-3) h2 { opacity: var(--lf-pt, 0); translate: 0 calc((1 - var(--lf-pt, 0)) * 0.35em); }
@@ -390,18 +390,36 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-paso .lf-cap-2.lf-oscuro-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5;
     clip-path: inset(calc(var(--lf-ot) * (1 - var(--lf-oe))) calc(var(--lf-or) * (1 - var(--lf-oe))) calc(var(--lf-ob) * (1 - var(--lf-oe))) calc(var(--lf-ol) * (1 - var(--lf-oe)))); }
 
-/* --- 7.3 EL PASO A LA PORTADA DEL CAPÍTULO 03: EL PUENTE SE ABRE --- */
-/* La portada sube sobre la pantalla que la 07 suma a su pista. Con el paso, en esa ventana (.lf-circulo-on) el panel queda
-   fijo y se abre en círculo desde la flecha de "Pidieron la web" (llego.js 8), la misma familia del hito del pitch en
-   el 01. Después, igual que en las otras portadas: se traza el 03, crece la retícula, entra el título y el índice */
-.lf-paso .lf-cap-3.lf-circulo-on { background: transparent; }
-.lf-paso .lf-cap-3.lf-circulo-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; clip-path: inset(var(--lf-wt, 50%) var(--lf-wr, 50%) var(--lf-wb, 50%) var(--lf-wl, 50%) round var(--lf-wq, 0px)); }
-/* El capítulo de la web se abre como una ventana de navegador vacía, con el cursor esperando en la barra; al llenar la
-   pantalla, el marco y la barra se van y queda la portada */
-.lf-cap-ventana { display: none; }
-.lf-paso .lf-cap-3.lf-circulo-on .lf-cap-ventana { display: block; position: absolute; z-index: 3; top: var(--lf-wt); right: var(--lf-wr); bottom: var(--lf-wb); left: var(--lf-wl); border: 1px solid rgba(255, 255, 255, 0.24); border-radius: var(--lf-wq, 0px); opacity: var(--lf-wo, 1); pointer-events: none; }
-.lf-cap-cromo { display: grid; grid-template-columns: 1fr minmax(0, 400px) 1fr; align-items: center; gap: 14px; padding: 9px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.16); background: rgba(10, 20, 21, 0.55); color: #FFFFFF; }
-.lf-cap-cromo .lf-dom-url { justify-content: flex-start; }
+/* --- 7.3 EL PASO A LA PORTADA DEL CAPÍTULO 03: LA RETÍCULA PASA --- */
+/* La portada sube sobre la pantalla que la 07 suma a su pista. Con el paso, en esa pantalla (.lf-pasa-on) el panel queda
+   fijo y aparece por opacidad (--lf-p3f) bajo lo que viaja (llego.js 8), en cuatro tiempos: la 07 se apaga bajo las
+   cuatro líneas de su cierre, que se encienden con marcas de corte en las esquinas; el marco se abre hasta la pantalla
+   y su rótulo pasa de 36 páginas a una; las tres columnas interiores se dibujan una tras otra; y todo se asienta en la
+   retícula de la portada. Después, como en las otras portadas: se traza el 03, entra el título y el índice.
+   Exploración en explorations/caso/paso-portada-03/ */
+.lf-p3-velo, .lf-p3-capa { display: none; }
+@media (min-width: 769px) {
+    .lf-paso .lf-cap-3.lf-pasa-on { background: transparent; }
+    .lf-paso .lf-cap-3.lf-pasa-on > .cs-fijo { position: fixed; top: 0; left: 0; width: 100%; z-index: 5; opacity: var(--lf-p3f, 0); }
+    /* Su retícula queda entera: mientras dura el paso la esconden las líneas que llegan a ella */
+    .lf-paso .lf-cap-3.lf-pasa-on .lf-reticula { opacity: 0; }
+    .lf-paso.lf-p3-dentro :is(.lf-p3-velo, .lf-p3-capa) { display: block; }
+    .lf-p3-velo, .lf-p3-capa > * { position: fixed; left: 0; top: 0; pointer-events: none; }
+    /* El velo queda entre la 07 y la portada (a igual z-index, por orden); la capa, encima de las dos */
+    .lf-p3-velo { z-index: 4; inset: 0; background: var(--lf-profundo); opacity: var(--lf-p3v, 0); }
+    /* Una línea de 1 px que se mueve y se estira; --k mezcla el verde claro (1) con el blanco de la retícula (0) */
+    .lf-p3-l { z-index: 7; width: var(--w, 1px); height: var(--h, 1px); translate: var(--x, 0) var(--y, 0); opacity: var(--a, 0.22);
+        background: color-mix(in srgb, var(--lf-claro) calc(var(--k, 0) * 100%), #FFFFFF); }
+    /* Marcas de corte: una escuadra de 12 px a 8 px de cada esquina, hacia adentro, como las del logo */
+    .lf-p3-corte { z-index: 7; width: 12px; height: 12px; translate: var(--x, 0) var(--y, 0); opacity: var(--lf-p3c, 0); border: 0 solid var(--lf-claro); }
+    .lf-p3-corte[data-c="tl"] { border-width: 1px 0 0 1px; } .lf-p3-corte[data-c="tr"] { border-width: 1px 1px 0 0; }
+    .lf-p3-corte[data-c="bl"] { border-width: 0 0 1px 1px; } .lf-p3-corte[data-c="br"] { border-width: 0 1px 1px 0; }
+    /* El rótulo viaja con la esquina; el cambio rueda hacia arriba dentro de una línea, como un contador */
+    .lf-p3-rot { z-index: 7; display: grid; overflow: clip; translate: var(--lf-p3x, 0) var(--lf-p3y, 0); opacity: var(--lf-p3o, 0); color: var(--texto-2); white-space: nowrap; }
+    .lf-p3-rot > span { grid-area: 1 / 1; }
+    .lf-p3-rot > span:first-child { translate: 0 calc(var(--lf-p3r, 0) * -100%); }
+    .lf-p3-rot > span:last-child { translate: 0 calc((1 - var(--lf-p3r, 0)) * 100%); color: var(--lf-claro); }
+}
 /* Son siete decisiones: el índice las reparte en toda su entrada */
 .lf-cap-3 .lf-indice a { --v: clamp(0, calc(var(--lf-pi, 1) * 7 - var(--k, 0)), 1); padding: 11px 0; }
 /* El 3 de Manrope son tres piezas superpuestas: la máscara corta lo que el trazo dibujaría por dentro */
