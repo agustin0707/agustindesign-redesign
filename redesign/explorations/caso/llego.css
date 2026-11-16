@@ -591,17 +591,19 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 /* Fundido (.lf-funde, 08 a 09): el fondo es el mismo, así que no se funde el panel entero. Queda encima, transparente
    salvo su ventana, que nace en la pantalla del teléfono y se abre hasta su lugar (data-desde, llego.js sección 6).
    El teléfono suelta su marco cuando la ventana ya lo cubre; la barra de la ventana carga la nueva dirección y su
-   contenido llega después: primero el morado de la madre y al final el sitio, así el recorte del principio nunca lo muestra a medias. La decisión se releva como
+   contenido llega después: la madre se pinta de arriba abajo cuando termina la carga y al final aparece el sitio, así el recorte del principio nunca lo muestra a medias. La 08 se va más rápido que en el relevo para que las dos nunca se crucen. La decisión se releva como
    en .lf-relevo: la 08 sube y se apaga (.lf-sale-on), la 09 llega desde abajo */
 .lf-paso .lf-funde.lf-filo-on > .lf-filo { display: none; }
 .lf-paso .lf-funde.lf-filo-on > .cs-fijo { clip-path: none; background: transparent; }
 .lf-paso .lf-funde.lf-filo-on .lf-degradado { opacity: 0; }
 .lf-paso .lf-funde.lf-filo-on [data-crece] { opacity: clamp(0, calc(var(--lf-filo) * 10), 1); clip-path: inset(var(--lf-vt, 0px) var(--lf-vr, 0px) var(--lf-vb, 0px) var(--lf-vl, 0px) round var(--lf-vq, 0px)); }
-.lf-paso .lf-funde.lf-filo-on .lf-dom-carga { --carga: clamp(0, (var(--lf-filo) - 0.12) * 2.6, 1); opacity: clamp(0, (0.62 - var(--lf-filo)) * 8, 1); }
-.lf-paso .lf-funde.lf-filo-on .lf-dom-pant { opacity: clamp(0, calc((var(--lf-filo) - 0.26) * 5), 1); }
-.lf-paso .lf-funde.lf-filo-on .lf-dom-sitio { opacity: clamp(0, calc((var(--lf-filo) - 0.46) * 4), 1); }
+.lf-paso .lf-funde.lf-filo-on .lf-dom-carga { --carga: clamp(0, (var(--lf-filo) - 0.05) * 4, 1); opacity: clamp(0, (0.42 - var(--lf-filo)) * 8, 1); }
+.lf-paso .lf-funde.lf-filo-on .lf-dom-pant { clip-path: inset(0 0 calc((1 - clamp(0, (var(--lf-filo) - 0.2) * 5, 1)) * 100%) 0); }
+.lf-paso .lf-funde.lf-filo-on .lf-dom-sitio { opacity: clamp(0, calc((var(--lf-filo) - 0.36) * 5), 1); }
 .lf-paso .lf-funde.lf-filo-on .cs-dec > .lf-dom-ficha { opacity: 0; }
-.lf-paso .lf-tel-sec.lf-sale-on .lf-tel { opacity: clamp(0, calc(1 - (var(--lf-sale, 0) - 0.12) * 6), 1); }
+.lf-paso .lf-tel-sec.lf-sale-on .lf-tel { opacity: clamp(0, calc(1 - (var(--lf-sale, 0) - 0.04) * 6), 1); }
+.lf-paso .lf-tel-sec.lf-sale-on .cs-dec > * { --s: clamp(0, calc((var(--lf-sale, 0) - var(--i) * 0.03) * 5), 1); }
+.lf-paso .lf-dom.lf-funde.lf-filo-on .cs-dec > * { --s: clamp(0, calc((var(--lf-filo, 0) - 0.2 - var(--i) * 0.05) * 4), 1); }
 .lf-paso .lf-tel-sec.lf-sale-on .lf-tel-pant > * { opacity: clamp(0, calc(1 - var(--lf-sale, 0) * 10), 1); }
 /* Relevo (.lf-relevo): cuando la ventana y el fondo son los mismos que en la anterior (09 a 10 y 10 a 11), no se funde nada. El panel
    que entra queda encima, transparente salvo su ventana, idéntica a la de abajo; solo cambia la decisión: la que sale

@@ -1418,7 +1418,7 @@
         const px = v => v.toFixed(1) + 'px';
         /* La pieza que crece se recorta al rectángulo de la que deja la anterior y se abre hasta el suyo */
         const crecer = (s, t) => {
-            const a = s.desde.getBoundingClientRect(), b = s.crece.getBoundingClientRect(), k = 1 - curva(fijar((t - 0.12) / 0.7));
+            const a = s.desde.getBoundingClientRect(), b = s.crece.getBoundingClientRect(), k = 1 - curva(fijar((t - 0.03) / 0.62));
             s.el.style.setProperty('--lf-vt', px(Math.max(a.top - b.top, 0) * k)); s.el.style.setProperty('--lf-vr', px(Math.max(b.right - a.right, 0) * k));
             s.el.style.setProperty('--lf-vb', px(Math.max(b.bottom - a.bottom, 0) * k)); s.el.style.setProperty('--lf-vl', px(Math.max(a.left - b.left, 0) * k));
             s.el.style.setProperty('--lf-vq', px(38 * k));
