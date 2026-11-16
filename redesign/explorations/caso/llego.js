@@ -1140,6 +1140,118 @@
             return p => { avance = fijar(p / hasta); pedir(); };
         },
 
+        /* Cita: la retícula del manual impresa en la hoja que sube. Cuatro módulos en escritorio y dos en celular, en los
+           bordes de la grilla del caso; cada línea se corta 8 px antes de cruzarse con otra y 8 px antes de la tinta del
+           texto, medida con las métricas reales de Manrope en un canvas. Con el paso, el avance se reparte: la comilla se
+           entinta marca por marca, cada corte se abre justo antes de su línea, "súper" llega sola tras una pausa, la caja
+           de la 13 marca "súper enriquecido" y la línea de la ficha trae sus celdas al pasar por cada módulo (llego.css 12) */
+        cita: el => {
+            const fijo = el.querySelector('.cs-fijo'), ret = el.querySelector('.lf-ret'), comilla = el.querySelector('.lf-comilla');
+            const cita = el.querySelector('.lf-cita-txt'), cuerpo = el.querySelector('.lf-cita-cuerpo'), etq = el.querySelector('.lf-cita-etq');
+            const lineas = [...el.querySelectorAll('.lf-cita-txt p > span')], tarde = el.querySelector('.lf-cita-tarde');
+            const marcas = [...el.querySelectorAll('.lf-cita-em')], ficha = el.querySelector('.lf-ficha'), celdas = [...ficha.children];
+            const html = document.documentElement, movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
+            const CORTE = 8, INICIOS = [0.12, 0.2, 0.28, 0.54], lienzo = document.createElement('canvas').getContext('2d');
+            const caja = n => { let x = 0, y = 0, e = n; while (e && e !== fijo) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return { x, y, w: n.offsetWidth, h: n.offsetHeight }; };
+            const fuente = n => { const c = getComputedStyle(n); return `${c.fontWeight} ${c.fontSize} ${c.fontFamily}`; };
+            const px = (n, k, v) => n.style.setProperty(k, v.toFixed(1) + 'px');
+            /* Un tramo menos sus huecos */
+            const restar = (a, b, huecos) => huecos.reduce((tramos, h) => h[1] - h[0] <= 0 ? tramos : tramos.flatMap(s => {
+                if (h[1] <= s[0] || h[0] >= s[1]) return [s];
+                return [...(h[0] > s[0] ? [[s[0], h[0]]] : []), ...(h[1] < s[1] ? [[h[1], s[1]]] : [])];
+            }), [[a, b]]);
+            let G = null, ultimo = '', ultP = 0;
+
+            /* --- Medidas: módulos, horizontales, tinta de cada línea y la comilla --- */
+            const medir = () => {
+                const W = fijo.clientWidth, H = fijo.clientHeight, cs = getComputedStyle(fijo), gap = parseFloat(cs.columnGap) || 24, dos = movil.matches;
+                const fc = celdas.map(caja), f = caja(ficha), arriba = caja(cita).y + parseFloat(getComputedStyle(cita).paddingTop);
+                const xs = [parseFloat(cs.paddingLeft), ...(dos ? [fc[1].x] : fc.slice(1).map(c => c.x)).map(x => x - gap), W - parseFloat(cs.paddingRight)];
+                const ys = [arriba, f.y, f.y + f.h, ...(dos ? [fc[2].y] : [])];
+                const p = lineas[0].parentNode;
+                lienzo.font = fuente(p);
+                let textos;
+                if (!dos) {
+                    /* Escritorio: cada línea es un span; su tinta, con el texto real. La caja del remate entra en la cuenta */
+                    textos = lineas.map((s, i) => {
+                        const c = caja(s), m = lienzo.measureText(s.textContent.trim()), fa = m.fontBoundingBoxAscent, fd = m.fontBoundingBoxDescent;
+                        const base = c.y + (c.h - (fa + fd)) / 2 + fa;
+                        return { x0: c.x, x1: c.x + c.w, y0: base - m.actualBoundingBoxAscent, y1: base + m.actualBoundingBoxDescent, ini: INICIOS[i] };
+                    });
+                } else {
+                    /* Celular: las líneas las arma el ancho; se leen del rango, con la tinta de las letras más altas y más bajas */
+                    const r = document.createRange(), o = fijo.getBoundingClientRect(), ma = lienzo.measureText('ÁÉÍÓÚT'), md = lienzo.measureText('pqy,'), filas = new Map();
+                    r.selectNodeContents(p);
+                    [...r.getClientRects()].forEach(q => {
+                        if (!q.width) return;
+                        const k = Math.round(q.top), fila = filas.get(k) || { x0: Infinity, x1: -Infinity, top: q.top - o.top };
+                        fila.x0 = Math.min(fila.x0, q.left - o.left); fila.x1 = Math.max(fila.x1, q.right - o.left); filas.set(k, fila);
+                    });
+                    textos = [...filas.values()].map(fila => ({ x0: fila.x0, x1: fila.x1, y0: fila.top + ma.fontBoundingBoxAscent - ma.actualBoundingBoxAscent, y1: fila.top + ma.fontBoundingBoxAscent + md.actualBoundingBoxDescent, ini: 0 }));
+                }
+                /* Las cajas del remate cortan como un texto más: abrazan de la tilde al descendente (llego.css 12.3) */
+                const ca = lienzo.measureText('súper'), alto = ca.fontBoundingBoxAscent + ca.fontBoundingBoxDescent;
+                marcas.forEach((n, i) => {
+                    const b = caja(n), fs = parseFloat(getComputedStyle(n).fontSize), top = b.y + b.h / 2 - alto / 2 + 0.24 * fs;
+                    textos.push({ x0: b.x, x1: b.x + b.w, y0: top, y1: top + 1.12 * fs, ini: dos ? 0 : [0.42, 0.54][i] });
+                });
+                const e = caja(etq);
+                textos.push({ x0: e.x, x1: e.x + e.w, y0: e.y, y1: e.y + e.h, ini: 0.08 });
+                /* La comilla, alineada por su tinta: a un medianil del borde, arriba con la primera línea (en celular, sobre la cita) */
+                lienzo.font = fuente(comilla);
+                const m = lienzo.measureText('“'), fs = parseFloat(getComputedStyle(comilla).fontSize), fa = m.fontBoundingBoxAscent, fd = m.fontBoundingBoxDescent;
+                const X = xs[0] + gap, Y = dos ? caja(cuerpo).y : textos[0].y0;
+                const qx = X + m.actualBoundingBoxLeft, qy = Y + m.actualBoundingBoxAscent - fa - (fs - fa - fd) / 2;
+                px(comilla, '--lf-qx', qx); px(comilla, '--lf-qy', qy); px(comilla, '--lf-qt', Y - qy - 1);
+                px(comilla, '--lf-qh', m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + 2);
+                px(comilla, '--lf-qm', X - qx + (m.actualBoundingBoxLeft + m.actualBoundingBoxRight) / 2);
+                G = { W, H, xs, ys, yf: f.y, textos };
+                ultimo = '';
+            };
+
+            /* --- La retícula: k abre el corte de cada texto desde su centro, dib cuánto de la línea de la ficha está dibujada --- */
+            const dibujar = (ab, dib) => {
+                const segs = [];
+                G.xs.forEach(x => {
+                    const huecos = G.ys.map(y => [y - CORTE, y + CORTE]);
+                    G.textos.forEach((t, i) => {
+                        if (x < t.x0 - CORTE || x > t.x1 + CORTE) return;
+                        const c = (t.y0 + t.y1) / 2, m = ((t.y1 - t.y0) / 2 + CORTE) * ab[i];
+                        huecos.push([c - m, c + m]);
+                    });
+                    restar(0, G.H, huecos).forEach(s => segs.push([x + 0.5, s[0], x + 0.5, s[1]]));
+                });
+                G.ys.forEach(y => restar(0, y === G.yf ? G.W * dib : G.W, G.xs.map(x => [x - CORTE, x + CORTE])).forEach(s => segs.push([s[0], y + 0.5, s[1], y + 0.5])));
+                while (ret.childElementCount < segs.length) ret.appendChild(svg('line', {}));
+                [...ret.children].forEach((l, i) => {
+                    const s = segs[i];
+                    if (!s) { l.setAttribute('visibility', 'hidden'); return; }
+                    l.removeAttribute('visibility');
+                    ['x1', 'y1', 'x2', 'y2'].forEach((k, j) => l.setAttribute(k, s[j].toFixed(1)));
+                });
+            };
+
+            /* --- Cada cuadro: sin el paso todo vale 1 --- */
+            const pintar = p => {
+                if (!G) return;
+                const vivo = html.classList.contains('lf-paso') && !movil.matches, v = (a, b) => (vivo ? tramo(p, a, b) : 1);
+                fase(comilla, '--lf-k1', v(0, 0.1)); fase(comilla, '--lf-k2', v(0.05, 0.15));
+                fase(etq, '--e', v(0.08, 0.16));
+                lineas.forEach((s, i) => fase(s, '--e', v(INICIOS[i], INICIOS[i] + 0.08)));
+                fase(tarde, '--e', v(0.42, 0.5));
+                fase(marcas[0], '--lf-w', v(0.48, 0.55)); fase(marcas[1], '--lf-w', v(0.6, 0.67));
+                const dib = v(0.7, 0.86), xf = G.W * dib;
+                celdas.forEach((c, i) => fase(c, '--e', vivo ? curva(fijar((xf - (G.xs[i] || 0) - 24) / 160)) : 1));
+                const ab = G.textos.map(t => v(t.ini - 0.04, t.ini + 0.02)), clave = ab.map(k => k.toFixed(3)).join() + dib.toFixed(3);
+                if (clave !== ultimo) { ultimo = clave; dibujar(ab, dib); }
+            };
+            const rehacer = () => { medir(); pintar(ultP); };
+            window.addEventListener('resize', rehacer);
+            (document.fonts ? document.fonts.ready : Promise.resolve()).then(rehacer);
+            rehacer();
+            return p => { ultP = p; pintar(p); };
+        },
+
         /* Teléfono: llegofarma.cl real a 390 px de ancho, montado en reposo y bajando con el scroll de la página. En
            escritorio y con movimiento, antes lee el QR del stand y la mira se abre sobre el sitio (llego.css 9.2) */
         telefono: (el, h) => {

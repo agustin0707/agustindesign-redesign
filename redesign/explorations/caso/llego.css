@@ -1128,28 +1128,63 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 
 /* --- 12. LA CITA: QUE NO QUEDARA PLANA --- */
 /* Sube como hoja oscura sobre la 13, con el filo en verde claro y sin nombre. Mientras sube, la 13 (.lf-baja-on, --lf-sale
-   de llego.js sección 6) se va hacia arriba y se oscurece. Con el paso, --lf-v junta la subida de la hoja (--lf-filo) y la
-   pista (--p): las líneas entran una tras otra, "súper enriquecido" se enciende (--lf-u) y al final firma el gerente. Sin
-   el paso (celular o movimiento reducido) la cita queda puesta y encendida */
+   de llego.js sección 6) se va hacia arriba y se oscurece. La hoja trae impresa la retícula del manual (cuatro módulos,
+   cortes a 8 px de cada cruce y de la tinta), que dibuja llego.js en la escena cita. Con el paso, la escena reparte el
+   avance en variables: la comilla se entinta (--lf-k1, --lf-k2), cada línea entra (--e) después de que su corte se abre,
+   "súper enriquecido" se marca con la caja de la 13 (--lf-w) y la línea de la ficha trae las celdas. Sin el paso
+   (celular o movimiento reducido) todo vale 1 y la cita queda puesta */
 .lf-cita { --pista: 100; --lf-ct: clamp(30px, 4.2vw, 72px); }
 .lf-hoja > .lf-filo { background: var(--lf-claro); }
 .lf-paso .lf-baja-on > .cs-fijo { translate: 0 calc(var(--lf-sale, 0) * -70px); }
 .lf-paso .lf-baja-on > .cs-fijo::after { content: ''; position: absolute; inset: 0; z-index: 9; background: var(--lf-negro); opacity: calc(var(--lf-sale, 0) * 0.55); pointer-events: none; }
-.lf-cita .cs-fijo.cs-grilla { align-content: center; align-items: start; }
-.lf-cita-etq { padding-top: calc(var(--lf-ct) * 0.42); }
-.lf-cita-txt { gap: 44px; }
-.lf .lf-cita-txt p { font-size: var(--lf-ct); line-height: 1.1; letter-spacing: -0.025em; }
+
+/* --- 12.1. LA HOJA: CUERPO ARRIBA, FICHA ABAJO --- */
+/* La hoja deja --lf-rm arriba y abajo (la primera y la última horizontal); la ficha es la última fila, en subgrilla */
+.lf-cita { --lf-rm: clamp(56px, 10.7vh, 120px); }
+.lf-cita .cs-fijo.cs-grilla { grid-template-rows: 100%; align-items: stretch; }
+.lf-cita-txt { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; grid-template-rows: minmax(0, 1fr) auto; margin: 0; padding-block: var(--lf-rm); position: relative; z-index: 1; }
+.lf-cita-cuerpo { grid-column: 4 / -1; align-self: center; display: flex; flex-direction: column; gap: 22px; }
+.lf-cita-etq { color: var(--texto-2); width: fit-content; }
+.lf .lf-cita-txt p { font: var(--cs-peso) var(--lf-ct) / 1.1 var(--cs-f); letter-spacing: -0.025em; }
 .lf-cita-gris { font-style: normal; color: var(--texto-3); }
-.lf-cita-em { font-style: normal; color: color-mix(in srgb, var(--lf-claro) calc(var(--lf-u, 1) * 100%), #FFFFFF); background: linear-gradient(var(--lf-claro), var(--lf-claro)) 0 100% / calc(var(--lf-u, 1) * 100%) 2px no-repeat; }
+
+/* --- 12.2. LA RETÍCULA Y LA COMILLA --- */
+.lf-ret { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.lf-ret line { stroke: rgba(255, 255, 255, 0.14); stroke-width: 1; }
+/* Dos copias de la comilla, una por marca, que se descubren de arriba abajo: la tinta empieza en --lf-qt, mide --lf-qh y
+   las separa --lf-qm (medidas de llego.js con las métricas reales de Manrope 200) */
+.lf-comilla { position: absolute; left: var(--lf-qx, 0px); top: var(--lf-qy, 0px); font: 200 calc(var(--lf-ct) * 12.25) / 1 var(--cs-f); pointer-events: none; }
+.lf-comilla i { display: block; font-style: normal; color: transparent; -webkit-text-stroke: 1px var(--lf-claro); }
+.lf-comilla i + i { position: absolute; left: 0; top: 0; }
+.lf-comilla i:first-child { clip-path: inset(0 calc(100% - var(--lf-qm, 100%)) calc(100% - var(--lf-qt, 0px) - var(--lf-qh, 100%) * var(--lf-k1, 1)) 0); }
+.lf-comilla i + i { clip-path: inset(0 0 calc(100% - var(--lf-qt, 0px) - var(--lf-qh, 100%) * var(--lf-k2, 1)) var(--lf-qm, 0px)); }
+
+/* --- 12.3. EL REMATE: LA CAJA DE LA 13 --- */
+/* "Súper enriquecido" en Medium y marcado con la misma caja verde claro que nombra cada etapa en la 13: se barre de
+   izquierda a derecha (--lf-w) y deja el texto en negro. La caja abraza la tinta, de la mayúscula al descendente */
+.lf-cita-em { position: relative; font-style: normal; font-weight: var(--cs-peso-clave); color: #FFFFFF; padding-inline: 0.07em; margin-inline: -0.07em; }
+.lf-cita-em::after { content: attr(data-t); position: absolute; left: 0; top: 50%; translate: 0 -50%; padding-inline: 0.07em; line-height: normal; white-space: nowrap; color: var(--lf-negro);
+    background: linear-gradient(var(--lf-claro), var(--lf-claro)) 0 0.24em / 100% 1.12em no-repeat; clip-path: inset(0 calc((1 - var(--lf-w, 1)) * 100%) 0 0); }
+
+/* --- 12.4. LA FICHA --- */
+.lf-ficha { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; min-height: 124px; align-items: center; color: var(--texto-2); }
+.lf-ficha > * { grid-column: span 3; display: flex; flex-direction: column; gap: 8px; }
+.lf-ficha > :first-child { padding-left: var(--medianil); }
+.lf-ficha cite { font-style: normal; }
+.lf-ficha cite b { font: 500 18px / 1.2 var(--cs-f); color: #FFFFFF; }
+.lf-ficha-logo { display: block; width: 78px; aspect-ratio: 200 / 77; background: #FFFFFF; -webkit-mask: url("media/lf-llego-logotipo.svg") left center / contain no-repeat; mask: url("media/lf-llego-logotipo.svg") left center / contain no-repeat; }
+.lf-ficha-aprobar { align-items: flex-start; }
 @media (min-width: 769px) {
-    .lf-cita-txt p > span { display: block; white-space: nowrap; }
+    .lf-cita-txt p > span { display: block; width: fit-content; white-space: nowrap; }
 }
+
+/* --- 12.5. CON EL PASO --- */
 @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
-    .lf-cita { --pista: 240; }
-    .lf-paso .lf-cita { --lf-v: calc(var(--lf-filo, 0) * 0.4 + var(--p, 0) * 0.6); --lf-u: clamp(0, calc((var(--lf-v) - 0.66) * 12.5), 1); }
-    .lf-paso .lf-cita-txt p > span { --s: clamp(0, calc((var(--lf-v) - 0.34 - var(--l) * 0.045) * 7), 1); --e: calc(var(--s) * var(--s) * (3 - 2 * var(--s))); opacity: var(--e); translate: 0 calc((1 - var(--e)) * 28px); }
-    .lf-paso .lf-cita-etq { opacity: clamp(0, calc((var(--lf-v) - 0.34) * 7), 1); }
-    .lf-paso .lf-cita-txt footer { opacity: clamp(0, calc((var(--lf-v) - 0.7) * 12.5), 1); }
+    .lf-cita { --pista: 300; }
+    .lf-paso .lf-cita-txt p > span, .lf-paso .lf-cita-etq, .lf-paso .lf-ficha > * { opacity: var(--e, 1); translate: 0 calc((1 - var(--e, 1)) * 20px); }
+    .lf-paso .lf-cita-etq { translate: none; }
+    .lf-paso .lf-cita-tarde { display: inline-block; opacity: var(--e, 1); translate: 0 calc((1 - var(--e, 1)) * 20px); }
+    .lf-paso .lf-ficha > * { translate: 0 calc((1 - var(--e, 1)) * 12px); }
 }
 
 /* --- 13. RESULTADO --- */
@@ -1268,10 +1303,16 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-sg .lf-datos li { max-width: 15ch; font-size: 10px; }
     .lf-sg .lf-datos li:last-child { max-width: 24ch; }
     .lf-sg .lf-datos b { font-size: 28px; }
-    /* La cita, a lo ancho */
-    .lf-cita .cs-fijo.cs-grilla { row-gap: 20px; align-content: center; }
-    .lf-cita-etq { padding-top: 0; }
-    .lf-cita-txt { gap: 28px; }
+    /* La cita, a lo ancho: dos módulos, la comilla chica sobre la cita y la ficha en dos filas de dos celdas */
+    .lf-cita { --lf-rm: 64px; }
+    .lf-cita-cuerpo { grid-column: 1 / -1; padding: calc(var(--lf-ct) * 1.5) 0 0 var(--medianil); gap: 16px; }
+    .lf-comilla { font-size: calc(var(--lf-ct) * 4.2); }
+    /* Aquí "súper enriquecido" cabe en una línea: la caja de "súper" cubre el espacio y las dos se leen como una */
+    .lf-cita-tarde::after { padding-right: 0.3em; }
+    .lf-ficha { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--medianil); align-items: stretch; }
+    .lf-ficha > * { grid-column: auto; justify-content: center; min-height: 92px; }
+    .lf-ficha > :nth-child(odd) { padding-left: var(--medianil); }
+    .lf-ficha cite b { font-size: 16px; }
 }
 
 /* =======================================================
