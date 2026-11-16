@@ -362,7 +362,9 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula::after { display: none; }
     /* Sin línea horizontal no hay cruce que cortar: cada línea baja entera y se corta 8 px antes del contenido que
        tocaría (--fin, lo mide llego.js sección 5.1) */
-    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i { background: linear-gradient(var(--l), var(--l)) 0 0 / 1px calc(100% - var(--fin, 0px)) no-repeat; }
+    /* Dos tramos: hasta 8 px antes de la cifra (--gt) y desde 8 px después de ella (--gb) hasta 8 px antes del contenido (--fin) */
+    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i { background: linear-gradient(var(--l), var(--l)) 0 0 / 1px var(--gt, 0px) no-repeat,
+        linear-gradient(var(--l), var(--l)) 0 var(--gb, 0px) / 1px calc(100% - var(--fin, 0px) - var(--gb, 0px)) no-repeat; }
     /* La cifra termina 8 px antes de la línea del borde: cada dígito tiene su propio blanco a la derecha (--lf-tz) */
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-cap-traza { right: calc(var(--margen) + var(--lf-tz, 0) * 1em); font-size: calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35); }
     .lf-cap-1 .lf-cap-traza { --lf-tz: -0.028; }
@@ -408,8 +410,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     /* El velo queda entre la 07 y la portada (a igual z-index, por orden); la capa, encima de las dos */
     .lf-p3-velo { z-index: 4; inset: 0; background: var(--lf-profundo); opacity: var(--lf-p3v, 0); }
     /* Una línea de 1 px que se mueve y se estira; --k mezcla el verde claro (1) con el blanco de la retícula (0) */
-    .lf-p3-l { z-index: 7; width: var(--w, 1px); height: var(--h, 1px); translate: var(--x, 0) var(--y, 0); opacity: var(--a, 0.22);
-        background: color-mix(in srgb, var(--lf-claro) calc(var(--k, 0) * 100%), #FFFFFF); }
+    .lf-p3-l { --c: color-mix(in srgb, var(--lf-claro) calc(var(--k, 0) * 100%), #FFFFFF); z-index: 7; width: var(--w, 1px); height: var(--h, 1px); translate: var(--x, 0) var(--y, 0); opacity: var(--a, 0.22);
+        background: linear-gradient(var(--c), var(--c)) 0 0 / 100% var(--gt, 0px) no-repeat, linear-gradient(var(--c), var(--c)) 0 var(--gb, 0px) / 100% 100% no-repeat; }
     /* Marcas de corte: una escuadra de 12 px a 8 px de cada esquina, hacia adentro, como las del logo */
     .lf-p3-corte { z-index: 7; width: 12px; height: 12px; translate: var(--x, 0) var(--y, 0); opacity: var(--lf-p3c, 0); border: 0 solid var(--lf-claro); }
     .lf-p3-corte[data-c="tl"] { border-width: 1px 0 0 1px; } .lf-p3-corte[data-c="tr"] { border-width: 1px 1px 0 0; }
@@ -422,7 +424,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 }
 /* Son siete decisiones: el índice las reparte en toda su entrada */
 .lf-cap-3 .lf-indice a { --v: clamp(0, calc(var(--lf-pi, 1) * 7 - var(--k, 0)), 1); padding: 11px 0; }
-/* El 3 de Manrope son tres piezas superpuestas: la máscara corta lo que el trazo dibujaría por dentro */
+/* Las cifras de Manrope son piezas superpuestas (el 2 y el 3, sobre todo): la máscara corta lo que el trazo dibujaría
+   por dentro y queda solo el contorno */
 .lf-traza-limpia > text { stroke-width: 2px; }
 .lf-traza-limpia mask text { fill: #000000; stroke: none; }
 
@@ -594,6 +597,23 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 /* Cuando la que entra cambia de fondo (10 oscura a 11 papel), su ventana llega vacía y el contenido aparece después: así no se mezclan dos páginas a media opacidad */
 .lf-paso .lf-funde.lf-filo-on .lf-rt-esc::after { content: ""; position: absolute; inset: 0; z-index: 6; background: var(--lf-papel); pointer-events: none; opacity: clamp(0, calc((0.42 - var(--lf-filo)) * 6), 1); }
 .lf-paso .lf-funde.lf-filo-on [data-crece] { clip-path: inset(var(--lf-vt, 0px) var(--lf-vr, 0px) var(--lf-vb, 0px) var(--lf-vl, 0px) round var(--lf-vq, 0px)); }
+/* Relevo (.lf-relevo): cuando la ventana y el fondo son los mismos que en la anterior (09 a 10), no se funde nada. El panel
+   que entra queda encima, transparente salvo su ventana, idéntica a la de abajo; solo cambia la decisión: la que sale
+   sube y se apaga línea a línea (.lf-sale-on, --lf-sale de llego.js sección 6) y la que entra llega desde abajo, con el
+   número rodando de 09 a 10 como un contador */
+.lf-paso .lf-relevo.lf-filo-on > .lf-filo { display: none; }
+.lf-paso .lf-relevo.lf-filo-on > .cs-fijo { clip-path: none; background: transparent; }
+.lf-paso .lf-relevo.lf-filo-on .lf-degradado { opacity: 0; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > * { --i: 5; --d: 14px; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(1) { --i: 0; --d: 40px; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(2) { --i: 1; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(3) { --i: 2; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(4) { --i: 3; }
+.lf-paso :is(.lf-relevo.lf-filo-on, .lf-sale-on) .cs-dec > :nth-child(5) { --i: 4; }
+.lf-paso .lf-sale-on .cs-dec > * { --s: clamp(0, calc((var(--lf-sale, 0) - var(--i) * 0.045) * 3.5), 1); --e: calc(var(--s) * var(--s) * (3 - 2 * var(--s)));
+    opacity: calc(1 - var(--e)); translate: 0 calc(var(--e) * var(--d) * -1); }
+.lf-paso .lf-relevo.lf-filo-on .cs-dec > * { --s: clamp(0, calc((var(--lf-filo, 0) - 0.3 - var(--i) * 0.05) * 4), 1); --e: calc(var(--s) * var(--s) * (3 - 2 * var(--s)));
+    opacity: var(--e); translate: 0 calc((1 - var(--e)) * var(--d)); }
 
 /* --- 8.2 UN SISTEMA, NO UN LOGO: EL TALLER DEL NODO --- */
 /* La pieza cuenta la construcción real sobre una sola trama, en cuatro pasos: los puntos de la madre, hoy decorativos
@@ -815,6 +835,25 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-porque-ancho .mono::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--acento); }
 .lf-fotos .cs-tira figure { width: auto; display: grid; grid-template-columns: min-content; }
 .lf-fotos .cs-tira img { width: auto; height: clamp(240px, 40vh, 440px); aspect-ratio: auto; max-width: 84vw; }
+/* Hover de la tira: la foto señalada queda sola, con marcas de corte a 10 px de sus esquinas (las del logo) y su encuadre,
+   que es la primera línea de la regla; el resto baja a media luz */
+.lf-fotos .cs-tira figure { position: relative; transition: opacity 180ms var(--cs-curva); }
+.lf-fotos .cs-tira picture { position: relative; display: block; }
+.lf-fotos .cs-tira picture::after { content: ''; position: absolute; inset: 10px; pointer-events: none; opacity: 0; scale: 1.04; transition: opacity 180ms var(--cs-curva), scale 180ms var(--cs-curva);
+    --m: #FFFFFF; background:
+        linear-gradient(var(--m), var(--m)) left top / 14px 1px no-repeat, linear-gradient(var(--m), var(--m)) left top / 1px 14px no-repeat,
+        linear-gradient(var(--m), var(--m)) right top / 14px 1px no-repeat, linear-gradient(var(--m), var(--m)) right top / 1px 14px no-repeat,
+        linear-gradient(var(--m), var(--m)) left bottom / 14px 1px no-repeat, linear-gradient(var(--m), var(--m)) left bottom / 1px 14px no-repeat,
+        linear-gradient(var(--m), var(--m)) right bottom / 14px 1px no-repeat, linear-gradient(var(--m), var(--m)) right bottom / 1px 14px no-repeat; }
+.lf-fotos .cs-tira figure::before { content: attr(data-encuadre); position: absolute; left: 22px; top: 18px; z-index: 1; padding: 3px 6px; background: rgba(10, 20, 21, 0.72); color: #FFFFFF;
+    font: 400 11px / 1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; opacity: 0; translate: 0 4px; transition: opacity 180ms var(--cs-curva), translate 180ms var(--cs-curva); pointer-events: none; }
+.lf-fotos .cs-tira figcaption { transition: color 180ms var(--cs-curva); }
+@media (hover: hover) {
+    .lf-fotos .cs-tira-pista:has(figure:hover) figure:not(:hover) { opacity: 0.4; }
+    .lf-fotos .cs-tira figure:hover picture::after { opacity: 1; scale: 1; }
+    .lf-fotos .cs-tira figure:hover::before { opacity: 1; translate: 0 0; }
+    .lf-fotos .cs-tira figure:hover figcaption { color: var(--texto); }
+}
 /* La regla antes que las fotos: la dirección fotográfica del manual en cinco datos; la tira de abajo la prueba */
 .lf-fotos-regla { padding: clamp(48px, 6vw, 88px) var(--margen) 0; row-gap: 18px; }
 .lf-regla-cab { grid-column: 4 / -1; display: flex; justify-content: space-between; gap: 24px; color: var(--texto-3); }
@@ -988,7 +1027,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
     .lf-tel-sec .cs-dec, .lf-tel-sec .lf-tel, .lf-qr { grid-row: 1; }
     /* La pantalla del stand, a escala de un monitor detrás del teléfono: se ve entera alrededor de él */
-    .lf-qr { display: block; grid-column: 7 / -1; justify-self: center; align-self: center; width: min(100%, 50vh); margin: 0; background: var(--lf-papel); color: var(--lf-oscuro); scale: calc(1 - var(--lf-qe, 0) * 0.06 - var(--lf-qf, 0) * 0.06); opacity: calc(1 - var(--lf-qf, 0) * 0.85); }
+    .lf-qr { display: block; grid-column: 7 / -1; justify-self: center; align-self: center; width: min(100%, 50vh); margin: 0; background: var(--lf-papel); color: var(--lf-oscuro); scale: calc(1 - var(--lf-qe, 0) * 0.06 - var(--lf-qf, 0) * 0.06); opacity: calc(1 - clamp(0, (var(--lf-qe, 0) - 0.55) * 2.2222, 1)); }
     .lf-qr svg { display: block; width: 100%; height: auto; fill: currentColor; }
     .lf-qr figcaption { display: flex; justify-content: space-between; gap: 16px; padding: 10px 16px; border-top: 1px solid rgba(16, 78, 86, 0.2); }
     .lf-tel-sec .lf-tel { z-index: 2; align-self: center; translate: calc((1 - var(--lf-qe, 0)) * 6vw) calc((1 - var(--lf-qe, 0)) * 112vh); rotate: calc((1 - var(--lf-qe, 0)) * 9deg); }

@@ -1050,21 +1050,40 @@
 
     /* --- 5.1 LA RETÍCULA DE LAS PORTADAS SE CORTA ANTES DEL CONTENIDO --- */
     /* En escritorio las líneas de las portadas bajan enteras; la que toparía con el título, el texto o el índice se corta
-       8 px antes. Se mide sin transformaciones (offsetTop), así el paso que sube el contenido no la mueve (llego.css 7.1) */
+       8 px antes (--fin), y la que cruza la cifra grande se interrumpe 8 px antes y después de su tinta (--gt, --gb): de la
+       cifra solo se ve el contorno. El contenido se mide sin transformaciones (offsetTop), así el paso que lo sube no
+       mueve los cortes (llego.css 7.1); la tinta de la cifra, con las métricas reales de su fuente en un canvas */
     (() => {
         const caps = [...document.querySelectorAll('.lf-cap')];
         if (!caps.length) return;
         const CORTE = 8;
         const caja = (n, raiz) => { let x = 0, y = 0, e = n; while (e && e !== raiz) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return { x, y, w: n.offsetWidth, h: n.offsetHeight }; };
+        const lienzo = document.createElement('canvas').getContext('2d');
+        /* La caja de tinta de la cifra, relativa al panel: el texto va anclado al final (derecha) y sobre el borde de abajo del svg */
+        const tinta = (svg, raiz) => {
+            const tx = svg && svg.querySelector(':scope > text');
+            if (!tx || !lienzo) return null;
+            const cs = getComputedStyle(tx), fs = parseFloat(cs.fontSize), r = svg.getBoundingClientRect(), p = raiz.getBoundingClientRect();
+            lienzo.font = `${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
+            if ('letterSpacing' in lienzo) lienzo.letterSpacing = (fs * -0.07).toFixed(2) + 'px';
+            lienzo.textAlign = 'right';
+            const m = lienzo.measureText(tx.textContent), x = r.right - p.left, y = r.bottom - p.top;
+            return { l: x - m.actualBoundingBoxLeft, r: x + m.actualBoundingBoxRight, t: y - m.actualBoundingBoxAscent, b: y + m.actualBoundingBoxDescent };
+        };
         const cortar = () => caps.forEach(cap => {
             const raiz = cap.querySelector('.lf-cap-fijo'), ret = cap.querySelector('.lf-reticula');
             if (!raiz || !ret) return;
             const alto = raiz.offsetHeight;
             const bloques = [...cap.querySelectorAll('.cs-cap-txt h2, .cs-cap-txt p, .lf-indice, .cs-cap-n')].map(n => caja(n, raiz));
+            const cifra = tinta(cap.querySelector('.lf-cap-traza'), raiz);
             ret.querySelectorAll('i').forEach(l => {
                 const x = caja(l, raiz).x;
                 const tope = Math.min(...bloques.filter(b => b.x - CORTE <= x && x <= b.x + b.w + CORTE).map(b => b.y), alto + CORTE);
                 l.style.setProperty('--fin', Math.max(alto - (tope - CORTE), 0) + 'px');
+                /* Solo la que atraviesa la tinta: la del borde, a 8 px de la cifra, sigue entera */
+                const cruza = cifra && cifra.l < x && x < cifra.r;
+                l.style.setProperty('--gt', (cruza ? Math.max(cifra.t - CORTE, 0) : 0).toFixed(1) + 'px');
+                l.style.setProperty('--gb', (cruza ? cifra.b + CORTE : 0).toFixed(1) + 'px');
             });
         });
         window.addEventListener('resize', cortar);
@@ -1077,7 +1096,9 @@
        --lf-filo dice cuánto subió (0 a 1) y .lf-filo-on deja su panel fijo para descubrirlo en su lugar (llego.css 8.1.6).
        Una sola lectura por cuadro y por sección */
     (() => {
-        const secs = [...document.querySelectorAll('.lf-filo-sec')].map(el => ({ el, ultimo: -1, crece: el.querySelector('[data-crece]'), desde: el.dataset.desde && document.querySelector(el.dataset.desde) }));
+        /* En el relevo (.lf-relevo) la anterior recibe --lf-sale y .lf-sale-on para que su decisión se vaya mientras llega la nueva */
+        const secs = [...document.querySelectorAll('.lf-filo-sec')].map(el => ({ el, ultimo: -1, crece: el.querySelector('[data-crece]'), desde: el.dataset.desde && document.querySelector(el.dataset.desde),
+            sale: el.classList.contains('lf-relevo') && el.previousElementSibling && el.previousElementSibling.closest('section') }));
         const px = v => v.toFixed(1) + 'px';
         /* La pieza que crece se recorta al rectángulo de la que deja la anterior y se abre hasta el suyo */
         const crecer = (s, t) => {
@@ -1095,7 +1116,8 @@
             secs.forEach(s => {
                 const t = paso ? fijar(1 - s.el.getBoundingClientRect().top / vh) : 1;
                 s.el.classList.toggle('lf-filo-on', t > 0 && t < 1);
-                if (t !== s.ultimo) { s.ultimo = t; s.el.style.setProperty('--lf-filo', t.toFixed(4)); if (s.crece && s.desde && t > 0 && t < 1) crecer(s, t); }
+                if (s.sale) s.sale.classList.toggle('lf-sale-on', t > 0 && t < 1);
+                if (t !== s.ultimo) { s.ultimo = t; s.el.style.setProperty('--lf-filo', t.toFixed(4)); if (s.sale) s.sale.style.setProperty('--lf-sale', t.toFixed(4)); if (s.crece && s.desde && t > 0 && t < 1) crecer(s, t); }
             });
         };
         const pedir = () => { if (!pedido) pedido = requestAnimationFrame(cuadro); };
@@ -1179,7 +1201,7 @@
         const caja = el => { const r = el.getBoundingClientRect(); return { l: r.left, t: r.top, w: r.width, h: r.height }; };
         const medir = () => {
             const c = s => caja(d7.querySelector(s)), panel = caja(cap.querySelector('.lf-cap-fijo'));
-            const ret = [...cap.querySelectorAll('.lf-reticula i')].map(i => { const r = caja(i), fin = parseFloat(getComputedStyle(i).getPropertyValue('--fin')) || 0; return { l: r.l - panel.l, t: r.t - panel.t, w: 1, h: r.h - fin }; });
+            const ret = [...cap.querySelectorAll('.lf-reticula i')].map(i => { const r = caja(i), g = getComputedStyle(i), n = v => parseFloat(g.getPropertyValue(v)) || 0; return { l: r.l - panel.l, t: r.t - panel.t, w: 1, h: r.h - n('--fin'), gt: n('--gt'), gb: n('--gb') }; });
             const v1 = c('.lf-cierre-v1');
             m = ret.length === 5 && v1.h > 0 ? { v1, v2: c('.lf-cierre-v2'), h1: c('.lf-cierre-h1'), h2: c('.lf-cierre-h2'), rot: c('.lf-cierre-tl'), ret } : null;
         };
@@ -1210,6 +1232,8 @@
                 const d = curva(tramo(t, 0.46 + 0.07 * i, 0.74 + 0.07 * i)), r = R[i + 1];
                 linea(k, { l: r.l, t: r.t, w: 1, h: r.h * d }, alfa, verde);
             });
+            /* Las verticales llevan el mismo corte que su línea de destino donde cruza la cifra */
+            [['v1', 0], ['v2', 1], ['v3', 2], ['v4', 3], ['v5', 4]].forEach(([k, i]) => { lineas[k].style.setProperty('--gt', px(R[i].gt)); lineas[k].style.setProperty('--gb', px(R[i].gb)); });
             /* Las marcas de corte, a 8 px de cada esquina hacia adentro: aparecen con la luz y se van al abrirse, porque
                la pantalla no se corta */
             fase(html, '--lf-p3c', tramo(t, 0.03, 0.14) * (1 - tramo(t, 0.4, 0.56)));
