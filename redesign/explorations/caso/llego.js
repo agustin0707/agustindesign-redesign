@@ -1022,6 +1022,88 @@
             return p => { avance = p; pedir(); };
         },
 
+        /* Seguimiento: la sección Tecnología del sitio real. Primero entera, con la lista de seis capacidades y el panel
+           marcados; la cámara se acerca al panel y el scroll lleva un pedido por las seis etapas. Cada etapa se activa como
+           en el sitio (el mismo evento que el cursor) y su marca lleva el nombre de la capacidad que le corresponde. La
+           ficha se enciende con el relato (llego.css 9.4) */
+        seguimiento: el => {
+            const pant = el.querySelector('.lf-sg-pant'), velo = el.querySelector('.lf-ac-velo'), hueco = velo.firstElementChild;
+            const cajas = [...el.querySelectorAll('.lf-ac-caja')], datos = [...el.querySelectorAll('[data-sg-dato]')];
+            const T = { marca: [0.03, 0.09], acerca: [0.12, 0.22], etapas: [0.24, 0.86], cierra: [0.9, 0.96] };
+            const W = 1440, PAD = 10;
+            const lineal = (p, a, b) => fijar((p - a) / (b - a));
+            const mezcla = (a, b, t) => a + (b - a) * t;
+            /* Zoom natural, como en la retícula: la escala avanza en proporción y todo gira en torno a un punto fijo */
+            const zoom = (a, b, t) => {
+                const rel = b.e / a.e, k = Math.pow(rel, t);
+                if (Math.abs(rel - 1) < 0.001) return { e: a.e, x: mezcla(a.x, b.x, t), y: mezcla(a.y, b.y, t) };
+                const fx = (b.x - a.x * rel) / (1 - rel), fy = (b.y - a.y * rel) / (1 - rel);
+                return { e: a.e * k, x: fx + (a.x - fx) * k, y: fy + (a.y - fy) * k };
+            };
+            let marco = null, win = null, doc = null, avance = 0, suave = 0, bucle = 0, A = 744, B = 595, H = 1152, armado = false;
+            const medir = () => {
+                A = pant.clientWidth; B = pant.clientHeight; H = Math.round(B / (A / W));
+                if (marco) { marco.style.setProperty('--lf-iw', W + 'px'); marco.style.setProperty('--lf-ih', H + 'px'); }
+                armado = false;
+            };
+            const pedir = () => { if (!bucle) bucle = requestAnimationFrame(pintar); };
+            sitioEnEscena(el, pant, (m, w, d) => { win = w; doc = d; medir(); pedir(); setTimeout(() => { armado = false; pedir(); }, 500); }, { alMontar: m => { marco = m; medir(); } });
+
+            /* --- El sitio quieto en la sección: solo se mueve la cámara --- */
+            const armar = sec => {
+                win.scrollTo({ top: Math.max(sec.getBoundingClientRect().top + win.scrollY, 0), behavior: 'instant' });
+                /* La cabecera, el indicador y las secciones vecinas no son el tema */
+                [...doc.querySelectorAll('header, .recorrido'), sec.previousElementSibling, sec.nextElementSibling].forEach(n => { if (n) n.style.visibility = 'hidden'; });
+                /* Si el sitio cambia de etapa por su cuenta, se vuelve a pintar la del relato */
+                const ruta = sec.querySelector('.ruta');
+                if (ruta && !ruta.dataset.vigilada) { ruta.dataset.vigilada = '1'; new win.MutationObserver(pedir).observe(ruta, { attributes: true, attributeFilter: ['data-paso'] }); }
+                armado = true;
+            };
+            /* Una vista que encuadra un rectángulo del sitio con un margen */
+            const encuadre = (r, m) => { const e = Math.min(A * m / r.width, B * m / r.height); return { e, x: A / 2 - (r.left + r.width / 2) * e, y: B / 2 - (r.top + r.height / 2) * e }; };
+            const pintar = () => {
+                bucle = 0;
+                const d = avance - suave;
+                suave = quieto || Math.abs(d) < 0.0002 ? avance : suave + d * 0.18;
+                const p = suave;
+                datos.forEach((n, i) => n.classList.toggle('on', p >= [T.etapas[0], (T.etapas[0] + T.etapas[1]) / 2, T.cierra[0]][i]));
+                if (!doc || !doc.body) { if (suave !== avance) pedir(); return; }
+                const sec = doc.querySelector('.s-tecno'), lista = doc.querySelector('.s-tecno .pasos'), ruta = doc.querySelector('.s-tecno .ruta');
+                if (!sec || !lista || !ruta) return;
+                if (!armado) armar(sec);
+                const pasos = [...lista.querySelectorAll('.paso')];
+                /* La etapa del pedido: una por tramo; la primera ya está al acercarse */
+                const n = pasos.length, k = Math.min(Math.floor(lineal(p, T.etapas[0], T.etapas[1]) * n), n - 1);
+                /* El sitio también activa etapas con su propio observador al moverse: manda la del relato */
+                if (ruta.dataset.paso !== String(k)) pasos[k].dispatchEvent(new win.MouseEvent('mouseenter'));
+                /* Cámara: la sección entera, después el panel */
+                const rs = sec.getBoundingClientRect(), rr = ruta.getBoundingClientRect();
+                const lejos = encuadre({ left: rs.left, top: rs.top, width: rs.width, height: Math.min(rs.height, rs.width * B / A) }, 0.98), cerca = encuadre(rr, 0.9);
+                const c = zoom(lejos, cerca, tramo(p, T.acerca[0], T.acerca[1]));
+                marco.style.setProperty('--lf-ie', c.e.toFixed(4)); marco.style.setProperty('--lf-ix', c.x.toFixed(1) + 'px'); marco.style.setProperty('--lf-iy', c.y.toFixed(1) + 'px');
+                const medida = (nodo, m = PAD) => { const r = nodo.getBoundingClientRect(); return { x: (r.left - m) * c.e + c.x, y: (r.top - m) * c.e + c.y, w: (r.width + m * 2) * c.e, h: (r.height + m * 2) * c.e }; };
+                /* Marcas: de lejos, las seis capacidades y el pedido; de cerca, la etapa con el nombre de su capacidad */
+                const lejosG = Math.min(lineal(p, T.marca[0], T.marca[1]), 1 - lineal(p, T.acerca[0], T.acerca[0] + 0.03));
+                let huecos;
+                if (p < T.acerca[0] + 0.03) {
+                    huecos = [{ r: medida(lista, 6), g: lejosG, txt: '6 capacidades' }, { r: medida(ruta, 6), g: lineal(p, T.marca[0] + 0.02, T.marca[1] + 0.02) * (lejosG > 0 ? 1 : 0), txt: 'Un pedido' }];
+                } else {
+                    const hito = ruta.querySelector(`.hito[data-i="${k}"] .disco`), nombre = pasos[k].querySelector('h3');
+                    const g = lineal(p, T.etapas[0] - 0.02, T.etapas[0]) * (1 - lineal(p, T.cierra[0], T.cierra[0] + 0.02));
+                    const reg = ruta.querySelector('.registro');
+                    huecos = [{ r: hito && medida(hito, 8), g, txt: `${String(k + 1).padStart(2, '0')} · ${nombre ? nombre.textContent : ''}` },
+                        { r: reg && medida(reg, 8), g: lineal(p, T.cierra[0], T.cierra[1]), txt: 'Registro completo' }];
+                }
+                huecos.forEach((u, i) => marcarCaja(cajas[i], u.r, u.g, u.txt, A));
+                fase(velo, '--lf-av', lejosG);
+                hueco.setAttribute('d', trazoRect({ x: 0, y: 0, w: A, h: B }) + (lejosG > 0 ? huecos.filter(u => u.r && u.g > 0).map(u => trazoRect({ x: u.r.x, y: u.r.y, w: u.r.w, h: u.r.h })).join('') : ''));
+                if (suave !== avance) pedir();
+            };
+            window.addEventListener('resize', () => { medir(); pedir(); });
+            medir();
+            return p => { avance = p; pedir(); };
+        },
+
         /* Teléfono: llegofarma.cl real a 390 px de ancho, montado en reposo y bajando con el scroll de la página. En
            escritorio y con movimiento, antes lee el QR del stand y la mira se abre sobre el sitio (llego.css 9.2) */
         telefono: (el, h) => {

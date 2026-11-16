@@ -1039,14 +1039,14 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 /* Mientras sube la 11, el visor sube dentro de la ventana y tapa la confirmación de la 10, como la hoja que entra: un
    borde en verde claro, sin fundido, así no se mezclan las dos pantallas. La portada llega un poco después */
 @media (min-width: 769px) {
-    /* Solo el cromo tapa al de la 10; la pantalla deja ver la confirmación hasta que llega el visor */
-    .lf-paso .lf-relevo.lf-filo-on .lf-rt-nav { background: transparent; }
-    .lf-paso .lf-relevo.lf-filo-on .lf-rt-nav .lf-dom-cromo { background: color-mix(in srgb, var(--lf-negro) 70%, var(--lf-profundo)); }
+    /* Solo el cromo tapa al de la anterior; la pantalla la deja ver hasta que llega la hoja (también en la 13, sección 10) */
+    .lf-paso .lf-relevo.lf-filo-on :is(.lf-rt-nav, .lf-sg-nav) { background: transparent; }
+    .lf-paso .lf-relevo.lf-filo-on :is(.lf-rt-nav, .lf-sg-nav) .lf-dom-cromo { background: color-mix(in srgb, var(--lf-negro) 70%, var(--lf-profundo)); }
     .lf-paso .lf-relevo.lf-filo-on .lf-rt-esc { background: transparent; }
     .lf-paso .lf-relevo.lf-filo-on .lf-rt-impreso { --k: clamp(0, (var(--lf-filo) - 0.3) * 2.2, 1); --e: calc(1 - (1 - var(--k)) * (1 - var(--k)) * (1 - var(--k)));
         clip-path: inset(calc((1 - var(--e)) * 100%) 0 0 0); box-shadow: inset 0 1px 0 var(--lf-claro); }
     .lf-paso .lf-relevo.lf-filo-on .lf-rt-manual { translate: 0 calc((1 - clamp(0, (var(--lf-filo) - 0.42) * 2, 1)) * 60px); }
-    .lf-paso .lf-relevo.lf-filo-on :is(iframe, .lf-rt-bandas, .lf-ac-velo, .lf-ac-caja) { visibility: hidden; }
+    .lf-paso .lf-relevo.lf-filo-on .lf-rt-esc :is(iframe, .lf-rt-bandas, .lf-ac-velo, .lf-ac-caja) { visibility: hidden; }
 }
 .lf-rt-bandas { position: absolute; inset: 0; z-index: 2; opacity: var(--lf-bo, 1); pointer-events: none; }
 .lf-rt-bandas i { position: absolute; top: 0; bottom: 0; left: calc(var(--lf-bx, 0px) + var(--i) * var(--lf-bw, 0px)); width: var(--lf-bw, 0px); background: rgba(112, 202, 199, calc(0.34 - var(--i) * 0.06)); transform-origin: top; scale: 1 clamp(0, calc(var(--lf-bv, 0) * 4 - var(--i)), 1); }
@@ -1060,17 +1060,21 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-rt-ficha li.on { opacity: 1; }
 @media (min-width: 769px) { .lf-rt .cs-dec { min-height: 504px; } }
 
-/* --- 10. EVIDENCIA: LLEGOFARMA.CL, MARCADO --- */
-.lf-ev { --foco: var(--lf-claro); --foco-txt: var(--lf-negro); }
-.lf-ev .cs-fijo { padding-top: 56px; }
-.lf-ev-vivo { display: inline-flex; align-items: center; gap: 6px; }
-.lf-ev-vivo i { width: 6px; height: 6px; border-radius: 50%; background: var(--verde); }
-.lf-ev .cs-ev-caja { box-shadow: 0 0 0 1px var(--foco), 0 0 0 200vmax rgba(10, 20, 21, 0.5); }
-/* Las esquinas del foco son nodos, como la retícula del manual */
-.lf-ev .cs-ev-caja::before, .lf-ev .cs-ev-caja::after { content: ''; position: absolute; width: 7px; height: 7px; border-radius: 50%; background: var(--foco); }
-.lf-ev .cs-ev-caja::before { left: -4px; top: -4px; }
-.lf-ev .cs-ev-caja::after { right: -4px; bottom: -4px; }
-.lf-ev .cs-ev-indice li[data-parada] button .mono { color: var(--acento); }
+/* --- 10. DECISIÓN 13: LA TRAZABILIDAD, EN CÓDIGO --- */
+/* Relevo sobre la 11: la misma ventana. Adentro, la sección Tecnología del sitio real; llego.js (escena seguimiento) mueve
+   su cámara, activa las etapas y dibuja el velo y las marcas, como en la 10 y la 11 */
+.lf-sg { --lf-avo: 0.42; }
+.lf-sg-pant { background: var(--lf-papel); }
+.lf-sg-pant iframe { position: absolute; left: 0; top: 0; z-index: 1; border: 0; width: var(--lf-iw, 1440px); height: var(--lf-ih, 900px); transform-origin: 0 0; transform: translate3d(var(--lf-ix, 0px), var(--lf-iy, 0px), 0) scale(var(--lf-ie, 1)); pointer-events: none; }
+.lf-datos.lf-sg-ficha { margin-top: auto; }
+.lf-sg-ficha li { opacity: 0.3; transition: opacity 160ms; }
+.lf-sg-ficha li.on { opacity: 1; }
+/* Mientras sube la 13, el sitio sube dentro de la ventana como la hoja que entra, con su borde en verde claro, y tapa el
+   título de la 11 sin fundido */
+@media (min-width: 769px) {
+    .lf-paso .lf-relevo.lf-filo-on .lf-sg-pant { --k: clamp(0, (var(--lf-filo) - 0.3) * 2.2, 1); --e: calc(1 - (1 - var(--k)) * (1 - var(--k)) * (1 - var(--k))); clip-path: inset(calc((1 - var(--e)) * 100%) 0 0 0); }
+    .lf-paso .lf-relevo.lf-filo-on .lf-sg-pant::after { content: ''; position: absolute; left: 0; right: 0; top: calc((1 - var(--e)) * 100%); z-index: 5; height: 1px; background: var(--lf-claro); }
+}
 
 /* --- 11. DECISIÓN 13 · EL TELÉFONO --- */
 .lf-tel-sec .cs-fijo { color: #FFFFFF; }
