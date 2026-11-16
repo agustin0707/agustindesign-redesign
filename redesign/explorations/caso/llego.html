@@ -718,8 +718,9 @@
         <!-- Relevo sobre la 11: la misma ventana y el mismo fondo. La sección Tecnología del sitio sube como hoja; primero se
              ve entera, con sus seis capacidades y el panel, y la cámara se acerca al panel. El scroll lleva un pedido por las
              seis etapas, cada una marcada con la capacidad que le corresponde, hasta el registro completo (llego.js, escena
-             seguimiento). El sitio no se envía ni navega desde aquí -->
-        <section class="lf-dsec lf-dom lf-sg lf-filo-sec lf-relevo cs-oscuro" id="dec-13" data-escena="seguimiento" data-ev="../works/sitios/llego/index.html" style="--pista:560">
+             seguimiento). Al final la cámara se aleja hasta el panel entero y queda quieta una pantalla, mientras sube la cita
+             (data-pasos-hasta). El sitio no se envía ni navega desde aquí -->
+        <section class="lf-dsec lf-dom lf-sg lf-filo-sec lf-relevo cs-oscuro" id="dec-13" data-escena="seguimiento" data-ev="../works/sitios/llego/index.html" data-pasos-hasta="0.8214" style="--pista:660">
             <div class="lf-filo" aria-hidden="true"><span class="mono">Decisión 13 · La trazabilidad, en código</span></div>
             <div class="cs-fijo cs-grilla">
                 <div class="lf-degradado lf-grano lf-degradado-hondo" aria-hidden="true"></div>
@@ -728,8 +729,8 @@
                     <span class="cs-dec-n mono">Decisión 13</span>
                     <h3>La trazabilidad, en código</h3>
                     <p>La sección Tecnología no tenía foto. En vez de la imagen de un panel, armé un seguimiento que avanza con el scroll: un pedido pasa por las seis capacidades de Llegó, de la ruta al reporte.</p>
-                    <p class="cs-porque"><span class="mono">Por qué</span>Ver la trazabilidad funcionando explica más que la imagen de un panel</p>
-                    <ul class="lf-datos lf-sg-ficha mono"><li data-sg-dato><b>6</b>etapas</li><li data-sg-dato><b>0</b>fotos</li><li data-sg-dato><b>6<small>KB</small></b>todo el panel</li></ul>
+                    <p class="cs-porque"><span class="mono">Por qué</span>Un proceso se entiende mejor cuando avanza que en una foto</p>
+                    <ul class="lf-datos lf-sg-ficha mono"><li data-sg-dato><b>0</b>fotos</li><li data-sg-dato><b>6</b>etapas</li><li data-sg-dato><b>5,8<small>KB</small></b>menos que la foto más liviana del sitio</li></ul>
                 </aside>
                 <div class="lf-dom-nav lf-sg-nav" aria-hidden="true">
                     <div class="lf-dom-cromo"><span class="cs-ev-luces"><i></i><i></i><i></i></span><span class="lf-dom-url"><span class="lf-dom-candado"></span>llegofarma.cl</span></div>
@@ -737,8 +738,26 @@
                         <svg class="lf-ac-velo"><path fill-rule="evenodd"/></svg>
                         <div class="lf-ac-caja"><span class="mono"></span></div>
                         <div class="lf-ac-caja"><span class="mono"></span></div>
+                        <div class="lf-ac-caja"><span class="mono"></span></div>
+                        <div class="lf-sg-brillo"></div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- --- LA CITA: QUE NO QUEDARA PLANA --- -->
+        <!-- Remate del bloque: sube como hoja oscura, con el filo claro, sobre la 13 quieta, que se va hacia arriba y se
+             oscurece (llego.js sección 6). Las líneas entran con el scroll y "súper enriquecido" se enciende al final
+             (llego.css 12) -->
+        <section class="lf-cita lf-filo-sec lf-hoja cs-oscuro" id="cita" data-escena="cita">
+            <div class="lf-filo" aria-hidden="true"></div>
+            <div class="cs-fijo cs-grilla">
+                <div class="lf-degradado lf-grano lf-degradado-noche" aria-hidden="true"></div>
+                <span class="cs-etq mono lf-cita-etq">Que no quedara plana</span>
+                <blockquote class="cs-res-cita lf-cita-txt">
+                    <p><span style="--l:0">Tenía el temor de que esto </span><span style="--l:1">fuera bonito pero <i class="lf-cita-gris">plano</i>, y en </span><span style="--l:2">verdad se ve algo <i class="lf-cita-em">súper</i> </span><span style="--l:3"><i class="lf-cita-em">enriquecido</i>.</span></p>
+                    <footer><cite><b>Cristián Barreaux</b><span class="mono">Gerente general de Llegó</span></cite><span class="mono cs-por-aprobar">Cita por aprobar</span></footer>
+                </blockquote>
             </div>
         </section>
 
@@ -749,10 +768,6 @@
             <div class="lf-degradado lf-grano lf-degradado-noche" aria-hidden="true"></div>
             <div class="cs-grilla cs-res">
                 <span class="cs-etq mono">Resultado</span>
-                <blockquote class="cs-res-cita" data-revela>
-                    <p>Tenía el temor de que esto fuera bonito pero plano, y en verdad se ve algo súper enriquecido.</p>
-                    <footer><cite><b>Cristian Barreaux</b><span class="mono">Gerente general de Llegó</span></cite><span class="mono cs-por-aprobar">Cita por aprobar</span></footer>
-                </blockquote>
                 <ul class="cs-cifras" data-revela>
                     <li><b data-cuenta="36">36</b><span>páginas de manual, aprobado en su primera presentación</span></li>
                     <li><b data-cuenta="3">3</b><span>caminos para la cruz, comparados con 4 criterios</span></li>

@@ -1063,12 +1063,18 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 /* --- 10. DECISIÓN 13: LA TRAZABILIDAD, EN CÓDIGO --- */
 /* Relevo sobre la 11: la misma ventana. Adentro, la sección Tecnología del sitio real; llego.js (escena seguimiento) mueve
    su cámara, activa las etapas y dibuja el velo y las marcas, como en la 10 y la 11 */
-.lf-sg { --lf-avo: 0.42; }
+/* El sitio es claro: el velo baja y tira al verde, para no ensuciar el papel; el foco lo hacen las marcas */
+.lf-sg .lf-ac-velo path { fill: color-mix(in srgb, var(--lf-oscuro) 16%, transparent); }
 .lf-sg-pant { background: var(--lf-papel); }
 .lf-sg-pant iframe { position: absolute; left: 0; top: 0; z-index: 1; border: 0; width: var(--lf-iw, 1440px); height: var(--lf-ih, 900px); transform-origin: 0 0; transform: translate3d(var(--lf-ix, 0px), var(--lf-iy, 0px), 0) scale(var(--lf-ie, 1)); pointer-events: none; }
 .lf-datos.lf-sg-ficha { margin-top: auto; }
 .lf-sg-ficha li { opacity: 0.3; transition: opacity 160ms; }
 .lf-sg-ficha li.on { opacity: 1; }
+/* La línea nueva del registro se enciende al escribirse: una franja clara que se apaga y deja su borde (llego.js, escena seguimiento) */
+.lf-sg-brillo { position: absolute; left: 0; top: 0; z-index: 3; width: var(--lf-cw, 0px); height: var(--lf-ch, 0px); transform: translate3d(var(--lf-cx, 0px), var(--lf-cy, 0px), 0); opacity: 0; pointer-events: none; }
+.lf-sg-brillo::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--lf-claro); }
+.lf-sg-brillo.on { opacity: 1; animation: lf-sg-brillo 1200ms var(--ease) both; }
+@keyframes lf-sg-brillo { from { background: color-mix(in srgb, var(--lf-claro) 34%, transparent); } to { background: color-mix(in srgb, var(--lf-claro) 0%, transparent); } }
 /* Mientras sube la 13, el sitio sube dentro de la ventana como la hoja que entra, con su borde en verde claro, y tapa el
    título de la 11 sin fundido */
 @media (min-width: 769px) {
@@ -1120,7 +1126,33 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-datos li { display: flex; flex-direction: column; gap: 6px; max-width: 18ch; }
 .lf-datos b { font: 200 48px / 0.9 var(--cs-f); letter-spacing: -0.04em; color: #FFFFFF; }
 
-/* --- 12. RESULTADO --- */
+/* --- 12. LA CITA: QUE NO QUEDARA PLANA --- */
+/* Sube como hoja oscura sobre la 13, con el filo en verde claro y sin nombre. Mientras sube, la 13 (.lf-baja-on, --lf-sale
+   de llego.js sección 6) se va hacia arriba y se oscurece. Con el paso, --lf-v junta la subida de la hoja (--lf-filo) y la
+   pista (--p): las líneas entran una tras otra, "súper enriquecido" se enciende (--lf-u) y al final firma el gerente. Sin
+   el paso (celular o movimiento reducido) la cita queda puesta y encendida */
+.lf-cita { --pista: 100; --lf-ct: clamp(30px, 4.2vw, 72px); }
+.lf-hoja > .lf-filo { background: var(--lf-claro); }
+.lf-paso .lf-baja-on > .cs-fijo { translate: 0 calc(var(--lf-sale, 0) * -70px); }
+.lf-paso .lf-baja-on > .cs-fijo::after { content: ''; position: absolute; inset: 0; z-index: 9; background: var(--lf-negro); opacity: calc(var(--lf-sale, 0) * 0.55); pointer-events: none; }
+.lf-cita .cs-fijo.cs-grilla { align-content: center; align-items: start; }
+.lf-cita-etq { padding-top: calc(var(--lf-ct) * 0.42); }
+.lf-cita-txt { gap: 44px; }
+.lf .lf-cita-txt p { font-size: var(--lf-ct); line-height: 1.1; letter-spacing: -0.025em; }
+.lf-cita-gris { font-style: normal; color: var(--texto-3); }
+.lf-cita-em { font-style: normal; color: color-mix(in srgb, var(--lf-claro) calc(var(--lf-u, 1) * 100%), #FFFFFF); background: linear-gradient(var(--lf-claro), var(--lf-claro)) 0 100% / calc(var(--lf-u, 1) * 100%) 2px no-repeat; }
+@media (min-width: 769px) {
+    .lf-cita-txt p > span { display: block; white-space: nowrap; }
+}
+@media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+    .lf-cita { --pista: 240; }
+    .lf-paso .lf-cita { --lf-v: calc(var(--lf-filo, 0) * 0.4 + var(--p, 0) * 0.6); --lf-u: clamp(0, calc((var(--lf-v) - 0.66) * 12.5), 1); }
+    .lf-paso .lf-cita-txt p > span { --s: clamp(0, calc((var(--lf-v) - 0.34 - var(--l) * 0.045) * 7), 1); --e: calc(var(--s) * var(--s) * (3 - 2 * var(--s))); opacity: var(--e); translate: 0 calc((1 - var(--e)) * 28px); }
+    .lf-paso .lf-cita-etq { opacity: clamp(0, calc((var(--lf-v) - 0.34) * 7), 1); }
+    .lf-paso .lf-cita-txt footer { opacity: clamp(0, calc((var(--lf-v) - 0.7) * 12.5), 1); }
+}
+
+/* --- 13. RESULTADO --- */
 .lf-resultado { position: relative; overflow: clip; }
 .lf .cs-cifras b { color: #FFFFFF; }
 .lf .cs-res-cita p { font-weight: 200; }
@@ -1229,6 +1261,17 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-tel-pant { border-radius: 25px; }
     .lf-tel-sec .cs-dec p:not(.cs-porque) { -webkit-line-clamp: 2; }
     .lf-datos { display: none; }
+    /* Trazabilidad: la bajada entera y la ficha a la vista, más chica; la cámara parte en el panel (llego.js) */
+    .lf-sg .cs-dec p:not(.cs-porque) { display: block; overflow: visible; }
+    .lf-sg .lf-datos { display: flex; gap: 18px; }
+    .lf-sg .lf-dom-nav { height: 46vh; }
+    .lf-sg .lf-datos li { max-width: 15ch; font-size: 10px; }
+    .lf-sg .lf-datos li:last-child { max-width: 24ch; }
+    .lf-sg .lf-datos b { font-size: 28px; }
+    /* La cita, a lo ancho */
+    .lf-cita .cs-fijo.cs-grilla { row-gap: 20px; align-content: center; }
+    .lf-cita-etq { padding-top: 0; }
+    .lf-cita-txt { gap: 28px; }
 }
 
 /* =======================================================

@@ -425,9 +425,10 @@
         caja.style.setProperty('--lf-cx', r.x.toFixed(1) + 'px'); caja.style.setProperty('--lf-cy', r.y.toFixed(1) + 'px');
         caja.style.setProperty('--lf-cw', (r.w * g).toFixed(1) + 'px'); caja.style.setProperty('--lf-ch', r.h.toFixed(1) + 'px');
         caja.classList.toggle('abajo', r.y < 30);
-        caja.classList.toggle('der', r.x + r.w > ancho * 0.75 && r.w < ancho * 0.5);
+        /* El rótulo se mide solo cuando cambia; va a la derecha si la marca está en el último cuarto o si no cabe */
         const s = caja.firstElementChild;
-        if (s.textContent !== txt) s.textContent = txt;
+        if (s.textContent !== txt) { s.textContent = txt; caja.anchoTxt = s.offsetWidth; }
+        caja.classList.toggle('der', (r.x + r.w > ancho * 0.75 && r.w < ancho * 0.5) || r.x + (caja.anchoTxt || 0) > ancho);
     };
 
     /* --- 4. ESCENAS PROPIAS --- */
@@ -1023,14 +1024,20 @@
         },
 
         /* Seguimiento: la sección Tecnología del sitio real. Primero entera, con la lista de seis capacidades y el panel
-           marcados; la cámara se acerca al panel y el scroll lleva un pedido por las seis etapas. Cada etapa se activa como
-           en el sitio (el mismo evento que el cursor) y su marca lleva el nombre de la capacidad que le corresponde. La
-           ficha se enciende con el relato (llego.css 9.4) */
+           marcados uno después del otro; la lista se apaga mientras la cámara se acerca al panel y el scroll lleva un pedido
+           por las seis etapas, más lentas las dos primeras. Cada etapa se activa como en el sitio (el mismo evento que el
+           cursor), su marca lleva el nombre de la capacidad, el tramo hasta la siguiente se llena al ritmo del scroll y la
+           línea nueva del registro se enciende. Al cerrar, la cámara se aleja hasta el panel entero y marca su peso. La
+           ficha se enciende con el relato: las fotos al verse la sección, las etapas con la sexta y el peso con su marca.
+           En lo angosto no hay vista de lejos ni marca del contador: no se leerían y la cámara parte en el panel */
         seguimiento: el => {
             const pant = el.querySelector('.lf-sg-pant'), velo = el.querySelector('.lf-ac-velo'), hueco = velo.firstElementChild;
-            const cajas = [...el.querySelectorAll('.lf-ac-caja')], datos = [...el.querySelectorAll('[data-sg-dato]')];
-            const T = { marca: [0.03, 0.09], acerca: [0.12, 0.22], etapas: [0.24, 0.86], cierra: [0.9, 0.96] };
-            const W = 1440, PAD = 10;
+            const cajas = [...el.querySelectorAll('.lf-ac-caja')], datos = [...el.querySelectorAll('[data-sg-dato]')], brillo = el.querySelector('.lf-sg-brillo');
+            const T = { lista: [0.02, 0.05], pedido: [0.08, 0.11], acerca: [0.17, 0.27], etapas: [0.29, 0.84], registro: [0.85, 0.88], aleja: [0.89, 0.95], peso: [0.93, 0.96] };
+            /* Ritmo que acelera: el peso de cada etapa en su tramo */
+            const PESOS = [1.5, 1.4, 1, 1, 1, 1], SUMA = PESOS.reduce((a, b) => a + b, 0);
+            const CORTES = PESOS.map((_, i) => PESOS.slice(0, i).reduce((a, b) => a + b, 0) / SUMA);
+            const W = 1440, PAD = 10, AIRE = 14, hasta = +el.dataset.pasosHasta || 1;
             const lineal = (p, a, b) => fijar((p - a) / (b - a));
             const mezcla = (a, b, t) => a + (b - a) * t;
             /* Zoom natural, como en la retícula: la escala avanza en proporción y todo gira en torno a un punto fijo */
@@ -1040,7 +1047,7 @@
                 const fx = (b.x - a.x * rel) / (1 - rel), fy = (b.y - a.y * rel) / (1 - rel);
                 return { e: a.e * k, x: fx + (a.x - fx) * k, y: fy + (a.y - fy) * k };
             };
-            let marco = null, win = null, doc = null, avance = 0, suave = 0, bucle = 0, A = 744, B = 595, H = 1152, armado = false;
+            let marco = null, win = null, doc = null, avance = 0, suave = 0, bucle = 0, A = 744, B = 595, H = 1152, armado = false, ultimaEtapa = -1;
             const medir = () => {
                 A = pant.clientWidth; B = pant.clientHeight; H = Math.round(B / (A / W));
                 if (marco) { marco.style.setProperty('--lf-iw', W + 'px'); marco.style.setProperty('--lf-ih', H + 'px'); }
@@ -1057,6 +1064,8 @@
                 /* Si el sitio cambia de etapa por su cuenta, se vuelve a pintar la del relato */
                 const ruta = sec.querySelector('.ruta');
                 if (ruta && !ruta.dataset.vigilada) { ruta.dataset.vigilada = '1'; new win.MutationObserver(pedir).observe(ruta, { attributes: true, attributeFilter: ['data-paso'] }); }
+                /* Los tramos los llena el scroll, no la transición del sitio */
+                sec.querySelectorAll('.llenado').forEach(l => { l.style.transition = 'none'; });
                 armado = true;
             };
             /* Una vista que encuadra un rectángulo del sitio con un margen */
@@ -1065,43 +1074,70 @@
                 bucle = 0;
                 const d = avance - suave;
                 suave = quieto || Math.abs(d) < 0.0002 ? avance : suave + d * 0.18;
-                const p = suave;
-                datos.forEach((n, i) => n.classList.toggle('on', p >= [T.etapas[0], (T.etapas[0] + T.etapas[1]) / 2, T.cierra[0]][i]));
+                const p = suave, angosto = A < 500;
+                const vista = angosto ? 0 : T.lista[0];
+                datos.forEach((n, i) => n.classList.toggle('on', p >= [vista, T.etapas[0] + CORTES[5] * (T.etapas[1] - T.etapas[0]), T.peso[0]][i]));
                 if (!doc || !doc.body) { if (suave !== avance) pedir(); return; }
                 const sec = doc.querySelector('.s-tecno'), lista = doc.querySelector('.s-tecno .pasos'), ruta = doc.querySelector('.s-tecno .ruta');
                 if (!sec || !lista || !ruta) return;
                 if (!armado) armar(sec);
-                const pasos = [...lista.querySelectorAll('.paso')];
-                /* La etapa del pedido: una por tramo; la primera ya está al acercarse */
-                const n = pasos.length, k = Math.min(Math.floor(lineal(p, T.etapas[0], T.etapas[1]) * n), n - 1);
+                const pasos = [...lista.querySelectorAll('.paso')], n = pasos.length;
+                /* La etapa del pedido y cuánto avanzó dentro de ella; la primera ya está al acercarse */
+                const u = lineal(p, T.etapas[0], T.etapas[1]);
+                let k = 0;
+                while (k < n - 1 && u >= CORTES[k + 1]) k++;
+                const dentro = fijar((u - CORTES[k]) / ((CORTES[k + 1] || 1) - CORTES[k]));
                 /* El sitio también activa etapas con su propio observador al moverse: manda la del relato */
                 if (ruta.dataset.paso !== String(k)) pasos[k].dispatchEvent(new win.MouseEvent('mouseenter'));
-                /* Cámara: la sección entera, después el panel */
+                /* El tramo hacia la siguiente etapa se llena en la segunda mitad de la etapa */
+                ruta.querySelectorAll('.llenado').forEach(l => { const i = +l.dataset.i; l.style.transform = `scaleX(${(i < k ? 1 : i === k && u > 0 ? curva(fijar((dentro - 0.35) / 0.6)) : 0).toFixed(3)})`; });
+                /* La lista y el título se apagan mientras la cámara se acerca: no dejan una franja al costado ni asoman
+                   sobre el panel cuando la cámara se aleja al cerrar */
+                const apaga = angosto ? '0' : (1 - lineal(p, T.acerca[0], T.acerca[0] + 0.05)).toFixed(3);
+                [lista, ...sec.querySelectorAll('.franja, .arriba')].forEach(n => { n.style.opacity = apaga; });
+                /* Cámara: la sección entera, el panel y, al cerrar, el panel con aire */
                 const rs = sec.getBoundingClientRect(), rr = ruta.getBoundingClientRect();
-                const lejos = encuadre({ left: rs.left, top: rs.top, width: rs.width, height: Math.min(rs.height, rs.width * B / A) }, 0.98), cerca = encuadre(rr, 0.9);
-                const c = zoom(lejos, cerca, tramo(p, T.acerca[0], T.acerca[1]));
+                const cerca = encuadre(rr, 0.9), lejos = angosto ? cerca : encuadre({ left: rs.left, top: rs.top, width: rs.width, height: Math.min(rs.height, rs.width * B / A) }, 0.98);
+                const c = p < T.aleja[0] ? zoom(lejos, cerca, tramo(p, T.acerca[0], T.acerca[1])) : zoom(cerca, encuadre(rr, 0.78), tramo(p, T.aleja[0], T.aleja[1]));
                 marco.style.setProperty('--lf-ie', c.e.toFixed(4)); marco.style.setProperty('--lf-ix', c.x.toFixed(1) + 'px'); marco.style.setProperty('--lf-iy', c.y.toFixed(1) + 'px');
                 const medida = (nodo, m = PAD) => { const r = nodo.getBoundingClientRect(); return { x: (r.left - m) * c.e + c.x, y: (r.top - m) * c.e + c.y, w: (r.width + m * 2) * c.e, h: (r.height + m * 2) * c.e }; };
-                /* Marcas: de lejos, las seis capacidades y el pedido; de cerca, la etapa con el nombre de su capacidad */
-                const lejosG = Math.min(lineal(p, T.marca[0], T.marca[1]), 1 - lineal(p, T.acerca[0], T.acerca[0] + 0.03));
+                /* Marcas: de lejos, primero las seis capacidades y después el pedido, con aire; de cerca, la etapa con el
+                   nombre de su capacidad, el contador que avanza con el scroll y, al cerrar, el registro y el peso del panel */
+                const sale = angosto ? 0 : 1 - lineal(p, T.acerca[0], T.acerca[0] + 0.03);
+                const gLista = Math.min(lineal(p, T.lista[0], T.lista[1]), sale), gPedido = Math.min(lineal(p, T.pedido[0], T.pedido[1]), sale);
                 let huecos;
                 if (p < T.acerca[0] + 0.03) {
-                    huecos = [{ r: medida(lista, 6), g: lejosG, txt: '6 capacidades' }, { r: medida(ruta, 6), g: lineal(p, T.marca[0] + 0.02, T.marca[1] + 0.02) * (lejosG > 0 ? 1 : 0), txt: 'Un pedido' }];
+                    huecos = [{ r: medida(lista, AIRE), g: gLista, txt: '6 capacidades' }, { r: medida(ruta, AIRE), g: gPedido, txt: 'Un pedido' }, { g: 0 }];
                 } else {
-                    const hito = ruta.querySelector(`.hito[data-i="${k}"] .disco`), nombre = pasos[k].querySelector('h3');
-                    const g = lineal(p, T.etapas[0] - 0.02, T.etapas[0]) * (1 - lineal(p, T.cierra[0], T.cierra[0] + 0.02));
+                    const hito = ruta.querySelector(`.hito[data-i="${k}"] .disco`), nombre = pasos[k].querySelector('h3'), cont = ruta.querySelector('.estado');
+                    const g = lineal(p, T.etapas[0] - 0.02, T.etapas[0]) * (1 - lineal(p, T.registro[0], T.registro[0] + 0.01));
                     const reg = ruta.querySelector('.registro');
-                    huecos = [{ r: hito && medida(hito, 8), g, txt: `${String(k + 1).padStart(2, '0')} · ${nombre ? nombre.textContent : ''}` },
-                        { r: reg && medida(reg, 8), g: lineal(p, T.cierra[0], T.cierra[1]), txt: 'Registro completo' }];
+                    const gReg = lineal(p, T.registro[0], T.registro[1]) * (1 - lineal(p, T.aleja[0], T.aleja[0] + 0.01));
+                    huecos = [{ r: hito && medida(hito, 8), g, txt: `${pad(k + 1)} · ${nombre ? nombre.textContent : ''}` },
+                        gReg > 0 || p < T.aleja[0] ? { r: reg && medida(reg, 8), g: gReg, txt: 'Registro completo' } : { r: medida(ruta, 6), g: lineal(p, T.peso[0], T.peso[1]), txt: 'Todo el panel · 5,8 KB' },
+                        { r: cont && medida(cont, 6), g: angosto ? 0 : g * (1 - lineal(p, T.etapas[0] + CORTES[2] * (T.etapas[1] - T.etapas[0]), T.etapas[0] + CORTES[2] * (T.etapas[1] - T.etapas[0]) + 0.01)), txt: 'Avanza con el scroll' }];
                 }
-                huecos.forEach((u, i) => marcarCaja(cajas[i], u.r, u.g, u.txt, A));
-                fase(velo, '--lf-av', lejosG);
-                hueco.setAttribute('d', trazoRect({ x: 0, y: 0, w: A, h: B }) + (lejosG > 0 ? huecos.filter(u => u.r && u.g > 0).map(u => trazoRect({ x: u.r.x, y: u.r.y, w: u.r.w, h: u.r.h })).join('') : ''));
+                /* De lejos las marcas no crecen: entran enteras, así ninguna línea cruza el contenido */
+                huecos.forEach((h, i) => marcarCaja(cajas[i], h.r, h.g > 0.5 ? 1 : 0, h.txt, A));
+                /* La línea nueva del registro se enciende al escribirse */
+                const linea = p >= T.etapas[0] && p < T.registro[0] && ruta.querySelector(`.registro text[data-i="${k}"]`);
+                if (linea) {
+                    const r = medida(linea, 4);
+                    brillo.style.setProperty('--lf-cx', r.x.toFixed(1) + 'px'); brillo.style.setProperty('--lf-cy', r.y.toFixed(1) + 'px');
+                    brillo.style.setProperty('--lf-cw', r.w.toFixed(1) + 'px'); brillo.style.setProperty('--lf-ch', r.h.toFixed(1) + 'px');
+                }
+                if (linea && k !== ultimaEtapa) { brillo.classList.remove('on'); void brillo.offsetWidth; brillo.classList.add('on'); }
+                if (!linea) brillo.classList.remove('on');
+                ultimaEtapa = linea ? k : -1;
+                const vela = Math.max(gLista, gPedido);
+                fase(velo, '--lf-av', vela);
+                hueco.setAttribute('d', trazoRect({ x: 0, y: 0, w: A, h: B }) + (vela > 0 ? huecos.filter(h => h.r && h.g > 0.5).map(h => trazoRect(h.r)).join('') : ''));
                 if (suave !== avance) pedir();
             };
             window.addEventListener('resize', () => { medir(); pedir(); });
             medir();
-            return p => { avance = p; pedir(); };
+            /* La última pantalla de la pista es la de la cita, que sube sobre la 13 quieta */
+            return p => { avance = fijar(p / hasta); pedir(); };
         },
 
         /* Teléfono: llegofarma.cl real a 390 px de ancho, montado en reposo y bajando con el scroll de la página. En
@@ -1222,9 +1258,11 @@
        --lf-filo dice cuánto subió (0 a 1) y .lf-filo-on deja su panel fijo para descubrirlo en su lugar (llego.css 8.1.6).
        Una sola lectura por cuadro y por sección */
     (() => {
-        /* En el relevo (.lf-relevo) la anterior recibe --lf-sale y .lf-sale-on para que su decisión se vaya mientras llega la nueva */
+        /* En el relevo (.lf-relevo) la anterior recibe --lf-sale y .lf-sale-on para que su decisión se vaya mientras llega la nueva.
+           Bajo la hoja oscura (.lf-hoja) recibe --lf-sale y .lf-baja-on: sube entera y se oscurece (llego.css 12) */
         const secs = [...document.querySelectorAll('.lf-filo-sec')].map(el => ({ el, ultimo: -1, crece: el.querySelector('[data-crece]'), desde: el.dataset.desde && document.querySelector(el.dataset.desde),
-            sale: el.classList.contains('lf-relevo') && el.previousElementSibling && el.previousElementSibling.closest('section') }));
+            sale: (el.classList.contains('lf-relevo') || el.classList.contains('lf-hoja')) && el.previousElementSibling && el.previousElementSibling.closest('section'),
+            claseSale: el.classList.contains('lf-hoja') ? 'lf-baja-on' : 'lf-sale-on' }));
         const px = v => v.toFixed(1) + 'px';
         /* La pieza que crece se recorta al rectángulo de la que deja la anterior y se abre hasta el suyo */
         const crecer = (s, t) => {
@@ -1242,7 +1280,7 @@
             secs.forEach(s => {
                 const t = paso ? fijar(1 - s.el.getBoundingClientRect().top / vh) : 1;
                 s.el.classList.toggle('lf-filo-on', t > 0 && t < 1);
-                if (s.sale) s.sale.classList.toggle('lf-sale-on', t > 0 && t < 1);
+                if (s.sale) s.sale.classList.toggle(s.claseSale, t > 0 && t < 1);
                 if (t !== s.ultimo) { s.ultimo = t; s.el.style.setProperty('--lf-filo', t.toFixed(4)); if (s.sale) s.sale.style.setProperty('--lf-sale', t.toFixed(4)); if (s.crece && s.desde && t > 0 && t < 1) crecer(s, t); }
             });
         };
