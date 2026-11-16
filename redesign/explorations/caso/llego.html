@@ -774,22 +774,30 @@
         <!-- =======================================================
              RESULTADO
              ======================================================= -->
-        <section class="cs-mod lf-resultado cs-oscuro">
-            <div class="lf-degradado lf-grano lf-degradado-noche" aria-hidden="true"></div>
-            <div class="cs-grilla cs-res">
-                <span class="cs-etq mono">Resultado</span>
-                <ul class="cs-cifras" data-revela>
+        <section class="lf-resultado cs-oscuro" id="resultado">
+            <!-- Sigue la hoja de la cita: el mismo brillo cruza el corte y la retícula baja hasta cerrarse bajo los créditos (llego.js 5.2) -->
+            <div class="lf-degradado lf-grano lf-fin-fondo" aria-hidden="true"></div>
+            <svg class="lf-ret" aria-hidden="true"></svg>
+            <div class="cs-grilla lf-fin">
+                <h2 class="lf-fin-fila lf-fin-cab"><span class="mono">Resultado</span></h2>
+                <ul class="lf-fin-fila lf-fin-cifras" data-revela>
                     <li><b data-cuenta="36">36</b><span>páginas de manual, aprobado en su primera presentación</span></li>
                     <li><b data-cuenta="3">3</b><span>caminos para la cruz, comparados con 4 criterios</span></li>
                     <li><b data-cuenta="5">5</b><span>días del contenido final al sitio aprobado por la gerencia</span></li>
                     <li><b data-cuenta="56">56</b><span>cambios al texto del cliente, cada uno con su porqué</span></li>
                 </ul>
-                <a class="cs-vivo-link" href="https://llegofarma.cl" target="_blank" rel="noopener"><span class="cs-punto"></span>Ver llegofarma.cl en vivo ↗</a>
-                <dl class="cs-creditos">
-                    <div><dt class="mono">Estrategia, marca, manual, UX/UI y front end</dt><dd>Agustín Avendaño</dd></div>
-                    <div><dt class="mono">Imágenes</dt><dd>Adobe Firefly bajo mi dirección de arte, retoque en Photoshop</dd></div>
-                    <div><dt class="mono">Con</dt><dd>El equipo de marketing y la gerencia de Llegó</dd></div>
-                </dl>
+                <div class="lf-fin-fila lf-fin-vivo">
+                    <span class="mono">En vivo</span>
+                    <a href="https://llegofarma.cl" target="_blank" rel="noopener"><span class="cs-punto"></span>llegofarma.cl<i aria-hidden="true">↗</i></a>
+                </div>
+                <div class="lf-fin-fila lf-fin-creditos">
+                    <span class="mono">Créditos</span>
+                    <dl>
+                        <div><dt class="mono">Estrategia, marca, manual, UX/UI y front end</dt><dd>Agustín Avendaño</dd></div>
+                        <div><dt class="mono">Imágenes</dt><dd>Adobe Firefly bajo mi dirección de arte, retoque en Photoshop</dd></div>
+                        <div><dt class="mono">Con</dt><dd>El equipo de marketing y la gerencia de Llegó</dd></div>
+                    </dl>
+                </div>
             </div>
         </section>
 

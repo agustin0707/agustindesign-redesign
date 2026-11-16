@@ -1133,14 +1133,15 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
    avance en variables: la comilla se entinta (--lf-k1, --lf-k2), cada línea entra (--e) después de que su corte se abre,
    "súper enriquecido" se marca con la caja de la 13 (--lf-w) y la línea de la ficha trae las celdas. Sin el paso
    (celular o movimiento reducido) todo vale 1 y la cita queda puesta */
-.lf-cita { --pista: 100; --lf-ct: clamp(30px, 4.2vw, 72px); }
+.lf-cita { --pista: 100; }
 .lf-hoja > .lf-filo { background: var(--lf-claro); }
 .lf-paso .lf-baja-on > .cs-fijo { translate: 0 calc(var(--lf-sale, 0) * -70px); }
 .lf-paso .lf-baja-on > .cs-fijo::after { content: ''; position: absolute; inset: 0; z-index: 9; background: var(--lf-negro); opacity: calc(var(--lf-sale, 0) * 0.55); pointer-events: none; }
 
 /* --- 12.1. LA HOJA: CUERPO ARRIBA, FICHA ABAJO --- */
-/* La hoja deja --lf-rm arriba y abajo (la primera y la última horizontal); la ficha es la última fila, en subgrilla */
-.lf-cita { --lf-rm: clamp(56px, 10.7vh, 120px); }
+/* La hoja deja --lf-rm arriba y abajo (la primera y la última horizontal); la ficha es la última fila, en subgrilla.
+   El resultado sigue la misma hoja: comparte el cuerpo de la cita (--lf-ct) y el margen de la retícula */
+.lf-cita, .lf-resultado { --lf-ct: clamp(30px, 4.2vw, 72px); --lf-rm: clamp(56px, 10.7vh, 120px); }
 .lf-cita .cs-fijo.cs-grilla { grid-template-rows: 100%; align-items: stretch; }
 .lf-cita-txt { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; grid-template-rows: minmax(0, 1fr) auto; margin: 0; padding-block: var(--lf-rm); position: relative; z-index: 1; }
 .lf-cita-cuerpo { grid-column: 4 / -1; align-self: center; display: flex; flex-direction: column; gap: 22px; }
@@ -1187,19 +1188,59 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-paso .lf-ficha > * { translate: 0 calc((1 - var(--e, 1)) * 12px); }
 }
 
-/* --- 13. RESULTADO --- */
-.lf-resultado { position: relative; overflow: clip; }
-.lf .cs-cifras b { color: #FFFFFF; }
-.lf .cs-res-cita p { font-weight: 200; }
+/* --- 13. RESULTADO: LA HOJA SIGUE --- */
+/* No empieza una sección nueva: la hoja de la cita sigue. El brillo es la misma elipse de .lf-degradado-noche, con su
+   centro 10lvh bajo el corte, así cruza de una sección a la otra sin borde y se apaga hacia el negro antes del siguiente
+   proyecto. La retícula baja desde el corte con los mismos cuatro módulos (dos en celular) y se cierra bajo los créditos:
+   cada fila es una franja de la tabla que empezó con la ficha de la cita (llego.js 5.2) */
+/* La primera horizontal cae justo en el corte: entre ella y el borde de la ficha queda una fila vacía de --lf-rm, la
+   misma que la hoja deja arriba de la cita */
+.lf-resultado { position: relative; overflow: clip; padding: 0 var(--margen) calc(var(--lf-rm) * 1.5); }
+.lf-fin-fondo { background: radial-gradient(70% 60lvh at 50% 10lvh, rgba(23, 129, 129, 0.45) 0%, rgba(16, 78, 86, 0) 70%), var(--lf-negro); }
+.lf-resultado > .lf-ret { position: absolute; }
+
+/* --- 13.1. LAS FILAS --- */
+/* Cada fila usa la grilla del caso en subgrilla; su rótulo va en el primer módulo, a un medianil de la línea */
+.lf-fin { row-gap: 0; }
+.lf-fin-fila { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; margin: 0; padding: 0; list-style: none; font: inherit; }
+.lf-fin-fila > .mono { grid-column: 1 / span 3; padding-left: var(--medianil); color: var(--texto-2); }
+.lf-fin-cab { min-height: 72px; }
+
+/* --- 13.2. LAS CIFRAS: UNA POR MÓDULO --- */
+.lf-fin-cifras { min-height: clamp(240px, 32vh, 320px); align-items: stretch; }
+.lf-fin-cifras li { grid-column: span 3; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; padding-block: 32px; }
+.lf-fin-cifras li:first-child { padding-left: var(--medianil); }
+.lf-fin-cifras b { font: 200 clamp(72px, 8.4vw, 144px) / 0.8 var(--cs-f); letter-spacing: -0.05em; font-variant-numeric: tabular-nums; color: #FFFFFF; }
+.lf-fin-cifras span { max-width: 24ch; font: 400 15px / 1.45 var(--cs-f); color: var(--texto-2); }
+
+/* --- 13.3. EN VIVO: EL SITIO, AL CUERPO DE LA CITA --- */
+.lf-fin-vivo { min-height: clamp(140px, 19vh, 190px); }
+.lf-fin-vivo a { grid-column: 4 / -1; justify-self: start; display: inline-flex; align-items: center; gap: 0.3em; padding-bottom: 0.08em; font: 300 var(--lf-ct) / 1.1 var(--cs-f); letter-spacing: -0.025em; color: #FFFFFF;
+    background: linear-gradient(var(--lf-claro), var(--lf-claro)) 0 100% / 0% 1px no-repeat; transition: background-size 200ms var(--ease); }
+.lf-fin-vivo .cs-punto { width: 0.16em; height: 0.16em; margin-right: 0.08em; border-radius: 50%; background: var(--verde, #3DDC84); box-shadow: 0 0 0 0.08em color-mix(in srgb, var(--verde, #3DDC84) 22%, transparent); }
+.lf-fin-vivo i { font-style: normal; color: var(--lf-claro); transition: translate 200ms var(--ease); }
+@media (hover: hover) {
+    .lf-fin-vivo a:hover { background-size: 100% 1px; }
+    .lf-fin-vivo a:hover i { translate: 0.08em -0.08em; }
+}
+.lf-fin-vivo a:focus-visible { outline: 1px solid var(--lf-claro); outline-offset: 8px; }
+
+/* --- 13.4. CRÉDITOS --- */
+.lf-fin-creditos { min-height: 150px; }
+.lf-fin-creditos dl { grid-column: 4 / -1; display: grid; grid-template-columns: subgrid; margin: 0; }
+.lf-fin-creditos dl > div { grid-column: span 3; display: flex; flex-direction: column; gap: 8px; padding-right: var(--medianil); }
+.lf-fin-creditos dt { color: var(--texto-3); text-wrap: balance; }
+.lf-fin-creditos dd { margin: 0; max-width: 30ch; font: 400 15px / 1.45 var(--cs-f); color: var(--texto-2); }
 
 /* =======================================================
    VISTA MÓVIL (TELÉFONOS Y TABLETS EN VERTICAL)
    ======================================================= */
 @media (max-width: 768px), (orientation: portrait) and (max-width: 1100px) {
     /* Todo a lo ancho: las ubicaciones de escritorio del caso pesan más que la regla común del marco */
-    /* El degradado queda fuera: un hijo absoluto con columna asignada toma su área como contenedor y deja franjas */
-    .lf .cs-grilla > :not(.lf-degradado) { grid-column: 1 / -1; }
-    .lf .cs-grilla > .lf-degradado { grid-column: auto; }
+    /* El degradado, la retícula y la comilla quedan fuera: un hijo absoluto con columna asignada toma su área como
+       contenedor y deja franjas (o mide sin el margen) */
+    .lf .cs-grilla > :not(.lf-degradado, .lf-ret, .lf-comilla) { grid-column: 1 / -1; }
+    .lf .cs-grilla > :is(.lf-degradado, .lf-ret, .lf-comilla) { grid-column: auto; }
     .lf-reticula i:nth-child(2), .lf-reticula i:nth-child(4) { display: none; }
     .lf-reticula::after { background-size: 50% 1px; }
     /* Hero: la cinta de tres columnas más anchas (lo fija el JS), el logo a lo ancho y la ficha en una columna */
@@ -1304,11 +1345,23 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-sg .lf-datos li:last-child { max-width: 24ch; }
     .lf-sg .lf-datos b { font-size: 28px; }
     /* La cita, a lo ancho: dos módulos, la comilla chica sobre la cita y la ficha en dos filas de dos celdas */
-    .lf-cita { --lf-rm: 64px; }
+    .lf-cita, .lf-resultado { --lf-rm: 64px; }
     .lf-cita-cuerpo { grid-column: 1 / -1; padding: calc(var(--lf-ct) * 1.5) 0 0 var(--medianil); gap: 16px; }
     .lf-comilla { font-size: calc(var(--lf-ct) * 4.2); }
     /* Aquí "súper enriquecido" cabe en una línea: la caja de "súper" cubre el espacio y las dos se leen como una */
     .lf-cita-tarde::after { padding-right: 0.3em; }
+    /* El resultado en dos módulos: cifras de dos en dos, el sitio y los créditos a lo ancho bajo su rótulo */
+    .lf-fin-fila { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--medianil); row-gap: 16px; }
+    .lf-fin-fila > .mono { grid-column: 1 / -1; }
+    .lf-fin-cab { min-height: 56px; }
+    .lf-fin-cifras { min-height: 0; }
+    .lf-fin-cifras li { grid-column: auto; padding-block: 24px; }
+    .lf-fin-cifras li:nth-child(odd) { padding-left: var(--medianil); }
+    .lf-fin-cifras b { font-size: 64px; }
+    .lf-fin-vivo, .lf-fin-creditos { min-height: 0; padding-block: 28px; }
+    .lf-fin-vivo a, .lf-fin-creditos dl { grid-column: 1 / -1; margin-left: var(--medianil); }
+    .lf-fin-creditos dl { grid-template-columns: minmax(0, 1fr); row-gap: 20px; }
+    .lf-fin-creditos dl > div { grid-column: auto; }
     .lf-ficha { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--medianil); align-items: stretch; }
     .lf-ficha > * { grid-column: auto; justify-content: center; min-height: 92px; }
     .lf-ficha > :nth-child(odd) { padding-left: var(--medianil); }

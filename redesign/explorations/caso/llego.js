@@ -12,6 +12,21 @@
     const curva = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
     const tramo = (p, a, b) => curva(fijar((p - a) / (b - a)));
     const fase = (el, nombre, v) => el.style.setProperty(nombre, v.toFixed(4));
+    /* Retícula del manual (la cita y el resultado): un tramo menos sus huecos, y los tramos dibujados como líneas de un svg
+       que se reutilizan entre cuadros */
+    const restar = (a, b, huecos) => huecos.reduce((tramos, h) => h[1] - h[0] <= 0 ? tramos : tramos.flatMap(s => {
+        if (h[1] <= s[0] || h[0] >= s[1]) return [s];
+        return [...(h[0] > s[0] ? [[s[0], h[0]]] : []), ...(h[1] < s[1] ? [[h[1], s[1]]] : [])];
+    }), [[a, b]]);
+    const trazar = (ret, segs) => {
+        while (ret.childElementCount < segs.length) ret.appendChild(svg('line', {}));
+        [...ret.children].forEach((l, i) => {
+            const s = segs[i];
+            if (!s) { l.setAttribute('visibility', 'hidden'); return; }
+            l.removeAttribute('visibility');
+            ['x1', 'y1', 'x2', 'y2'].forEach((k, j) => l.setAttribute(k, s[j].toFixed(1)));
+        });
+    };
     /* Una curva de Bézier evaluada en JS, para la llegada desde el home, que avanza dentro del cuadro de la cinta */
     const bezier = (x1, y1, x2, y2) => t => {
         if (t <= 0) return 0; if (t >= 1) return 1;
@@ -1155,11 +1170,6 @@
             const caja = n => { let x = 0, y = 0, e = n; while (e && e !== fijo) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return { x, y, w: n.offsetWidth, h: n.offsetHeight }; };
             const fuente = n => { const c = getComputedStyle(n); return `${c.fontWeight} ${c.fontSize} ${c.fontFamily}`; };
             const px = (n, k, v) => n.style.setProperty(k, v.toFixed(1) + 'px');
-            /* Un tramo menos sus huecos */
-            const restar = (a, b, huecos) => huecos.reduce((tramos, h) => h[1] - h[0] <= 0 ? tramos : tramos.flatMap(s => {
-                if (h[1] <= s[0] || h[0] >= s[1]) return [s];
-                return [...(h[0] > s[0] ? [[s[0], h[0]]] : []), ...(h[1] < s[1] ? [[h[1], s[1]]] : [])];
-            }), [[a, b]]);
             let G = null, ultimo = '', ultP = 0;
 
             /* --- Medidas: módulos, horizontales, tinta de cada línea y la comilla --- */
@@ -1222,13 +1232,7 @@
                     restar(0, G.H, huecos).forEach(s => segs.push([x + 0.5, s[0], x + 0.5, s[1]]));
                 });
                 G.ys.forEach(y => restar(0, y === G.yf ? G.W * dib : G.W, G.xs.map(x => [x - CORTE, x + CORTE])).forEach(s => segs.push([s[0], y + 0.5, s[1], y + 0.5])));
-                while (ret.childElementCount < segs.length) ret.appendChild(svg('line', {}));
-                [...ret.children].forEach((l, i) => {
-                    const s = segs[i];
-                    if (!s) { l.setAttribute('visibility', 'hidden'); return; }
-                    l.removeAttribute('visibility');
-                    ['x1', 'y1', 'x2', 'y2'].forEach((k, j) => l.setAttribute(k, s[j].toFixed(1)));
-                });
+                trazar(ret, segs);
             };
 
             /* --- Cada cuadro: sin el paso todo vale 1 --- */
@@ -1363,6 +1367,42 @@
         window.addEventListener('resize', cortar);
         (document.fonts ? document.fonts.ready : Promise.resolve()).then(cortar);
         cortar();
+    })();
+
+    /* --- 5.2 LA RETÍCULA DEL RESULTADO: SIGUE LA DE LA CITA --- */
+    /* Las verticales bajan desde el corte en los mismos bordes de módulo que la cita (los de sus celdas) y se cierran 8 px
+       antes de la última horizontal, bajo los créditos. Cada fila suma su horizontal. Como en la cita, las líneas se cortan
+       8 px antes de cada cruce y de cada texto que atraviesan (en celular, el sitio y los créditos van a lo ancho). Las filas
+       se miden sin transformaciones (offsetTop), así la aparición de las cifras no mueve la retícula */
+    (() => {
+        const sec = document.querySelector('.lf-resultado');
+        if (!sec) return;
+        const ret = sec.querySelector('.lf-ret'), filas = [...sec.querySelectorAll('.lf-fin-fila')], celdas = [...sec.querySelectorAll('.lf-fin-cifras li')];
+        const textos = [...sec.querySelectorAll('.lf-fin-fila > .mono, .lf-fin-vivo a, .lf-fin-creditos dt, .lf-fin-creditos dd')];
+        const movil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)'), CORTE = 8;
+        const caja = n => { let x = 0, y = 0, e = n; while (e && e !== sec) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return { x, y, w: n.offsetWidth, h: n.offsetHeight }; };
+        const dibujar = () => {
+            const W = sec.clientWidth, cs = getComputedStyle(sec), gap = parseFloat(getComputedStyle(filas[0]).columnGap) || 24, dos = movil.matches;
+            const xs = [parseFloat(cs.paddingLeft), ...(dos ? [celdas[1]] : celdas.slice(1)).map(c => caja(c).x - gap), W - parseFloat(cs.paddingRight)];
+            const ys = filas.map(f => caja(f).y), ultima = caja(filas[filas.length - 1]);
+            ys.push(ultima.y + ultima.h);
+            if (dos) ys.push(caja(celdas[2]).y);
+            const fin = ultima.y + ultima.h;
+            /* La tinta de cada texto, leída del rango: solo lo que corta una vertical */
+            const o = sec.getBoundingClientRect(), r = document.createRange();
+            const tintas = textos.flatMap(n => { r.selectNodeContents(n); return [...r.getClientRects()].filter(q => q.width).map(q => ({ x0: q.left - o.left, x1: q.right - o.left, y0: q.top - o.top, y1: q.bottom - o.top })); });
+            const segs = [];
+            xs.forEach(x => {
+                const huecos = ys.map(y => [y - CORTE, y + CORTE]);
+                tintas.forEach(t => { if (x >= t.x0 - CORTE && x <= t.x1 + CORTE) huecos.push([t.y0 - CORTE, t.y1 + CORTE]); });
+                restar(0, fin, huecos).forEach(s => segs.push([x + 0.5, s[0], x + 0.5, s[1]]));
+            });
+            ys.forEach(y => restar(0, W, xs.map(x => [x - CORTE, x + CORTE])).forEach(s => segs.push([s[0], y + 0.5, s[1], y + 0.5])));
+            trazar(ret, segs);
+        };
+        window.addEventListener('resize', dibujar);
+        (document.fonts ? document.fonts.ready : Promise.resolve()).then(dibujar);
+        dibujar();
     })();
 
     /* --- 6. PASO ENTRE DECISIONES: EL FILO --- */
