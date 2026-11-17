@@ -877,16 +877,28 @@
                 return enviado ? 'Enviado, sin recargar' : p >= b ? 'Enviar' : `Campo ${actual + 1} de 6`;
             };
 
+            /* --- En celular, lo que la cámara sigue: el campo que se escribe, la casilla con el botón y, enviado, el aviso --- */
+            const enFoco = (fo, p) => {
+                if (p >= TIEMPO.envia) return fo;
+                const [a, b] = TIEMPO.campos;
+                if (p >= b) return fo.querySelector('button[type="submit"]') || fo;
+                const i = fijar(Math.floor((p - a) / ((b - a) / CAMPOS.length)), 0, CAMPOS.length - 1);
+                const n = doc.getElementById(CAMPOS[i][0]);
+                return (n && n.closest('.campo')) || fo;
+            };
+
             /* --- Cuadro a cuadro: cámara, velo, huecos y marcas --- */
             const pintar = () => {
                 bucle = 0;
                 if (!doc || !doc.body) return;
                 const p = avance, T = TIEMPO, fo = doc.getElementById('formulario');
                 if (!fo) return;
-                /* Adónde va la cámara: al ancho en el hero, de cerca en el formulario */
-                const fr = fo.getBoundingClientRect(), max = Math.max(doc.documentElement.scrollHeight - H, 0);
-                const base = A / W, cerca = Math.min(A * 0.86 / fr.width, B * 0.82 / fr.height);
-                const fin = fijar(fr.top + win.scrollY + fr.height / 2 - H / 2, 0, max);
+                /* Adónde va la cámara: al ancho en el hero, de cerca en el formulario. En celular el formulario entero no
+                   cabe legible en la ventana: la cámara toma su ancho y baja siguiendo el campo que se está llenando */
+                const movil = vistaMovil.matches, foco = movil ? enFoco(fo, p) : fo;
+                const fr = fo.getBoundingClientRect(), ff = foco.getBoundingClientRect(), max = Math.max(doc.documentElement.scrollHeight - H, 0);
+                const base = A / W, cerca = movil ? A * 0.9 / fr.width : Math.min(A * 0.86 / fr.width, B * 0.82 / fr.height);
+                const fin = fijar(ff.top + win.scrollY + ff.height / 2 - H / 2, 0, max);
                 const z = tramo(p, T.acerca[0], T.acerca[1]);
                 const ex = fijar(A / 2 - (fr.left + fr.width / 2) * cerca, Math.min(A - W * cerca, 0), 0), ey = fijar(B / 2 - (H / 2) * cerca, Math.min(B - H * cerca, 0), 0);
                 /* Con el velo ya cerrado el borde del iframe no se ve: recién ahí el formulario se centra del todo */
@@ -899,7 +911,7 @@
                 marco.style.setProperty('--lf-ie', cam.e.toFixed(4)); marco.style.setProperty('--lf-ix', cam.x.toFixed(1) + 'px'); marco.style.setProperty('--lf-iy', cam.y.toFixed(1) + 'px');
                 /* Lo que está marcado, medido en la pantalla del navegador */
                 const medida = (sel, m = PAD) => {
-                    const n = doc.querySelector(sel);
+                    const n = typeof sel === 'string' ? doc.querySelector(sel) : sel;
                     if (!n) return null;
                     const r = n.getBoundingClientRect();
                     return r.width ? { x: (r.left - m) * cam.e + cam.x, y: (r.top - m) * cam.e + cam.y, w: (r.width + m * 2) * cam.e, h: (r.height + m * 2) * cam.e } : null;
@@ -911,12 +923,13 @@
                     { r: medida(vistaMovil.matches ? '.barra-cta' : '.pildora.accion'), g: lineal(p, T.cabecera[0], T.cabecera[1]) * (p < T.acerca[0] + 0.02 ? 1 : 0), caja: 1, txt: p < T.sale[0] ? 'Actuar' : 'Siempre a la vista' },
                     p < T.sale[1]
                         ? { r: medida('.s-hero .indice'), g: lineal(p, T.navegar[0], T.navegar[1]) * (fuera > 0 ? 1 : 0), caja: 2, txt: 'Navegar' }
-                        : { r: medida('.s-cta .campos', 0), g: lineal(p, T.forma[0], T.forma[1]), caja: 2, txt: texto }
+                        : { r: movil ? medida(foco, 6) : medida('.s-cta .campos', 0), g: lineal(p, T.forma[0], T.forma[1]), caja: 2, txt: texto }
                 ];
                 huecos.forEach(u => marcarCaja(cajas[u.caja], u.r, u.g, u.txt, A));
                 /* El velo cae dos veces: sobre el hero, con el resto a la vista, y sobre el formulario, cerrado para dejarlo solo */
                 velo.style.setProperty('--lf-av', Math.max(Math.min(lineal(p, T.velo[0], T.velo[1]), fuera), lineal(p, T.forma[0], T.forma[1])).toFixed(3));
-                velo.style.setProperty('--lf-avo', mezcla(0.5, 1, lineal(p, T.forma[0], T.forma[1])).toFixed(3));
+                /* En celular el velo no cierra del todo: el campo marcado se lee con el resto del formulario de contexto */
+                velo.style.setProperty('--lf-avo', mezcla(0.5, movil ? 0.82 : 1, lineal(p, T.forma[0], T.forma[1])).toFixed(3));
                 const abiertos = huecos.filter(u => u.r && u.g > 0).map(u => trazoRect({ x: u.r.x, y: u.r.y, w: u.r.w * u.g, h: u.r.h }));
                 hueco.setAttribute('d', trazoRect({ x: 0, y: 0, w: A, h: B }) + abiertos.join(''));
                 datos.forEach((d, i) => d.classList.toggle('on', p >= [T.actuar[0], T.navegar[0], T.forma[0]][i]));
