@@ -836,7 +836,8 @@
         accion: el => {
             const pant = el.querySelector('.lf-ac-pant'), velo = el.querySelector('.lf-ac-velo'), hueco = velo.firstElementChild;
             const cajas = [...el.querySelectorAll('.lf-ac-caja')], datos = [...el.querySelectorAll('[data-ac-dato]')];
-            const vistaMovil = window.matchMedia('(max-width: 768px)');
+            /* Tablet vertical = celular, como en el resto del caso: la 09 ya muestra la captura móvil y aquí sigue el mismo sitio */
+            const vistaMovil = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1100px)');
             const CAMPOS = [['f-nombre', 'Javiera Soto'], ['f-empresa', 'Laboratorio Ejemplo'], ['f-cargo', 'Jefa de logística'], ['f-email', 'javiera@ejemplo.cl'], ['f-tel', '+56 9 1234 5678'], ['f-msg', 'Necesitamos llevar cadena de frío a regiones.']];
             const TIEMPO = { velo: [0.05, 0.1], actuar: [0.07, 0.12], cabecera: [0.13, 0.18], navegar: [0.22, 0.27], sale: [0.35, 0.39], baja: [0.38, 0.6], acerca: [0.6, 0.67], forma: [0.65, 0.69], campos: [0.69, 0.9], envia: 0.93 };
             const PAD = 10;

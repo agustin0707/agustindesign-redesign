@@ -745,11 +745,13 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-val-liso { position: absolute; inset: 0; opacity: var(--liso, 0); background: linear-gradient(90deg, #104E56 5%, #178181 15%, #1B9C9C 25%, #21B6B6 35%, #49C2BF 45%, #70CAC7 55%, #80E2DF 65%, #B7E5E2 75%, #E8E8E8 85%, #F4F4F4 95%); -webkit-mask: linear-gradient(90deg, #000 var(--lf-va), transparent var(--lf-va), transparent var(--lf-vb), #000 var(--lf-vb)); mask: linear-gradient(90deg, #000 var(--lf-va), transparent var(--lf-va), transparent var(--lf-vb), #000 var(--lf-vb)); transition: --lf-va 320ms var(--ease), --lf-vb 320ms var(--ease); }
 .lf-val.mide { cursor: crosshair; }
 /* Los tres tonos: cada bloque sube desde el filete (--f por tono) y su texto entra cuando el bloque ya llegó */
-.lf-val-tonos { inset: 96px 0 10px; display: flex; pointer-events: none; }
+.lf-val-tonos { inset: 96px 0 10px; display: flex; pointer-events: none; container-type: inline-size; }
 .lf-val-tono { flex: var(--w) 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 22px; background: var(--c); color: #FFFFFF; transform-origin: bottom; scale: 1 var(--f, 0); }
 .lf-val-tono > * { opacity: clamp(0, calc(var(--f, 0) * 3 - 2), 1); }
 .lf-val-tono-claro { color: var(--lf-oscuro); }
 .lf-val-tono > b { font: 200 clamp(48px, 5vw, 88px) / 0.9 var(--cs-f); letter-spacing: -0.05em; }
+/* El tope sale de la franja más angosta (15 %): así "15 %" no se parte en anchos medios como el iPad horizontal */
+@media (min-width: 769px) { .lf-val-tono > b { font-size: min(clamp(48px, 5vw, 88px), calc((18cqi - 48px) / 1.9)); white-space: nowrap; } }
 .lf-val-tono > span { display: flex; flex-direction: column; gap: 6px; }
 .lf-val-tono em { font: 400 clamp(16px, 1.3vw, 20px) / 1.1 var(--cs-f); font-style: normal; }
 .lf-val-tono .mono { opacity: 0.8; }
@@ -953,7 +955,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-dom-madre-nav em { width: 9cqi; height: 3.2cqi; border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 99px; }
 .lf-dom-pestana { position: absolute; z-index: 1; left: calc(var(--lf-dm, 1) * 8%); bottom: calc((1 - var(--lf-dm, 1) * 0.16) * 100%); display: flex; align-items: center; height: 24px; padding: 0 12px;
     border-radius: 6px 6px 0 0; background: var(--lf-claro); color: var(--lf-negro); opacity: clamp(0, calc(var(--lf-dm, 1) * 2.5 - 1.5), 1); }
-.lf-dom-sitio { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; transform-origin: 50% 100%; scale: calc(1 - var(--lf-dm, 1) * 0.16); box-shadow: 0 24px 60px rgba(0, 0, 0, calc(var(--lf-dm, 1) * 0.35)); will-change: scale; }
+.lf-dom-sitio { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: left top; transform-origin: 50% 100%; scale: calc(1 - var(--lf-dm, 1) * 0.16); box-shadow: 0 24px 60px rgba(0, 0, 0, calc(var(--lf-dm, 1) * 0.35)); will-change: scale; }
 
 /* --- 9.0 LA ANATOMÍA DE LA DIRECCIÓN --- */
 /* Un velo sobre la página con la dirección a escala de titular. Mide en unidades del contenedor: se ve igual en cualquier
@@ -1202,8 +1204,10 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 /* --- 10.1.2 LA CARPETA: LAS FILAS ENTRAN UNA A UNA --- */
 .lf-en-carpeta { display: flex; flex-direction: column; transition: opacity 240ms; }
 .lf-en-carpeta.ida { opacity: 0; }
-.lf-en-fila { display: grid; grid-template-columns: 118px minmax(0, 1fr) 60px; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--lf-en-linea); }
+.lf-en-fila { display: grid; grid-template-columns: 110px minmax(0, 1fr) 54px; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--lf-en-linea); }
 .lf-en-fila > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Las columnas van medidas al nombre y al conteo más largos; si una descripción no cabe, baja de línea en vez de cortarse */
+.lf-en-fila > span:nth-child(2):not(:last-child) { white-space: normal; }
 .lf-en-fila > span:nth-child(2) { color: var(--lf-en-gris); }
 .lf-en-fila > span:last-child { text-align: right; color: var(--lf-en-gris); }
 .lf-en-fila[data-en] { opacity: 0; translate: 0 6px; transition: opacity 200ms, translate 200ms var(--cs-curva), background-color 200ms; }
@@ -1321,10 +1325,12 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 
 /* --- 11.1.1 LOS DÍAS --- */
 /* Cada día es una celda con su número arriba y su hito abajo. El día en curso lleva el contorno claro (.lf-fe-hoy) */
-.lf-fe-d { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; min-width: 0; overflow: hidden; padding: 8px 10px; border-top: 1px solid var(--lf-fe-linea); font-style: normal;
+.lf-fe-d { position: relative; container-type: inline-size; display: flex; flex-direction: column; justify-content: space-between; gap: 4px; min-width: 0; overflow: hidden; padding: 8px 10px; border-top: 1px solid var(--lf-fe-linea); font-style: normal;
     transition: background-color var(--lf-fe-t), border-color var(--lf-fe-t); }
 .lf-fe-d b { font-weight: 400; color: var(--texto-2); }
 .lf-fe-d em { font-style: normal; color: var(--lf-claro); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity var(--lf-fe-t); }
+/* En celdas angostas (iPad horizontal) la etiqueta baja un punto y se aprieta para no cortarse */
+@container (max-width: 80px) { .lf-fe-d em { font-size: 9.5px; letter-spacing: 0; } }
 .lf-fe-fds b { color: var(--texto-3); }
 .lf-fe-vacio { border-top-color: transparent; }
 .lf-fe-d[data-fe-t].on { background: color-mix(in srgb, var(--lf-turquesa) 42%, transparent); border-top-color: var(--lf-claro); }
@@ -1523,6 +1529,18 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-mapa-titulo { font-size: 26px; }
     .lf-mapa-cuerpo > p:first-child { display: none; }
     .lf-mapa-regla { font-size: 15px; }
+    /* Tablet vertical: el mapa toma todo el alto que queda bajo el texto, y vuelven la bajada, el logotipo grande, la
+       bajada y la tipografía de la madre y el primer párrafo del hallazgo */
+    @media (min-width: 600px) {
+        .lf-mapa-sec .cs-dec p:not(.cs-porque) { display: block; }
+        .lf-mapa-tablero { flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr) auto; }
+        .lf-mapa-madre > ul { flex: 1; grid-template-rows: minmax(0, 1fr) auto auto; }
+        .lf-mapa-logo > .mono { display: block; }
+        .lf-mapa-marco { height: auto; flex: 1; }
+        .lf-mapa-dato { display: flex; padding: 10px 12px 12px; }
+        .lf-mapa-paleta ol li { height: 40px; font-size: 10px; }
+        .lf-mapa-cuerpo > p:first-child { display: block; }
+    }
     /* Taller del nodo: la mesa toma el alto que queda bajo el texto; las notas del isotipo no caben y salen */
     .lf-taller-sec .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-top: 64px; padding-bottom: 16px; }
     .lf-taller-sec .cs-dec p:not(.cs-porque) { display: none; }
@@ -1633,8 +1651,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 }
 /* Toques: los enlaces de una línea suman área táctil invisible, sin mover el diseño */
 @media (pointer: coarse) {
-    .lf :is(.barra .der, .lf-h-franja a, .lf-cierre-sigue, .lf-fin-vivo a) { position: relative; }
-    .lf :is(.barra .der, .lf-h-franja a, .lf-cierre-sigue, .lf-fin-vivo a)::after { content: ''; position: absolute; inset: -12px -8px; }
+    .lf :is(.barra .der, .lf-h-franja a, .lf-cierre-sigue, .lf-fin-vivo a, .cs-mas summary) { position: relative; }
+    .lf :is(.barra .der, .lf-h-franja a, .lf-cierre-sigue, .lf-fin-vivo a, .cs-mas summary)::after { content: ''; position: absolute; inset: -12px -8px; }
 }
 
 /* =======================================================
