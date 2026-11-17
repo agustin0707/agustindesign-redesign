@@ -10,7 +10,8 @@
 .sig-panel { --e: 0; --p: 0; position: sticky; top: 0; height: 100svh; height: 100lvh; display: block; overflow: hidden; color: #FFFFFF; font-family: var(--sans); }
 .sig-escena { position: absolute; inset: 0; overflow: hidden; background: var(--sig-tinte); clip-path: inset(calc((1 - var(--e)) * 16%) calc((1 - var(--e)) * 10%) calc((1 - var(--e)) * 16%) round calc(28px * (1 - var(--p) * 0.6))); }
 .sig-escena > * { transform: scale(calc(1.08 - var(--p) * 0.08)); }
-.sig-txt { position: absolute; left: var(--margen); right: var(--margen); bottom: clamp(88px, 12svh, 140px); z-index: 3; display: flex; flex-direction: column; gap: 14px; pointer-events: none; }
+/* El texto sigue a la lámina mientras se abre (el mismo 10 % por lado del clip-path), así el rótulo y su línea nunca tocan su borde */
+.sig-txt { position: absolute; left: calc(var(--margen) + (1 - var(--e)) * 10%); right: calc(var(--margen) + (1 - var(--e)) * 10%); bottom: clamp(88px, 12svh, 140px); z-index: 3; display: flex; flex-direction: column; gap: 14px; pointer-events: none; }
 .sig-fila { display: flex; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.28); font: 12px var(--mono); opacity: calc(0.4 + var(--e) * 0.6); }
 .sig-nombre { font-family: var(--sig-f, var(--sans)); font-size: clamp(96px, 19vw, 340px); font-weight: 500; letter-spacing: -0.075em; line-height: 0.78; margin-left: -0.05em; transform: translateY(calc((1 - var(--e)) * 30%)); transition: transform 700ms var(--hover-lento), opacity 500ms; }
 .sig-bajada { max-width: 34ch; font-size: clamp(16px, 1.3vw, 19px); opacity: 0.8; }

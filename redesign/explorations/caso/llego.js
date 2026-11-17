@@ -623,7 +623,9 @@
                 };
                 Object.keys(v).forEach(k => mesa.style.setProperty(k, v[k]));
                 /* La trama: cada punto sabe si es de un campo (--o, su intensidad) y cuánto espera para ordenarse (--d) */
-                const i0 = Math.ceil((rd * 4 - cx) / P), i1 = Math.floor((W - rd * 4 - cx) / P);
+                /* A la izquierda la trama sigue fuera de la mesa: con la lente cerca, en una mesa angosta, el nodo queda al centro
+                   y sin esas columnas el costado izquierdo se vería vacío. Lejos, la mesa las recorta */
+                const i0 = Math.min(Math.ceil((rd * 4 - cx) / P), -Math.ceil(W / (2 * Z * P))), i1 = Math.floor((W - rd * 4 - cx) / P);
                 const j0 = Math.ceil((rd * 4 - cy) / P), j1 = Math.floor((H - rd * 4 - cy) / P);
                 let puntos = '';
                 for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
@@ -996,7 +998,9 @@
                 const tr = rango.getBoundingClientRect();
                 rango.selectNodeContents(lin.parentElement);
                 const tt = rango.getBoundingClientRect(), eT = Math.min(A * 0.92 / tt.width, B * 0.6 / tt.height, 1.1);
-                const titulo = { e: eT, x: (A - tt.width * eT) / 2 - tt.left * eT, y: B / 2 - (tt.top + tt.height / 2) * eT };
+                /* El título va al centro, pero el borde de arriba del sitio no baja de la ventana: en una pantalla alta (tablet en
+                   vertical) centrarlo dejaba una franja vacía sobre la página */
+                const titulo = { e: eT, x: (A - tt.width * eT) / 2 - tt.left * eT, y: Math.min(B / 2 - (tt.top + tt.height / 2) * eT, 0) };
                 const t2 = tramo(p, T.titulo[0], T.titulo[1]);
                 const c = t2 > 0 ? zoom(lejos, titulo, t2) : zoom(cerca, lejos, tramo(p, T.aleja[0], T.aleja[1]));
                 marco.style.setProperty('--lf-ie', c.e.toFixed(4)); marco.style.setProperty('--lf-ix', c.x.toFixed(1) + 'px'); marco.style.setProperty('--lf-iy', c.y.toFixed(1) + 'px');

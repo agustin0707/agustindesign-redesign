@@ -370,6 +370,11 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-cap-1 .lf-cap-traza { --lf-tz: -0.028; }
     .lf-cap-2 .lf-cap-traza { --lf-tz: 0.046; }
     .lf-cap-3 .lf-cap-traza { --lf-tz: 0.033; }
+    /* Pantallas bajas (iPad en horizontal, con la barra de Safari): la cifra se acota por el alto, así no baja hasta el
+       índice del capítulo 03, que tiene cinco decisiones */
+    @media (max-height: 800px) {
+        :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-cap-traza { font-size: min(calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35), 30vh); }
+    }
 }
 
 /* --- 7.2 EL PASO A LA PORTADA DEL CAPÍTULO 02: EL OSCURO SE ABRE --- */
@@ -431,6 +436,10 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 
 /* --- 8. ESCENAS DE DECISIÓN --- */
 .lf-dsec .cs-fijo { padding-top: 64px; }
+/* Barra de Safari: el panel fijo mide 100lvh y, cuando la barra está a la vista, tapa lo último de abajo (40 px en
+   iPhone). Las decisiones y las láminas reservan ese tramo, así la pieza nunca queda bajo la barra; en escritorio vale 0 */
+.lf { --lf-tapa: calc(100lvh - 100svh); }
+:is(.lf-dsec, .cs-lam) > .cs-fijo { padding-bottom: var(--lf-tapa); }
 .lf-dsec .cs-dec { grid-column: 1 / span 4; }
 .lf-pieza { grid-column: 6 / -1; display: flex; flex-direction: column; gap: 22px; }
 .lf-pieza [data-paso] { transition: opacity 500ms var(--cs-curva), translate 600ms var(--cs-curva); }
@@ -941,6 +950,9 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 @keyframes lf-cursor { 50% { opacity: 0; } }
 .lf-dom-carga { position: relative; z-index: 3; height: 2px; margin-bottom: -2px; background: var(--lf-claro); transform-origin: left; scale: var(--carga, 0) 1; opacity: calc(1 - var(--lf-dc, 0)); }
 .lf-dom-pant { position: relative; flex: 1; overflow: hidden; }
+/* Como en el hero: una capa transparente sobre el sitio recibe el toque. En Safari el arrastre sobre el iframe movía el
+   sitio de adentro en vez del caso, aunque el iframe tenga pointer-events: none */
+:is(.lf-dom-pant, .lf-tel-pant)::before { content: ''; position: absolute; inset: 0; z-index: 8; }
 /* El morado rodea a la página de Farma: una cabecera esquemática (el logotipo y un menú de barras, no el sitio real de la
    madre) y Farma como una carpeta, con su pestaña /farma. Al retirarse el morado, la página crece desde abajo; la cabecera
    y la pestaña se van en la primera mitad, antes de que la página las alcance */
@@ -1469,7 +1481,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     /* Hero: la cinta de tres columnas más anchas (lo fija el JS), el logo a lo ancho y la ficha en una columna */
     .lf-h-franja { grid-template-columns: 1fr 1fr; row-gap: 8px; top: 72px; }
     .lf-h-franja > *:nth-child(2) { text-align: right; }
-    .lf-h-franja a { justify-self: start; padding-left: 14px; }
+    /* El enlace cierra la columna de la derecha, alineado con "Marca, manual y web" */
+    .lf-h-franja a { justify-self: end; padding-left: 0; }
     .lf-h-funde { background: linear-gradient(0deg, rgba(var(--veladura), 0.96) 12%, rgba(var(--veladura), 0.62) 40%, rgba(var(--veladura), 0) 64%); }
     .lf-logo { width: 100%; }
     .lf-h-ficha { grid-column: 1 / -1; grid-template-columns: 1fr; }
@@ -1496,7 +1509,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-hitos li:nth-child(2) button { align-items: center; }
     /* Capítulos */
     .lf-cap .cs-cap-n { padding-bottom: 0; }
-    .lf .cs-cap-txt h2 { font-size: 18vw; }
+    /* A 18vw el trazo bajo de la p ("El pitch") pasa el aire del bloque: el título suma ese trazo abajo */
+    .lf .cs-cap-txt h2 { font-size: 18vw; padding-bottom: 0.1em; }
     .lf-cap-num, .lf-cap-traza { font-size: 70vw; top: 96px; }
     /* Portadas de los capítulos 01 y 02: aire entre rótulo, título e índice; el dato queda para escritorio, así cabe en una pantalla */
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-cap-in { row-gap: 18px; }
@@ -1509,7 +1523,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-dsec .cs-dec p:not(.cs-porque) { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .lf-pieza { gap: 12px; }
     /* Diagnóstico: el mapa apilado; la bajada y la tipografía quedan para escritorio */
-    .lf-mapa-sec .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-top: 64px; padding-bottom: 16px; }
+    .lf-mapa-sec .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-top: 64px; padding-bottom: calc(16px + var(--lf-tapa)); }
     .lf-mapa-sec .cs-dec p:not(.cs-porque) { display: none; }
     .lf-mapa { gap: 10px; }
     .lf-mapa-tablero { flex: none; grid-template-columns: 1fr; row-gap: 10px; }
@@ -1529,6 +1543,12 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-mapa-titulo { font-size: 26px; }
     .lf-mapa-cuerpo > p:first-child { display: none; }
     .lf-mapa-regla { font-size: 15px; }
+    /* En el paso 3 la madre ya se mostró: su logotipo y su paleta se recogen bajo el rótulo y el hallazgo cabe entero en
+       el alto que deja la barra de Safari */
+    @media (max-width: 599px) {
+        .lf-mapa-madre > ul { max-height: 240px; overflow: hidden; transition: max-height 500ms var(--cs-curva), opacity 300ms var(--cs-curva); }
+        .lf-mapa:has(.lf-mapa-hallazgo.on) .lf-mapa-madre > ul { max-height: 0; opacity: 0; }
+    }
     /* Tablet vertical: el mapa toma todo el alto que queda bajo el texto, y vuelven la bajada, el logotipo grande, la
        bajada y la tipografía de la madre y el primer párrafo del hallazgo */
     @media (min-width: 600px) {
@@ -1542,7 +1562,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
         .lf-mapa-cuerpo > p:first-child { display: block; }
     }
     /* Taller del nodo: la mesa toma el alto que queda bajo el texto; las notas del isotipo no caben y salen */
-    .lf-taller-sec .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-top: 64px; padding-bottom: 16px; }
+    .lf-taller-sec .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-top: 64px; padding-bottom: calc(16px + var(--lf-tapa)); }
     .lf-taller-sec .cs-dec p:not(.cs-porque) { display: none; }
     .lf-taller { gap: 10px; }
     .lf-taller-mesa { min-height: 0; }
@@ -1591,7 +1611,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-cierre-texto { left: 20px; width: calc(100cqw - 40px); }
     /* Capítulo 03: la decisión arriba, con la bajada entera, y el navegador abajo con todo el alto que queda. El panel mide
        100lvh: el margen de abajo suma lo que tapa la barra del navegador cuando está a la vista */
-    .lf-dom .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-bottom: calc(20px + 100lvh - 100svh); }
+    .lf-dom .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-bottom: calc(20px + var(--lf-tapa)); }
     .lf-dom .cs-dec { grid-row: 1; }
     .lf-dom .cs-dec p:not(.cs-porque) { display: block; overflow: visible; }
     .lf-dom-nav { grid-row: 2; grid-column: 1 / -1; align-self: stretch; height: auto; min-height: 0; }
@@ -1610,7 +1630,7 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-tel-sec .cs-dec p:not(.cs-porque) { display: block; overflow: visible; }
     .lf-datos { display: none; }
     /* Cierre: la decisión arriba, entera, y el calendario abajo, a lo ancho; las celdas solo con su número y el QR abajo */
-    .lf-fe .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-bottom: calc(20px + 100lvh - 100svh); }
+    .lf-fe .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-bottom: calc(20px + var(--lf-tapa)); }
     .lf-fe .cs-dec { grid-row: 1; }
     .lf-fe-cal { grid-row: 2; grid-column: 1 / -1; align-self: stretch; height: auto; min-height: 0; gap: 8px; }
     .lf-fe-cab > span:first-child { display: none; }
