@@ -359,12 +359,6 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i:nth-child(2) { left: calc((100% + var(--medianil)) / 4 - var(--medianil) / 2); }
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i:nth-child(3) { left: calc((100% + var(--medianil)) / 2 - var(--medianil) / 2); }
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i:nth-child(4) { left: calc((100% + var(--medianil)) * 3 / 4 - var(--medianil) / 2); }
-    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula::after { display: none; }
-    /* Sin línea horizontal no hay cruce que cortar: cada línea baja entera y se corta 8 px antes del contenido que
-       tocaría (--fin, lo mide llego.js sección 5.1) */
-    /* Dos tramos: hasta 8 px antes de la cifra (--gt) y desde 8 px después de ella (--gb) hasta 8 px antes del contenido (--fin) */
-    :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i { background: linear-gradient(var(--l), var(--l)) 0 0 / 1px var(--gt, 0px) no-repeat,
-        linear-gradient(var(--l), var(--l)) 0 var(--gb, 0px) / 1px calc(100% - var(--fin, 0px) - var(--gb, 0px)) no-repeat; }
     /* La cifra termina 8 px antes de la línea del borde: cada dígito tiene su propio blanco a la derecha (--lf-tz) */
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-cap-traza { right: calc(var(--margen) + var(--lf-tz, 0) * 1em); font-size: calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35); }
     .lf-cap-1 .lf-cap-traza { --lf-tz: -0.028; }
@@ -376,6 +370,13 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
         :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-cap-traza { font-size: min(calc((100vw - 2 * var(--margen) + var(--medianil)) / 3.35), 30vh); }
     }
 }
+/* La retícula de las portadas, en todos los tamaños: sin línea horizontal no hay cruce que cortar, así que cada línea
+   baja entera y se corta 8 px antes del contenido que tocaría (--fin, lo mide llego.js sección 5.1). Dos tramos: hasta
+   8 px antes de la cifra (--gt) y desde 8 px después de ella (--gb) hasta 8 px antes del contenido. En celular las
+   líneas cruzaban la bajada */
+:is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula::after { display: none; }
+:is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-reticula i { background: linear-gradient(var(--l), var(--l)) 0 0 / 1px var(--gt, 0px) no-repeat,
+    linear-gradient(var(--l), var(--l)) 0 var(--gb, 0px) / 1px calc(100% - var(--fin, 0px) - var(--gb, 0px)) no-repeat; }
 
 /* --- 7.2 EL PASO A LA PORTADA DEL CAPÍTULO 02: EL OSCURO SE ABRE --- */
 /* La portada sube sobre la última pantalla de la 03 (data-pasos-hasta) y la 04 sobre la última de la portada; sin el
@@ -1157,6 +1158,13 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-tx-pant.angosto .lf-tx-rollo { padding-left: 0; }
 .lf-tx-pant.angosto .lf-tx-fila { grid-template-columns: var(--lf-tx-hw); }
 .lf-tx-pant.angosto :is(.lf-tx-globo, .lf-tx-globos) { display: none; }
+/* Sin el gris de arriba: a lo angosto la hoja va de borde a borde y esa franja se leía como una barra */
+.lf-tx-pant.angosto .lf-tx-rollo { padding-top: 0; }
+/* La nota: el globo vigente, abajo y a escala real, con el mismo trazo que los globos del margen */
+.lf-tx-nota { display: none; }
+.lf-tx-pant.angosto .lf-tx-nota { position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 5; display: block; margin: 0; padding: 9px 12px; background: #FFFFFF; box-shadow: inset 2px 0 0 var(--lf-turquesa), 0 6px 20px rgb(10 20 21 / 0.18); color: var(--lf-tx-tinta); font: 400 13px / 1.4 "Aptos", "Calibri", "Segoe UI", system-ui, sans-serif; opacity: 0; translate: 0 8px; transition: opacity 200ms, translate 200ms var(--cs-curva); pointer-events: none; }
+.lf-tx-pant.angosto .lf-tx-nota.on { opacity: calc(1 - var(--lf-ro, 0)); translate: 0 0; }
+.lf-tx-nota b { display: block; margin-bottom: 2px; color: var(--lf-turquesa); font-size: 10px; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; }
 @media (prefers-reduced-motion: reduce) { .lf-tx-word * { transition: none !important; } }
 
 /* --- 10. DECISIÓN 13: LA TRAZABILIDAD, EN CÓDIGO --- */
@@ -1512,10 +1520,10 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     /* A 18vw el trazo bajo de la p ("El pitch") pasa el aire del bloque: el título suma ese trazo abajo */
     .lf .cs-cap-txt h2 { font-size: 18vw; padding-bottom: 0.1em; }
     .lf-cap-num, .lf-cap-traza { font-size: 70vw; top: 96px; }
-    /* Portadas de los capítulos 01 y 02: aire entre rótulo, título e índice; el dato queda para escritorio, así cabe en una pantalla */
+    /* Portadas en celular: rótulo, título, bajada y la cifra, nada más. El dato y el índice del capítulo quedan para
+       escritorio, donde van al lado del título; aquí se apilaban y la portada dejaba de ser una pausa */
     :is(.lf-cap-1, .lf-cap-2, .lf-cap-3) .lf-cap-in { row-gap: 18px; }
-    .lf-riel .lf-dato, .lf-riel .lf-dato + .mono { display: none; }
-    .lf-indice a { padding: 12px 0; }
+    .lf-riel .lf-dato, .lf-riel .lf-dato + .mono, .lf-cap .lf-indice { display: none; }
     /* Decisiones: el texto arriba y la pieza abajo, en el mismo panel */
     .lf-dsec .cs-fijo { align-content: start; padding-top: 72px; row-gap: 18px; }
     .lf-dsec .cs-dec h3 { font-size: 26px; }

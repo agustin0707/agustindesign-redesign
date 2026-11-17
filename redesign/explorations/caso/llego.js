@@ -882,7 +882,7 @@
 
             /* --- En celular, lo que la cámara sigue: el campo que se escribe, la casilla con el botón y, enviado, el aviso --- */
             const enFoco = (fo, p) => {
-                if (p >= TIEMPO.envia) return fo;
+                if (p >= TIEMPO.envia) { const ok = doc.getElementById('f-exito'); return ok && ok.offsetWidth ? ok : fo; }
                 const [a, b] = TIEMPO.campos;
                 if (p >= b) return fo.querySelector('button[type="submit"]') || fo;
                 const i = fijar(Math.floor((p - a) / ((b - a) / CAMPOS.length)), 0, CAMPOS.length - 1);
@@ -906,7 +906,10 @@
                 const ex = fijar(A / 2 - (fr.left + fr.width / 2) * cerca, Math.min(A - W * cerca, 0), 0), ey = fijar(B / 2 - (H / 2) * cerca, Math.min(B - H * cerca, 0), 0);
                 /* Con el velo ya cerrado el borde del iframe no se ve: recién ahí el formulario se centra del todo */
                 const centrado = mezcla(ex, A / 2 - (fr.left + fr.width / 2) * cerca, tramo(p, T.forma[1] - 0.02, T.forma[1] + 0.02));
-                const meta = { e: mezcla(base, cerca, z), x: mezcla(0, centrado, z), y: mezcla(0, ey, z), sy: fin * tramo(p, T.baja[0], T.baja[1]) };
+                /* En celular el botón del hero queda bajo el borde de la ventana: el sitio baja lo justo para mostrarlo antes de marcarlo */
+                const cta = doc.querySelector('.s-hero .cta-grande');
+                const enHero = movil && cta ? fijar(cta.getBoundingClientRect().bottom + win.scrollY + 24 - H, 0, max) * tramo(p, 0, T.actuar[0]) : 0;
+                const meta = { e: mezcla(base, cerca, z), x: mezcla(0, centrado, z), y: mezcla(0, ey, z), sy: mezcla(enHero, fin, tramo(p, T.baja[0], T.baja[1])) };
                 const a = quieto || cam.e === 0 ? 1 : 0.2;
                 let sigue = false;
                 Object.keys(cam).forEach(k => { const d = meta[k] - cam[k]; if (Math.abs(d) > (k === 'e' ? 0.0004 : 0.4)) { cam[k] += d * a; sigue = true; } else cam[k] = meta[k]; });
@@ -921,18 +924,26 @@
                 };
                 const texto = formulario(fo, p);
                 const fuera = 1 - lineal(p, T.sale[0], T.sale[1]);
+                /* En celular la barra fija recién aparece al dejar el hero: se marca cuando está a la vista, nunca fuera de cuadro.
+                   Ya en el formulario, la cabecera del sitio se oculta para no tapar su bajada */
+                const barra = movil ? doc.querySelector('.barra-cta') : null, conBarra = !!barra && barra.classList.contains('visible');
+                const cabecera = doc.querySelector('header');
+                if (cabecera) { const v = movil && p >= T.acerca[0] ? 'hidden' : ''; if (cabecera.style.visibility !== v) cabecera.style.visibility = v; }
                 const huecos = [
                     { r: medida('.s-hero .cta-grande'), g: lineal(p, T.actuar[0], T.actuar[1]) * (fuera > 0 ? 1 : 0), caja: 0, txt: 'Actuar' },
-                    { r: medida(vistaMovil.matches ? '.barra-cta' : '.pildora.accion'), g: lineal(p, T.cabecera[0], T.cabecera[1]) * (p < T.acerca[0] + 0.02 ? 1 : 0), caja: 1, txt: p < T.sale[0] ? 'Actuar' : 'Siempre a la vista' },
+                    { r: medida(movil ? '.barra-cta' : '.pildora.accion'), g: lineal(p, T.cabecera[0], T.cabecera[1]) * (p < T.acerca[0] + 0.02 ? 1 : 0) * (movil && !conBarra ? 0 : 1), caja: 1, txt: p < T.sale[0] ? 'Actuar' : 'Siempre a la vista' },
                     p < T.sale[1]
                         ? { r: medida('.s-hero .indice'), g: lineal(p, T.navegar[0], T.navegar[1]) * (fuera > 0 ? 1 : 0), caja: 2, txt: 'Navegar' }
                         : { r: movil ? medida(foco, 6) : medida('.s-cta .campos', 0), g: lineal(p, T.forma[0], T.forma[1]), caja: 2, txt: texto }
                 ];
                 huecos.forEach(u => marcarCaja(cajas[u.caja], u.r, u.g, u.txt, A));
                 /* El velo cae dos veces: sobre el hero, con el resto a la vista, y sobre el formulario, cerrado para dejarlo solo */
-                velo.style.setProperty('--lf-av', Math.max(Math.min(lineal(p, T.velo[0], T.velo[1]), fuera), lineal(p, T.forma[0], T.forma[1])).toFixed(3));
-                /* En celular el velo no cierra del todo: el campo marcado se lee con el resto del formulario de contexto */
-                velo.style.setProperty('--lf-avo', mezcla(0.5, movil ? 0.82 : 1, lineal(p, T.forma[0], T.forma[1])).toFixed(3));
+                /* En celular el velo sigue puesto mientras baja con la barra marcada: el sitio pasa detrás y la barra queda adelante */
+                const veloBarra = conBarra && p < T.acerca[0] ? 1 : 0;
+                velo.style.setProperty('--lf-av', Math.max(Math.min(lineal(p, T.velo[0], T.velo[1]), fuera), lineal(p, T.forma[0], T.forma[1]), veloBarra).toFixed(3));
+                /* En celular el velo no cierra del todo: el campo marcado se lee con el resto del formulario de contexto, y el
+                   campo anterior no asoma junto al rótulo */
+                velo.style.setProperty('--lf-avo', mezcla(0.5, movil ? 0.9 : 1, lineal(p, T.forma[0], T.forma[1])).toFixed(3));
                 const abiertos = huecos.filter(u => u.r && u.g > 0).map(u => trazoRect({ x: u.r.x, y: u.r.y, w: u.r.w * u.g, h: u.r.h }));
                 hueco.setAttribute('d', trazoRect({ x: 0, y: 0, w: A, h: B }) + abiertos.join(''));
                 datos.forEach((d, i) => d.classList.toggle('on', p >= [T.actuar[0], T.navegar[0], T.forma[0]][i]));
@@ -1066,16 +1077,19 @@
             const cambios = [...el.querySelectorAll('[data-tx]')].map(n => ({ n, en: +n.dataset.tx, on: null }));
             const velo = el.querySelector('.lf-ac-velo'), hueco = velo.firstElementChild, caja = el.querySelector('.lf-ac-caja'), datos = [...el.querySelectorAll('[data-tx-dato]')];
             const T = { pasa: [0.38, 0.46], arma: [0.6, 0.68], vuelve: [0.74, 0.8], marca: [0.81, 0.86] };
-            const W = 1440, PAD = 10;
+            const PAD = 10;
             const lineal = (p, a, b) => fijar((p - a) / (b - a));
-            let marco = null, win = null, doc = null, avance = 0, suave = 0, bucle = 0, A = 744, B = 595, H = 1152, armado = false, salto = 0;
+            /* En celular la sección publicada se ve en su versión de celular, a la escala de la ventana */
+            let W = 1440, marco = null, win = null, doc = null, avance = 0, suave = 0, bucle = 0, A = 744, B = 595, H = 1152, armado = false;
+            const nota = el.querySelector('.lf-tx-nota');
+            const globos = cambios.filter(c => c.n.classList.contains('lf-tx-globo')).map(c => ({ ...c, hoja: hojas.indexOf(c.n.closest('.lf-tx-hoja')) }));
+            let notaVa = null;
             const medir = () => {
-                A = pant.clientWidth; B = pant.clientHeight; H = Math.round(B / (A / W));
+                A = pant.clientWidth; B = pant.clientHeight;
                 const angosto = A < 500, ancho = angosto ? 480 : 760;
+                W = angosto ? 390 : 1440; H = Math.round(B / (A / W));
                 pant.classList.toggle('angosto', angosto);
                 pant.style.setProperty('--lf-tl', ancho + 'px'); fase(pant, '--lf-te', A / ancho);
-                /* El rollo sube lo justo para dejar la segunda hoja donde estaba la primera */
-                salto = hojas[1].offsetTop - hojas[0].offsetTop;
                 if (marco) { marco.style.setProperty('--lf-iw', W + 'px'); marco.style.setProperty('--lf-ih', H + 'px'); }
                 armado = false;
             };
@@ -1088,7 +1102,7 @@
                 if (!tit) return;
                 if (!armado) {
                     win.scrollTo({ top: Math.max(sec.getBoundingClientRect().top + win.scrollY, 0), behavior: 'instant' });
-                    [...doc.querySelectorAll('header, .recorrido'), sec.previousElementSibling].forEach(n => { if (n) n.style.visibility = 'hidden'; });
+                    [...doc.querySelectorAll('header, .recorrido, .barra-cta'), sec.previousElementSibling].forEach(n => { if (n) n.style.visibility = 'hidden'; });
                     armado = true;
                 }
                 const e = A / W;
@@ -1108,7 +1122,18 @@
                 const p = suave;
                 /* Los cambios se aplican en su punto, de una vez, como en el Word; el estado sigue al scroll en las dos direcciones */
                 cambios.forEach(c => { const on = p >= c.en; if (on !== c.on) { c.on = on; c.n.classList.toggle('on', on); } });
+                /* El rollo sube lo justo para dejar la segunda hoja donde estaba la primera. Se mide con los cambios ya puestos:
+                   el título en tres líneas alarga la primera hoja y, medido antes, asomaba su final sobre la segunda */
+                const salto = hojas[1].offsetTop - hojas[0].offsetTop;
                 rollo.style.setProperty('--lf-ty', (-salto * tramo(p, T.pasa[0], T.pasa[1])).toFixed(1) + 'px');
+                /* La nota de celular: el último globo de la hoja que está a la vista; mientras el rollo pasa de hoja, ninguno */
+                const hojaVista = p < T.pasa[0] ? 0 : p >= T.pasa[1] ? 1 : -1;
+                const vigente = p < T.vuelve[1] ? globos.filter(g => g.hoja === hojaVista && p >= g.en).pop() : null;
+                if (vigente !== notaVa) {
+                    notaVa = vigente;
+                    if (vigente) nota.innerHTML = vigente.n.innerHTML;
+                    nota.classList.toggle('on', !!vigente);
+                }
                 fase(el, '--lf-tw', lineal(p, T.arma[0], T.arma[1]));
                 fase(el, '--lf-ro', lineal(p, T.vuelve[0], T.vuelve[1]));
                 datos.forEach((n, i) => n.classList.toggle('on', p >= [0.06, T.arma[0], T.marca[0]][i]));
@@ -1541,7 +1566,8 @@
             const raiz = cap.querySelector('.lf-cap-fijo'), ret = cap.querySelector('.lf-reticula');
             if (!raiz || !ret) return;
             const alto = raiz.offsetHeight;
-            const bloques = [...cap.querySelectorAll('.cs-cap-txt h2, .cs-cap-txt p, .lf-indice, .cs-cap-n')].map(n => caja(n, raiz));
+            /* Un bloque oculto (el índice, en celular) no corta líneas */
+            const bloques = [...cap.querySelectorAll('.cs-cap-txt h2, .cs-cap-txt p, .lf-indice, .cs-cap-n')].filter(n => n.offsetWidth).map(n => caja(n, raiz));
             const cifra = tinta(cap.querySelector('.lf-cap-traza'), raiz);
             ret.querySelectorAll('i').forEach(l => {
                 const x = caja(l, raiz).x;
