@@ -1468,7 +1468,7 @@
             };
             new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) ('requestIdleCallback' in window ? requestIdleCallback : setTimeout)(montar); }), { rootMargin: '150% 0px' }).observe(el);
             window.addEventListener('resize', () => { medir(); ir(ultimoP); });
-            const conQR = window.matchMedia('(min-width: 769px) and (prefers-reduced-motion: no-preference)');
+            const conQR = window.matchMedia('(min-width: 1101px) and (prefers-reduced-motion: no-preference), (min-width: 769px) and (orientation: landscape) and (prefers-reduced-motion: no-preference)');
             const hasta = +el.dataset.pasosHasta || 1, lineal = (v, a, b) => fijar((v - a) / (b - a));
             return q => {
                 if (!conQR.matches) { ir(q); return; }
