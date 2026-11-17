@@ -1179,15 +1179,17 @@
             const pasos = [...el.querySelectorAll('[data-en]')].map(n => ({ n, en: +n.dataset.en, on: null }));
             const velo = el.querySelector('.lf-ac-velo'), hueco = velo.firstElementChild, caja = el.querySelector('.lf-ac-caja'), datos = [...el.querySelectorAll('[data-en-dato]')];
             const T = { forma: [0.3, 0.4], recoge: 0.46, carpeta: [0.48, 0.6], guia: [0.6, 0.64], vuelve: [0.82, 0.9], marca: [0.91, 0.97] };
-            const hasta = +el.dataset.pasosHasta || 1, W = 1440, PAD = 12;
+            const hasta = +el.dataset.pasosHasta || 1, PAD = 12;
             const lineal = (p, a, b) => fijar((p - a) / (b - a));
             /* Cada tarjeta que cruza: sale de su lugar en mi columna y llega a su hueco en la de Llegó */
             const llaves = [...el.querySelectorAll('[data-en-va]')].map(n => ({ n, desde: el.querySelector(`[data-en-desde="${n.dataset.enVa}"]`), hasta: el.querySelector(`[data-en-hasta="${n.dataset.enVa}"]`) }));
             const [forma, carp] = llaves;
-            let marco = null, win = null, doc = null, avance = 0, suave = 0, bucle = 0, A = 744, B = 595, H = 1152, armado = false;
+            /* En celular el sitio en su dominio se ve en su versión de celular, como en la 12 */
+            let W = 1440, marco = null, win = null, doc = null, avance = 0, suave = 0, bucle = 0, A = 744, B = 595, H = 1152, armado = false;
             const medir = () => {
-                A = pant.clientWidth; B = pant.clientHeight; H = Math.round(B / (A / W));
+                A = pant.clientWidth; B = pant.clientHeight;
                 const angosto = A < 500, ancho = angosto ? 480 : 760, e = A / ancho;
+                W = angosto ? 390 : 1440; H = Math.round(B / (A / W));
                 pant.classList.toggle('angosto', angosto);
                 pant.style.setProperty('--lf-tl', ancho + 'px'); pant.style.setProperty('--lf-th', (B / e).toFixed(1) + 'px'); fase(pant, '--lf-te', e);
                 llaves.forEach(l => {
@@ -1206,7 +1208,13 @@
             const pintarSitio = p => {
                 const tit = doc.querySelector('.s-hero h1');
                 if (!tit) return;
-                if (!armado) { win.scrollTo({ top: 0, behavior: 'instant' }); armado = true; }
+                if (!armado) {
+                    win.scrollTo({ top: 0, behavior: 'instant' });
+                    /* En lo angosto el rótulo de la marca cae sobre la etiqueta del hero: se oculta para que no asome cortada */
+                    const tope = doc.querySelector('.s-hero .fila-tope');
+                    if (tope) tope.style.visibility = A < 500 ? 'hidden' : '';
+                    armado = true;
+                }
                 const e = A / W;
                 marco.style.setProperty('--lf-ie', e.toFixed(4)); marco.style.setProperty('--lf-ix', '0px'); marco.style.setProperty('--lf-iy', '0px');
                 const rango = doc.createRange(); rango.selectNodeContents(tit);
