@@ -1392,7 +1392,6 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-ficha cite { font-style: normal; }
 .lf-ficha cite b { font: 500 18px / 1.2 var(--cs-f); color: #FFFFFF; }
 .lf-ficha-logo { display: block; width: 78px; aspect-ratio: 200 / 77; background: #FFFFFF; -webkit-mask: url("media/lf-llego-logotipo.svg") left center / contain no-repeat; mask: url("media/lf-llego-logotipo.svg") left center / contain no-repeat; }
-.lf-ficha-aprobar { align-items: flex-start; }
 @media (min-width: 1101px), (min-width: 769px) and (orientation: landscape) {
     .lf-cita-txt p > span { display: block; width: fit-content; white-space: nowrap; }
 }
