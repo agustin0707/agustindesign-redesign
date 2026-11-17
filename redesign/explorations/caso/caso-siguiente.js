@@ -8,8 +8,20 @@
     const escenas = {
         /* Mend: su degradado de marca con grano y la app subiendo; el nombre es su logo (ver marcas) */
         mend: () => `<div class="sig-escena sig-e-mend"><div class="sig-campo"></div><div class="sig-luz"></div><div class="sig-tel"><div class="sig-pant"><img class="sig-larga" src="../works/media/mend-app-larga.jpg" alt=""><img class="sig-splash" src="../works/media/mend-splash.jpg" alt=""></div></div></div>`,
-        /* Tap In: las tiras de su paleta y el wordmark */
-        tapin: () => `<div class="sig-escena sig-e-tapin"><div class="sig-tiras">${['#2D2560', '#4A3CAE', '#6B5CE7', '#9B8EF0'].map((c, i) => `<i style="--tono:${c};--i:${i}"></i>`).join('')}</div><span class="sig-tp-wm"></span></div>`,
+        /* Tap In, Violeta vivo: se parte dentro del punto de la i; la cámara se aleja con la malla de color dentro del
+           wordmark y, al final, el violeta se derrama desde el punto y las letras pasan a blanco. Cada mancha trae su
+           tono, tamaño, recorrido de inicio a fin y vaivén (caso-siguiente.css, sección 2) */
+        tapin: () => {
+            const mancha = ([c, s, x0, y0, x1, y1, a, f]) => `<i style="--c:${c};--s:${s};--x0:${x0}%;--y0:${y0}%;--x1:${x1}%;--y1:${y1}%;--a:${a}%;--f:${f}deg"></i>`;
+            /* Dentro del wordmark (% de la caja): grandes para las letras, chicas alrededor del punto de la i */
+            const dentro = [['#4A3CAE', '70%', 15, 80, 22, 70, 6, 0], ['#6B5CE7', '62%', 40, 30, 46, 52, 6, 70], ['#2D2560', '55%', 86, 70, 84, 66, 7, 150], ['#9B8EF0', '34%', 58, 40, 30, 30, 8, 230],
+                ['#6B5CE7', '9%', 74, 16, 72, 14, 1.5, 40], ['#C8C0F8', '7%', 69, 4, 71, 7, 1.2, 120], ['#9B8EF0', '6%', 73, 2, 74, 9, 1, 300], ['#2D2560', '6%', 67, 15, 68, 13, 1, 200]];
+            /* Fuera, al final: la más oscura termina detrás del wordmark y las claras lejos de los textos */
+            const fuera = [['#2D2560', '110vmax', 40, 64, 50, 51, 4, 0], ['#4A3CAE', '80vmax', 80, 32, 26, 93, 4, 80], ['#6B5CE7', '70vmax', 20, 16, 88, 19, 4, 160],
+                ['#9B8EF0', '55vmax', 90, 96, 98, 67, 4, 240], ['#C8C0F8', '30vmax', 10, 80, 76, 112, 3, 320]];
+            const lista = ['Data intelligence', 'Tiempo real', 'Chile y Perú', 'Comunidades'].map((t, i) => `<li style="--i:${i}"><span>0${i + 1}</span>${t}</li>`).join('');
+            return `<div class="sig-escena sig-e-tapin"><div class="sig-tp-halo"></div><div class="sig-tp-caja">${dentro.map(mancha).join('')}</div><span class="sig-tp-onda"></span><span class="sig-tp-dice">El punto de la i</span><div class="sig-tp-libre">${fuera.map(mancha).join('')}</div><span class="sig-tp-wm"></span><div class="sig-tp-grano"></div><ul class="sig-tp-lista">${lista}</ul></div>`;
+        },
         /* Llegó Farma: la foto de la flota con la retícula y la cruz de nodos */
         llego: () => `<div class="sig-escena sig-e-llego"><img src="../works/media/llego-foto.jpg" alt=""><div class="sig-reticula"></div><img class="sig-lf-iso" src="media/lf-iso-nodos.svg" alt=""></div>`
     };

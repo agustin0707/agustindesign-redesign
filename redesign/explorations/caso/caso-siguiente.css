@@ -68,11 +68,54 @@
 /* Una luz suave que sigue el avance: el campo de Mend se ilumina hacia el caso */
 .sig-e-mend .sig-luz { position: absolute; inset: 0; background: radial-gradient(40% 50% at 78% 40%, rgba(201, 233, 232, 0.55), transparent 70%); opacity: var(--p); }
 
-/* --- 2. ESCENA TAP IN --- */
-.sig-e-tapin { background: radial-gradient(120% 90% at 70% 0%, #6B5CE7 0%, #4A3CAE 38%, #2D2560 100%); }
-.sig-tiras { position: absolute; right: -6%; top: -30%; bottom: -30%; width: 60%; display: flex; gap: clamp(14px, 1.6vw, 26px); transform: rotate(-22deg); }
-.sig-tiras i { flex: 1; border-radius: 999px; background: linear-gradient(180deg, color-mix(in srgb, var(--tono) 82%, #fff), var(--tono)); translate: 0 calc((1 - var(--p)) * (10% + var(--i) * 8%)); box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.5); }
-.sig-tp-wm { position: absolute; left: var(--margen); top: 14svh; width: clamp(200px, 26vw, 420px); aspect-ratio: 389.87 / 150.6; background: #FFFFFF; -webkit-mask: url("media/tp-wordmark.svg") center / contain no-repeat; mask: url("media/tp-wordmark.svg") center / contain no-repeat; }
+/* --- 2. ESCENA TAP IN · VIOLETA VIVO --- */
+/* El wordmark es una ventana que se aleja: con el avance (--p) pasa de 14 veces su tamaño, centrado en el punto de la
+   i, a su tamaño final (--tp-wf) al centro. Las unidades salen del ancho final: 36 u = el wordmark armado.
+   Tiempos: onda del toque 0 a 0,1; zoom 0,04 a 0,54; lista 0,18 a 0,5; bajada 0,45 a 0,57; el violeta se derrama
+   desde el punto de 0,58 a 0,78; el resto de la pista sostiene la portada antes de abrir el caso */
+.sig-e-tapin { --tp-wf: min(40vw, 640px); --tp-u: calc(var(--tp-wf) / 36);
+    --tp-k: clamp(0, calc((var(--p) - 0.04) / 0.5), 1); --tp-z: calc(var(--tp-k) * var(--tp-k) * (3 - 2 * var(--tp-k))); --tp-W: calc(36 * pow(14, 1 - var(--tp-z)));
+    --tp-ax: calc(0.712 - 0.212 * var(--tp-z)); --tp-ay: calc(0.0999 + 0.4001 * var(--tp-z));
+    --tp-x: clamp(0, calc((var(--p) - 0.58) / 0.2), 1); --tp-r: calc(var(--tp-x) * var(--tp-x) * (3 - 2 * var(--tp-x)) * 145vmax);
+    background: #08060F; }
+.sig-e-tapin > * { transform: none; }
+
+/* --- 2.1. LA MALLA DENTRO DEL WORDMARK --- */
+/* La caja tiene la forma del wordmark (máscara) y se mueve con la cámara; su malla se aleja con ella */
+.sig-tp-caja { position: absolute; left: calc(50% - var(--tp-W) * var(--tp-ax) * var(--tp-u)); top: calc(50% - var(--tp-W) * 0.38628 * var(--tp-ay) * var(--tp-u)); width: calc(var(--tp-W) * var(--tp-u)); aspect-ratio: 389.87 / 150.6; overflow: hidden; background: #261D62;
+    -webkit-mask: url("media/tp-wordmark.svg") 0 0 / 100% 100% no-repeat; mask: url("media/tp-wordmark.svg") 0 0 / 100% 100% no-repeat; }
+/* Cada mancha va de su inicio a su fin con el avance (--tp-m), con un vaivén suave encima */
+.sig-e-tapin i { --tp-m: var(--p); position: absolute; width: var(--s); aspect-ratio: 1; border-radius: 50%; translate: -50% -50%; background: radial-gradient(circle, var(--c), transparent 66%);
+    left: calc(var(--x0) + (var(--x1) - var(--x0)) * var(--tp-m) + sin(calc(var(--tp-m) * 540deg + var(--f))) * var(--a));
+    top: calc(var(--y0) + (var(--y1) - var(--y0)) * var(--tp-m) + cos(calc(var(--tp-m) * 450deg + var(--f))) * var(--a) * 0.7); }
+/* Un halo violeta detrás del wordmark, que crece con la cámara */
+.sig-tp-halo { position: absolute; inset: 0; background: radial-gradient(calc(var(--tp-W) * 0.62 * var(--tp-u)) calc(var(--tp-W) * 0.3 * var(--tp-u)) at 50% 50%, rgba(107, 92, 231, calc(var(--tp-z) * 0.32)), transparent 70%); }
+
+/* --- 2.2. EL TOQUE --- */
+/* Una onda con la forma del punto sale al empezar; el rótulo lo nombra y se va con el primer avance */
+.sig-tp-onda { position: absolute; left: 50%; top: 50%; width: calc(var(--tp-wf) * 1.0766); height: calc(var(--tp-wf) * 1.081); translate: -50% -50%; border-radius: 41.8%; border: 1px solid rgba(200, 192, 248, calc((1 - clamp(0, var(--p) / 0.1, 1)) * 0.7)); scale: calc(1 + clamp(0, var(--p) / 0.1, 1) * 0.5); }
+.sig-tp-dice { position: absolute; left: 50%; top: calc(50% + var(--tp-wf) * 0.54 + 20px); translate: -50% 0; font: 12px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: #C8C0F8; white-space: nowrap; opacity: calc(1 - clamp(0, (var(--p) - 0.06) * 10, 1)); }
+
+/* --- 2.3. EL VIOLETA SE DERRAMA DESDE EL PUNTO --- */
+/* La malla libre y el wordmark blanco comparten el círculo: las letras pasan a blanco cuando la ola las cruza */
+.sig-tp-libre { position: absolute; inset: 0; overflow: hidden; background: #1F1850; clip-path: circle(var(--tp-r) at calc(50% + var(--tp-wf) * 0.212) calc(50% - var(--tp-wf) * 0.1546)); }
+.sig-tp-wm { position: absolute; left: calc(50% - var(--tp-wf) / 2); top: calc(50% - var(--tp-wf) * 0.19314); width: var(--tp-wf); aspect-ratio: 389.87 / 150.6; background: #FFFFFF; clip-path: circle(var(--tp-r) at 71.2% 9.99%);
+    -webkit-mask: url("media/tp-wordmark.svg") center / contain no-repeat; mask: url("media/tp-wordmark.svg") center / contain no-repeat; }
+/* Grano fino: rompe las bandas de los degradados grandes */
+.sig-tp-grano { position: absolute; inset: 0; pointer-events: none; opacity: 0.07; mix-blend-mode: soft-light; background-size: 200px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); }
+
+/* --- 2.4. EL MARCO DE TAP IN --- */
+/* El rótulo arriba y la bajada abajo, para no cruzarse con las letras gigantes; el nombre lo dice el wordmark (queda
+   para lectores de pantalla) y la bajada entra cuando el wordmark ya está armado */
+.sig:has(.sig-e-tapin) .sig-txt { top: 92px; justify-content: space-between; }
+.sig:has(.sig-e-tapin) .sig-fila { width: min(420px, 40vw); }
+.sig:has(.sig-e-tapin) .sig-nombre { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.sig:has(.sig-e-tapin) .sig-bajada { opacity: calc(clamp(0, (var(--p) - 0.45) / 0.12, 1) * 0.85); translate: 0 calc((1 - clamp(0, (var(--p) - 0.45) / 0.12, 1)) * 10px); }
+/* Los atributos de la empresa, en lista mono bajo el anillo de avance */
+.sig-tp-lista { position: absolute; right: var(--margen); top: 172px; display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; font: 12px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.sig-tp-lista li { display: flex; align-items: center; justify-content: end; gap: 12px; opacity: clamp(0, calc((var(--p) - 0.18 - var(--i) * 0.08) * 10), 1); }
+.sig-tp-lista span { color: #C8C0F8; }
+.sig-tp-lista li::after { content: ''; width: 32px; height: 1px; background: rgba(200, 192, 248, 0.45); }
 
 /* --- 3. ESCENA LLEGÓ FARMA --- */
 .sig-e-llego > img:first-child { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -87,12 +130,21 @@
     .sig:has(.sig-e-mend) .sig-txt { right: var(--margen); }
     .sig-mend-logo { width: 78vw; }
     .sig-progreso { top: auto; bottom: 24px; }
+    /* Tap In: el wordmark ocupa el ancho útil y la lista se guarda (abajo va el anillo) */
+    .sig-e-tapin { --tp-wf: 78vw; }
+    .sig-tp-lista { display: none; }
+    .sig:has(.sig-e-tapin) .sig-fila { width: auto; }
 }
 /* Tablet vertical: el teléfono más chico y más arriba, para que no tope con el logo */
 @media (orientation: portrait) and (min-width: 600px) and (max-width: 1100px) { .sig-e-mend .sig-tel { --tope: 30vw; } }
 @media (prefers-reduced-motion: reduce) {
     .sig-escena { clip-path: none; }
-    .sig-escena > *, .sig-nombre, .sig-tiras i, .sig-e-mend .sig-larga { transform: none; translate: none; }
+    .sig-escena > *, .sig-nombre, .sig-e-mend .sig-larga { transform: none; translate: none; }
     .sig-e-mend .sig-tel { translate: -50% 0; }
+    /* Tap In queda en su portada: el wordmark armado, el violeta derramado y todo el texto a la vista */
+    .sig-e-tapin { --tp-k: 1; --tp-x: 1; }
+    .sig-e-tapin i { --tp-m: 1; }
+    .sig-tp-onda, .sig-tp-dice { display: none; }
+    .sig:has(.sig-e-tapin) .sig-bajada, .sig-tp-lista li { opacity: 1; translate: none; }
 }
 

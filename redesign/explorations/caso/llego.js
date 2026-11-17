@@ -43,7 +43,7 @@
     /* --- 1. SIGUIENTE PROYECTO --- */
     window.CASO = {
         nombre: 'Llegó Farma',
-        siguiente: { id: 'tapin', nombre: 'Tap In', numero: '02', bajada: 'De la cafetería del campus a la plataforma del colegio.', tinte: '#110E22', url: 'tapin.html' }
+        siguiente: { id: 'tapin', nombre: 'Tap In', numero: '02', bajada: 'Una startup de data intelligence que conecta comunidades en Chile y Perú.', tinte: '#08060F', url: 'tapin.html' }
     };
 
     /* --- 2. HERO: LA CINTA DE LLEGOFARMA.CL --- */
