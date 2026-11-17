@@ -701,6 +701,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-taller[data-k="3"] .lf-taller-trama .hueco + .hueco { transition-delay: 610ms; }
 .lf-taller[data-k="3"] .lf-taller-trama circle { opacity: 0.07; }
 .lf-taller[data-k="3"] .lf-taller-trama .h { opacity: 0.36; transition-delay: 560ms; }
+/* Ningún punto bajo las lecturas ni las notas: llego.js marca los que caerían debajo con la lente cerca */
+.lf-taller[data-k="1"] .lf-taller-trama circle.l1, .lf-taller[data-k="2"] .lf-taller-trama circle.l2 { opacity: 0; }
 
 /* --- 8.2.6 LAS DOS LECTURAS Y LAS NOTAS DEL ISOTIPO --- */
 /* A cada lado del nodo, fuera de la lente: no crecen con el acercamiento. Parten pasado el primer punto de la trama */
@@ -774,7 +776,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
    la pág. 06 que se dibuja (--c2) con la ó como módulo, Llegó en espejo y sus cotas x (--cx), el área de protección de
    la pág. 08 (--c3) y, al final, los mínimos a tamaño real de la pág. 09 (--c4) */
 .lf-lock { background: #FFFFFF; }
-.lf-lock-lienzo { inset: 0; width: 100%; height: 100%; overflow: visible; opacity: calc(1 - var(--c4, 0)); }
+/* El logotipo grande sale antes de que entren los mínimos: a medio fundido se encimaban y no se leía ninguno */
+.lf-lock-lienzo { inset: 0; width: 100%; height: 100%; overflow: visible; opacity: clamp(0, 1 - var(--c4, 0) * 2, 1); }
 .lf-lock-lienzo text { font: 400 6.4px var(--cs-f-mono); letter-spacing: 0.04em; fill: var(--lf-oscuro); }
 /* Trazo de 1 px a esta escala, en unidades del SVG: el non-scaling-stroke rompe el dibujo con pathLength */
 .lf-lock-lienzo :is(line, rect) { fill: none; stroke-width: 0.62; stroke-dasharray: 1; }
@@ -797,10 +800,11 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-lock-proteccion :is(.lf-lock-esquina, .lf-lock-cotax) { opacity: clamp(0, calc(var(--c3, 0) * 3 - 2), 1); }
 .lf-lock-nota { left: 28px; bottom: 68px; display: grid; color: var(--lf-turquesa); }
 .lf-lock-nota span { grid-area: 1 / 1; }
-.lf-lock-nota-x { opacity: calc(var(--cx, 0) * (1 - var(--c3, 0))); }
-.lf-lock-nota-p { opacity: calc(var(--c3, 0) * (1 - var(--c4, 0))); }
+/* Una nota sale antes de que entre la otra: comparten lugar y, a medio fundido, las dos frases se leían encimadas */
+.lf-lock-nota-x { opacity: calc(var(--cx, 0) * clamp(0, 1 - var(--c3, 0) * 2, 1)); }
+.lf-lock-nota-p { opacity: calc(clamp(0, var(--c3, 0) * 2 - 1, 1) * (1 - var(--c4, 0))); }
 /* Mínimos: las tres versiones a su tamaño mínimo real, sin escalar */
-.lf-lock-minimos { inset: 0; display: flex; align-items: center; justify-content: center; gap: clamp(56px, 7vw, 112px); opacity: var(--c4, 0); }
+.lf-lock-minimos { inset: 0; display: flex; align-items: center; justify-content: center; gap: clamp(56px, 7vw, 112px); opacity: clamp(0, var(--c4, 0) * 2 - 1, 1); }
 .lf-lock-minimos figure { display: flex; flex-direction: column; align-items: center; gap: 20px; margin: 0; translate: 0 calc((1 - var(--c4, 0)) * 10px); }
 .lf-lock-minimos img { display: block; max-width: none; height: auto; }
 .lf-lock-minimos figure:nth-child(1) img { width: 16px; } .lf-lock-minimos figure:nth-child(2) img { width: 120px; } .lf-lock-minimos figure:nth-child(3) img { width: 140px; }
@@ -1266,7 +1270,11 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
 .lf-en-pant.angosto .lf-en-fila { grid-template-columns: minmax(0, 1fr) 64px; }
 /* En lo angosto la carpeta queda en nombre y archivos, y la guía en sus cuatro títulos */
 .lf-en-pant.angosto .lf-en-fila > span:nth-child(2):not(:last-child) { display: none; }
-.lf-en-pant.angosto .lf-en-pie > span:last-child { white-space: normal; text-align: right; }
+/* A lo angosto el pie va en dos líneas a todo el ancho y las filas se aprietan: así la tarjeta del formulario, al pie
+   de la columna, entra entera en la ventana antes de cruzar */
+.lf-en-pant.angosto .lf-en-fila { padding-block: 5px; }
+.lf-en-pant.angosto .lf-en-pie { grid-template-columns: 1fr; row-gap: 2px; }
+.lf-en-pant.angosto .lf-en-pie > span:last-child { text-align: left; }
 .lf-en-pant.angosto .lf-en-guia li { font-size: 0; row-gap: 0; }
 .lf-en-pant.angosto .lf-en-col { padding: 20px 16px; }
 @media (prefers-reduced-motion: reduce) { .lf-en-panel * { transition: none !important; } }
@@ -1617,6 +1625,13 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-fotos-regla dl { grid-template-columns: 1fr 1fr; row-gap: 18px; }
     .lf-cierre-dato { display: none; }
     .lf-cierre-texto { left: 20px; width: calc(100cqw - 40px); }
+    /* 09: las dos llaves quedan juntas y sus rótulos se pisaban ("Dominio de la madre" y "Una carpeta"): el segundo baja
+       una línea y su trazo se alarga hasta él */
+    .lf-dom-llave[data-ll="carpeta"] > span { top: 44px; }
+    .lf-dom-llave[data-ll="carpeta"]::before { height: 28px; }
+    /* El texto va a todo el ancho: las verticales enmarcan la página y terminan 12 px bajo la horizontal de abajo, antes
+       del título; a todo el alto cruzaban el título y la cita */
+    .lf-cierre-v { bottom: auto; height: calc(38cqh + 13.05cqw + 26px); transform-origin: 50% 38cqh; }
     /* Capítulo 03: la decisión arriba, con la bajada entera, y el navegador abajo con todo el alto que queda. El panel mide
        100lvh: el margen de abajo suma lo que tapa la barra del navegador cuando está a la vista */
     .lf-dom .cs-fijo.cs-grilla { grid-template-rows: auto minmax(0, 1fr); padding-bottom: calc(20px + var(--lf-tapa)); }
@@ -1666,7 +1681,8 @@ html.lf-abajo:has(> body.lf) { background: #2D2560; }
     .lf-fin-cab { min-height: 56px; }
     .lf-fin-cifras { min-height: 0; }
     .lf-fin-cifras li { grid-column: auto; padding-block: 24px; }
-    .lf-fin-cifras li:nth-child(odd) { padding-left: var(--medianil); }
+    /* La columna izquierda guarda el mismo aire a los dos lados: su texto llegaba hasta la línea del centro */
+    .lf-fin-cifras li:nth-child(odd) { padding-inline: var(--medianil); }
     .lf-fin-cifras b { font-size: 64px; }
     .lf-fin-vivo, .lf-fin-creditos { min-height: 0; padding-block: 28px; }
     .lf-fin-vivo a, .lf-fin-creditos dl { grid-column: 1 / -1; margin-left: var(--medianil); }

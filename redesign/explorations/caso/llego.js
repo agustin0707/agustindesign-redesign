@@ -641,7 +641,29 @@
                 const lado = P * 3.2692, r = (lado * 0.24).toFixed(1), caja = (hx, clase, z) => `<rect class="${clase}" x="${(hx - lado / 2).toFixed(1)}" y="${(cy - lado / 2).toFixed(1)}" width="${lado.toFixed(1)}" height="${lado.toFixed(1)}" rx="${r}" stroke-width="${(1 / z).toFixed(3)}" stroke-dasharray="${(4 / z).toFixed(2)} ${(4 / z).toFixed(2)}"/>`;
                 trama.setAttribute('viewBox', `0 0 ${W} ${H}`);
                 trama.innerHTML = puntos + caja(cx, 'caja', Z) + caja(W / 2, 'hueco', 1) + caja(W * 5 / 6, 'hueco', 1);
+                lente = { Z, t: [[W / 2 - Z * cx, H / 2 - Z * (cy + P / 2)], [W / 2 - Z * cx, H / 2 - Z * cy]] };
+                tapar();
             };
+            /* Con la lente cerca, los puntos que caerían bajo una lectura (paso 2) o una nota (paso 3) se marcan y el CSS los
+               apaga mientras esa lectura está a la vista: la trama ya no cruza los rótulos. Se mide cada línea de texto en su
+               lugar final (sin el desplazamiento de la entrada), con 14 px de aire */
+            let lente = null;
+            const tapar = () => {
+                if (!lente) return;
+                const M = 14;
+                const grupos = [['.lf-taller-lect', 0, 'l1'], ['.lf-taller-nota', 1, 'l2']].map(([sel, t, clase]) => ({
+                    t, clase, cajas: [...mesa.querySelectorAll(sel)].flatMap(b => [...b.children].filter(c => c.offsetWidth).map(c => ({
+                        x: b.offsetLeft + c.offsetLeft - M, y: b.offsetTop - b.offsetHeight / 2 + c.offsetTop - M, w: c.offsetWidth + 2 * M, h: c.offsetHeight + 2 * M })))
+                }));
+                trama.querySelectorAll('circle').forEach(c => {
+                    const x = +c.getAttribute('cx'), y = +c.getAttribute('cy');
+                    grupos.forEach(g => {
+                        const [tx, ty] = lente.t[g.t], X = tx + lente.Z * x, Y = ty + lente.Z * y;
+                        c.classList.toggle(g.clase, g.cajas.some(b => X > b.x && X < b.x + b.w && Y > b.y && Y < b.y + b.h));
+                    });
+                });
+            };
+            if (document.fonts) document.fonts.ready.then(tapar);
             medir();
             let espera = null;
             window.addEventListener('resize', () => { cancelAnimationFrame(espera); espera = requestAnimationFrame(medir); });
@@ -1348,6 +1370,9 @@
                 }
                 /* De lejos las marcas no crecen: entran enteras, así ninguna línea cruza el contenido */
                 huecos.forEach((h, i) => marcarCaja(cajas[i], h.r, h.g > 0.5 ? 1 : 0, h.txt, A));
+                /* En celular el rótulo de la etapa va bajo su disco: arriba tapaba el título del estado, que es lo que cambia;
+                   abajo cubre los nombres de las etapas, que a esta escala no se leen */
+                if (angosto && p >= T.acerca[0] + 0.03) cajas[0].classList.add('abajo');
                 /* La línea nueva del registro se enciende al escribirse */
                 const linea = p >= T.etapas[0] && p < T.registro[0] && ruta.querySelector(`.registro text[data-i="${k}"]`);
                 if (linea) {
